@@ -121,6 +121,7 @@ export interface HybridSearchResult {
   metadata: Record<string, unknown>;
   document_title: string;
   document_type: DocumentType;
+  slug: string;
   client_name: string | null;
   author: string | null;
   vimeo_url: string | null;

@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import type { CaseStudyTeaserProps } from '../types';
 
 /**
@@ -16,7 +17,7 @@ export const CaseStudyTeaser: React.FC<CaseStudyTeaserProps> = ({
   thumbnailUrl,
   slug,
 }) => {
-  return (
+  const content = (
     <div className="group bg-white rounded-xl border border-gray-100 overflow-hidden hover:border-gray-200 hover:shadow-md transition-all duration-300">
       {/* Thumbnail */}
       <div className="relative aspect-[16/9] bg-gradient-to-br from-gray-100 to-gray-50 overflow-hidden">
@@ -80,6 +81,17 @@ export const CaseStudyTeaser: React.FC<CaseStudyTeaserProps> = ({
       </div>
     </div>
   );
+
+  // Wrap in Link if slug is provided
+  if (slug) {
+    return (
+      <Link href={`/case-study/${slug}`} className="block">
+        {content}
+      </Link>
+    );
+  }
+
+  return content;
 };
 
 export default CaseStudyTeaser;

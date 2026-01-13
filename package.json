@@ -12,6 +12,7 @@
     "ingest:single": "tsx scripts/ingest.ts single",
     "ingest:batch": "tsx scripts/ingest.ts batch",
     "ingest:discover": "tsx scripts/ingest.ts discover",
+    "ingest:split": "tsx scripts/ingest-split.ts",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {

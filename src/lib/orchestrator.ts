@@ -56,7 +56,7 @@ You MUST only use these exact component names:
 - **VisualAsset**: Images, charts, diagrams. ONLY use when image_url/signed_url is in context.
   Props: { src: string, alt: string, caption?: string, aspectRatio?: 'auto' | '16:9' | '4:3' | '1:1' | '3:2' }
 
-- **CaseStudyTeaser**: Card linking to a full case study article.
+- **CaseStudyTeaser**: Card linking to a full case study article. CRITICAL: Use the exact slug provided in the context.
   Props: { title: string, clientName?: string, summary: string, capabilities?: string[], industries?: string[], thumbnailUrl?: string, slug: string }
 
 ## OUTPUT PROTOCOL
@@ -186,9 +186,11 @@ function formatContext(context: RetrievedContext): string {
   if (context.chunks.length > 0) {
     const chunksSection = context.chunks.map((chunk, i) => {
       return `[Chunk ${i + 1}]
-Case Study: ${chunk.case_study_title}
+Case Study: ${chunk.document_title}
 Client: ${chunk.client_name || 'N/A'}
-Type: ${chunk.chunk_type}
+Document Type: ${chunk.document_type || 'case_study'}
+Slug: ${chunk.slug || 'N/A'}
+Chunk Type: ${chunk.chunk_type}
 Vimeo URL: ${chunk.vimeo_url || 'None'}
 Content: ${chunk.content}
 Relevance Score: ${chunk.combined_score.toFixed(3)}`;
