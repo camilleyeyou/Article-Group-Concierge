@@ -58,7 +58,7 @@ export async function GET(
     // Fetch content chunks
     const { data: chunks, error: chunksError } = await supabase
       .from('content_chunks')
-      .select('id, content, chunk_index')
+      .select('id, content, chunk_index, chunk_type')
       .eq('document_id', caseStudy.id)
       .order('chunk_index', { ascending: true });
 
