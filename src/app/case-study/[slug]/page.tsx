@@ -30,58 +30,119 @@ interface Industry {
   slug: string;
 }
 
-// Simple markdown-like renderer
-function renderContent(text: string): React.ReactNode[] {
-  // First, clean up the text - handle escaped newlines and markdown artifacts
-  let cleanText = text
-    .replace(/\\n/g, '\n')  // Convert \n to actual newlines
-    .replace(/\{"markdown":\s*"/g, '')  // Remove JSON wrapper if present
-    .replace(/"\s*\}$/g, '')  // Remove closing JSON
-    .replace(/^### /gm, '')  // Remove ### headers, we'll style differently
-    .replace(/^\*\*([^*]+)\*\*$/gm, '$1')  // Bold on its own line becomes plain
+interface Metric {
+  label: string;
+  value: string;
+  context?: string;
+}
+
+/**
+ * Clean and parse content - removes all markdown artifacts and JSON wrappers
+ */
+function cleanContent(text: string): string {
+  return text
+    // Remove JSON wrappers
+    .replace(/^\s*\{"markdown"\s*:\s*"/g, '')
+    .replace(/"\s*\}\s*$/g, '')
+    // Convert escaped characters
+    .replace(/\\n/g, '\n')
+    .replace(/\\t/g, '  ')
+    .replace(/\\"/g, '"')
+    .replace(/\\\\/g, '\\')
+    // Remove markdown headers (we'll style sections differently)
+    .replace(/^#{1,6}\s+/gm, '')
+    // Remove horizontal rules
+    .replace(/^[-*_]{3,}\s*$/gm, '')
+    // Remove image markdown
+    .replace(/!\[([^\]]*)\]\([^)]+\)/g, '')
+    // Remove link markdown but keep text
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    // Remove code blocks
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/`([^`]+)`/g, '$1')
+    // Clean up extra whitespace
+    .replace(/\n{3,}/g, '\n\n')
     .trim();
+}
 
-  // Split into paragraphs
-  const paragraphs = cleanText.split(/\n\n+/);
+/**
+ * Parse content into structured sections
+ */
+function parseContentSections(rawContent: string): Array<{ type: 'heading' | 'paragraph' | 'list' | 'metric'; content: string; items?: string[] }> {
+  const cleaned = cleanContent(rawContent);
+  const sections: Array<{ type: 'heading' | 'paragraph' | 'list' | 'metric'; content: string; items?: string[] }> = [];
   
-  return paragraphs.map((para, i) => {
-    const trimmed = para.trim();
-    if (!trimmed) return null;
-
-    // Check if it's a header (starts with **)
-    if (trimmed.startsWith('**') && trimmed.endsWith('**')) {
-      const headerText = trimmed.slice(2, -2);
-      return (
-        <h3 key={i} className="text-lg font-semibold text-[#1A1818] mt-8 mb-3">
-          {headerText}
-        </h3>
-      );
+  // Split by double newlines to get paragraphs
+  const blocks = cleaned.split(/\n\n+/);
+  
+  for (const block of blocks) {
+    const trimmed = block.trim();
+    if (!trimmed) continue;
+    
+    // Check if it's a bold heading (text wrapped in **)
+    if (/^\*\*[^*]+\*\*:?\s*$/.test(trimmed)) {
+      const headingText = trimmed.replace(/^\*\*/, '').replace(/\*\*:?\s*$/, '');
+      sections.push({ type: 'heading', content: headingText });
+      continue;
     }
-
-    // Check if it's a list
-    if (trimmed.includes('\n- ') || trimmed.startsWith('- ')) {
-      const items = trimmed.split('\n- ').filter(item => item.trim());
-      return (
-        <ul key={i} className="list-disc list-inside space-y-2 mb-6 text-gray-700">
-          {items.map((item, j) => (
-            <li key={j} className="leading-relaxed">
-              {item.replace(/^- /, '').replace(/\*\*([^*]+)\*\*/g, '$1')}
-            </li>
-          ))}
-        </ul>
-      );
+    
+    // Check if it's a list (starts with - or *)
+    if (/^[-*]\s/.test(trimmed) || trimmed.includes('\n- ') || trimmed.includes('\n* ')) {
+      const items = trimmed
+        .split(/\n/)
+        .map(line => line.replace(/^[-*]\s+/, '').trim())
+        .filter(line => line.length > 0)
+        // Clean bold markers from list items
+        .map(item => item.replace(/\*\*([^*]+)\*\*/g, '$1'));
+      
+      if (items.length > 0) {
+        sections.push({ type: 'list', content: '', items });
+      }
+      continue;
     }
+    
+    // Check for metrics pattern (e.g., "$30B", "70+", "6+ hrs")
+    if (/^\$?[\d.]+[BMK+%]?\s*$/i.test(trimmed) || /^\d+\+?\s*(hrs?|hours?|days?|months?|years?)?$/i.test(trimmed)) {
+      sections.push({ type: 'metric', content: trimmed });
+      continue;
+    }
+    
+    // Regular paragraph - clean up any remaining bold markers
+    const cleanParagraph = trimmed.replace(/\*\*([^*]+)\*\*/g, '$1');
+    if (cleanParagraph.length > 0) {
+      sections.push({ type: 'paragraph', content: cleanParagraph });
+    }
+  }
+  
+  return sections;
+}
 
-    // Check for inline bold and render as paragraph
-    const parts = trimmed.split(/\*\*([^*]+)\*\*/g);
-    return (
-      <p key={i} className="text-gray-700 leading-relaxed mb-4">
-        {parts.map((part, j) => 
-          j % 2 === 1 ? <strong key={j} className="font-semibold">{part}</strong> : part
-        )}
-      </p>
-    );
-  }).filter(Boolean);
+/**
+ * Extract metrics from content if present
+ */
+function extractMetrics(chunks: ContentChunk[]): Metric[] {
+  const metrics: Metric[] = [];
+  const metricPatterns = [
+    /(\$[\d.]+[BMK]?)\s+([^.]+)/gi,
+    /(\d+\+?)\s+([\w\s]+(?:created|produced|delivered|completed))/gi,
+    /(\d+\+?\s*(?:hrs?|hours?))\s+([^.]+)/gi,
+  ];
+  
+  const fullText = chunks.map(c => c.content).join(' ');
+  
+  for (const pattern of metricPatterns) {
+    let match;
+    while ((match = pattern.exec(fullText)) !== null) {
+      if (metrics.length < 4) { // Max 4 metrics
+        metrics.push({
+          value: match[1],
+          label: match[2].trim().slice(0, 50),
+        });
+      }
+    }
+  }
+  
+  return metrics;
 }
 
 export default function CaseStudyDetailPage() {
@@ -121,10 +182,10 @@ export default function CaseStudyDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center font-sans">
         <div className="flex items-center gap-3">
-          <div className="w-6 h-6 border-2 border-gray-300 border-t-[#1A1818] rounded-full animate-spin" />
-          <span className="text-gray-600">Loading case study...</span>
+          <div className="w-8 h-8 border-2 border-ag-gray-200 border-t-ag-coral rounded-full animate-spin" />
+          <span className="text-ag-gray-500 text-lg">Loading case study...</span>
         </div>
       </div>
     );
@@ -132,20 +193,20 @@ export default function CaseStudyDetailPage() {
 
   if (error || !caseStudy) {
     return (
-      <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6">
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6 font-sans">
         <div className="text-center max-w-md">
-          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gray-100 flex items-center justify-center">
-            <svg className="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="w-20 h-20 mx-auto mb-8 rounded-full bg-ag-gray-100 flex items-center justify-center">
+            <svg className="w-10 h-10 text-ag-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h1 className="text-2xl font-semibold text-[#1A1818] mb-2">Case Study Not Found</h1>
-          <p className="text-gray-600 mb-6">{error || "We couldn't find the case study you're looking for."}</p>
+          <h1 className="font-serif text-3xl text-ag-black mb-4">Case Study Not Found</h1>
+          <p className="text-ag-gray-500 text-lg mb-8">{error || "We couldn't find the case study you're looking for."}</p>
           <Link 
             href="/"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#1A1818] text-white rounded-full hover:bg-[#333] transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-ag-black text-white rounded-full hover:bg-ag-gray-700 transition-colors font-medium"
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             Back to Concierge
@@ -155,28 +216,38 @@ export default function CaseStudyDetailPage() {
     );
   }
 
-  // Combine chunks into full content
+  // Process content
   const fullContent = chunks
     .sort((a, b) => a.chunk_index - b.chunk_index)
     .map(c => c.content)
     .join('\n\n');
+  
+  const sections = parseContentSections(fullContent);
+  const metrics = extractMetrics(chunks);
+
+  // Extract title parts (Client: Title format)
+  const titleParts = caseStudy.title.split(':');
+  const displayClient = caseStudy.client_name || (titleParts.length > 1 ? titleParts[0].trim() : null);
+  const displayTitle = titleParts.length > 1 ? titleParts.slice(1).join(':').trim() : caseStudy.title;
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white font-sans">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
-        <div className="max-w-4xl mx-auto px-6 py-4">
+      <header className="sticky top-0 z-50 bg-white border-b border-ag-gray-200">
+        <div className="max-w-5xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2 text-gray-600 hover:text-[#1A1818] transition-colors">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
-              <span className="text-sm font-medium">Back to Concierge</span>
+            <Link href="/" className="flex items-center gap-3 text-ag-gray-500 hover:text-ag-black transition-colors group">
+              <div className="w-8 h-8 rounded-full bg-ag-gray-100 flex items-center justify-center group-hover:bg-ag-coral/10 transition-colors">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+              </div>
+              <span className="font-medium">Back to Concierge</span>
             </Link>
             
             <a
               href="mailto:hello@articlegroup.com"
-              className="px-4 py-2 bg-[#1A1818] text-white text-sm font-medium rounded-full hover:bg-[#333] transition-colors"
+              className="px-5 py-2.5 bg-ag-black text-white text-sm font-medium rounded-full hover:bg-ag-gray-700 transition-colors"
             >
               Get in Touch
             </a>
@@ -185,26 +256,26 @@ export default function CaseStudyDetailPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-[#1A1818] to-[#333] text-white">
-        <div className="max-w-4xl mx-auto px-6 py-16 md:py-24">
+      <section className="bg-ag-black text-white">
+        <div className="max-w-5xl mx-auto px-6 py-16 md:py-24">
           {/* Client Badge */}
-          {caseStudy.client_name && (
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full mb-6">
-              <span className="text-sm font-medium text-white/90">{caseStudy.client_name}</span>
+          {displayClient && (
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 rounded-full mb-6 backdrop-blur-sm">
+              <span className="text-sm font-medium tracking-wide">{displayClient}</span>
             </div>
           )}
           
           {/* Title */}
-          <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium leading-tight mb-6">
-            {caseStudy.title}
+          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-normal leading-tight mb-8 max-w-4xl">
+            {displayTitle}
           </h1>
           
           {/* Tags */}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             {capabilities.map((cap, i) => (
               <span 
                 key={`cap-${i}`}
-                className="px-3 py-1 text-sm bg-[#0097A7]/30 text-white rounded-full"
+                className="px-4 py-2 text-sm bg-ag-teal/20 text-white rounded-full font-medium"
               >
                 {cap.name}
               </span>
@@ -212,7 +283,7 @@ export default function CaseStudyDetailPage() {
             {industries.map((ind, i) => (
               <span 
                 key={`ind-${i}`}
-                className="px-3 py-1 text-sm bg-white/10 text-white/80 rounded-full"
+                className="px-4 py-2 text-sm bg-white/10 text-white/80 rounded-full"
               >
                 {ind.name}
               </span>
@@ -221,35 +292,86 @@ export default function CaseStudyDetailPage() {
         </div>
       </section>
 
+      {/* Metrics Section */}
+      {metrics.length > 0 && (
+        <section className="border-b border-ag-gray-200">
+          <div className="max-w-5xl mx-auto px-6 py-12">
+            <div className={`grid gap-8 ${metrics.length === 2 ? 'grid-cols-2' : metrics.length === 3 ? 'grid-cols-3' : 'grid-cols-2 md:grid-cols-4'}`}>
+              {metrics.map((metric, i) => (
+                <div key={i} className="text-center">
+                  <div className="font-mono text-4xl md:text-5xl font-bold text-ag-coral mb-2">
+                    {metric.value}
+                  </div>
+                  <div className="text-ag-gray-500 text-sm uppercase tracking-wider">
+                    {metric.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Content Section */}
-      <section className="max-w-4xl mx-auto px-6 py-12 md:py-16">
-        {/* Summary */}
+      <section className="max-w-3xl mx-auto px-6 py-16 md:py-20">
+        {/* Summary Card */}
         {caseStudy.summary && (
-          <div className="mb-12 p-6 bg-gray-50 rounded-xl border border-gray-100">
-            <h2 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3">Overview</h2>
-            <p className="text-lg text-gray-700 leading-relaxed">{caseStudy.summary}</p>
+          <div className="mb-12 p-8 bg-ag-gray-100 rounded-2xl">
+            <h2 className="text-xs font-semibold text-ag-gray-400 uppercase tracking-widest mb-4">Overview</h2>
+            <p className="text-xl text-ag-black leading-relaxed">{cleanContent(caseStudy.summary)}</p>
           </div>
         )}
 
-        {/* Full Content - Rendered */}
-        <div className="prose-content">
-          {renderContent(fullContent)}
+        {/* Main Content */}
+        <div className="space-y-8">
+          {sections.map((section, i) => {
+            switch (section.type) {
+              case 'heading':
+                return (
+                  <h2 key={i} className="font-serif text-2xl md:text-3xl text-ag-black mt-12 mb-4 first:mt-0">
+                    {section.content}
+                  </h2>
+                );
+              
+              case 'list':
+                return (
+                  <ul key={i} className="space-y-3 pl-0">
+                    {section.items?.map((item, j) => (
+                      <li key={j} className="flex items-start gap-4 text-ag-gray-600 text-lg leading-relaxed">
+                        <span className="w-2 h-2 rounded-full bg-ag-coral mt-2.5 flex-shrink-0" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                );
+              
+              case 'paragraph':
+              default:
+                return (
+                  <p key={i} className="text-ag-gray-600 text-lg leading-relaxed">
+                    {section.content}
+                  </p>
+                );
+            }
+          })}
         </div>
+      </section>
 
-        {/* CTA */}
-        <div className="mt-16 p-8 bg-[#1A1818] rounded-2xl text-center">
-          <h3 className="text-xl font-medium text-white mb-3">
+      {/* CTA Section */}
+      <section className="bg-ag-black">
+        <div className="max-w-5xl mx-auto px-6 py-20 text-center">
+          <h3 className="font-serif text-3xl md:text-4xl text-white mb-4">
             Interested in similar work?
           </h3>
-          <p className="text-white/70 mb-6">
-            Let's discuss how we can help with your project.
+          <p className="text-white/60 text-lg mb-10 max-w-xl mx-auto">
+            Let's discuss how Article Group can help transform your business challenges into breakthrough results.
           </p>
           <a
             href="mailto:hello@articlegroup.com"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-white text-[#1A1818] font-medium rounded-full hover:bg-gray-100 transition-colors"
+            className="inline-flex items-center gap-3 px-8 py-4 bg-ag-coral text-white font-semibold rounded-full hover:bg-ag-coral/90 transition-colors text-lg"
           >
             Schedule a Conversation
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
             </svg>
           </a>
@@ -257,11 +379,14 @@ export default function CaseStudyDetailPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-100 py-8">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <p className="text-sm text-gray-500">
+      <footer className="bg-ag-gray-100 py-8">
+        <div className="max-w-5xl mx-auto px-6 flex items-center justify-between">
+          <p className="text-sm text-ag-gray-400">
             © {new Date().getFullYear()} Article Group. All rights reserved.
           </p>
+          <Link href="/" className="text-sm text-ag-gray-500 hover:text-ag-black transition-colors">
+            Back to Concierge
+          </Link>
         </div>
       </footer>
     </div>
