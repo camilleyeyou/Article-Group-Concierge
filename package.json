@@ -13,12 +13,15 @@
     "ingest:batch": "tsx scripts/ingest.ts batch",
     "ingest:discover": "tsx scripts/ingest.ts discover",
     "ingest:split": "tsx scripts/ingest-split.ts",
+    "ingest:clean": "tsx scripts/ingest-clean.ts",
+    "ingest:articles": "tsx scripts/ingest-articles.ts",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.30.0",
     "@supabase/supabase-js": "^2.45.0",
     "next": "14.2.10",
+    "openai": "^4.52.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
