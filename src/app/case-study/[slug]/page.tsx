@@ -30,17 +30,11 @@ interface Industry {
   slug: string;
 }
 
-interface Metric {
-  label: string;
-  value: string;
-  context?: string;
-}
-
 /**
- * Clean and parse content - removes all markdown artifacts and JSON wrappers
+ * Clean and parse content - removes ALL unwanted text, markdown, and metadata
  */
 function cleanContent(text: string): string {
-  return text
+  let cleaned = text
     // Remove JSON wrappers
     .replace(/^\s*\{"markdown"\s*:\s*"/g, '')
     .replace(/"\s*\}\s*$/g, '')
@@ -49,7 +43,14 @@ function cleanContent(text: string): string {
     .replace(/\\t/g, '  ')
     .replace(/\\"/g, '"')
     .replace(/\\\\/g, '\\')
-    // Remove markdown headers (we'll style sections differently)
+    // Remove LlamaParse metadata and junk
+    .replace(/Tables\s*There are no tables[^.]*\./gi, '')
+    .replace(/Images\s*There are no images[^.]*\./gi, '')
+    .replace(/If you need further assistance[^}]*\}/gi, '')
+    .replace(/"?job_metadata"?\s*:\s*\{[^}]*\}/gi, '')
+    .replace(/\{"?credits_used"?[^}]*\}/gi, '')
+    .replace(/Extracted Text\s*/gi, '')
+    // Remove markdown headers
     .replace(/^#{1,6}\s+/gm, '')
     // Remove horizontal rules
     .replace(/^[-*_]{3,}\s*$/gm, '')
@@ -63,54 +64,101 @@ function cleanContent(text: string): string {
     // Clean up extra whitespace
     .replace(/\n{3,}/g, '\n\n')
     .trim();
+
+  return cleaned;
 }
 
 /**
- * Parse content into structured sections
+ * Parse structured content into clean sections
  */
-function parseContentSections(rawContent: string): Array<{ type: 'heading' | 'paragraph' | 'list' | 'metric'; content: string; items?: string[] }> {
+function parseContentSections(rawContent: string): Array<{ type: 'heading' | 'paragraph' | 'list'; content: string; items?: string[] }> {
   const cleaned = cleanContent(rawContent);
-  const sections: Array<{ type: 'heading' | 'paragraph' | 'list' | 'metric'; content: string; items?: string[] }> = [];
+  const sections: Array<{ type: 'heading' | 'paragraph' | 'list'; content: string; items?: string[] }> = [];
   
-  // Split by double newlines to get paragraphs
-  const blocks = cleaned.split(/\n\n+/);
+  // First, parse the structured format (Title:, Subtitle:, Challenge:, Journey:, Solution:)
+  const structuredPattern = /\*\*?(Title|Subtitle|Challenge|Journey|Solution|Overview|Approach|Results|Impact|Background|Context|Problem|Process|Outcome):?\*?\*?\s*/gi;
   
-  for (const block of blocks) {
-    const trimmed = block.trim();
-    if (!trimmed) continue;
+  // Split content by these markers
+  const parts = cleaned.split(structuredPattern);
+  
+  let currentSection: string | null = null;
+  
+  for (let i = 0; i < parts.length; i++) {
+    const part = parts[i].trim();
+    if (!part) continue;
     
-    // Check if it's a bold heading (text wrapped in **)
-    if (/^\*\*[^*]+\*\*:?\s*$/.test(trimmed)) {
-      const headingText = trimmed.replace(/^\*\*/, '').replace(/\*\*:?\s*$/, '');
-      sections.push({ type: 'heading', content: headingText });
+    // Check if this is a section header
+    const headerMatch = part.match(/^(Title|Subtitle|Challenge|Journey|Solution|Overview|Approach|Results|Impact|Background|Context|Problem|Process|Outcome)$/i);
+    
+    if (headerMatch) {
+      currentSection = headerMatch[1];
       continue;
     }
     
-    // Check if it's a list (starts with - or *)
-    if (/^[-*]\s/.test(trimmed) || trimmed.includes('\n- ') || trimmed.includes('\n* ')) {
-      const items = trimmed
+    // Skip unwanted content
+    if (part.match(/Tables\s*There are no/i) || 
+        part.match(/Images\s*There are no/i) ||
+        part.match(/job_metadata/i) ||
+        part.match(/credits_used/i) ||
+        part.match(/Extracted Text/i) ||
+        part.match(/If you need further assistance/i)) {
+      continue;
+    }
+    
+    // Clean the content
+    let content = part
+      .replace(/\*\*/g, '') // Remove all ** markers
+      .replace(/^\s*[-*]\s*/gm, '• ') // Normalize list markers
+      .trim();
+    
+    if (!content) continue;
+    
+    // Add section header if we have one
+    if (currentSection && currentSection.toLowerCase() !== 'title' && currentSection.toLowerCase() !== 'subtitle') {
+      sections.push({ type: 'heading', content: currentSection });
+      currentSection = null;
+    }
+    
+    // Check if content is a list
+    if (content.includes('\n• ') || content.startsWith('• ')) {
+      const items = content
         .split(/\n/)
-        .map(line => line.replace(/^[-*]\s+/, '').trim())
-        .filter(line => line.length > 0)
-        // Clean bold markers from list items
-        .map(item => item.replace(/\*\*([^*]+)\*\*/g, '$1'));
+        .map(line => line.replace(/^[•\-*]\s*/, '').trim())
+        .filter(line => line.length > 0 && !line.match(/Tables\s*There|Images\s*There|job_metadata/i));
       
       if (items.length > 0) {
         sections.push({ type: 'list', content: '', items });
       }
-      continue;
+    } else {
+      // Regular paragraph
+      sections.push({ type: 'paragraph', content });
     }
+  }
+  
+  // If no structured content found, fall back to simple paragraph splitting
+  if (sections.length === 0) {
+    const paragraphs = cleaned
+      .replace(/\*\*/g, '')
+      .split(/\n\n+/)
+      .map(p => p.trim())
+      .filter(p => p.length > 0 && 
+        !p.match(/Tables\s*There are no/i) && 
+        !p.match(/Images\s*There are no/i) &&
+        !p.match(/job_metadata/i) &&
+        !p.match(/credits_used/i) &&
+        !p.match(/Extracted Text/i) &&
+        !p.match(/If you need further assistance/i));
     
-    // Check for metrics pattern (e.g., "$30B", "70+", "6+ hrs")
-    if (/^\$?[\d.]+[BMK+%]?\s*$/i.test(trimmed) || /^\d+\+?\s*(hrs?|hours?|days?|months?|years?)?$/i.test(trimmed)) {
-      sections.push({ type: 'metric', content: trimmed });
-      continue;
-    }
-    
-    // Regular paragraph - clean up any remaining bold markers
-    const cleanParagraph = trimmed.replace(/\*\*([^*]+)\*\*/g, '$1');
-    if (cleanParagraph.length > 0) {
-      sections.push({ type: 'paragraph', content: cleanParagraph });
+    for (const para of paragraphs) {
+      if (para.includes('\n- ') || para.includes('\n* ') || para.startsWith('- ') || para.startsWith('* ')) {
+        const items = para
+          .split(/\n/)
+          .map(line => line.replace(/^[-*]\s*/, '').trim())
+          .filter(line => line.length > 0);
+        sections.push({ type: 'list', content: '', items });
+      } else {
+        sections.push({ type: 'paragraph', content: para });
+      }
     }
   }
   
@@ -118,31 +166,39 @@ function parseContentSections(rawContent: string): Array<{ type: 'heading' | 'pa
 }
 
 /**
- * Extract metrics from content if present
+ * Extract a clean summary from the content
  */
-function extractMetrics(chunks: ContentChunk[]): Metric[] {
-  const metrics: Metric[] = [];
-  const metricPatterns = [
-    /(\$[\d.]+[BMK]?)\s+([^.]+)/gi,
-    /(\d+\+?)\s+([\w\s]+(?:created|produced|delivered|completed))/gi,
-    /(\d+\+?\s*(?:hrs?|hours?))\s+([^.]+)/gi,
-  ];
-  
-  const fullText = chunks.map(c => c.content).join(' ');
-  
-  for (const pattern of metricPatterns) {
-    let match;
-    while ((match = pattern.exec(fullText)) !== null) {
-      if (metrics.length < 4) { // Max 4 metrics
-        metrics.push({
-          value: match[1],
-          label: match[2].trim().slice(0, 50),
-        });
+function extractCleanSummary(summary: string | null, chunks: ContentChunk[]): string | null {
+  if (!summary) {
+    // Try to extract from first chunk
+    if (chunks.length > 0) {
+      const firstChunk = cleanContent(chunks[0].content);
+      // Look for subtitle or first meaningful paragraph
+      const subtitleMatch = firstChunk.match(/Subtitle:?\s*([^*\n]+)/i);
+      if (subtitleMatch) {
+        return subtitleMatch[1].trim();
+      }
+      // Get first paragraph that isn't a label
+      const paras = firstChunk.split(/\n\n+/);
+      for (const para of paras) {
+        const clean = para.replace(/\*\*/g, '').replace(/^(Title|Subtitle|Challenge|Journey|Solution):?\s*/i, '').trim();
+        if (clean.length > 50 && !clean.match(/^(Title|Subtitle|Extracted)/i)) {
+          return clean.slice(0, 300);
+        }
       }
     }
+    return null;
   }
   
-  return metrics;
+  // Clean the existing summary
+  return cleanContent(summary)
+    .replace(/\*\*/g, '')
+    .replace(/^(Title|Subtitle|Challenge|Journey|Solution|Extracted Text):?\s*/gi, '')
+    .replace(/Tables\s*There are no[^.]*\./gi, '')
+    .replace(/Images\s*There are no[^.]*\./gi, '')
+    .replace(/If you need further assistance[^}]*/gi, '')
+    .replace(/job_metadata[^}]*\}/gi, '')
+    .trim();
 }
 
 export default function CaseStudyDetailPage() {
@@ -223,7 +279,7 @@ export default function CaseStudyDetailPage() {
     .join('\n\n');
   
   const sections = parseContentSections(fullContent);
-  const metrics = extractMetrics(chunks);
+  const cleanSummary = extractCleanSummary(caseStudy.summary, chunks);
 
   // Extract title parts (Client: Title format)
   const titleParts = caseStudy.title.split(':');
@@ -292,33 +348,15 @@ export default function CaseStudyDetailPage() {
         </div>
       </section>
 
-      {/* Metrics Section */}
-      {metrics.length > 0 && (
-        <section className="border-b border-ag-gray-200">
-          <div className="max-w-5xl mx-auto px-6 py-12">
-            <div className={`grid gap-8 ${metrics.length === 2 ? 'grid-cols-2' : metrics.length === 3 ? 'grid-cols-3' : 'grid-cols-2 md:grid-cols-4'}`}>
-              {metrics.map((metric, i) => (
-                <div key={i} className="text-center">
-                  <div className="font-mono text-4xl md:text-5xl font-bold text-ag-coral mb-2">
-                    {metric.value}
-                  </div>
-                  <div className="text-ag-gray-500 text-sm uppercase tracking-wider">
-                    {metric.label}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      {/* Metrics Section - removed for now until we have clean data */}
 
       {/* Content Section */}
       <section className="max-w-3xl mx-auto px-6 py-16 md:py-20">
         {/* Summary Card */}
-        {caseStudy.summary && (
+        {cleanSummary && (
           <div className="mb-12 p-8 bg-ag-gray-100 rounded-2xl">
             <h2 className="text-xs font-semibold text-ag-gray-400 uppercase tracking-widest mb-4">Overview</h2>
-            <p className="text-xl text-ag-black leading-relaxed">{cleanContent(caseStudy.summary)}</p>
+            <p className="text-xl text-ag-black leading-relaxed">{cleanSummary}</p>
           </div>
         )}
 
