@@ -80,10 +80,12 @@ function getCleanSummary(summary: string | null, chunks: ContentChunk[]): string
       const sentences = cleaned.match(/[^.!?]+[.!?]+/g) || [];
       if (sentences.length > 0) {
         let result = '';
+        let count = 0;
         for (const sentence of sentences) {
           if (result.length + sentence.length > 400) break;
           result += sentence;
-          if (sentences.indexOf(sentence) >= 2) break; // Max 3 sentences
+          count++;
+          if (count >= 3) break; // Max 3 sentences
         }
         if (result.trim().length > 50) {
           return result.trim();
@@ -111,10 +113,12 @@ function getCleanSummary(summary: string | null, chunks: ContentChunk[]): string
       const sentences = cleaned.match(/[^.!?]+[.!?]+/g) || [];
       if (sentences.length > 0) {
         let result = '';
+        let count = 0;
         for (const sentence of sentences) {
           if (result.length + sentence.length > 400) break;
           result += sentence;
-          if (sentences.indexOf(sentence) >= 2) break;
+          count++;
+          if (count >= 3) break;
         }
         if (result.trim().length > 50) {
           return result.trim();
@@ -132,10 +136,12 @@ function getCleanSummary(summary: string | null, chunks: ContentChunk[]): string
       const sentences = withoutHeader.match(/[^.!?]+[.!?]+/g) || [];
       if (sentences.length > 0) {
         let result = '';
+        let count = 0;
         for (const sentence of sentences) {
           if (result.length + sentence.length > 400) break;
           result += sentence;
-          if (sentences.indexOf(sentence) >= 2) break;
+          count++;
+          if (count >= 3) break;
         }
         if (result.trim().length > 50) {
           return result.trim();
