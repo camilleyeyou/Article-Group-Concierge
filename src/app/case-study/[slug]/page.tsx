@@ -101,11 +101,21 @@ export default function CaseStudyDetailPage() {
     );
   }
 
-  // Get structured chunks
+  // Get structured chunks and clean content
   const challengeChunk = chunks.find(c => c.chunk_type === 'challenge');
   const journeyChunk = chunks.find(c => c.chunk_type === 'journey');
   const solutionChunk = chunks.find(c => c.chunk_type === 'solution');
   const fullChunk = chunks.find(c => c.chunk_type === 'full');
+
+  // Clean content helper - removes markdown and normalizes line breaks
+  const cleanContent = (text: string): string => {
+    return text
+      .replace(/\*\*([^*]+)\*\*/g, '$1') // Remove **bold** markers
+      .replace(/\n+/g, ' ') // Replace line breaks with spaces
+      .replace(/\s+/g, ' ') // Normalize multiple spaces
+      .replace(/●/g, '') // Remove bullet points
+      .trim();
+  };
 
   // Parse title
   const titleParts = caseStudy.title.split(':');
@@ -177,7 +187,7 @@ export default function CaseStudyDetailPage() {
         {caseStudy.summary && (
           <div className="mb-12 p-8 bg-gray-50 rounded-2xl">
             <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-4">Overview</h2>
-            <p className="text-xl text-[#1A1818] leading-relaxed">{caseStudy.summary}</p>
+            <p className="text-xl text-[#1A1818] leading-relaxed">{cleanContent(caseStudy.summary)}</p>
           </div>
         )}
 
@@ -186,28 +196,28 @@ export default function CaseStudyDetailPage() {
           {challengeChunk && (
             <div>
               <h2 className="font-serif text-2xl md:text-3xl text-[#1A1818] mb-4">Challenge</h2>
-              <p className="text-gray-600 text-lg leading-relaxed">{challengeChunk.content}</p>
+              <p className="text-gray-600 text-lg leading-relaxed">{cleanContent(challengeChunk.content)}</p>
             </div>
           )}
 
           {journeyChunk && (
             <div>
               <h2 className="font-serif text-2xl md:text-3xl text-[#1A1818] mb-4">Journey</h2>
-              <p className="text-gray-600 text-lg leading-relaxed">{journeyChunk.content}</p>
+              <p className="text-gray-600 text-lg leading-relaxed">{cleanContent(journeyChunk.content)}</p>
             </div>
           )}
 
           {solutionChunk && (
             <div>
               <h2 className="font-serif text-2xl md:text-3xl text-[#1A1818] mb-4">Solution</h2>
-              <p className="text-gray-600 text-lg leading-relaxed">{solutionChunk.content}</p>
+              <p className="text-gray-600 text-lg leading-relaxed">{cleanContent(solutionChunk.content)}</p>
             </div>
           )}
 
           {/* Fallback to full content if no structured chunks */}
           {!challengeChunk && !journeyChunk && !solutionChunk && fullChunk && (
-            <div className="text-gray-600 text-lg leading-relaxed whitespace-pre-line">
-              {fullChunk.content}
+            <div className="text-gray-600 text-lg leading-relaxed">
+              {cleanContent(fullChunk.content)}
             </div>
           )}
         </div>
