@@ -65,27 +65,83 @@ function cleanContent(text: string | null | undefined): string {
 
 /**
  * Extract a clean summary - either from summary field or first chunk
+ * Ensures we return complete sentences that make sense
  */
 function getCleanSummary(summary: string | null, chunks: ContentChunk[]): string | null {
-  // First try to clean the summary
-  if (summary) {
-    const cleaned = cleanContent(summary);
-    // If it's still gibberish or too short, try chunks
-    if (cleaned.length > 30 && !cleaned.includes('markdown') && !cleaned.includes('\\n')) {
+  // Get the challenge chunk as our primary source for summary
+  const challengeChunk = chunks.find(c => c.chunk_type === 'challenge');
+  const fullChunk = chunks.find(c => c.chunk_type === 'full');
+  
+  // Try challenge chunk first (usually the best summary source)
+  if (challengeChunk) {
+    const cleaned = cleanContent(challengeChunk.content);
+    if (cleaned.length > 50) {
+      // Get complete sentences (up to ~400 chars or 3 sentences)
+      const sentences = cleaned.match(/[^.!?]+[.!?]+/g) || [];
+      if (sentences.length > 0) {
+        let result = '';
+        for (const sentence of sentences) {
+          if (result.length + sentence.length > 400) break;
+          result += sentence;
+          if (sentences.indexOf(sentence) >= 2) break; // Max 3 sentences
+        }
+        if (result.trim().length > 50) {
+          return result.trim();
+        }
+      }
+      // If no good sentence breaks, return first 350 chars at word boundary
+      if (cleaned.length > 350) {
+        const truncated = cleaned.slice(0, 350);
+        const lastSpace = truncated.lastIndexOf(' ');
+        return truncated.slice(0, lastSpace) + '...';
+      }
       return cleaned;
     }
   }
   
-  // Fall back to challenge chunk for summary
-  const challengeChunk = chunks.find(c => c.chunk_type === 'challenge');
-  if (challengeChunk) {
-    const cleaned = cleanContent(challengeChunk.content);
-    // Return first 2 sentences or 250 chars
-    const sentences = cleaned.split(/[.!?]+/).filter(s => s.trim().length > 10);
-    if (sentences.length >= 2) {
-      return sentences.slice(0, 2).join('. ').trim() + '.';
+  // Try the summary field
+  if (summary) {
+    const cleaned = cleanContent(summary);
+    // Check it's not junk
+    if (cleaned.length > 50 && 
+        !cleaned.toLowerCase().includes('markdown') && 
+        !cleaned.includes('\\n') &&
+        !cleaned.toLowerCase().includes('text extracted')) {
+      // Get complete sentences
+      const sentences = cleaned.match(/[^.!?]+[.!?]+/g) || [];
+      if (sentences.length > 0) {
+        let result = '';
+        for (const sentence of sentences) {
+          if (result.length + sentence.length > 400) break;
+          result += sentence;
+          if (sentences.indexOf(sentence) >= 2) break;
+        }
+        if (result.trim().length > 50) {
+          return result.trim();
+        }
+      }
     }
-    return cleaned.slice(0, 250) + (cleaned.length > 250 ? '...' : '');
+  }
+  
+  // Fall back to full chunk
+  if (fullChunk) {
+    const cleaned = cleanContent(fullChunk.content);
+    // Remove the **Challenge** header if present at start
+    const withoutHeader = cleaned.replace(/^(Challenge|Journey|Solution)\s*/i, '');
+    if (withoutHeader.length > 50) {
+      const sentences = withoutHeader.match(/[^.!?]+[.!?]+/g) || [];
+      if (sentences.length > 0) {
+        let result = '';
+        for (const sentence of sentences) {
+          if (result.length + sentence.length > 400) break;
+          result += sentence;
+          if (sentences.indexOf(sentence) >= 2) break;
+        }
+        if (result.trim().length > 50) {
+          return result.trim();
+        }
+      }
+    }
   }
   
   return null;
