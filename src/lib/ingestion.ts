@@ -347,8 +347,8 @@ async function processImage(
  * Attempts to extract structured metrics from text content.
  * Uses regex patterns to find common metric formats.
  */
-function extractMetrics(text: string): Partial<CaseStudyMetric>[] {
-  const metrics: Partial<CaseStudyMetric>[] = [];
+function extractMetrics(text: string): Partial<DocumentMetric>[] {
+  const metrics: Partial<DocumentMetric>[] = [];
   
   // Pattern: "340% increase in X" or "X increased by 340%"
   const percentPattern = /(\d+(?:\.\d+)?%)\s+(?:increase|growth|improvement|boost|rise|gain)\s+in\s+([^,.]+)|([^,.]+)\s+(?:increased|grew|improved|rose)\s+by\s+(\d+(?:\.\d+)?%)/gi;
