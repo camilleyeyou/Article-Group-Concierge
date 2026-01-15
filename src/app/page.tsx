@@ -155,12 +155,34 @@ export default function ConciergePage() {
     sessionStorage.removeItem('ag-concierge-messages');
   }, []);
 
-  // Example prompts
+  // Example prompts - more conversational like AG's tone
   const examplePrompts = [
-    "We're a B2B SaaS company looking to rebrand after a merger",
-    "Show me case studies about digital transformation in healthcare",
-    "We need help launching a new product in the fintech space",
-    "What's your approach to brand strategy for startups?",
+    {
+      label: "Brand Strategy",
+      prompt: "We're rebranding after a merger and need help unifying our story",
+      icon: "✦"
+    },
+    {
+      label: "Product Launch",
+      prompt: "We have a new AI product launching and need to simplify complex features",
+      icon: "◈"
+    },
+    {
+      label: "Thought Leadership",
+      prompt: "We want to establish our executives as industry thought leaders",
+      icon: "◇"
+    },
+    {
+      label: "Event & Keynote",
+      prompt: "Our CEO is keynoting at a major conference and needs presentation support",
+      icon: "○"
+    },
+  ];
+
+  // Client logos (names only since we don't have actual logos)
+  const clients = [
+    "Google", "AWS", "Salesforce", "Meta", "CrowdStrike", 
+    "Android", "Omnicell", "Box", "Vimeo", "LinkedIn"
   ];
   
   return (
@@ -215,36 +237,200 @@ export default function ConciergePage() {
           </div>
         )}
         
-        {/* Welcome State */}
+        {/* Welcome State - Premium Design */}
         {showWelcome && (
-          <div className="flex-1 flex flex-col items-center justify-center px-6 py-16">
-            <div className="max-w-2xl mx-auto text-center">
-              {/* Decorative element */}
-              <div className="w-16 h-16 mx-auto mb-8 rounded-2xl bg-gradient-to-br from-[#F96A63] to-[#0097A7] opacity-90" />
+          <div className="flex-1">
+            {/* Hero Section */}
+            <section className="relative overflow-hidden">
+              {/* Background gradient */}
+              <div className="absolute inset-0 bg-gradient-to-b from-[#FAFAFA] to-white" />
               
-              <h2 className="font-serif text-4xl md:text-5xl text-[#1A1818] mb-6 leading-tight">
-                What challenge can we<br />help you solve?
-              </h2>
-              
-              <p className="text-lg text-gray-600 mb-12 max-w-lg mx-auto">
-                Tell us about your business goals and we'll curate relevant 
-                case studies and strategic insights tailored to your needs.
-              </p>
-              
-              {/* Example prompts */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-xl mx-auto">
-                {examplePrompts.map((prompt, i) => (
-                  <button
-                    key={i}
-                    onClick={() => handleSubmit(undefined, prompt)}
-                    className="p-4 text-left text-sm text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-xl border border-gray-100 hover:border-gray-200 transition-all group"
-                  >
-                    <span className="line-clamp-2">{prompt}</span>
-                    <span className="inline-block ml-2 opacity-0 group-hover:opacity-100 transition-opacity">→</span>
-                  </button>
-                ))}
+              <div className="relative max-w-5xl mx-auto px-6 pt-16 pb-20 md:pt-24 md:pb-28">
+                {/* Greeting */}
+                <p className="text-[#F96A63] font-medium text-lg mb-4 animate-fade-in">
+                  Hi there.
+                </p>
+                
+                {/* Main headline */}
+                <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-[#1A1818] mb-8 leading-[1.15] max-w-3xl animate-fade-in" style={{ animationDelay: '100ms' }}>
+                  We help innovative companies communicate bold visions.
+                </h2>
+                
+                {/* Dot separator */}
+                <div className="flex items-center gap-2 mb-8 animate-fade-in" style={{ animationDelay: '200ms' }}>
+                  <span className="w-2 h-2 rounded-full bg-[#1A1818]" />
+                  <span className="w-2 h-2 rounded-full bg-[#1A1818] opacity-60" />
+                  <span className="w-2 h-2 rounded-full bg-[#1A1818] opacity-30" />
+                </div>
+                
+                {/* Subheadline */}
+                <p className="text-xl md:text-2xl text-[#595959] max-w-2xl leading-relaxed mb-12 animate-fade-in" style={{ animationDelay: '300ms' }}>
+                  Tell us about your challenge and we'll curate relevant case studies and strategic insights tailored to your needs.
+                </p>
+                
+                {/* Input Area - Premium Style */}
+                <div className="max-w-2xl animate-fade-in" style={{ animationDelay: '400ms' }}>
+                  <form onSubmit={handleSubmit} className="relative">
+                    <textarea
+                      ref={inputRef}
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      placeholder="Describe your challenge..."
+                      className="
+                        w-full px-6 py-5 pr-16
+                        bg-white
+                        border-2 border-[#EEEEEE]
+                        rounded-2xl
+                        text-lg text-[#1A1818]
+                        placeholder:text-[#8A8A8A]
+                        focus:outline-none focus:border-[#1A1818]
+                        transition-all duration-300
+                        resize-none
+                        min-h-[72px] max-h-[150px]
+                        shadow-sm
+                        hover:shadow-md hover:border-[#D4D4D4]
+                      "
+                      rows={1}
+                      disabled={isLoading}
+                    />
+                    
+                    {/* Submit button */}
+                    <button
+                      type="submit"
+                      disabled={!query.trim() || isLoading}
+                      className="
+                        absolute right-4 bottom-4
+                        w-12 h-12 rounded-xl
+                        bg-[#1A1818]
+                        text-white
+                        flex items-center justify-center
+                        disabled:opacity-20 disabled:cursor-not-allowed
+                        hover:bg-[#333] hover:scale-105
+                        transition-all duration-200
+                      "
+                      aria-label="Send message"
+                    >
+                      {isLoading ? (
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      ) : (
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                      )}
+                    </button>
+                  </form>
+                  
+                  <p className="text-sm text-[#8A8A8A] mt-3 text-center">
+                    Press Enter to send · Shift+Enter for new line
+                  </p>
+                </div>
               </div>
-            </div>
+            </section>
+            
+            {/* Example Prompts Section */}
+            <section className="bg-white py-16 border-t border-[#F3F3F3]">
+              <div className="max-w-5xl mx-auto px-6">
+                <p className="text-sm font-medium text-[#8A8A8A] uppercase tracking-wider mb-8">
+                  Or explore by challenge
+                </p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {examplePrompts.map((item, i) => (
+                    <button
+                      key={i}
+                      onClick={() => handleSubmit(undefined, item.prompt)}
+                      className="
+                        group p-6 text-left 
+                        bg-[#FAFAFA] hover:bg-white
+                        border border-[#EEEEEE] hover:border-[#1A1818]
+                        rounded-xl
+                        transition-all duration-300
+                        hover:shadow-lg
+                      "
+                    >
+                      <div className="flex items-start gap-4">
+                        <span className="text-2xl text-[#F96A63] group-hover:scale-110 transition-transform">
+                          {item.icon}
+                        </span>
+                        <div className="flex-1">
+                          <h3 className="font-medium text-[#1A1818] mb-1 group-hover:text-[#F96A63] transition-colors">
+                            {item.label}
+                          </h3>
+                          <p className="text-sm text-[#595959] leading-relaxed">
+                            {item.prompt}
+                          </p>
+                        </div>
+                        <svg 
+                          className="w-5 h-5 text-[#8A8A8A] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" 
+                          fill="none" 
+                          viewBox="0 0 24 24" 
+                          stroke="currentColor"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </section>
+            
+            {/* Client Logos Section */}
+            <section className="py-16 bg-[#FAFAFA]">
+              <div className="max-w-5xl mx-auto px-6">
+                <p className="text-center text-[#595959] mb-10 text-lg">
+                  You're in good company. The world's most successful brands trust us with their vision.
+                </p>
+                
+                <div className="flex flex-wrap justify-center items-center gap-x-10 gap-y-6">
+                  {clients.map((client, i) => (
+                    <span 
+                      key={i}
+                      className="text-[#8A8A8A] font-medium text-lg hover:text-[#1A1818] transition-colors cursor-default"
+                    >
+                      {client}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </section>
+            
+            {/* Testimonial Section */}
+            <section className="py-20 bg-white">
+              <div className="max-w-3xl mx-auto px-6 text-center">
+                <blockquote className="mb-8">
+                  <p className="font-serif text-2xl md:text-3xl text-[#1A1818] leading-relaxed italic">
+                    "Working with Article Group, you get the ideal mix of technology-translator, storyteller, and teammate. And they deliver the most beautiful work."
+                  </p>
+                </blockquote>
+                <cite className="not-italic">
+                  <span className="font-semibold text-[#1A1818]">Dr. Werner Vogels</span>
+                  <span className="text-[#595959]"> · CTO of Amazon.com</span>
+                </cite>
+              </div>
+            </section>
+            
+            {/* CTA Section */}
+            <section className="py-16 bg-[#1A1818]">
+              <div className="max-w-3xl mx-auto px-6 text-center">
+                <h3 className="font-serif text-3xl md:text-4xl text-white mb-6">
+                  Ready to tell your story?
+                </h3>
+                <p className="text-white/60 text-lg mb-10">
+                  Start a conversation above or reach out directly. We'd love to hear from you.
+                </p>
+                <a
+                  href="mailto:hello@articlegroup.com"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-[#F96A63] text-white font-semibold rounded-full hover:bg-[#e85d56] transition-all duration-300 text-lg"
+                >
+                  Contact Us
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </a>
+              </div>
+            </section>
           </div>
         )}
         
@@ -348,64 +534,66 @@ export default function ConciergePage() {
         )}
       </main>
       
-      {/* Input area - Fixed at bottom */}
-      <div className="sticky bottom-0 bg-white border-t border-gray-100">
-        <div className="max-w-4xl mx-auto px-6 py-4">
-          <form onSubmit={handleSubmit} className="relative">
-            <textarea
-              ref={inputRef}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Describe your challenge or ask a question..."
-              className="
-                w-full px-5 py-4 pr-14
-                bg-gray-50
-                border border-gray-200
-                rounded-2xl
-                text-base text-[#1A1818]
-                placeholder:text-gray-400
-                focus:outline-none focus:border-[#1A1818] focus:bg-white
-                focus:ring-1 focus:ring-[#1A1818]
-                transition-all duration-200
-                resize-none
-                min-h-[56px] max-h-[150px]
-              "
-              rows={1}
-              disabled={isLoading}
-            />
+      {/* Input area - Fixed at bottom (only in conversation mode) */}
+      {isHydrated && messages.length > 0 && (
+        <div className="sticky bottom-0 bg-white border-t border-gray-100">
+          <div className="max-w-4xl mx-auto px-6 py-4">
+            <form onSubmit={handleSubmit} className="relative">
+              <textarea
+                ref={inputRef}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Continue the conversation..."
+                className="
+                  w-full px-5 py-4 pr-14
+                  bg-gray-50
+                  border border-gray-200
+                  rounded-2xl
+                  text-base text-[#1A1818]
+                  placeholder:text-gray-400
+                  focus:outline-none focus:border-[#1A1818] focus:bg-white
+                  focus:ring-1 focus:ring-[#1A1818]
+                  transition-all duration-200
+                  resize-none
+                  min-h-[56px] max-h-[150px]
+                "
+                rows={1}
+                disabled={isLoading}
+              />
+              
+              {/* Submit button */}
+              <button
+                type="submit"
+                disabled={!query.trim() || isLoading}
+                className="
+                  absolute right-3 bottom-3
+                  w-10 h-10 rounded-xl
+                  bg-[#1A1818]
+                  text-white
+                  flex items-center justify-center
+                  disabled:opacity-30 disabled:cursor-not-allowed
+                  hover:bg-[#333]
+                  transition-all duration-200
+                "
+                aria-label="Send message"
+              >
+                {isLoading ? (
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                )}
+              </button>
+            </form>
             
-            {/* Submit button */}
-            <button
-              type="submit"
-              disabled={!query.trim() || isLoading}
-              className="
-                absolute right-3 bottom-3
-                w-10 h-10 rounded-xl
-                bg-[#1A1818]
-                text-white
-                flex items-center justify-center
-                disabled:opacity-30 disabled:cursor-not-allowed
-                hover:bg-[#333]
-                transition-all duration-200
-              "
-              aria-label="Send message"
-            >
-              {isLoading ? (
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              ) : (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              )}
-            </button>
-          </form>
-          
-          <p className="text-xs text-gray-400 mt-2 text-center">
-            Press Enter to send • Shift+Enter for new line
-          </p>
+            <p className="text-xs text-gray-400 mt-2 text-center">
+              Press Enter to send · Shift+Enter for new line
+            </p>
+          </div>
         </div>
-      </div>
+      )}
       
       {/* Add animation styles */}
       <style jsx global>{`
