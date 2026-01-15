@@ -7,6 +7,13 @@ import type { CaseStudyTeaserProps } from '../types';
  * 
  * A preview card for case studies matching the Article Group website style.
  * Features image, title overlay, and "View project" link.
+ * 
+ * TODO: Client to provide:
+ * - Case study thumbnail images
+ * - Vimeo video links for video case studies
+ * 
+ * Currently using gradient placeholders with client initials.
+ * When assets arrive, simply pass thumbnailUrl prop to display images.
  */
 export const CaseStudyTeaser: React.FC<CaseStudyTeaserProps> = ({
   title,
@@ -18,13 +25,14 @@ export const CaseStudyTeaser: React.FC<CaseStudyTeaserProps> = ({
   slug,
 }) => {
   // Generate a gradient background based on client name for visual variety
+  // These gradients use AG brand colors for consistency
   const gradients = [
-    'from-[#1A1818] to-[#2d2d2d]',
-    'from-[#0097A7] to-[#006d7a]',
-    'from-[#F96A63] to-[#d45850]',
-    'from-[#3FD9A3] to-[#2eb884]',
-    'from-[#5B5EA6] to-[#484b8a]',
-    'from-[#9B6B9E] to-[#7a5480]',
+    'from-[#1A1818] to-[#2d2d2d]',   // Dark (AG primary)
+    'from-[#0097A7] to-[#006d7a]',   // Teal (AG accent)
+    'from-[#F96A63] to-[#d45850]',   // Coral (AG accent)
+    'from-[#3FD9A3] to-[#2eb884]',   // Green (AG accent)
+    'from-[#4A5568] to-[#2D3748]',   // Slate
+    'from-[#5B5EA6] to-[#484b8a]',   // Purple
   ];
   const gradientIndex = (clientName || title).charCodeAt(0) % gradients.length;
   const gradient = gradients[gradientIndex];

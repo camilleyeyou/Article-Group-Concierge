@@ -1,5 +1,18 @@
 'use client';
 
+/**
+ * Case Study Detail Page
+ * 
+ * Displays full case study content with Challenge, Journey, Solution sections.
+ * 
+ * TODO: Client to provide:
+ * - Hero images for each case study
+ * - Vimeo video embeds where applicable
+ * - Additional visual assets
+ * 
+ * Currently using text-only display with AG brand styling.
+ */
+
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
