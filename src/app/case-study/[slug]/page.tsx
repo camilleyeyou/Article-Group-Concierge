@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 interface CaseStudy {
@@ -31,12 +31,12 @@ interface Industry {
 }
 
 /**
- * Aggressive content cleaner - removes ALL junk
+ * Aggressive content cleaner - removes ALL junk and fixes punctuation
  */
 function cleanContent(text: string | null | undefined): string {
   if (!text) return '';
   
-  return text
+  let cleaned = text
     // Remove JSON wrapper
     .replace(/^\s*\{["\s]*markdown["\s]*:\s*["]/gi, '')
     .replace(/["]\s*\}\s*$/g, '')
@@ -56,11 +56,61 @@ function cleanContent(text: string | null | undefined): string {
     // Remove bullet points and list markers
     .replace(/^[-●•]\s*/gm, '')
     .replace(/\\n-\s*/g, ' ')
-    // Remove section labels that got mixed in
-    .replace(/^(Title|Subtitle|Challenge|Journey|Solution|Overview|Event Title|Date|Time|Description|Product Tracks|Key Personnel):\s*/gim, '')
-    // Clean up whitespace
+    // Remove "No tables/images" messages from LlamaParse
+    .replace(/No tables were present[^.]*\.?/gi, '')
+    .replace(/No images were present[^.]*\.?/gi, '')
+    .replace(/Since there were no images[^.]*\.?/gi, '')
+    .replace(/There are no tables[^.]*\.?/gi, '')
+    .replace(/There are no images[^.]*\.?/gi, '')
+    .replace(/Tables and Images/gi, '')
+    .replace(/Image Descriptions/gi, '')
+    // Clean up whitespace first
     .replace(/\s+/g, ' ')
     .trim();
+  
+  // Remove section labels that appear mid-text (Challenge, Journey, Solution, etc.)
+  // But add a period before them to maintain sentence breaks
+  cleaned = cleaned
+    .replace(/\s+(Challenge|Journey|Solution|Overview|Title|Subtitle)\s+/gi, '. ')
+    .replace(/^(Challenge|Journey|Solution|Overview|Title|Subtitle)\s+/gi, '');
+  
+  // Remove trailing Yes/No/Not yet artifacts (PDF checkbox/form remnants)
+  // These appear at the end of sections from the original PDF
+  cleaned = cleaned
+    .replace(/\s*(Yes|No|Not yet|N\/A|None|TBD|Confidential|Proprietary)\s*$/gi, '')
+    .replace(/\s*(Yes|No|Not yet|N\/A|None|TBD)\s*$/gi, ''); // Run twice
+  
+  // Remove these when they appear before punctuation at end
+  cleaned = cleaned.replace(/\s*(Yes|No|Not yet)\.?\s*$/gi, '');
+  
+  // Fix punctuation issues
+  // Add period where lowercase meets uppercase (missing sentence break)
+  cleaned = cleaned.replace(/([a-z])([A-Z][a-z])/g, '$1. $2');
+  
+  // Fix missing space after periods
+  cleaned = cleaned.replace(/\.([A-Z])/g, '. $1');
+  
+  // Fix missing periods before section keywords that got merged
+  cleaned = cleaned.replace(/([a-z])(Journey|Solution|Challenge)/g, '$1. $2');
+  
+  // Remove duplicate/multiple periods
+  cleaned = cleaned.replace(/\.{2,}/g, '.');
+  
+  // Remove period at very start
+  cleaned = cleaned.replace(/^\.\s*/, '');
+  
+  // Clean orphaned section labels at end
+  cleaned = cleaned.replace(/\.\s*(Challenge|Journey|Solution)\s*\.?\s*$/gi, '.');
+  
+  // Clean up any double spaces created
+  cleaned = cleaned.replace(/\s+/g, ' ').trim();
+  
+  // Ensure ends with proper punctuation if it has content
+  if (cleaned.length > 10 && !/[.!?]$/.test(cleaned)) {
+    cleaned += '.';
+  }
+  
+  return cleaned;
 }
 
 /**
@@ -155,6 +205,7 @@ function getCleanSummary(summary: string | null, chunks: ContentChunk[]): string
 
 export default function CaseStudyDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const slug = params.slug as string;
   
   const [caseStudy, setCaseStudy] = useState<CaseStudy | null>(null);
@@ -248,15 +299,15 @@ export default function CaseStudyDetailPage() {
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#EEEEEE]">
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           <div className="flex items-center justify-between h-16">
-            <Link 
-              href="/" 
+            <button 
+              onClick={() => router.back()}
               className="flex items-center gap-2 text-[#595959] hover:text-[#1A1818] transition-colors"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
               <span className="font-medium">Back</span>
-            </Link>
+            </button>
             
             <a
               href="mailto:hello@articlegroup.com"
@@ -426,12 +477,12 @@ export default function CaseStudyDetailPage() {
           <p className="text-sm text-[#8A8A8A]">
             © {new Date().getFullYear()} Article Group. All rights reserved.
           </p>
-          <Link 
-            href="/" 
+          <button 
+            onClick={() => router.back()}
             className="text-sm text-[#595959] hover:text-[#1A1818] transition-colors font-medium"
           >
             Back to Concierge
-          </Link>
+          </button>
         </div>
       </footer>
     </div>
