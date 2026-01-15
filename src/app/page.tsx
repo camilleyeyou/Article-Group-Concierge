@@ -7,6 +7,7 @@
  * Features smooth animations, AG branding, and presentation-quality layouts.
  */
 
+import Link from 'next/link';
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { LayoutRenderer } from '@/components/LayoutRenderer';
 import type { OrchestratorOutput } from '@/types';
