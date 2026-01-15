@@ -217,12 +217,12 @@ export default function ConciergePage() {
                   New Conversation
                 </button>
               )}
-              <a
-                href="mailto:hello@articlegroup.com"
+              <Link
+                href="/contact"
                 className="px-5 py-2.5 bg-[#1A1818] text-white text-sm font-medium rounded-full hover:bg-[#333] transition-colors"
               >
                 Get in Touch
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -420,15 +420,15 @@ export default function ConciergePage() {
                 <p className="text-white/60 text-lg mb-10">
                   Start a conversation above or reach out directly. We'd love to hear from you.
                 </p>
-                <a
-                  href="mailto:hello@articlegroup.com"
+                <Link
+                  href="/contact"
                   className="inline-flex items-center gap-3 px-8 py-4 bg-[#F96A63] text-white font-semibold rounded-full hover:bg-[#e85d56] transition-all duration-300 text-lg"
                 >
                   Contact Us
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
-                </a>
+                </Link>
               </div>
             </section>
           </div>
@@ -436,65 +436,98 @@ export default function ConciergePage() {
         
         {/* Conversation View */}
         {isHydrated && messages.length > 0 && (
-          <div className="flex-1 overflow-y-auto">
-            <div className="max-w-4xl mx-auto px-6 py-8">
+          <div className="flex-1 overflow-y-auto bg-[#FAFAFA]">
+            <div className="max-w-5xl mx-auto px-6 py-12">
               {messages.map((message, index) => (
-                <div key={message.id} className="mb-8 animate-fade-in">
+                <div key={message.id} className="mb-12 animate-fade-in">
                   {/* User Message */}
                   {message.role === 'user' && (
-                    <div className="flex justify-end mb-8">
-                      <div className="max-w-xl">
-                        <div className="bg-[#1A1818] text-white px-5 py-3 rounded-2xl rounded-br-md">
-                          <p className="text-sm md:text-base">{message.content}</p>
+                    <div className="mb-12">
+                      {/* User query styled like AG's headline approach */}
+                      <div className="max-w-3xl">
+                        <p className="text-[#F96A63] text-sm font-medium mb-2">Your challenge</p>
+                        <h2 className="font-serif text-2xl md:text-3xl text-[#1A1818] leading-relaxed">
+                          "{message.content}"
+                        </h2>
+                        <div className="flex items-center gap-2 mt-4">
+                          <div className="w-1.5 h-1.5 rounded-full bg-[#1A1818]" />
+                          <div className="w-1.5 h-1.5 rounded-full bg-[#1A1818] opacity-60" />
+                          <div className="w-1.5 h-1.5 rounded-full bg-[#1A1818] opacity-30" />
                         </div>
-                        <p className="text-xs text-gray-400 mt-2 text-right">
-                          {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </p>
                       </div>
                     </div>
                   )}
                   
                   {/* Assistant Message */}
                   {message.role === 'assistant' && (
-                    <div className="space-y-6">
-                      {/* Layout/Presentation */}
+                    <div className="space-y-10">
+                      {/* Section header if there's a layout */}
                       {message.layoutPlan && message.layoutPlan.layout.length > 0 && (
-                        <div className="bg-gray-50 rounded-2xl p-6 md:p-8 border border-gray-100">
+                        <div className="mb-8">
+                          <p className="text-[#595959] text-lg md:text-xl leading-relaxed max-w-3xl">
+                            {message.content}
+                          </p>
+                        </div>
+                      )}
+                      
+                      {/* Layout/Case Studies */}
+                      {message.layoutPlan && message.layoutPlan.layout.length > 0 && (
+                        <div className="bg-white rounded-2xl p-8 md:p-10 shadow-sm border border-[#EEEEEE]">
+                          {/* Results header */}
+                          <div className="flex items-center justify-between mb-8">
+                            <div>
+                              <p className="text-xs font-medium text-[#8A8A8A] uppercase tracking-wider mb-1">
+                                Relevant Work
+                              </p>
+                              <h3 className="font-serif text-2xl text-[#1A1818]">
+                                Case Studies
+                              </h3>
+                            </div>
+                            <div className="hidden md:flex items-center gap-2 text-sm text-[#595959]">
+                              <span>Click to explore</span>
+                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                              </svg>
+                            </div>
+                          </div>
+                          
                           <LayoutRenderer layoutPlan={message.layoutPlan} />
                         </div>
                       )}
                       
-                      {/* Explanation */}
-                      <div className="flex gap-4">
-                        <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-[#F96A63] to-[#0097A7] rounded-lg flex items-center justify-center">
-                          <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                          </svg>
+                      {/* Explanation without layout */}
+                      {(!message.layoutPlan || message.layoutPlan.layout.length === 0) && (
+                        <div className="bg-white rounded-2xl p-8 shadow-sm border border-[#EEEEEE]">
+                          <div className="flex gap-5">
+                            <div className="flex-shrink-0 w-10 h-10 bg-[#1A1818] rounded-xl flex items-center justify-center">
+                              <span className="text-white font-bold text-sm">AG</span>
+                            </div>
+                            <div className="flex-1">
+                              <p className="text-[#595959] text-lg leading-relaxed">
+                                {message.content}
+                              </p>
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex-1">
-                          <p className="text-gray-700 leading-relaxed">
-                            {message.content}
-                          </p>
-                          <p className="text-xs text-gray-400 mt-3">
-                            {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                          </p>
-                        </div>
-                      </div>
+                      )}
                       
                       {/* Follow-up suggestions */}
                       {message.suggestedFollowUps && message.suggestedFollowUps.length > 0 && index === messages.length - 1 && (
-                        <div className="pl-12">
-                          <p className="text-xs text-gray-500 uppercase tracking-wider mb-3">
+                        <div className="bg-white rounded-2xl p-8 shadow-sm border border-[#EEEEEE]">
+                          <p className="text-xs font-medium text-[#8A8A8A] uppercase tracking-wider mb-4">
                             Explore further
                           </p>
-                          <div className="flex flex-wrap gap-2">
+                          <div className="flex flex-wrap gap-3">
                             {message.suggestedFollowUps.map((followUp, i) => (
                               <button
                                 key={i}
                                 onClick={() => handleFollowUp(followUp)}
-                                className="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-full hover:border-[#1A1818] hover:text-[#1A1818] transition-colors"
+                                className="group px-5 py-3 text-sm text-[#1A1818] bg-[#FAFAFA] border border-[#EEEEEE] rounded-full hover:border-[#1A1818] hover:bg-white transition-all duration-300 flex items-center gap-2"
                               >
-                                {followUp}
+                                <span>{followUp}</span>
+                                <svg className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
                               </button>
                             ))}
                           </div>
@@ -507,14 +540,19 @@ export default function ConciergePage() {
               
               {/* Loading indicator */}
               {isLoading && (
-                <div className="flex gap-4 mb-8 animate-fade-in">
-                  <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-[#F96A63] to-[#0097A7] rounded-lg flex items-center justify-center">
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <div className="w-2 h-2 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <div className="w-2 h-2 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <div className="w-2 h-2 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                <div className="bg-white rounded-2xl p-8 shadow-sm border border-[#EEEEEE] animate-fade-in">
+                  <div className="flex gap-5">
+                    <div className="flex-shrink-0 w-10 h-10 bg-[#1A1818] rounded-xl flex items-center justify-center">
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-[#8A8A8A] mb-3">Finding relevant case studies...</p>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-[#F96A63] rounded-full animate-pulse" />
+                        <div className="w-2 h-2 bg-[#0097A7] rounded-full animate-pulse" style={{ animationDelay: '150ms' }} />
+                        <div className="w-2 h-2 bg-[#3FD9A3] rounded-full animate-pulse" style={{ animationDelay: '300ms' }} />
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}

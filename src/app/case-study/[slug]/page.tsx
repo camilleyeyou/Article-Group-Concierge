@@ -322,12 +322,12 @@ export default function CaseStudyDetailPage() {
               <span className="font-medium">Back</span>
             </button>
             
-            <a
-              href="mailto:hello@articlegroup.com"
+            <Link
+              href="/contact"
               className="px-5 py-2 bg-[#1A1818] text-white text-sm font-medium rounded-full hover:bg-[#333] transition-colors"
             >
               Get in Touch
-            </a>
+            </Link>
           </div>
         </div>
       </header>
@@ -472,15 +472,15 @@ export default function CaseStudyDetailPage() {
           <p className="text-white/60 text-lg lg:text-xl mb-10 max-w-2xl mx-auto">
             Let's discuss how Article Group can help transform your business challenges into breakthrough results.
           </p>
-          <a
-            href="mailto:hello@articlegroup.com"
+          <Link
+            href="/contact"
             className="inline-flex items-center gap-3 px-10 py-5 bg-[#F96A63] text-white font-semibold rounded-full hover:bg-[#e85d56] transition-all duration-300 text-lg shadow-lg shadow-[#F96A63]/25 hover:shadow-xl hover:shadow-[#F96A63]/30 hover:-translate-y-0.5"
           >
             Start a Conversation
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
             </svg>
-          </a>
+          </Link>
         </div>
       </section>
 
