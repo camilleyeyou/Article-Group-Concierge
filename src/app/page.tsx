@@ -26,10 +26,41 @@ export default function ConciergePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [showWelcome, setShowWelcome] = useState(true);
+  const [isHydrated, setIsHydrated] = useState(false);
   
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  // Load conversation from sessionStorage on mount (client-side only)
+  useEffect(() => {
+    // Mark as hydrated
+    setIsHydrated(true);
+    
+    try {
+      const savedMessages = sessionStorage.getItem('ag-concierge-messages');
+      if (savedMessages) {
+        const parsed = JSON.parse(savedMessages);
+        // Convert timestamp strings back to Date objects
+        const messagesWithDates = parsed.map((m: Message & { timestamp: string }) => ({
+          ...m,
+          timestamp: new Date(m.timestamp),
+        }));
+        setMessages(messagesWithDates);
+      }
+    } catch (e) {
+      console.error('Failed to parse saved messages:', e);
+    }
+  }, []);
+  
+  // Save conversation to sessionStorage when messages change
+  useEffect(() => {
+    if (isHydrated && messages.length > 0) {
+      sessionStorage.setItem('ag-concierge-messages', JSON.stringify(messages));
+    }
+  }, [messages, isHydrated]);
+  
+  // Determine if we should show welcome (only after hydration)
+  const showWelcome = isHydrated && messages.length === 0;
   
   // Auto-resize textarea
   useEffect(() => {
@@ -53,7 +84,6 @@ export default function ConciergePage() {
     const trimmedQuery = (customQuery || query).trim();
     if (!trimmedQuery || isLoading) return;
     
-    setShowWelcome(false);
     setIsLoading(true);
     setError(null);
     
@@ -121,8 +151,8 @@ export default function ConciergePage() {
   // Start new conversation
   const handleNewConversation = useCallback(() => {
     setMessages([]);
-    setShowWelcome(true);
     setError(null);
+    sessionStorage.removeItem('ag-concierge-messages');
   }, []);
 
   // Example prompts
@@ -178,8 +208,15 @@ export default function ConciergePage() {
       
       {/* Main content */}
       <main className="flex-1 flex flex-col">
+        {/* Loading state before hydration */}
+        {!isHydrated && (
+          <div className="flex-1 flex items-center justify-center">
+            <div className="w-8 h-8 border-2 border-gray-200 border-t-[#F96A63] rounded-full animate-spin" />
+          </div>
+        )}
+        
         {/* Welcome State */}
-        {showWelcome && messages.length === 0 && (
+        {showWelcome && (
           <div className="flex-1 flex flex-col items-center justify-center px-6 py-16">
             <div className="max-w-2xl mx-auto text-center">
               {/* Decorative element */}
@@ -212,7 +249,7 @@ export default function ConciergePage() {
         )}
         
         {/* Conversation View */}
-        {messages.length > 0 && (
+        {isHydrated && messages.length > 0 && (
           <div className="flex-1 overflow-y-auto">
             <div className="max-w-4xl mx-auto px-6 py-8">
               {messages.map((message, index) => (
