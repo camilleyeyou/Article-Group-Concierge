@@ -118,12 +118,19 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({
     });
     
     return groupedLayout.map((item, index) => {
-      // Handle teaser groups
+      // Handle teaser groups - use AG-style grid
       if (Array.isArray(item)) {
+        // Determine grid layout based on number of items
+        const gridClass = item.length === 1 
+          ? 'grid grid-cols-1' 
+          : item.length === 2 
+            ? 'grid grid-cols-1 md:grid-cols-2 gap-6' 
+            : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
+        
         return (
           <div 
             key={`teaser-group-${index}`}
-            className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5"
+            className={`${gridClass} mb-8`}
           >
             {item.map((teaser, i) => (
               <ComponentWrapper 
