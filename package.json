@@ -15,6 +15,7 @@
     "ingest:split": "tsx scripts/ingest-split.ts",
     "ingest:clean": "tsx scripts/ingest-clean.ts",
     "ingest:articles": "tsx scripts/ingest-articles.ts",
+    "ingest:images": "tsx scripts/ingest-images.ts",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {

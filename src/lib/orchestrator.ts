@@ -56,7 +56,7 @@ You MUST only use these exact component names:
 - **VisualAsset**: Images, charts, diagrams. ONLY use when image_url/signed_url is in context.
   Props: { src: string, alt: string, caption?: string, aspectRatio?: 'auto' | '16:9' | '4:3' | '1:1' | '3:2' }
 
-- **CaseStudyTeaser**: Card linking to a full case study article. CRITICAL: Use the exact slug provided in the context.
+- **CaseStudyTeaser**: Card linking to a full case study article. CRITICAL: Use the exact slug provided in the context. If a thumbnail_url is available in the context, include it in the props.
   Props: { title: string, clientName?: string, summary: string, capabilities?: string[], industries?: string[], thumbnailUrl?: string, slug: string }
 
 ## OUTPUT PROTOCOL
@@ -192,6 +192,7 @@ Document Type: ${chunk.document_type || 'case_study'}
 Slug: ${chunk.slug || 'N/A'}
 Chunk Type: ${chunk.chunk_type}
 Vimeo URL: ${chunk.vimeo_url || 'None'}
+Thumbnail URL: ${chunk.thumbnail_url || 'None'}
 Content: ${chunk.content}
 Relevance Score: ${chunk.combined_score.toFixed(3)}`;
     }).join('\n\n');

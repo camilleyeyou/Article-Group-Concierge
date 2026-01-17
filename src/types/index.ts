@@ -43,6 +43,8 @@ export interface Document {
   // Case study specific
   client_name: string | null;
   vimeo_url: string | null;
+  thumbnail_url: string | null;      // Card thumbnail image
+  hero_image_url: string | null;     // Detail page hero image
   
   // Article specific
   author: string | null;
@@ -125,6 +127,7 @@ export interface HybridSearchResult {
   client_name: string | null;
   author: string | null;
   vimeo_url: string | null;
+  thumbnail_url: string | null;
   similarity_score: number;
   keyword_score: number;
   combined_score: number;

@@ -253,7 +253,7 @@ Case Studies: ${CASE_STUDIES.length}
           industrySlugs: cs.industries,
         });
         
-        console.log(`   ✅ Done! ID: ${result.documentId}, Chunks: ${result.chunksCreated}, Assets: ${result.assetsCreated}`);
+        console.log(`   ✅ Done! ID: ${result.documentId}, Chunks: ${result.chunkCount}`);
         successCount++;
         
       } catch (error) {
