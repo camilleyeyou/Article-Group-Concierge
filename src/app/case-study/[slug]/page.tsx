@@ -3,14 +3,8 @@
 /**
  * Case Study Detail Page
  * 
- * Displays full case study content with Challenge, Journey, Solution sections.
- * 
- * TODO: Client to provide:
- * - Hero images for each case study
- * - Vimeo video embeds where applicable
- * - Additional visual assets
- * 
- * Currently using text-only display with AG brand styling.
+ * Displays full case study content with Challenge, Journey, Solution sections
+ * and visual assets throughout - matching the AG website design.
  */
 
 import React, { useEffect, useState } from 'react';
@@ -24,6 +18,9 @@ interface CaseStudy {
   slug: string;
   summary: string;
   document_type: string;
+  thumbnail_url: string | null;
+  hero_image_url: string | null;
+  vimeo_url: string | null;
 }
 
 interface ContentChunk {
@@ -31,6 +28,15 @@ interface ContentChunk {
   content: string;
   chunk_index: number;
   chunk_type: string;
+}
+
+interface VisualAsset {
+  id: string;
+  storage_path: string;
+  bucket_name: string;
+  asset_type: string;
+  original_filename: string;
+  alt_text: string | null;
 }
 
 interface Capability {
@@ -44,32 +50,34 @@ interface Industry {
 }
 
 /**
+ * Get public URL for a visual asset
+ */
+function getAssetUrl(asset: VisualAsset): string {
+  // Use the environment variable for Supabase URL
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+  return `${supabaseUrl}/storage/v1/object/public/${asset.bucket_name}/${asset.storage_path}`;
+}
+
+/**
  * Aggressive content cleaner - removes ALL junk and fixes punctuation
  */
 function cleanContent(text: string | null | undefined): string {
   if (!text) return '';
   
   let cleaned = text
-    // Remove JSON wrapper
     .replace(/^\s*\{["\s]*markdown["\s]*:\s*["]/gi, '')
     .replace(/["]\s*\}\s*$/g, '')
-    // Remove markdown headers
     .replace(/^#{1,6}\s+/gm, '')
     .replace(/###\s*/g, '')
-    // Remove "Text Extracted" and similar labels
     .replace(/Text Extracted\s*/gi, '')
     .replace(/Extracted Text\s*/gi, '')
-    // Remove escape sequences
     .replace(/\\n/g, ' ')
     .replace(/\\t/g, ' ')
     .replace(/\\"/g, '"')
-    // Remove bold markers
     .replace(/\*\*([^*]+)\*\*/g, '$1')
     .replace(/\*\*/g, '')
-    // Remove bullet points and list markers
     .replace(/^[-●•]\s*/gm, '')
     .replace(/\\n-\s*/g, ' ')
-    // Remove "No tables/images" messages from LlamaParse
     .replace(/No tables were present[^.]*\.?/gi, '')
     .replace(/No images were present[^.]*\.?/gi, '')
     .replace(/Since there were no images[^.]*\.?/gi, '')
@@ -77,48 +85,26 @@ function cleanContent(text: string | null | undefined): string {
     .replace(/There are no images[^.]*\.?/gi, '')
     .replace(/Tables and Images/gi, '')
     .replace(/Image Descriptions/gi, '')
-    // Clean up whitespace first
     .replace(/\s+/g, ' ')
     .trim();
   
-  // Remove section labels that appear mid-text (Challenge, Journey, Solution, etc.)
-  // But add a period before them to maintain sentence breaks
   cleaned = cleaned
     .replace(/\s+(Challenge|Journey|Solution|Overview|Title|Subtitle)\s+/gi, '. ')
     .replace(/^(Challenge|Journey|Solution|Overview|Title|Subtitle)\s+/gi, '');
   
-  // Remove trailing Yes/No/Not yet artifacts (PDF checkbox/form remnants)
-  // These appear at the end of sections from the original PDF
   cleaned = cleaned
     .replace(/\s*(Yes|No|Not yet|N\/A|None|TBD|Confidential|Proprietary)\s*$/gi, '')
-    .replace(/\s*(Yes|No|Not yet|N\/A|None|TBD)\s*$/gi, ''); // Run twice
+    .replace(/\s*(Yes|No|Not yet|N\/A|None|TBD)\s*$/gi, '');
   
-  // Remove these when they appear before punctuation at end
   cleaned = cleaned.replace(/\s*(Yes|No|Not yet)\.?\s*$/gi, '');
-  
-  // Fix punctuation issues
-  // Add period where lowercase meets uppercase (missing sentence break)
   cleaned = cleaned.replace(/([a-z])([A-Z][a-z])/g, '$1. $2');
-  
-  // Fix missing space after periods
   cleaned = cleaned.replace(/\.([A-Z])/g, '. $1');
-  
-  // Fix missing periods before section keywords that got merged
   cleaned = cleaned.replace(/([a-z])(Journey|Solution|Challenge)/g, '$1. $2');
-  
-  // Remove duplicate/multiple periods
   cleaned = cleaned.replace(/\.{2,}/g, '.');
-  
-  // Remove period at very start
   cleaned = cleaned.replace(/^\.\s*/, '');
-  
-  // Clean orphaned section labels at end
   cleaned = cleaned.replace(/\.\s*(Challenge|Journey|Solution)\s*\.?\s*$/gi, '.');
-  
-  // Clean up any double spaces created
   cleaned = cleaned.replace(/\s+/g, ' ').trim();
   
-  // Ensure ends with proper punctuation if it has content
   if (cleaned.length > 10 && !/[.!?]$/.test(cleaned)) {
     cleaned += '.';
   }
@@ -127,19 +113,15 @@ function cleanContent(text: string | null | undefined): string {
 }
 
 /**
- * Extract a clean summary - either from summary field or first chunk
- * Ensures we return complete sentences that make sense
+ * Extract a clean summary
  */
 function getCleanSummary(summary: string | null, chunks: ContentChunk[]): string | null {
-  // Get the challenge chunk as our primary source for summary
   const challengeChunk = chunks.find(c => c.chunk_type === 'challenge');
   const fullChunk = chunks.find(c => c.chunk_type === 'full');
   
-  // Try challenge chunk first (usually the best summary source)
   if (challengeChunk) {
     const cleaned = cleanContent(challengeChunk.content);
     if (cleaned.length > 50) {
-      // Get complete sentences (up to ~400 chars or 3 sentences)
       const sentences = cleaned.match(/[^.!?]+[.!?]+/g) || [];
       if (sentences.length > 0) {
         let result = '';
@@ -148,13 +130,12 @@ function getCleanSummary(summary: string | null, chunks: ContentChunk[]): string
           if (result.length + sentence.length > 400) break;
           result += sentence;
           count++;
-          if (count >= 3) break; // Max 3 sentences
+          if (count >= 3) break;
         }
         if (result.trim().length > 50) {
           return result.trim();
         }
       }
-      // If no good sentence breaks, return first 350 chars at word boundary
       if (cleaned.length > 350) {
         const truncated = cleaned.slice(0, 350);
         const lastSpace = truncated.lastIndexOf(' ');
@@ -164,15 +145,12 @@ function getCleanSummary(summary: string | null, chunks: ContentChunk[]): string
     }
   }
   
-  // Try the summary field
   if (summary) {
     const cleaned = cleanContent(summary);
-    // Check it's not junk
     if (cleaned.length > 50 && 
         !cleaned.toLowerCase().includes('markdown') && 
         !cleaned.includes('\\n') &&
         !cleaned.toLowerCase().includes('text extracted')) {
-      // Get complete sentences
       const sentences = cleaned.match(/[^.!?]+[.!?]+/g) || [];
       if (sentences.length > 0) {
         let result = '';
@@ -190,10 +168,8 @@ function getCleanSummary(summary: string | null, chunks: ContentChunk[]): string
     }
   }
   
-  // Fall back to full chunk
   if (fullChunk) {
     const cleaned = cleanContent(fullChunk.content);
-    // Remove the **Challenge** header if present at start
     const withoutHeader = cleaned.replace(/^(Challenge|Journey|Solution)\s*/i, '');
     if (withoutHeader.length > 50) {
       const sentences = withoutHeader.match(/[^.!?]+[.!?]+/g) || [];
@@ -216,13 +192,50 @@ function getCleanSummary(summary: string | null, chunks: ContentChunk[]): string
   return null;
 }
 
+/**
+ * Image Gallery Component - displays 2-4 images in a grid
+ */
+function ImageGallery({ images, className = '' }: { images: VisualAsset[]; className?: string }) {
+  if (images.length === 0) return null;
+  
+  // Determine grid layout based on number of images
+  const gridClass = images.length === 1 
+    ? 'grid-cols-1' 
+    : images.length === 2 
+      ? 'grid-cols-2' 
+      : images.length === 3
+        ? 'grid-cols-3'
+        : 'grid-cols-2 md:grid-cols-4';
+  
+  return (
+    <div className={`grid ${gridClass} gap-4 ${className}`}>
+      {images.map((img, i) => (
+        <div 
+          key={img.id} 
+          className={`relative overflow-hidden rounded-xl bg-gray-100 ${
+            images.length === 1 ? 'aspect-video' : 'aspect-square'
+          }`}
+        >
+          <img
+            src={getAssetUrl(img)}
+            alt={img.alt_text || `Case study image ${i + 1}`}
+            className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+            loading="lazy"
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function CaseStudyDetailPage() {
   const params = useParams();
   const router = useRouter();
   const slug = params.slug as string;
-  
+
   const [caseStudy, setCaseStudy] = useState<CaseStudy | null>(null);
   const [chunks, setChunks] = useState<ContentChunk[]>([]);
+  const [assets, setAssets] = useState<VisualAsset[]>([]);
   const [capabilities, setCapabilities] = useState<Capability[]>([]);
   const [industries, setIndustries] = useState<Industry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -238,6 +251,7 @@ export default function CaseStudyDetailPage() {
         const data = await response.json();
         setCaseStudy(data.caseStudy);
         setChunks(data.chunks || []);
+        setAssets(data.assets || []);
         setCapabilities(data.capabilities || []);
         setIndustries(data.industries || []);
       } catch (err) {
@@ -252,59 +266,63 @@ export default function CaseStudyDetailPage() {
     }
   }, [slug]);
 
-  // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-3 border-[#F96A63] border-t-transparent rounded-full animate-spin" />
-          <span className="text-[#595959] text-lg font-medium">Loading...</span>
+          <div className="w-16 h-16 relative">
+            <div className="absolute inset-0 rounded-full border-4 border-gray-200"></div>
+            <div className="absolute inset-0 rounded-full border-4 border-t-[#F96A63] animate-spin"></div>
+          </div>
+          <p className="text-[#595959] font-medium">Loading case study...</p>
         </div>
       </div>
     );
   }
 
-  // Error state
   if (error || !caseStudy) {
     return (
-      <div className="min-h-screen bg-[#FAFAFA] flex flex-col items-center justify-center px-6">
-        <div className="text-center max-w-lg">
-          <div className="w-24 h-24 mx-auto mb-8 rounded-full bg-[#F3F3F3] flex items-center justify-center">
-            <svg className="w-12 h-12 text-[#8A8A8A]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <h1 className="font-serif text-4xl text-[#1A1818] mb-4">Case Study Not Found</h1>
-          <p className="text-[#595959] text-lg mb-10">{error || "We couldn't find what you're looking for."}</p>
-          <Link 
-            href="/"
-            className="inline-flex items-center gap-3 px-8 py-4 bg-[#1A1818] text-white rounded-full hover:bg-[#333] transition-all duration-300 font-medium text-lg"
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center max-w-md px-6">
+          <h1 className="text-2xl font-serif text-[#1A1818] mb-4">Case Study Not Found</h1>
+          <p className="text-[#595959] mb-6">
+            We couldn't find the case study you're looking for.
+          </p>
+          <button
+            onClick={() => router.back()}
+            className="px-6 py-3 bg-[#1A1818] text-white rounded-full font-medium hover:bg-[#333] transition-colors"
           >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Back to Concierge
-          </Link>
+            Go Back
+          </button>
         </div>
       </div>
     );
   }
 
-  // Get chunks by type
+  // Parse title
+  const titleParts = caseStudy.title.split(':');
+  const displayClient = titleParts.length > 1 ? titleParts[0].trim() : caseStudy.client_name;
+  const displayTitle = titleParts.length > 1 ? titleParts.slice(1).join(':').trim() : caseStudy.title;
+
+  // Get content sections
   const challengeChunk = chunks.find(c => c.chunk_type === 'challenge');
   const journeyChunk = chunks.find(c => c.chunk_type === 'journey');
   const solutionChunk = chunks.find(c => c.chunk_type === 'solution');
-  
-  // Parse title
-  const titleParts = caseStudy.title.split(':');
-  const displayClient = caseStudy.client_name || (titleParts.length > 1 ? titleParts[0].trim() : null);
-  const displayTitle = titleParts.length > 1 ? titleParts.slice(1).join(':').trim() : caseStudy.title;
-  
-  // Get clean summary
   const cleanSummary = getCleanSummary(caseStudy.summary, chunks);
-  
-  // Check if we have structured content
   const hasStructuredContent = challengeChunk || journeyChunk || solutionChunk;
+
+  // Organize images - filter out logos and very small images
+  const galleryImages = assets.filter(a => 
+    a.asset_type !== 'logo' && 
+    !a.original_filename?.toLowerCase().includes('logo') &&
+    !a.original_filename?.toLowerCase().includes('icon')
+  );
+  
+  // Split images into groups for different sections
+  const heroImage = caseStudy.hero_image_url || caseStudy.thumbnail_url;
+  const topGalleryImages = galleryImages.slice(0, 4);
+  const middleGalleryImages = galleryImages.slice(4, 8);
+  const bottomGalleryImages = galleryImages.slice(8, 12);
 
   return (
     <div className="min-h-screen bg-white">
@@ -332,59 +350,90 @@ export default function CaseStudyDetailPage() {
         </div>
       </header>
 
-      {/* Hero Section - Full Width with Gradient */}
+      {/* Hero Section */}
       <section className="relative pt-16">
-        <div className="bg-gradient-to-br from-[#1A1818] via-[#2A2A2A] to-[#1A1818] text-white">
-          {/* Decorative Elements */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-[#F96A63]/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#0097A7]/10 rounded-full blur-3xl" />
-          
-          <div className="relative max-w-7xl mx-auto px-6 lg:px-12 py-20 lg:py-32">
-            <div className="max-w-4xl">
-              {/* Client Badge */}
-              {displayClient && (
-                <div className="inline-flex items-center mb-6">
-                  <span className="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-semibold tracking-wide border border-white/10">
-                    {displayClient}
-                  </span>
+        {/* Hero Image or Gradient */}
+        {heroImage ? (
+          <div className="relative">
+            <div className="w-full h-[50vh] md:h-[60vh] overflow-hidden">
+              <img
+                src={heroImage}
+                alt={displayTitle}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+            </div>
+            
+            {/* Overlay Content */}
+            <div className="absolute bottom-0 left-0 right-0 pb-12 lg:pb-20">
+              <div className="max-w-7xl mx-auto px-6 lg:px-12">
+                <div className="max-w-4xl">
+                  {displayClient && (
+                    <div className="inline-flex items-center mb-4">
+                      <span className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-semibold tracking-wide text-white border border-white/20">
+                        {displayClient}
+                      </span>
+                    </div>
+                  )}
+                  <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-normal leading-[1.1] text-white">
+                    {displayTitle}
+                  </h1>
                 </div>
-              )}
-              
-              {/* Title */}
-              <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-normal leading-[1.1] mb-8">
-                {displayTitle}
-              </h1>
-              
-              {/* Tags */}
-              {(capabilities.length > 0 || industries.length > 0) && (
-                <div className="flex flex-wrap gap-3">
-                  {capabilities.map((cap, i) => (
-                    <span 
-                      key={`cap-${i}`}
-                      className="px-4 py-2 text-sm bg-[#0097A7]/20 text-[#0097A7] rounded-full font-medium border border-[#0097A7]/30"
-                    >
-                      {cap.name}
-                    </span>
-                  ))}
-                  {industries.map((ind, i) => (
-                    <span 
-                      key={`ind-${i}`}
-                      className="px-4 py-2 text-sm bg-white/5 text-white/70 rounded-full border border-white/10"
-                    >
-                      {ind.name}
-                    </span>
-                  ))}
-                </div>
-              )}
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          /* Fallback Gradient Hero */
+          <div className="bg-gradient-to-br from-[#1A1818] via-[#2A2A2A] to-[#1A1818] text-white">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-[#F96A63]/10 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#0097A7]/10 rounded-full blur-3xl" />
+            
+            <div className="relative max-w-7xl mx-auto px-6 lg:px-12 py-20 lg:py-32">
+              <div className="max-w-4xl">
+                {displayClient && (
+                  <div className="inline-flex items-center mb-6">
+                    <span className="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-semibold tracking-wide border border-white/10">
+                      {displayClient}
+                    </span>
+                  </div>
+                )}
+                <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-normal leading-[1.1] mb-8">
+                  {displayTitle}
+                </h1>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
 
-      {/* Overview Card - Overlapping Hero */}
+      {/* Tags & Capabilities */}
+      {(capabilities.length > 0 || industries.length > 0) && (
+        <section className="max-w-7xl mx-auto px-6 lg:px-12 py-8">
+          <div className="flex flex-wrap gap-3">
+            {capabilities.map((cap, i) => (
+              <span 
+                key={`cap-${i}`}
+                className="px-4 py-2 text-sm bg-[#0097A7]/10 text-[#0097A7] rounded-full font-medium border border-[#0097A7]/20"
+              >
+                {cap.name}
+              </span>
+            ))}
+            {industries.map((ind, i) => (
+              <span 
+                key={`ind-${i}`}
+                className="px-4 py-2 text-sm bg-gray-100 text-[#595959] rounded-full border border-gray-200"
+              >
+                {ind.name}
+              </span>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Overview Card */}
       {cleanSummary && (
-        <section className="relative z-10 max-w-4xl mx-auto px-6 lg:px-12 -mt-8">
-          <div className="bg-white rounded-2xl shadow-xl border border-[#EEEEEE] p-8 lg:p-10">
+        <section className="max-w-4xl mx-auto px-6 lg:px-12 py-8">
+          <div className="bg-[#FAFAFA] rounded-2xl border border-[#EEEEEE] p-8 lg:p-10">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-1 h-6 bg-[#F96A63] rounded-full" />
               <span className="text-xs font-bold text-[#8A8A8A] uppercase tracking-[0.2em]">Overview</span>
@@ -396,9 +445,16 @@ export default function CaseStudyDetailPage() {
         </section>
       )}
 
+      {/* Top Image Gallery - After Overview */}
+      {topGalleryImages.length > 0 && (
+        <section className="max-w-6xl mx-auto px-6 lg:px-12 py-8">
+          <ImageGallery images={topGalleryImages} />
+        </section>
+      )}
+
       {/* Main Content */}
       {hasStructuredContent && (
-        <section className="max-w-4xl mx-auto px-6 lg:px-12 py-16 lg:py-24">
+        <section className="max-w-4xl mx-auto px-6 lg:px-12 py-12 lg:py-16">
           <div className="space-y-16">
             {/* Challenge */}
             {challengeChunk && (
@@ -419,6 +475,11 @@ export default function CaseStudyDetailPage() {
               </div>
             )}
 
+            {/* Middle Image Gallery - Between Challenge and Journey */}
+            {middleGalleryImages.length > 0 && (
+              <ImageGallery images={middleGalleryImages} className="!pl-0" />
+            )}
+
             {/* Journey */}
             {journeyChunk && (
               <div className="group">
@@ -436,6 +497,11 @@ export default function CaseStudyDetailPage() {
                   </p>
                 </div>
               </div>
+            )}
+
+            {/* Bottom Image Gallery - Between Journey and Solution */}
+            {bottomGalleryImages.length > 0 && (
+              <ImageGallery images={bottomGalleryImages} className="!pl-0" />
             )}
 
             {/* Solution */}
@@ -460,9 +526,32 @@ export default function CaseStudyDetailPage() {
         </section>
       )}
 
+      {/* Full Image Gallery - Show all remaining images */}
+      {galleryImages.length > 12 && (
+        <section className="max-w-6xl mx-auto px-6 lg:px-12 py-8">
+          <div className="mb-6">
+            <span className="text-xs font-bold text-[#8A8A8A] uppercase tracking-[0.2em]">Project Gallery</span>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {galleryImages.slice(12).map((img, i) => (
+              <div 
+                key={img.id} 
+                className="relative aspect-square overflow-hidden rounded-xl bg-gray-100"
+              >
+                <img
+                  src={getAssetUrl(img)}
+                  alt={img.alt_text || `Gallery image ${i + 1}`}
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* CTA Section */}
-      <section className="bg-[#1A1818] relative overflow-hidden">
-        {/* Decorative gradient */}
+      <section className="bg-[#1A1818] relative overflow-hidden mt-12">
         <div className="absolute inset-0 bg-gradient-to-r from-[#F96A63]/5 via-transparent to-[#0097A7]/5" />
         
         <div className="relative max-w-4xl mx-auto px-6 lg:px-12 py-20 lg:py-28 text-center">
