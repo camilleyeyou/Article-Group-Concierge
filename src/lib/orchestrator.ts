@@ -78,6 +78,13 @@ Every response MUST follow this exact structure:
 
 ## CRITICAL RULES
 
+### Relevance Filtering (MOST IMPORTANT)
+- Before using ANY case study, verify it is DIRECTLY relevant to the user's query
+- Check if the case study's industry, challenge, or solution matches what the user is asking about
+- If a retrieved case study is only tangentially related, DO NOT include it
+- It's better to show 1-2 highly relevant case studies than 4-5 loosely related ones
+- If NO case studies are truly relevant, say so honestly and offer to connect them with a Strategy Lead
+
 ### Hallucination Prevention
 - ONLY use information explicitly present in the provided context
 - If no relevant case studies exist, DO NOT invent them
@@ -95,6 +102,7 @@ Every response MUST follow this exact structure:
 - Use StrategyCard for key insights, not long paragraphs
 - End with CaseStudyTeaser cards for deeper exploration
 - Typical deck: 4-8 components, never exceed 12
+- Only include case studies that DIRECTLY address the user's needs
 
 ### Tone & Voice
 - Premium, confident, but not arrogant
@@ -182,10 +190,20 @@ Based on your interest in fintech rebranding, I've assembled a deck highlighting
 function formatContext(context: RetrievedContext): string {
   const sections: string[] = [];
   
+  // Add relevance guidance
+  sections.push(`## RELEVANCE GUIDANCE
+- Scores above 0.5 = Highly relevant, definitely use
+- Scores 0.35-0.5 = Moderately relevant, use if topic matches
+- Scores below 0.35 = Low relevance, only use if nothing better available
+- ALWAYS verify the case study content actually matches the user's query before including it`);
+  
   // Format retrieved chunks
   if (context.chunks.length > 0) {
     const chunksSection = context.chunks.map((chunk, i) => {
-      return `[Chunk ${i + 1}]
+      const relevanceLabel = chunk.combined_score >= 0.5 ? '🟢 HIGH' 
+        : chunk.combined_score >= 0.35 ? '🟡 MEDIUM' 
+        : '🔴 LOW';
+      return `[Chunk ${i + 1}] - Relevance: ${relevanceLabel} (${chunk.combined_score.toFixed(3)})
 Case Study: ${chunk.document_title}
 Client: ${chunk.client_name || 'N/A'}
 Document Type: ${chunk.document_type || 'case_study'}
@@ -193,8 +211,7 @@ Slug: ${chunk.slug || 'N/A'}
 Chunk Type: ${chunk.chunk_type}
 Vimeo URL: ${chunk.vimeo_url || 'None'}
 Thumbnail URL: ${chunk.thumbnail_url || 'None'}
-Content: ${chunk.content}
-Relevance Score: ${chunk.combined_score.toFixed(3)}`;
+Content: ${chunk.content}`;
     }).join('\n\n');
     
     sections.push(`## RETRIEVED CONTENT CHUNKS\n${chunksSection}`);
@@ -225,7 +242,7 @@ Relevance Score: ${asset.similarity_score.toFixed(3)}`;
   }
   
   // If no context found
-  if (sections.length === 0) {
+  if (sections.length <= 1) { // Only has relevance guidance
     return `## NO RELEVANT CONTENT FOUND
 No case studies or assets matched this query. Please direct the user to contact our Strategy Lead for a personalized consultation.`;
   }

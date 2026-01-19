@@ -270,11 +270,14 @@ interface RetrieveContextParams {
   industrySlugs?: string[];
   maxChunks?: number;
   maxAssets?: number;
+  minRelevanceScore?: number;
 }
 
 /**
  * Main retrieval function that gathers all context needed for the orchestrator.
  * This is called before sending the user query to Claude.
+ * 
+ * Includes relevance filtering and deduplication to improve result quality.
  */
 export async function retrieveContext({
   query,
@@ -282,14 +285,15 @@ export async function retrieveContext({
   industrySlugs,
   maxChunks = 10,
   maxAssets = 5,
+  minRelevanceScore = 0.3, // Filter out low-relevance results
 }: RetrieveContextParams): Promise<RetrievedContext> {
   // Run searches in parallel for performance
-  const [chunks, visualAssets, capabilities, industries, topics] = await Promise.all([
+  const [rawChunks, visualAssets, capabilities, industries, topics] = await Promise.all([
     hybridSearch({
       query,
       capabilitySlugs,
       industrySlugs,
-      matchCount: maxChunks,
+      matchCount: maxChunks * 2, // Fetch more, then filter
     }),
     searchVisualAssets({
       query,
@@ -300,8 +304,55 @@ export async function retrieveContext({
     getTopics(),
   ]);
   
-  // Get unique document IDs from chunks
-  const documentIds = [...new Set(chunks.map((c) => c.document_id))];
+  // IMPROVEMENT 1: Filter by minimum relevance score
+  const relevantChunks = rawChunks.filter(chunk => chunk.combined_score >= minRelevanceScore);
+  
+  // IMPROVEMENT 2: Deduplicate - keep best chunk per case study
+  // This prevents the same case study from appearing multiple times
+  const bestChunkPerDocument = new Map<string, typeof rawChunks[0]>();
+  for (const chunk of relevantChunks) {
+    const existing = bestChunkPerDocument.get(chunk.document_id);
+    if (!existing || chunk.combined_score > existing.combined_score) {
+      bestChunkPerDocument.set(chunk.document_id, chunk);
+    }
+  }
+  
+  // IMPROVEMENT 3: Also include one "detail" chunk per case study if available
+  // This gives Claude both the overview and some specific detail
+  const documentChunks = new Map<string, typeof rawChunks[0][]>();
+  for (const chunk of relevantChunks) {
+    const chunks = documentChunks.get(chunk.document_id) || [];
+    chunks.push(chunk);
+    documentChunks.set(chunk.document_id, chunks);
+  }
+  
+  // Build final chunk list: best chunk + one detail per case study
+  const finalChunks: typeof rawChunks = [];
+  const sortedDocs = [...bestChunkPerDocument.entries()]
+    .sort((a, b) => b[1].combined_score - a[1].combined_score)
+    .slice(0, Math.min(5, maxChunks)); // Limit to top 5 case studies
+  
+  for (const [docId, bestChunk] of sortedDocs) {
+    finalChunks.push(bestChunk);
+    
+    // Add one more chunk from this document if available (for detail)
+    const allDocChunks = documentChunks.get(docId) || [];
+    const detailChunk = allDocChunks.find(c => 
+      c.chunk_id !== bestChunk.chunk_id && 
+      c.chunk_type !== bestChunk.chunk_type
+    );
+    if (detailChunk) {
+      finalChunks.push(detailChunk);
+    }
+  }
+  
+  // Log for debugging
+  console.log(`[Retrieval] Query: "${query.slice(0, 50)}..."`);
+  console.log(`[Retrieval] Raw chunks: ${rawChunks.length}, After filtering: ${relevantChunks.length}, Final: ${finalChunks.length}`);
+  console.log(`[Retrieval] Top scores: ${finalChunks.slice(0, 3).map(c => c.combined_score.toFixed(3)).join(', ')}`);
+  
+  // Get unique document IDs from final chunks
+  const documentIds = [...new Set(finalChunks.map((c) => c.document_id))];
   
   // Fetch metrics for retrieved documents
   const relatedMetrics = documentIds.length > 0
@@ -309,7 +360,7 @@ export async function retrieveContext({
     : [];
   
   return {
-    chunks,
+    chunks: finalChunks,
     visualAssets,
     relatedMetrics,
     capabilities,
