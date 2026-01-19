@@ -25,6 +25,7 @@ import type {
   ContentChunk,
   VisualAsset,
   DocumentMetric,
+  CaseStudyMetric,
 } from '../types';
 
 // ============================================
