@@ -78,12 +78,14 @@ Every response MUST follow this exact structure:
 
 ## CRITICAL RULES
 
-### Relevance Filtering (MOST IMPORTANT)
-- Before using ANY case study, verify it is DIRECTLY relevant to the user's query
-- Check if the case study's industry, challenge, or solution matches what the user is asking about
-- If a retrieved case study is only tangentially related, DO NOT include it
-- It's better to show 1-2 highly relevant case studies than 4-5 loosely related ones
-- If NO case studies are truly relevant, say so honestly and offer to connect them with a Strategy Lead
+### Relevance & Case Study Selection
+- ALWAYS show relevant case studies when the topic broadly matches (tech, enterprise, branding, GTM, etc.)
+- For queries about "tech companies", "enterprise", "B2B" - show tech client work (Google, AWS, CrowdStrike, Salesforce, etc.)
+- For queries about "branding" or "rebrand" - show brand work (Simons Foundation, Chrome Enterprise, etc.)
+- For queries about "GTM" or "go-to-market" - show launch/positioning work (Renew Home, Salt Security, etc.)
+- Even if relevance scores are lower, USE the case studies if the topic matches
+- It's better to show 2-3 somewhat relevant case studies than nothing at all
+- Only say "no relevant work" if the query is truly unrelated to anything AG does
 
 ### Hallucination Prevention
 - ONLY use information explicitly present in the provided context
@@ -102,7 +104,6 @@ Every response MUST follow this exact structure:
 - Use StrategyCard for key insights, not long paragraphs
 - End with CaseStudyTeaser cards for deeper exploration
 - Typical deck: 4-8 components, never exceed 12
-- Only include case studies that DIRECTLY address the user's needs
 
 ### Tone & Voice
 - Premium, confident, but not arrogant
@@ -192,16 +193,17 @@ function formatContext(context: RetrievedContext): string {
   
   // Add relevance guidance
   sections.push(`## RELEVANCE GUIDANCE
-- Scores above 0.5 = Highly relevant, definitely use
-- Scores 0.35-0.5 = Moderately relevant, use if topic matches
-- Scores below 0.35 = Low relevance, only use if nothing better available
-- ALWAYS verify the case study content actually matches the user's query before including it`);
+- Scores above 0.35 = Good relevance, use these case studies
+- Scores 0.20-0.35 = Moderate relevance, use if topic broadly matches
+- Scores below 0.20 = Lower relevance, but may still be useful if it relates to the query topic
+- IMPORTANT: Even with lower scores, if the case study topic matches the user's industry or challenge, INCLUDE IT
+- It's better to show relevant case studies with lower scores than to show nothing`);
   
   // Format retrieved chunks
   if (context.chunks.length > 0) {
     const chunksSection = context.chunks.map((chunk, i) => {
-      const relevanceLabel = chunk.combined_score >= 0.5 ? '🟢 HIGH' 
-        : chunk.combined_score >= 0.35 ? '🟡 MEDIUM' 
+      const relevanceLabel = chunk.combined_score >= 0.35 ? '🟢 GOOD' 
+        : chunk.combined_score >= 0.20 ? '🟡 MODERATE' 
         : '🔴 LOW';
       return `[Chunk ${i + 1}] - Relevance: ${relevanceLabel} (${chunk.combined_score.toFixed(3)})
 Case Study: ${chunk.document_title}

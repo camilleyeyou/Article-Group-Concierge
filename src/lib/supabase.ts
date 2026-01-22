@@ -285,7 +285,7 @@ export async function retrieveContext({
   industrySlugs,
   maxChunks = 10,
   maxAssets = 5,
-  minRelevanceScore = 0.3, // Filter out low-relevance results
+  minRelevanceScore = 0.15, // Lowered threshold - semantic scores are often 0.2-0.4
 }: RetrieveContextParams): Promise<RetrievedContext> {
   // Run searches in parallel for performance
   const [rawChunks, visualAssets, capabilities, industries, topics] = await Promise.all([
@@ -304,8 +304,21 @@ export async function retrieveContext({
     getTopics(),
   ]);
   
+  // Log raw results for debugging
+  console.log(`[Retrieval] Query: "${query.slice(0, 50)}..."`);
+  console.log(`[Retrieval] Raw chunks returned: ${rawChunks.length}`);
+  if (rawChunks.length > 0) {
+    console.log(`[Retrieval] Score range: ${rawChunks[rawChunks.length - 1]?.combined_score?.toFixed(3)} - ${rawChunks[0]?.combined_score?.toFixed(3)}`);
+  }
+  
   // IMPROVEMENT 1: Filter by minimum relevance score
-  const relevantChunks = rawChunks.filter(chunk => chunk.combined_score >= minRelevanceScore);
+  let relevantChunks = rawChunks.filter(chunk => chunk.combined_score >= minRelevanceScore);
+  
+  // FALLBACK: If filtering removed everything, use top 5 results anyway
+  if (relevantChunks.length === 0 && rawChunks.length > 0) {
+    console.log(`[Retrieval] All chunks below threshold, using top 5 as fallback`);
+    relevantChunks = rawChunks.slice(0, 5);
+  }
   
   // IMPROVEMENT 2: Deduplicate - keep best chunk per case study
   // This prevents the same case study from appearing multiple times
