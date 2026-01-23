@@ -4,6 +4,7 @@
   "private": true,
   "description": "RAG-powered AI Concierge for Article Group pitch deck generation",
   "scripts": {
+    "split:upload": "tsx scripts/split-and-upload-pdfs.ts",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -16,6 +17,7 @@
     "ingest:clean": "tsx scripts/ingest-clean.ts",
     "ingest:articles": "tsx scripts/ingest-articles.ts",
     "ingest:images": "tsx scripts/ingest-images.ts",
+    "upload:pdfs": "tsx scripts/upload-pdfs.ts",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
@@ -23,6 +25,7 @@
     "@supabase/supabase-js": "^2.45.0",
     "next": "14.2.10",
     "openai": "^4.52.0",
+    "pdf-lib": "^1.17.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

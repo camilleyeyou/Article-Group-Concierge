@@ -45,6 +45,7 @@ export interface Document {
   vimeo_url: string | null;
   thumbnail_url: string | null;      // Card thumbnail image
   hero_image_url: string | null;     // Detail page hero image
+  pdf_url: string | null;            // Original PDF for viewing
   
   // Article specific
   author: string | null;

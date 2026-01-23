@@ -225,6 +225,7 @@ RETURNS TABLE (
     client_name TEXT,
     author TEXT,
     vimeo_url TEXT,
+    thumbnail_url TEXT,
     similarity_score FLOAT,
     keyword_score FLOAT,
     combined_score FLOAT
@@ -277,6 +278,7 @@ BEGIN
         d.client_name,
         d.author,
         d.vimeo_url,
+        d.thumbnail_url,
         COALESCE(ss.semantic_sim, 0)::FLOAT AS similarity_score,
         COALESCE(ks.keyword_sim, 0)::FLOAT AS keyword_score,
         (semantic_weight * COALESCE(ss.semantic_sim, 0) + 
