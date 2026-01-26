@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
 
+// Disable caching for this route
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { slug: string } }
@@ -111,7 +115,7 @@ export async function GET(
       .eq('document_id', caseStudy.id)
       .order('display_order', { ascending: true });
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       caseStudy,
       chunks: chunks || [],
       capabilities,
@@ -119,6 +123,11 @@ export async function GET(
       assets: assets || [],
       metrics: metrics || [],
     });
+    
+    // Prevent caching
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+    
+    return response;
 
   } catch (error) {
     console.error('Error fetching case study:', error);
