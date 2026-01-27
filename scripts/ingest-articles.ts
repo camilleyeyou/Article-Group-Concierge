@@ -2,110 +2,143 @@
  * Article Ingestion Script
  * 
  * Ingests Article Group articles (thought leadership, newsletters, etc.)
- * Uses simple PDF text extraction - no LlamaParse.
+ * Uses PyMuPDF for PDF text extraction and OpenAI for embeddings.
+ * 
+ * Usage:
+ *   npm run ingest:articles "./content/Articles"
+ * 
+ * Prerequisites:
+ *   - pymupdf installed: pip3 install pymupdf
+ *   - OpenAI API key in .env.local
  */
 
-import * as fs from 'fs';
+import * as dotenv from 'dotenv';
 import * as path from 'path';
+dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
+
+import * as fs from 'fs';
 import { execSync } from 'child_process';
 import { createClient } from '@supabase/supabase-js';
-import OpenAI from 'openai';
-import * as dotenv from 'dotenv';
 
-// Load environment variables
-dotenv.config({ path: path.join(__dirname, '..', '.env') });
-dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
+// Initialize Supabase
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const openaiKey = process.env.OPENAI_API_KEY!;
 
-// Initialize clients
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+if (!supabaseUrl || !supabaseKey) {
+  console.error('❌ Missing Supabase environment variables. Check .env.local');
+  process.exit(1);
+}
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
-});
+if (!openaiKey) {
+  console.error('❌ Missing OPENAI_API_KEY. Check .env.local');
+  process.exit(1);
+}
+
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+// ============================================
+// OPENAI EMBEDDING
+// ============================================
+
+async function generateEmbedding(text: string, retries = 3): Promise<number[]> {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const response = await fetch('https://api.openai.com/v1/embeddings', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${openaiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'text-embedding-3-small',
+          input: text.slice(0, 8000), // Limit input size
+        }),
+      });
+      
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`OpenAI API error: ${response.status} - ${error}`);
+      }
+      
+      const data = await response.json();
+      return data.data[0].embedding;
+    } catch (err: any) {
+      if (attempt === retries) throw err;
+      console.log(`   ⚠️ Retry ${attempt}/${retries}...`);
+      await new Promise(r => setTimeout(r, 1000 * attempt));
+    }
+  }
+  throw new Error('Failed after retries');
+}
 
 // ============================================
 // PDF TEXT EXTRACTION
 // ============================================
 
-/**
- * Extract all text from a PDF using Python/PyMuPDF
- */
-async function extractPdfText(pdfPath: string): Promise<string> {
+function extractPdfText(pdfPath: string): string {
   const pythonScript = `
-import fitz
 import sys
 import json
 
+try:
+    import fitz  # PyMuPDF
+except ImportError:
+    print(json.dumps({"error": "PyMuPDF not installed. Run: pip3 install pymupdf"}))
+    sys.exit(1)
+
 pdf_path = sys.argv[1]
 
-doc = fitz.open(pdf_path)
-full_text = ""
-for page in doc:
-    full_text += page.get_text() + "\\n\\n"
-doc.close()
-
-print(json.dumps({"text": full_text}))
+try:
+    doc = fitz.open(pdf_path)
+    full_text = ""
+    for page in doc:
+        full_text += page.get_text() + "\\n\\n"
+    doc.close()
+    print(json.dumps({"text": full_text}))
+except Exception as e:
+    print(json.dumps({"error": str(e)}))
+    sys.exit(1)
 `;
 
-  const tempScript = '/tmp/extract_pdf.py';
+  const tempScript = path.join(process.cwd(), '.temp-extract.py');
   fs.writeFileSync(tempScript, pythonScript);
 
   try {
-    const pythonCommands = ['python3.13', 'python3.12', 'python3.11', 'python3', 'python'];
-    let result: string | null = null;
-
-    for (const cmd of pythonCommands) {
-      try {
-        result = execSync(`${cmd} "${tempScript}" "${pdfPath}"`, {
-          encoding: 'utf-8',
-          timeout: 60000,
-          maxBuffer: 10 * 1024 * 1024, // 10MB buffer
-        });
-        break;
-      } catch {
-        continue;
-      }
-    }
-
-    if (!result) {
-      throw new Error('No Python interpreter found');
-    }
-
+    const result = execSync(`python3 "${tempScript}" "${pdfPath}"`, {
+      encoding: 'utf-8',
+      timeout: 60000,
+      maxBuffer: 10 * 1024 * 1024,
+    });
+    
+    fs.unlinkSync(tempScript);
+    
     const parsed = JSON.parse(result.trim());
+    if (parsed.error) {
+      throw new Error(parsed.error);
+    }
     return parsed.text || '';
-  } catch (error) {
-    console.error(`Error extracting PDF:`, error);
-    return '';
+  } catch (error: any) {
+    if (fs.existsSync(tempScript)) fs.unlinkSync(tempScript);
+    throw error;
   }
 }
 
 // ============================================
-// CONTENT CLEANING
+// CONTENT PROCESSING
 // ============================================
 
-/**
- * Clean extracted text
- */
 function cleanText(text: string): string {
   return text
     .replace(/\r\n/g, '\n')
     .replace(/\n{3,}/g, '\n\n')
-    // Remove page numbers
-    .replace(/^\d+\s*$/gm, '')
-    // Remove common junk
+    .replace(/^\d+\s*$/gm, '') // Remove page numbers
     .replace(/Proprietary\s*\+?\s*Confidential/gi, '')
     .replace(/©\s*\d{4}/g, '')
-    // Clean whitespace
     .replace(/^\s+|\s+$/gm, '')
     .trim();
 }
 
-/**
- * Extract title and summary from filename and content
- */
 function extractMetadata(filename: string, content: string): { title: string; summary: string; topics: string[] } {
   // Parse the descriptive filename
   let title = filename
@@ -116,7 +149,6 @@ function extractMetadata(filename: string, content: string): { title: string; su
 
   // Shorten overly long titles
   if (title.length > 150) {
-    // Try to find a natural break point
     const breakPoints = [' - ', ' and ', ' with ', ' for '];
     for (const bp of breakPoints) {
       const idx = title.indexOf(bp);
@@ -134,9 +166,8 @@ function extractMetadata(filename: string, content: string): { title: string; su
   const paragraphs = content.split('\n\n').filter(p => p.length > 50);
   let summary = '';
   for (const para of paragraphs) {
-    // Skip headers and short lines
     if (para.length > 100 && !para.match(/^[A-Z\s]{10,}$/)) {
-      summary = para.slice(0, 300);
+      summary = para.slice(0, 500);
       break;
     }
   }
@@ -148,23 +179,23 @@ function extractMetadata(filename: string, content: string): { title: string; su
   if (contentLower.includes('newsletter') || contentLower.includes('human conditions')) {
     topics.push('newsletter');
   }
-  if (contentLower.includes('case study') || contentLower.includes('crowdstrike') || contentLower.includes('aws')) {
-    topics.push('case-study');
-  }
   if (contentLower.includes('career') || contentLower.includes('jobs') || contentLower.includes('hiring')) {
     topics.push('careers');
   }
-  if (contentLower.includes('framework') || contentLower.includes('guide') || contentLower.includes('strategy')) {
+  if (contentLower.includes('framework') || contentLower.includes('guide') || contentLower.includes('strategy') || contentLower.includes('glossary')) {
     topics.push('thought-leadership');
   }
   if (contentLower.includes('marketing') || contentLower.includes('brand')) {
     topics.push('marketing');
   }
-  if (contentLower.includes('ai') || contentLower.includes('generative')) {
+  if (contentLower.includes('ai') || contentLower.includes('generative') || contentLower.includes('technology')) {
     topics.push('ai');
   }
   if (contentLower.includes('creative') || contentLower.includes('storytelling')) {
     topics.push('creative');
+  }
+  if (contentLower.includes('linkedin') || contentLower.includes('posts')) {
+    topics.push('social');
   }
 
   // Default topic if none found
@@ -175,21 +206,6 @@ function extractMetadata(filename: string, content: string): { title: string; su
   return { title, summary, topics };
 }
 
-// ============================================
-// EMBEDDING & CHUNKING
-// ============================================
-
-async function generateEmbedding(text: string): Promise<number[]> {
-  const response = await openai.embeddings.create({
-    model: 'text-embedding-3-small',
-    input: text.slice(0, 8000),
-  });
-  return response.data[0].embedding;
-}
-
-/**
- * Split content into chunks
- */
 function chunkContent(content: string, maxChunkSize: number = 1500): string[] {
   const paragraphs = content.split('\n\n');
   const chunks: string[] = [];
@@ -208,12 +224,8 @@ function chunkContent(content: string, maxChunkSize: number = 1500): string[] {
     chunks.push(currentChunk.trim());
   }
 
-  return chunks;
+  return chunks.filter(c => c.length > 50);
 }
-
-// ============================================
-// DATABASE OPERATIONS
-// ============================================
 
 function generateSlug(title: string): string {
   return title
@@ -223,49 +235,74 @@ function generateSlug(title: string): string {
     .slice(0, 100);
 }
 
-async function ensureTopicsExist(slugs: string[]): Promise<void> {
+// ============================================
+// DATABASE OPERATIONS
+// ============================================
+
+async function ensureTopicsExist(slugs: string[]): Promise<Map<string, string>> {
   const topicNames: Record<string, string> = {
     'newsletter': 'Newsletter',
-    'case-study': 'Case Study',
     'careers': 'Careers',
     'thought-leadership': 'Thought Leadership',
     'marketing': 'Marketing',
     'ai': 'AI & Technology',
     'creative': 'Creative',
+    'social': 'Social Media',
     'insights': 'Insights',
   };
 
+  const topicMap = new Map<string, string>();
+
   for (const slug of slugs) {
-    const { data: existing } = await supabase
+    // Check if exists
+    let { data: existing } = await supabase
       .from('topics')
       .select('id')
       .eq('slug', slug)
-      .single();
+      .maybeSingle();
 
     if (!existing) {
-      await supabase.from('topics').insert({
-        name: topicNames[slug] || slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
-        slug,
-      });
+      // Create it
+      const { data: created, error } = await supabase
+        .from('topics')
+        .insert({
+          name: topicNames[slug] || slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+          slug,
+        })
+        .select('id')
+        .single();
+
+      if (error) {
+        console.log(`   ⚠️ Error creating topic ${slug}: ${error.message}`);
+        continue;
+      }
+      existing = created;
+    }
+
+    if (existing) {
+      topicMap.set(slug, existing.id);
     }
   }
+
+  return topicMap;
 }
 
 async function ingestArticle(pdfPath: string): Promise<boolean> {
   const filename = path.basename(pdfPath);
-  console.log(`\n📄 Processing: ${filename.slice(0, 60)}...`);
+  const shortName = filename.length > 55 ? filename.slice(0, 52) + '...' : filename;
+  
+  process.stdout.write(`📄 ${shortName} `);
 
   try {
     // Extract text
-    const rawText = await extractPdfText(pdfPath);
+    const rawText = extractPdfText(pdfPath);
     if (!rawText || rawText.length < 100) {
-      console.log(`  ⚠️ No text extracted`);
+      console.log('⚠️ No text extracted');
       return false;
     }
 
     // Clean content
     const content = cleanText(rawText);
-    console.log(`  📝 Extracted ${content.length} chars`);
 
     // Extract metadata
     const { title, summary, topics } = extractMetadata(filename, content);
@@ -276,15 +313,15 @@ async function ingestArticle(pdfPath: string): Promise<boolean> {
       .from('documents')
       .select('id')
       .eq('slug', slug)
-      .single();
+      .maybeSingle();
 
     if (existing) {
-      console.log(`  ⏭️ Already exists, skipping`);
+      console.log('⏭️ Already exists');
       return true;
     }
 
     // Ensure topics exist
-    await ensureTopicsExist(topics);
+    const topicMap = await ensureTopicsExist(topics);
 
     // Create document
     const { data: doc, error: docError } = await supabase
@@ -293,64 +330,61 @@ async function ingestArticle(pdfPath: string): Promise<boolean> {
         title,
         slug,
         doc_type: 'article',
-        summary: summary || null,
+        summary: summary || content.slice(0, 300),
         source_file_path: filename,
       })
-      .select()
+      .select('id')
       .single();
 
     if (docError) {
-      console.error(`  ❌ Error creating document:`, docError);
+      console.log(`❌ ${docError.message}`);
       return false;
     }
 
-    console.log(`  ✅ Created document: ${doc.id}`);
-
     // Link topics
-    for (const topicSlug of topics) {
-      const { data: topic } = await supabase
-        .from('topics')
-        .select('id')
-        .eq('slug', topicSlug)
-        .single();
-
-      if (topic) {
-        await supabase.from('document_topics').insert({
-          document_id: doc.id,
-          topic_id: topic.id,
-          topic_slug: topicSlug,
-        });
+    for (const [topicSlug, topicId] of topicMap) {
+      const { error: linkError } = await supabase.from('document_topics').insert({
+        document_id: doc.id,
+        topic_id: topicId,
+      });
+      // Ignore duplicate errors silently
+      if (linkError && !linkError.message.includes('duplicate')) {
+        console.log(`   ⚠️ Topic link error: ${linkError.message}`);
       }
     }
 
     // Create chunks with embeddings
     const chunks = chunkContent(content);
-    console.log(`  🔄 Creating ${chunks.length} chunks...`);
-
+    
     for (let i = 0; i < chunks.length; i++) {
       const chunk = chunks[i];
-      if (chunk.length < 50) continue;
+      
+      try {
+        const embedding = await generateEmbedding(chunk);
 
-      const embedding = await generateEmbedding(chunk);
-
-      const { error: chunkError } = await supabase.from('content_chunks').insert({
-        document_id: doc.id,
-        content: chunk,
-        chunk_index: i,
-        chunk_type: 'text',
-        embedding,
-      });
-
-      if (chunkError) {
-        console.error(`  ⚠️ Error creating chunk ${i}:`, chunkError);
+        await supabase.from('content_chunks').insert({
+          document_id: doc.id,
+          content: chunk,
+          chunk_index: i,
+          chunk_type: 'text',
+          embedding,
+          metadata: { source: 'article' },
+        });
+      } catch (err: any) {
+        console.log(`   ⚠️ Chunk ${i} error: ${err.message}`);
+      }
+      
+      // Rate limiting
+      if (i % 5 === 0 && i > 0) {
+        await new Promise(r => setTimeout(r, 100));
       }
     }
 
-    console.log(`  ✅ Created ${chunks.length} chunks`);
+    console.log(`✅ ${chunks.length} chunks`);
     return true;
 
-  } catch (error) {
-    console.error(`  ❌ Error:`, error);
+  } catch (error: any) {
+    console.log(`❌ ${error.message}`);
     return false;
   }
 }
@@ -363,23 +397,32 @@ async function main() {
   const articlesDir = process.argv[2] || './content/Articles';
 
   if (!fs.existsSync(articlesDir)) {
-    console.error(`Articles directory not found: ${articlesDir}`);
+    console.error(`❌ Articles directory not found: ${articlesDir}`);
+    console.log('\nUsage: npm run ingest:articles "./content/Articles"');
     process.exit(1);
   }
 
   // Get all PDF files
   const files = fs.readdirSync(articlesDir)
     .filter(f => f.toLowerCase().endsWith('.pdf'))
+    .sort()
     .map(f => path.join(articlesDir, f));
 
-  console.log('🚀 Starting article ingestion...');
-  console.log(`📁 Directory: ${articlesDir}`);
-  console.log(`📊 PDFs found: ${files.length}`);
+  console.log(`
+🚀 Article Group Article Ingestion
+==========================================
+Directory: ${articlesDir}
+PDFs found: ${files.length}
+==========================================
+`);
 
   let successful = 0;
   let failed = 0;
 
-  for (const file of files) {
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    process.stdout.write(`[${i + 1}/${files.length}] `);
+    
     const success = await ingestArticle(file);
     if (success) {
       successful++;
@@ -391,11 +434,20 @@ async function main() {
     await new Promise(resolve => setTimeout(resolve, 300));
   }
 
-  console.log('\n' + '='.repeat(50));
-  console.log('📊 INGESTION COMPLETE');
-  console.log(`✅ Successful: ${successful}`);
-  console.log(`❌ Failed: ${failed}`);
-  console.log('='.repeat(50));
+  console.log(`
+==========================================
+📊 INGESTION COMPLETE
+==========================================
+Successful: ${successful}
+Failed:     ${failed}
+Total:      ${files.length}
+==========================================
+
+✨ Articles are now searchable alongside case studies!
+`);
 }
 
-main().catch(console.error);
+main().catch(err => {
+  console.error('❌ Fatal error:', err);
+  process.exit(1);
+});
