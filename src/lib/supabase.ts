@@ -278,6 +278,7 @@ interface RetrieveContextParams {
  * This is called before sending the user query to Claude.
  * 
  * Includes relevance filtering and deduplication to improve result quality.
+ * IMPORTANT: Ensures a balanced mix of case studies and articles.
  */
 export async function retrieveContext({
   query,
@@ -293,7 +294,7 @@ export async function retrieveContext({
       query,
       capabilitySlugs,
       industrySlugs,
-      matchCount: maxChunks * 2, // Fetch more, then filter
+      matchCount: maxChunks * 3, // Fetch more to ensure variety
     }),
     searchVisualAssets({
       query,
@@ -314,50 +315,45 @@ export async function retrieveContext({
   // IMPROVEMENT 1: Filter by minimum relevance score
   let relevantChunks = rawChunks.filter(chunk => chunk.combined_score >= minRelevanceScore);
   
-  // FALLBACK: If filtering removed everything, use top 5 results anyway
+  // FALLBACK: If filtering removed everything, use top results anyway
   if (relevantChunks.length === 0 && rawChunks.length > 0) {
-    console.log(`[Retrieval] All chunks below threshold, using top 5 as fallback`);
-    relevantChunks = rawChunks.slice(0, 5);
+    console.log(`[Retrieval] All chunks below threshold, using top results as fallback`);
+    relevantChunks = rawChunks.slice(0, 10);
   }
   
-  // IMPROVEMENT 2: Deduplicate - keep best chunk per case study
-  // This prevents the same case study from appearing multiple times
-  const bestChunkPerDocument = new Map<string, typeof rawChunks[0]>();
-  for (const chunk of relevantChunks) {
-    const existing = bestChunkPerDocument.get(chunk.document_id);
-    if (!existing || chunk.combined_score > existing.combined_score) {
-      bestChunkPerDocument.set(chunk.document_id, chunk);
+  // IMPROVEMENT 2: Separate by document type for balanced results
+  const caseStudyChunks = relevantChunks.filter(c => c.document_type === 'case_study');
+  const articleChunks = relevantChunks.filter(c => c.document_type === 'article');
+  
+  console.log(`[Retrieval] Case studies: ${caseStudyChunks.length}, Articles: ${articleChunks.length}`);
+  
+  // IMPROVEMENT 3: Deduplicate - keep best chunk per document
+  const getBestPerDocument = (chunks: typeof rawChunks) => {
+    const bestChunkPerDocument = new Map<string, typeof rawChunks[0]>();
+    for (const chunk of chunks) {
+      const existing = bestChunkPerDocument.get(chunk.document_id);
+      if (!existing || chunk.combined_score > existing.combined_score) {
+        bestChunkPerDocument.set(chunk.document_id, chunk);
+      }
     }
-  }
+    return [...bestChunkPerDocument.values()]
+      .sort((a, b) => b.combined_score - a.combined_score);
+  };
   
-  // IMPROVEMENT 3: Also include one "detail" chunk per case study if available
-  // This gives Claude both the overview and some specific detail
-  const documentChunks = new Map<string, typeof rawChunks[0][]>();
-  for (const chunk of relevantChunks) {
-    const chunks = documentChunks.get(chunk.document_id) || [];
-    chunks.push(chunk);
-    documentChunks.set(chunk.document_id, chunks);
-  }
+  const bestCaseStudies = getBestPerDocument(caseStudyChunks);
+  const bestArticles = getBestPerDocument(articleChunks);
   
-  // Build final chunk list: best chunk + one detail per case study
-  const finalChunks: typeof rawChunks = [];
-  const sortedDocs = [...bestChunkPerDocument.entries()]
-    .sort((a, b) => b[1].combined_score - a[1].combined_score)
-    .slice(0, Math.min(5, maxChunks)); // Limit to top 5 case studies
+  // IMPROVEMENT 4: Prioritize case studies, but include relevant articles
+  // Take up to 4 case studies and up to 2 articles
+  const maxCaseStudies = 4;
+  const maxArticles = 2;
   
-  for (const [docId, bestChunk] of sortedDocs) {
-    finalChunks.push(bestChunk);
-    
-    // Add one more chunk from this document if available (for detail)
-    const allDocChunks = documentChunks.get(docId) || [];
-    const detailChunk = allDocChunks.find(c => 
-      c.chunk_id !== bestChunk.chunk_id && 
-      c.chunk_type !== bestChunk.chunk_type
-    );
-    if (detailChunk) {
-      finalChunks.push(detailChunk);
-    }
-  }
+  const selectedCaseStudies = bestCaseStudies.slice(0, maxCaseStudies);
+  const selectedArticles = bestArticles.slice(0, maxArticles);
+  
+  // Combine and sort by score
+  const finalChunks = [...selectedCaseStudies, ...selectedArticles]
+    .sort((a, b) => b.combined_score - a.combined_score);
   
   // Log for debugging
   console.log(`[Retrieval] Query: "${query.slice(0, 50)}..."`);
