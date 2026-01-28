@@ -454,7 +454,9 @@ export async function ingestDocument(
       .select()
       .single();
     
-    if (error) throw error;
+    if (error) {
+      throw new Error(`Supabase insert error: ${error.message || error.code || JSON.stringify(error)}`);
+    }
     documentId = document.id;
     console.log(`Created document: ${documentId}`);
   }

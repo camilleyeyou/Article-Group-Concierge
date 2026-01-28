@@ -109,6 +109,24 @@ LLAMA_CLOUD_API_KEY=llx-xxxxx
 
 ## Ingesting Content
 
+### Single-Page Case Studies PDF
+
+Article Group provides case studies as a single multi-page PDF (e.g., "AG single page case studies 2025.pdf") where each page is a separate case study. To handle this:
+
+```bash
+# 1. First, ingest the case studies to create database records
+npm run ingest:split "./AG single page case studies 2025.pdf"
+
+# 2. Then split the PDF and upload individual pages to Supabase Storage
+npm run split:upload "./AG single page case studies 2025.pdf"
+```
+
+This two-step process:
+1. **ingest:split** - Extracts text, creates embeddings, and stores metadata for each case study
+2. **split:upload** - Splits the PDF into individual files and uploads them to Supabase Storage, then links the `pdf_url` to each case study record
+
+The case study detail page (`/case-study/[slug]`) will automatically display the PDF when `pdf_url` is set.
+
 ### Single Document
 
 ```typescript

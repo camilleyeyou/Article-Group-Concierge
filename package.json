@@ -7,6 +7,8 @@
     "split:upload": "tsx scripts/split-and-upload-pdfs.ts",
     "populate": "tsx scripts/populate-case-studies.ts",
     "upload:article-pdfs": "tsx scripts/upload-article-pdfs.ts",
+    "upload:videos": "tsx scripts/upload-videos.ts",
+    "generate:thumbnails": "tsx scripts/generate-thumbnails.ts",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

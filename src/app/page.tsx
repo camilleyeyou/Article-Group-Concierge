@@ -7,8 +7,8 @@
  * Features smooth animations, AG branding, and presentation-quality layouts.
  */
 
-import Link from 'next/link';
 import React, { useState, useCallback, useRef, useEffect } from 'react';
+import Link from 'next/link';
 import { LayoutRenderer } from '@/components/LayoutRenderer';
 import type { OrchestratorOutput } from '@/types';
 
@@ -647,6 +647,3 @@ export default function ConciergePage() {
     </div>
   );
 }
-
-
-

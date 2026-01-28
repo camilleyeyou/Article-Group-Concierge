@@ -5,6 +5,24 @@ import { getSupabase } from '@/lib/supabase';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
+interface RelatedArticle {
+  id: string;
+  title: string;
+  slug: string;
+  summary: string | null;
+  thumbnail_url: string | null;
+  pdf_url: string | null;
+  relevance_score?: number;
+}
+
+interface SupportVideo {
+  id: string;
+  video_url: string;
+  title: string | null;
+  description: string | null;
+  display_order: number;
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { slug: string } }
@@ -43,7 +61,7 @@ export async function GET(
           .from('documents')
           .select('*')
           .ilike('slug', searchPattern)
-          .eq('document_type', 'case_study')
+          .eq('doc_type', 'case_study')
           .limit(1);
         
         if (fuzzyMatches && fuzzyMatches.length > 0) {
@@ -73,32 +91,32 @@ export async function GET(
     // Fetch capabilities
     const { data: capabilityLinks } = await supabase
       .from('document_capabilities')
-      .select('capability_slug')
+      .select('capability_id')
       .eq('document_id', caseStudy.id);
 
     let capabilities: Array<{ name: string; slug: string }> = [];
     if (capabilityLinks && capabilityLinks.length > 0) {
-      const slugs = capabilityLinks.map(c => c.capability_slug);
+      const ids = capabilityLinks.map(c => c.capability_id);
       const { data: caps } = await supabase
         .from('capabilities')
         .select('name, slug')
-        .in('slug', slugs);
+        .in('id', ids);
       capabilities = caps || [];
     }
 
     // Fetch industries
     const { data: industryLinks } = await supabase
       .from('document_industries')
-      .select('industry_slug')
+      .select('industry_id')
       .eq('document_id', caseStudy.id);
 
     let industries: Array<{ name: string; slug: string }> = [];
     if (industryLinks && industryLinks.length > 0) {
-      const slugs = industryLinks.map(i => i.industry_slug);
+      const ids = industryLinks.map(i => i.industry_id);
       const { data: inds } = await supabase
         .from('industries')
         .select('name, slug')
-        .in('slug', slugs);
+        .in('id', ids);
       industries = inds || [];
     }
 
@@ -115,6 +133,63 @@ export async function GET(
       .eq('document_id', caseStudy.id)
       .order('display_order', { ascending: true });
 
+    // Fetch support videos
+    let supportVideos: SupportVideo[] = [];
+    const { data: videos } = await supabase
+      .from('support_videos')
+      .select('id, video_url, title, description, display_order')
+      .eq('document_id', caseStudy.id)
+      .order('display_order', { ascending: true });
+    
+    if (videos) {
+      supportVideos = videos;
+    }
+
+    // Fetch related articles using the PostgreSQL function
+    let relatedArticles: RelatedArticle[] = [];
+    
+    // Try capability-based matching first
+    const { data: capArticles, error: capError } = await supabase
+      .rpc('get_related_articles', {
+        case_study_id: caseStudy.id,
+        max_results: 5,
+      });
+
+    if (!capError && capArticles && capArticles.length > 0) {
+      relatedArticles = capArticles;
+    } else {
+      // Fallback to embedding similarity
+      const { data: simArticles } = await supabase
+        .rpc('get_related_articles_by_similarity', {
+          case_study_id: caseStudy.id,
+          max_results: 5,
+        });
+      
+      if (simArticles) {
+        relatedArticles = simArticles.map((a: any) => ({
+          ...a,
+          relevance_score: a.similarity_score,
+        }));
+      }
+    }
+
+    // If still no articles, get any articles with thumbnails
+    if (relatedArticles.length === 0) {
+      const { data: anyArticles } = await supabase
+        .from('documents')
+        .select('id, title, slug, summary, thumbnail_url, pdf_url')
+        .eq('doc_type', 'article')
+        .not('thumbnail_url', 'is', null)
+        .limit(5);
+      
+      if (anyArticles) {
+        relatedArticles = anyArticles.map(a => ({
+          ...a,
+          relevance_score: 0,
+        }));
+      }
+    }
+
     const response = NextResponse.json({
       caseStudy,
       chunks: chunks || [],
@@ -122,6 +197,8 @@ export async function GET(
       industries,
       assets: assets || [],
       metrics: metrics || [],
+      supportVideos,
+      relatedArticles,
     });
     
     // Prevent caching
