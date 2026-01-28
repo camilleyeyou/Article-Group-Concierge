@@ -145,50 +145,75 @@ export async function GET(
       supportVideos = videos;
     }
 
-    // Fetch related articles using the PostgreSQL function
+    // Fetch related articles - use multiple strategies
     let relatedArticles: RelatedArticle[] = [];
     
-    // Try capability-based matching first
-    const { data: capArticles, error: capError } = await supabase
-      .rpc('get_related_articles', {
-        case_study_id: caseStudy.id,
-        max_results: 5,
-      });
-
-    if (!capError && capArticles && capArticles.length > 0) {
-      relatedArticles = capArticles;
-    } else {
-      // Fallback to embedding similarity
-      const { data: simArticles } = await supabase
-        .rpc('get_related_articles_by_similarity', {
+    // Strategy 1: Try the PostgreSQL function first
+    try {
+      const { data: capArticles, error: capError } = await supabase
+        .rpc('get_related_articles', {
           case_study_id: caseStudy.id,
-          max_results: 5,
+          max_results: 6,
         });
+
+      if (!capError && capArticles && capArticles.length > 0) {
+        relatedArticles = capArticles;
+      }
+    } catch (e) {
+      console.log('get_related_articles function not available');
+    }
+    
+    // Strategy 2: Keyword-based search using case study title/client
+    if (relatedArticles.length < 3) {
+      // Extract keywords from case study
+      const keywords = [
+        caseStudy.client_name,
+        ...caseStudy.title.split(/[:\-–—]/)[0].split(' ').filter((w: string) => w.length > 3),
+        ...capabilities.map(c => c.name),
+      ].filter(Boolean).slice(0, 5);
       
-      if (simArticles) {
-        relatedArticles = simArticles.map((a: any) => ({
-          ...a,
-          relevance_score: a.similarity_score,
-        }));
+      // Search for articles with matching keywords
+      const searchPattern = keywords.map(k => `%${k}%`).join('|');
+      
+      const { data: keywordArticles } = await supabase
+        .from('documents')
+        .select('id, title, slug, summary, thumbnail_url, pdf_url')
+        .eq('doc_type', 'article')
+        .or(keywords.map(k => `title.ilike.%${k}%`).join(','))
+        .limit(6);
+      
+      if (keywordArticles && keywordArticles.length > 0) {
+        // Merge without duplicates
+        const existingIds = new Set(relatedArticles.map(a => a.id));
+        for (const article of keywordArticles) {
+          if (!existingIds.has(article.id)) {
+            relatedArticles.push({ ...article, relevance_score: 0.5 });
+          }
+        }
       }
     }
 
-    // If still no articles, get any articles with thumbnails
-    if (relatedArticles.length === 0) {
-      const { data: anyArticles } = await supabase
+    // Strategy 3: Get random articles if still not enough
+    if (relatedArticles.length < 3) {
+      const { data: randomArticles } = await supabase
         .from('documents')
         .select('id, title, slug, summary, thumbnail_url, pdf_url')
         .eq('doc_type', 'article')
         .not('thumbnail_url', 'is', null)
-        .limit(5);
+        .limit(6);
       
-      if (anyArticles) {
-        relatedArticles = anyArticles.map(a => ({
-          ...a,
-          relevance_score: 0,
-        }));
+      if (randomArticles) {
+        const existingIds = new Set(relatedArticles.map(a => a.id));
+        for (const article of randomArticles) {
+          if (!existingIds.has(article.id) && relatedArticles.length < 6) {
+            relatedArticles.push({ ...article, relevance_score: 0.1 });
+          }
+        }
       }
     }
+    
+    // Limit to 6 articles
+    relatedArticles = relatedArticles.slice(0, 6);
 
     const response = NextResponse.json({
       caseStudy,
