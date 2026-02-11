@@ -177,9 +177,9 @@ export default function CaseStudyDetailPage() {
       </nav>
 
       {/* ============================================ */}
-      {/* SECTION 1: HERO */}
+      {/* SECTION 1: HERO - Full viewport dramatic */}
       {/* ============================================ */}
-      <section className="relative h-[50vh] sm:h-[60vh] min-h-[400px] flex items-end overflow-hidden">
+      <section className="relative min-h-[60vh] lg:min-h-[70vh] flex items-end overflow-hidden">
         {/* Background: Video or Gradient */}
         {heroVideoUrl ? (
           <>
@@ -193,44 +193,49 @@ export default function CaseStudyDetailPage() {
             >
               <source src={heroVideoUrl} type="video/mp4" />
             </video>
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/20" />
           </>
         ) : (
           <div
             className="absolute inset-0"
             style={{
-              background: 'linear-gradient(135deg, #32373c 0%, #1a1a1a 50%, #32373c 100%)',
+              background: 'linear-gradient(135deg, #1a1a1a 0%, #32373c 50%, #1a1a1a 100%)',
             }}
           >
-            <div className="absolute top-20 right-20 w-64 h-64 bg-[#fc5d4c]/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-40 left-10 w-96 h-96 bg-[#0d72d1]/10 rounded-full blur-3xl" />
+            {/* Subtle animated gradient orbs */}
+            <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#fc5d4c]/8 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }} />
+            <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-[#0d72d1]/8 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '5s', animationDelay: '1s' }} />
+            <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-[#47ddb2]/5 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '6s', animationDelay: '2s' }} />
           </div>
         )}
 
         {/* Content Overlay */}
-        <div className="relative z-10 w-full pb-8 sm:pb-12 pt-24 px-6 lg:px-8">
+        <div className="relative z-10 w-full pb-12 sm:pb-16 lg:pb-20 pt-28 px-6 lg:px-8">
           <div className="max-w-[1200px] mx-auto">
+            {/* Client name label */}
             {clientName && (
-              <div className="mb-3">
-                <span className="text-white/80 text-sm font-medium">
+              <div className="mb-4 animate-fade-in">
+                <span className="text-[#fc5d4c] text-sm font-medium uppercase tracking-wider">
                   {clientName}
                 </span>
               </div>
             )}
 
+            {/* Project title - dramatic sizing */}
             <h1
-              className="text-2xl sm:text-4xl lg:text-5xl text-white leading-tight max-w-4xl mb-4"
-              style={{ fontFamily: 'Lora, serif', fontWeight: 400 }}
+              className="text-3xl sm:text-5xl lg:text-6xl text-white leading-[1.1] max-w-4xl mb-6 animate-fade-in-up"
+              style={{ fontFamily: 'Lora, serif', fontWeight: 400, letterSpacing: '-0.02em' }}
             >
               {projectTitle}
             </h1>
 
+            {/* Tags with better styling */}
             {(capabilities.length > 0 || industries.length > 0) && (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-3 animate-fade-in" style={{ animationDelay: '200ms' }}>
                 {capabilities.slice(0, 3).map((cap, i) => (
                   <span
                     key={i}
-                    className="px-3 py-1 text-xs sm:text-sm bg-[#0d72d1]/30 text-[#7bb8eb]"
+                    className="px-4 py-1.5 text-xs sm:text-sm bg-[#0d72d1]/20 text-[#7bb8eb] font-medium"
                   >
                     {cap.name}
                   </span>
@@ -238,7 +243,7 @@ export default function CaseStudyDetailPage() {
                 {industries.slice(0, 2).map((ind, i) => (
                   <span
                     key={i}
-                    className="px-3 py-1 text-xs sm:text-sm bg-white/10 text-white/70"
+                    className="px-4 py-1.5 text-xs sm:text-sm bg-white/10 text-white/80 font-medium"
                   >
                     {ind.name}
                   </span>
@@ -246,6 +251,13 @@ export default function CaseStudyDetailPage() {
               </div>
             )}
           </div>
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-white/50 animate-bounce">
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
         </div>
       </section>
 
@@ -310,17 +322,23 @@ export default function CaseStudyDetailPage() {
       {/* SECTION 3: KNOWLEDGE BASE */}
       {/* ============================================ */}
       {(relatedCaseStudies.length > 0 || relatedArticles.length > 0 || supportVideos.length > 0) && (
-        <section className="py-12 sm:py-16 px-6 lg:px-8 bg-[#F5F5F5]">
+        <section className="py-16 sm:py-24 px-6 lg:px-8 bg-[#F5F5F5]">
           <div className="max-w-[1200px] mx-auto">
-            <div className="mb-8 sm:mb-12 text-center">
+            {/* Section header - AG style */}
+            <div className="mb-12 sm:mb-16">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-2 h-2 rounded-full bg-[#fc5d4c]" />
+                <div className="w-2 h-2 rounded-full bg-[#47ddb2]" />
+                <div className="w-2 h-2 rounded-full bg-[#0d72d1]" />
+              </div>
               <h2
-                className="text-2xl sm:text-3xl text-black mb-2"
-                style={{ fontFamily: 'Lora, serif' }}
+                className="text-3xl sm:text-4xl text-black mb-3"
+                style={{ fontFamily: 'Lora, serif', fontWeight: 400 }}
               >
                 Related Resources
               </h2>
-              <p className="text-[#6B6B6B] text-sm sm:text-base">
-                Explore related case studies, articles, and content
+              <p className="text-[#6B6B6B] text-base sm:text-lg max-w-xl">
+                Explore more of our work and thinking in similar areas.
               </p>
             </div>
 
@@ -465,25 +483,34 @@ export default function CaseStudyDetailPage() {
       )}
 
       {/* ============================================ */}
-      {/* CTA SECTION */}
+      {/* CTA SECTION - More impactful */}
       {/* ============================================ */}
-      <section className="bg-black">
-        <div className="max-w-3xl mx-auto px-6 lg:px-8 py-16 sm:py-20 text-center">
+      <section className="bg-black relative overflow-hidden">
+        {/* Subtle gradient orbs */}
+        <div className="absolute top-0 right-0 w-80 h-80 bg-[#fc5d4c]/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#0d72d1]/10 rounded-full blur-3xl" />
+
+        <div className="max-w-4xl mx-auto px-6 lg:px-8 py-20 sm:py-28 text-center relative">
           <h2
-            className="text-2xl sm:text-3xl text-white mb-4"
-            style={{ fontFamily: 'Lora, serif', fontWeight: 400 }}
+            className="text-3xl sm:text-4xl lg:text-5xl text-white mb-6"
+            style={{ fontFamily: 'Lora, serif', fontWeight: 400, letterSpacing: '-0.02em' }}
           >
             Interested in similar work?
           </h2>
-          <p className="text-white/70 text-base mb-8">
+          <p className="text-white/60 text-lg sm:text-xl mb-10 max-w-xl mx-auto">
             Let's discuss how Article Group can help with your next project.
           </p>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-[#fc5d4c] text-white font-medium hover:bg-[#e54d3c] transition-colors text-lg"
+            className="group inline-flex items-center gap-3 px-10 py-5 bg-[#fc5d4c] text-white font-medium hover:bg-[#e54d3c] transition-all duration-300 text-lg"
           >
-            Start a Conversation
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <span>Start a Conversation</span>
+            <svg
+              className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
             </svg>
           </Link>

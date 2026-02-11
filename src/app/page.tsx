@@ -212,7 +212,7 @@ export default function ConciergePage() {
               </Link>
               <Link
                 href="/contact"
-                className="px-5 py-2 bg-[#32373c] text-white text-sm font-medium rounded hover:bg-black transition-colors"
+                className="px-5 py-2 bg-[#32373c] text-white text-sm font-medium hover:bg-black transition-colors"
               >
                 Contact
               </Link>
@@ -233,25 +233,33 @@ export default function ConciergePage() {
         {/* Welcome State */}
         {showWelcome && (
           <div className="flex-1">
-            {/* Hero Section */}
-            <section className="py-16 md:py-24 lg:py-32">
-              <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
-                {/* Main headline - AG style */}
+            {/* Hero Section - Full viewport height like AG */}
+            <section className="min-h-[calc(100vh-64px)] flex flex-col justify-center py-16 md:py-24">
+              <div className="max-w-[1200px] mx-auto px-6 lg:px-8 flex-1 flex flex-col justify-center">
+                {/* Subtle label */}
+                <p className="text-sm font-medium text-[#6B6B6B] uppercase tracking-wider mb-6 animate-fade-in">
+                  Strategic Advisory & Creative Studio
+                </p>
+
+                {/* Main headline - AG style with tighter line height */}
                 <h1
-                  className="text-[2.5rem] sm:text-[3.5rem] lg:text-[4.5rem] text-black leading-[1.1] max-w-4xl mb-8"
-                  style={{ fontFamily: 'Lora, serif', fontWeight: 400 }}
+                  className="text-[2.75rem] sm:text-[4rem] lg:text-[5rem] text-black leading-[1.05] max-w-5xl mb-8 animate-fade-in-up"
+                  style={{ fontFamily: 'Lora, serif', fontWeight: 400, letterSpacing: '-0.02em' }}
                 >
                   Finding simple solutions to complex messages.
                 </h1>
 
                 {/* Subheadline */}
-                <p className="text-xl md:text-2xl text-[#313131] max-w-2xl mb-12 leading-relaxed">
+                <p
+                  className="text-lg md:text-xl text-[#313131] max-w-2xl mb-14 leading-relaxed animate-fade-in-up"
+                  style={{ animationDelay: '100ms' }}
+                >
                   Communicating a vision is hard. We're really good at it. Tell us your challenge.
                 </p>
 
                 {/* Input Area */}
-                <div className="max-w-2xl">
-                  <form onSubmit={handleSubmit} className="relative">
+                <div className="max-w-2xl animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+                  <form onSubmit={handleSubmit} className="relative group">
                     <textarea
                       ref={inputRef}
                       value={query}
@@ -261,11 +269,11 @@ export default function ConciergePage() {
                       className="
                         w-full px-6 py-5 pr-16
                         bg-white
-                        border border-[#313131]
+                        border-2 border-[#313131]
                         text-lg text-black
                         placeholder:text-[#6B6B6B]
-                        focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2
-                        transition-all duration-200
+                        focus:outline-none focus:border-black
+                        transition-all duration-300
                         resize-none
                         min-h-[72px] max-h-[150px]
                       "
@@ -284,7 +292,7 @@ export default function ConciergePage() {
                         flex items-center justify-center
                         disabled:opacity-30 disabled:cursor-not-allowed
                         hover:bg-black
-                        transition-colors duration-200
+                        transition-all duration-200
                       "
                       aria-label="Send message"
                     >
@@ -298,56 +306,110 @@ export default function ConciergePage() {
                     </button>
                   </form>
 
-                  <p className="text-sm text-[#6B6B6B] mt-3">
-                    Press Enter to send
+                  <p className="text-sm text-[#6B6B6B] mt-4 flex items-center gap-2">
+                    <span>Press Enter to send</span>
+                    <span className="text-[#eee]">|</span>
+                    <span className="text-[#fc5d4c]">Shift+Enter for new line</span>
                   </p>
+                </div>
+              </div>
+
+              {/* Scroll indicator - AG style */}
+              <div className="flex justify-center pb-8 animate-fade-in" style={{ animationDelay: '400ms' }}>
+                <div className="flex flex-col items-center gap-2 text-[#6B6B6B]">
+                  <span className="text-xs uppercase tracking-wider">Explore</span>
+                  <svg className="w-5 h-5 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                  </svg>
                 </div>
               </div>
             </section>
 
-            {/* Example Prompts */}
-            <section className="py-16 bg-[#F5F5F5]">
+            {/* Example Prompts - AG card style */}
+            <section className="py-20 lg:py-28 bg-[#F5F5F5]">
               <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
-                <p className="text-sm font-medium text-[#6B6B6B] uppercase tracking-wider mb-8">
-                  Or explore by challenge
-                </p>
+                <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+                  <div>
+                    <p className="text-sm font-medium text-[#fc5d4c] uppercase tracking-wider mb-3">
+                      Common Challenges
+                    </p>
+                    <h2
+                      className="text-2xl md:text-3xl text-black"
+                      style={{ fontFamily: 'Lora, serif', fontWeight: 400 }}
+                    >
+                      Or explore by topic
+                    </h2>
+                  </div>
+                  <p className="text-[#6B6B6B] text-sm md:text-right max-w-xs">
+                    Click any card to start a conversation about that challenge
+                  </p>
+                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {examplePrompts.map((item, i) => (
                     <button
                       key={i}
                       onClick={() => handleSubmit(undefined, item.prompt)}
                       className="
-                        group p-6 text-left
+                        group p-8 text-left
                         bg-white
                         border border-transparent hover:border-black
-                        transition-all duration-200
+                        transition-all duration-300
+                        relative overflow-hidden
                       "
+                      style={{ animationDelay: `${i * 100}ms` }}
                     >
-                      <h3 className="font-medium text-black mb-2 group-hover:text-[#fc5d4c] transition-colors">
-                        {item.label}
-                      </h3>
-                      <p className="text-sm text-[#313131] leading-relaxed">
-                        {item.prompt}
-                      </p>
+                      {/* Accent line */}
+                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#fc5d4c] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300" />
+
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1">
+                          <h3
+                            className="text-lg font-medium text-black mb-3 group-hover:text-[#fc5d4c] transition-colors"
+                          >
+                            {item.label}
+                          </h3>
+                          <p className="text-[#313131] leading-relaxed">
+                            "{item.prompt}"
+                          </p>
+                        </div>
+                        <svg
+                          className="w-5 h-5 text-[#6B6B6B] group-hover:text-[#fc5d4c] transform group-hover:translate-x-1 transition-all flex-shrink-0 mt-1"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                      </div>
                     </button>
                   ))}
                 </div>
               </div>
             </section>
 
-            {/* Client Logos - Marquee style like AG */}
-            <section className="py-16">
+            {/* Client Logos - AG style with divider */}
+            <section className="py-20 lg:py-24">
               <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
-                <p className="text-center text-[#313131] mb-10 text-lg">
+                {/* Decorative divider */}
+                <div className="flex items-center justify-center gap-3 mb-12">
+                  <div className="w-2 h-2 rounded-full bg-[#fc5d4c]" />
+                  <div className="w-2 h-2 rounded-full bg-[#47ddb2]" />
+                  <div className="w-2 h-2 rounded-full bg-[#0d72d1]" />
+                </div>
+
+                <p
+                  className="text-center text-black mb-14 text-lg md:text-xl"
+                  style={{ fontFamily: 'Lora, serif' }}
+                >
                   Trusted by the world's most innovative companies.
                 </p>
 
-                <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-6">
+                <div className="flex flex-wrap justify-center items-center gap-x-10 gap-y-6 lg:gap-x-16">
                   {clients.map((client, i) => (
                     <span
                       key={i}
-                      className="text-[#6B6B6B] font-medium text-lg hover:text-black transition-colors"
+                      className="text-[#9B9B9B] font-medium text-base lg:text-lg hover:text-black transition-colors duration-300 cursor-default"
                     >
                       {client}
                     </span>
@@ -356,42 +418,61 @@ export default function ConciergePage() {
               </div>
             </section>
 
-            {/* Testimonial */}
-            <section className="py-20 bg-[#F5F5F5]">
-              <div className="max-w-3xl mx-auto px-6 lg:px-8 text-center">
-                <blockquote className="mb-8">
+            {/* Testimonial - AG style with large quote */}
+            <section className="py-24 lg:py-32 bg-[#F5F5F5] relative">
+              {/* Large decorative quote */}
+              <div
+                className="absolute top-12 left-1/2 transform -translate-x-1/2 text-[12rem] lg:text-[16rem] text-[#eee] leading-none select-none pointer-events-none"
+                style={{ fontFamily: 'Lora, serif' }}
+              >
+                "
+              </div>
+
+              <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center relative">
+                <blockquote className="mb-10">
                   <p
-                    className="text-2xl md:text-3xl text-black leading-relaxed"
-                    style={{ fontFamily: 'Lora, serif' }}
+                    className="text-2xl md:text-3xl lg:text-4xl text-black leading-snug"
+                    style={{ fontFamily: 'Lora, serif', fontWeight: 400 }}
                   >
-                    "Working with Article Group, you get the ideal mix of technology-translator, storyteller, and teammate. And they deliver the most beautiful work."
+                    Working with Article Group, you get the ideal mix of technology-translator, storyteller, and teammate. And they deliver the most beautiful work.
                   </p>
                 </blockquote>
-                <cite className="not-italic">
-                  <span className="font-semibold text-black">Dr. Werner Vogels</span>
-                  <span className="text-[#313131]"> · CTO of Amazon.com</span>
-                </cite>
+                <div className="flex flex-col items-center gap-1">
+                  <cite className="not-italic font-semibold text-black text-lg">
+                    Dr. Werner Vogels
+                  </cite>
+                  <span className="text-[#6B6B6B]">CTO of Amazon.com</span>
+                </div>
               </div>
             </section>
 
-            {/* CTA Section */}
-            <section className="py-20 bg-black">
-              <div className="max-w-3xl mx-auto px-6 lg:px-8 text-center">
+            {/* CTA Section - More impactful */}
+            <section className="py-24 lg:py-32 bg-black relative overflow-hidden">
+              {/* Subtle gradient orbs */}
+              <div className="absolute top-0 right-0 w-96 h-96 bg-[#fc5d4c]/10 rounded-full blur-3xl" />
+              <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#0d72d1]/10 rounded-full blur-3xl" />
+
+              <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center relative">
                 <h3
-                  className="text-3xl md:text-4xl text-white mb-6"
-                  style={{ fontFamily: 'Lora, serif' }}
+                  className="text-3xl md:text-4xl lg:text-5xl text-white mb-6"
+                  style={{ fontFamily: 'Lora, serif', fontWeight: 400, letterSpacing: '-0.02em' }}
                 >
                   Ready to tell your story?
                 </h3>
-                <p className="text-white/70 text-lg mb-10">
-                  Start a conversation above or reach out directly.
+                <p className="text-white/60 text-lg md:text-xl mb-12 max-w-xl mx-auto">
+                  Start a conversation above or reach out directly to our team.
                 </p>
                 <Link
                   href="/contact"
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-[#fc5d4c] text-white font-medium hover:bg-[#e54d3c] transition-colors text-lg"
+                  className="group inline-flex items-center gap-3 px-10 py-5 bg-[#fc5d4c] text-white font-medium hover:bg-[#e54d3c] transition-all duration-300 text-lg"
                 >
-                  Contact Us
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <span>Start a Conversation</span>
+                  <svg
+                    className="w-5 h-5 transform group-hover:translate-x-1 transition-transform"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
                 </Link>
