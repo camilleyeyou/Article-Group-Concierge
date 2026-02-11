@@ -60,16 +60,21 @@ export const VisualAsset: React.FC<VisualAssetProps> = ({
     document.body.style.overflow = '';
   }, []);
   
-  // Handle escape key
+  // Handle escape key and cleanup body overflow on unmount
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isLightboxOpen) {
         closeLightbox();
       }
     };
-    
+
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+
+    // Cleanup: ensure body overflow is reset when component unmounts
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
   }, [isLightboxOpen, closeLightbox]);
   
   // Error state
@@ -96,7 +101,7 @@ export const VisualAsset: React.FC<VisualAssetProps> = ({
               d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" 
             />
           </svg>
-          <p className="text-[var(--text-sm)]">Unable to load image</p>
+          <p className="text-sm">Unable to load image</p>
         </div>
       </div>
     );
@@ -193,7 +198,7 @@ export const VisualAsset: React.FC<VisualAssetProps> = ({
           <figcaption 
             className="
               mt-4 px-1
-              text-[var(--text-sm)] text-[var(--color-text-tertiary)]
+              text-sm text-[var(--color-text-tertiary)]
               text-center
             "
           >
@@ -238,28 +243,37 @@ export const VisualAsset: React.FC<VisualAssetProps> = ({
             </svg>
           </button>
           
-          {/* Fullsize image */}
+          {/* Fullsize image - clicking also closes */}
           <img
             src={src}
             alt={alt}
-            className="lightbox-content animate-scale-in"
-            onClick={(e) => e.stopPropagation()}
+            className="lightbox-content animate-scale-in cursor-pointer"
+            onClick={closeLightbox}
           />
-          
-          {/* Caption in lightbox */}
-          {caption && (
-            <div 
-              className="
-                absolute bottom-6 left-1/2 transform -translate-x-1/2
-                px-6 py-3 rounded-full
-                bg-black/60 backdrop-blur-sm
-                text-white text-[var(--text-sm)]
-                max-w-lg text-center
-              "
-            >
-              {caption}
+
+          {/* Caption and close hint in lightbox */}
+          <div
+            className="
+              absolute bottom-6 left-1/2 transform -translate-x-1/2
+              flex flex-col items-center gap-2
+            "
+          >
+            {caption && (
+              <div
+                className="
+                  px-6 py-3 rounded-full
+                  bg-black/60 backdrop-blur-sm
+                  text-white text-sm
+                  max-w-lg text-center
+                "
+              >
+                {caption}
+              </div>
+            )}
+            <div className="text-white/50 text-xs">
+              Click anywhere or press Esc to close
             </div>
-          )}
+          </div>
         </div>
       )}
     </>

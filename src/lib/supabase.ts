@@ -274,6 +274,72 @@ interface RetrieveContextParams {
 }
 
 /**
+ * Capability keyword mapping for query enhancement.
+ * Maps common terms users might use to capability slugs.
+ */
+const CAPABILITY_KEYWORDS: Record<string, string[]> = {
+  'brand-strategy': ['brand', 'branding', 'rebrand', 'brand identity', 'brand positioning', 'brand architecture'],
+  'creative-direction': ['creative', 'visual', 'design', 'art direction', 'look and feel'],
+  'content-strategy': ['content', 'storytelling', 'narrative', 'messaging', 'copywriting', 'editorial'],
+  'social-media': ['social', 'social media', 'instagram', 'tiktok', 'twitter', 'facebook', 'linkedin', 'community'],
+  'video-production': ['video', 'film', 'commercial', 'documentary', 'motion', 'animation'],
+  'digital-marketing': ['digital', 'marketing', 'paid media', 'advertising', 'campaign', 'ads'],
+  'experiential': ['experiential', 'event', 'activation', 'pop-up', 'launch event', 'experience'],
+  'web-development': ['web', 'website', 'digital product', 'app', 'platform', 'ux', 'ui'],
+};
+
+/**
+ * Industry keyword mapping for query enhancement.
+ * Maps common terms to industry slugs.
+ */
+const INDUSTRY_KEYWORDS: Record<string, string[]> = {
+  'technology': ['tech', 'technology', 'software', 'saas', 'startup', 'ai', 'fintech', 'b2b tech'],
+  'finance': ['finance', 'financial', 'banking', 'fintech', 'investment', 'insurance', 'wealth'],
+  'healthcare': ['health', 'healthcare', 'medical', 'pharma', 'wellness', 'fitness', 'biotech'],
+  'consumer': ['consumer', 'cpg', 'retail', 'ecommerce', 'dtc', 'food', 'beverage', 'fashion'],
+  'entertainment': ['entertainment', 'media', 'streaming', 'gaming', 'sports', 'music'],
+  'real-estate': ['real estate', 'property', 'commercial real estate', 'residential'],
+  'education': ['education', 'edtech', 'learning', 'university', 'school'],
+  'nonprofit': ['nonprofit', 'ngo', 'charity', 'foundation', 'social impact'],
+};
+
+/**
+ * Detects capabilities and industries from user query.
+ * Returns slugs that match keywords in the query.
+ */
+function detectQueryIntent(query: string): { capabilities: string[]; industries: string[] } {
+  const lowerQuery = query.toLowerCase();
+  const detectedCapabilities: string[] = [];
+  const detectedIndustries: string[] = [];
+
+  // Check for capability keywords
+  for (const [slug, keywords] of Object.entries(CAPABILITY_KEYWORDS)) {
+    for (const keyword of keywords) {
+      if (lowerQuery.includes(keyword.toLowerCase())) {
+        if (!detectedCapabilities.includes(slug)) {
+          detectedCapabilities.push(slug);
+        }
+        break;
+      }
+    }
+  }
+
+  // Check for industry keywords
+  for (const [slug, keywords] of Object.entries(INDUSTRY_KEYWORDS)) {
+    for (const keyword of keywords) {
+      if (lowerQuery.includes(keyword.toLowerCase())) {
+        if (!detectedIndustries.includes(slug)) {
+          detectedIndustries.push(slug);
+        }
+        break;
+      }
+    }
+  }
+
+  return { capabilities: detectedCapabilities, industries: detectedIndustries };
+}
+
+/**
  * Main retrieval function that gathers all context needed for the orchestrator.
  * This is called before sending the user query to Claude.
  * 
@@ -288,14 +354,48 @@ export async function retrieveContext({
   maxAssets = 5,
   minRelevanceScore = 0.15, // Lowered threshold - semantic scores are often 0.2-0.4
 }: RetrieveContextParams): Promise<RetrievedContext> {
+  // IMPROVEMENT: Auto-detect capabilities and industries from query
+  const detectedIntent = detectQueryIntent(query);
+
+  // Merge detected intents with explicitly provided filters
+  const enhancedCapabilities = [
+    ...(capabilitySlugs || []),
+    ...detectedIntent.capabilities.filter(c => !capabilitySlugs?.includes(c))
+  ];
+  const enhancedIndustries = [
+    ...(industrySlugs || []),
+    ...detectedIntent.industries.filter(i => !industrySlugs?.includes(i))
+  ];
+
+  console.log(`[Retrieval] Detected capabilities: ${detectedIntent.capabilities.join(', ') || 'none'}`);
+  console.log(`[Retrieval] Detected industries: ${detectedIntent.industries.join(', ') || 'none'}`);
+
   // Run searches in parallel for performance
-  const [rawChunks, visualAssets, capabilities, industries, topics] = await Promise.all([
+  // First search: with detected filters for better case study matching
+  // Second search: without filters as fallback for broader results
+  const searchPromises: Promise<HybridSearchResult[]>[] = [
     hybridSearch({
       query,
-      capabilitySlugs,
-      industrySlugs,
-      matchCount: maxChunks * 3, // Fetch more to ensure variety
+      capabilitySlugs: enhancedCapabilities.length > 0 ? enhancedCapabilities : undefined,
+      industrySlugs: enhancedIndustries.length > 0 ? enhancedIndustries : undefined,
+      matchCount: maxChunks * 2,
     }),
+  ];
+
+  // Add a fallback search without filters if we detected intent
+  // This ensures we still get results even if the filters are too restrictive
+  if (enhancedCapabilities.length > 0 || enhancedIndustries.length > 0) {
+    searchPromises.push(
+      hybridSearch({
+        query,
+        matchCount: maxChunks * 2,
+      })
+    );
+  }
+
+  const [primaryResults, fallbackResults, visualAssets, capabilities, industries, topics] = await Promise.all([
+    searchPromises[0],
+    searchPromises[1] || Promise.resolve([]),
     searchVisualAssets({
       query,
       matchCount: maxAssets,
@@ -304,6 +404,33 @@ export async function retrieveContext({
     getIndustries(),
     getTopics(),
   ]);
+
+  // Merge results, preferring primary (filtered) results
+  const seenIds = new Set<string>();
+  const rawChunks: HybridSearchResult[] = [];
+
+  // Add primary results first (these matched our detected filters)
+  for (const chunk of primaryResults) {
+    if (!seenIds.has(chunk.chunk_id)) {
+      seenIds.add(chunk.chunk_id);
+      // Boost score slightly for chunks that matched our detected filters
+      rawChunks.push({
+        ...chunk,
+        combined_score: chunk.combined_score * 1.1, // 10% boost for filter matches
+      });
+    }
+  }
+
+  // Add fallback results that weren't in primary
+  for (const chunk of fallbackResults) {
+    if (!seenIds.has(chunk.chunk_id)) {
+      seenIds.add(chunk.chunk_id);
+      rawChunks.push(chunk);
+    }
+  }
+
+  // Sort by combined score
+  rawChunks.sort((a, b) => b.combined_score - a.combined_score);
   
   // Log raw results for debugging
   console.log(`[Retrieval] Query: "${query.slice(0, 50)}..."`);

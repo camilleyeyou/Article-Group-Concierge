@@ -174,17 +174,23 @@ async function uploadVideo(match: VideoMatch): Promise<boolean> {
       return false;
     }
 
+    // For large files (>100MB), show progress indicator
+    if (sizeMB > 100) {
+      process.stdout.write(`(${sizeMB.toFixed(0)}MB) `);
+    }
+
     // Read video file
     const videoBuffer = fs.readFileSync(match.filepath);
     const safeFilename = match.filename.replace(/[^a-zA-Z0-9.-]/g, '_');
     const storagePath = `${match.caseStudy.slug}/${safeFilename}`;
 
-    // Upload to Supabase Storage
+    // Upload to Supabase Storage with extended timeout for large files
     const { error: uploadError } = await supabase.storage
       .from(VIDEO_BUCKET)
       .upload(storagePath, videoBuffer, {
         contentType: 'video/mp4',
         upsert: true,
+        duplex: 'half',
       });
 
     if (uploadError) {

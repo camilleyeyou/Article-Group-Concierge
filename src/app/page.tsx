@@ -2,9 +2,12 @@
 
 /**
  * Article Group AI Concierge - Main Page
- * 
- * A polished, client-ready interface for the AI-powered pitch deck generator.
- * Features smooth animations, AG branding, and presentation-quality layouts.
+ *
+ * Design aligned with articlegroup.com:
+ * - Clean, minimal aesthetic
+ * - Lora for headlines, Poppins for body
+ * - Dark charcoal (#32373c) buttons
+ * - Accent colors: coral (#fc5d4c), teal (#47ddb2), blue (#0d72d1)
  */
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
@@ -28,20 +31,18 @@ export default function ConciergePage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isHydrated, setIsHydrated] = useState(false);
-  
+
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  
+  const latestResponseRef = useRef<HTMLDivElement>(null);
+
   // Load conversation from sessionStorage on mount (client-side only)
   useEffect(() => {
-    // Mark as hydrated
     setIsHydrated(true);
-    
     try {
       const savedMessages = sessionStorage.getItem('ag-concierge-messages');
       if (savedMessages) {
         const parsed = JSON.parse(savedMessages);
-        // Convert timestamp strings back to Date objects
         const messagesWithDates = parsed.map((m: Message & { timestamp: string }) => ({
           ...m,
           timestamp: new Date(m.timestamp),
@@ -52,17 +53,16 @@ export default function ConciergePage() {
       console.error('Failed to parse saved messages:', e);
     }
   }, []);
-  
+
   // Save conversation to sessionStorage when messages change
   useEffect(() => {
     if (isHydrated && messages.length > 0) {
       sessionStorage.setItem('ag-concierge-messages', JSON.stringify(messages));
     }
   }, [messages, isHydrated]);
-  
-  // Determine if we should show welcome (only after hydration)
+
   const showWelcome = isHydrated && messages.length === 0;
-  
+
   // Auto-resize textarea
   useEffect(() => {
     if (inputRef.current) {
@@ -70,25 +70,24 @@ export default function ConciergePage() {
       inputRef.current.style.height = `${Math.min(inputRef.current.scrollHeight, 150)}px`;
     }
   }, [query]);
-  
-  // Scroll to latest message
+
+  // Scroll to latest response
   useEffect(() => {
-    if (messages.length > 0) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messages.length > 0 && latestResponseRef.current) {
+      latestResponseRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, [messages]);
-  
+
   // Handle query submission
   const handleSubmit = useCallback(async (e?: React.FormEvent, customQuery?: string) => {
     e?.preventDefault();
-    
+
     const trimmedQuery = (customQuery || query).trim();
     if (!trimmedQuery || isLoading) return;
-    
+
     setIsLoading(true);
     setError(null);
-    
-    // Add user message
+
     const userMessage: Message = {
       id: `user-${Date.now()}`,
       role: 'user',
@@ -97,7 +96,7 @@ export default function ConciergePage() {
     };
     setMessages(prev => [...prev, userMessage]);
     setQuery('');
-    
+
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
@@ -110,14 +109,13 @@ export default function ConciergePage() {
           })),
         }),
       });
-      
+
       if (!response.ok) {
         throw new Error('Failed to get response');
       }
-      
+
       const data: OrchestratorOutput = await response.json();
-      
-      // Add assistant message
+
       const assistantMessage: Message = {
         id: `assistant-${Date.now()}`,
         role: 'assistant',
@@ -127,7 +125,7 @@ export default function ConciergePage() {
         timestamp: new Date(),
       };
       setMessages(prev => [...prev, assistantMessage]);
-      
+
     } catch (err) {
       setError('Something went wrong. Please try again.');
       console.error('Submit error:', err);
@@ -135,180 +133,158 @@ export default function ConciergePage() {
       setIsLoading(false);
     }
   }, [query, isLoading, messages]);
-  
-  // Handle follow-up click
+
   const handleFollowUp = useCallback((followUp: string) => {
     handleSubmit(undefined, followUp);
   }, [handleSubmit]);
-  
-  // Handle keyboard shortcuts
+
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit();
     }
   }, [handleSubmit]);
-  
-  // Start new conversation
+
   const handleNewConversation = useCallback(() => {
     setMessages([]);
     setError(null);
     sessionStorage.removeItem('ag-concierge-messages');
   }, []);
 
-  // Example prompts - more conversational like AG's tone
+  // Example prompts matching AG's tone
   const examplePrompts = [
     {
       label: "Brand Strategy",
       prompt: "We're rebranding after a merger and need help unifying our story",
-      icon: "✦"
     },
     {
       label: "Product Launch",
       prompt: "We have a new AI product launching and need to simplify complex features",
-      icon: "◈"
     },
     {
       label: "Thought Leadership",
       prompt: "We want to establish our executives as industry thought leaders",
-      icon: "◇"
     },
     {
       label: "Event & Keynote",
       prompt: "Our CEO is keynoting at a major conference and needs presentation support",
-      icon: "○"
     },
   ];
 
-  // Client logos (names only since we don't have actual logos)
+  // AG client logos from their website
   const clients = [
-    "Google", "AWS", "Salesforce", "Meta", "CrowdStrike", 
+    "Google", "AWS", "Salesforce", "Meta", "CrowdStrike",
     "Android", "Omnicell", "Box", "Vimeo", "LinkedIn"
   ];
-  
+
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
-        <div className="max-w-6xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              {/* AG Logo/Wordmark */}
-              <div className="flex items-center gap-2">
-                <div className="w-10 h-10 bg-[#1A1818] rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">AG</span>
-                </div>
-                <div>
-                  <h1 className="font-semibold text-[#1A1818] text-lg leading-tight">
-                    Article Group
-                  </h1>
-                  <p className="text-xs text-gray-500">
-                    Strategic Concierge
-                  </p>
-                </div>
+    <div className="min-h-screen bg-white flex flex-col" style={{ fontFamily: 'Poppins, sans-serif' }}>
+      {/* Header - Clean AG style */}
+      <header className="sticky top-0 z-50 bg-white border-b border-[#eee]">
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-3">
+              <div className="w-9 h-9 bg-black rounded flex items-center justify-center">
+                <span className="text-white font-semibold text-sm">AG</span>
               </div>
-            </div>
-            
-            <div className="flex items-center gap-3">
+              <span className="font-semibold text-black text-lg hidden sm:block" style={{ fontFamily: 'Lora, serif' }}>
+                Article Group
+              </span>
+            </Link>
+
+            {/* Navigation */}
+            <nav className="flex items-center gap-6">
               {messages.length > 0 && (
                 <button
                   onClick={handleNewConversation}
-                  className="px-4 py-2 text-sm text-gray-600 hover:text-[#1A1818] hover:bg-gray-50 rounded-lg transition-colors"
+                  className="text-sm text-[#313131] hover:text-black transition-colors"
                 >
-                  New Conversation
+                  New Chat
                 </button>
               )}
               <Link
-                href="/contact"
-                className="px-5 py-2.5 bg-[#1A1818] text-white text-sm font-medium rounded-full hover:bg-[#333] transition-colors"
+                href="https://articlegroup.com/work"
+                target="_blank"
+                className="text-sm text-[#313131] hover:text-black transition-colors hidden sm:block"
               >
-                Get in Touch
+                Work
               </Link>
-            </div>
+              <Link
+                href="/contact"
+                className="px-5 py-2 bg-[#32373c] text-white text-sm font-medium rounded hover:bg-black transition-colors"
+              >
+                Contact
+              </Link>
+            </nav>
           </div>
         </div>
       </header>
-      
+
       {/* Main content */}
       <main className="flex-1 flex flex-col">
         {/* Loading state before hydration */}
         {!isHydrated && (
           <div className="flex-1 flex items-center justify-center">
-            <div className="w-8 h-8 border-2 border-gray-200 border-t-[#F96A63] rounded-full animate-spin" />
+            <div className="w-8 h-8 border-2 border-[#eee] border-t-[#fc5d4c] rounded-full animate-spin" />
           </div>
         )}
-        
-        {/* Welcome State - Premium Design */}
+
+        {/* Welcome State */}
         {showWelcome && (
           <div className="flex-1">
             {/* Hero Section */}
-            <section className="relative overflow-hidden">
-              {/* Background gradient */}
-              <div className="absolute inset-0 bg-gradient-to-b from-[#FAFAFA] to-white" />
-              
-              <div className="relative max-w-5xl mx-auto px-6 pt-16 pb-20 md:pt-24 md:pb-28">
-                {/* Greeting */}
-                <p className="text-[#F96A63] font-medium text-lg mb-4 animate-fade-in">
-                  Hi there.
-                </p>
-                
-                {/* Main headline */}
-                <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-[#1A1818] mb-8 leading-[1.15] max-w-3xl animate-fade-in" style={{ animationDelay: '100ms' }}>
-                  We help innovative companies communicate bold visions.
-                </h2>
-                
-                {/* Dot separator */}
-                <div className="flex items-center gap-2 mb-8 animate-fade-in" style={{ animationDelay: '200ms' }}>
-                  <span className="w-2 h-2 rounded-full bg-[#1A1818]" />
-                  <span className="w-2 h-2 rounded-full bg-[#1A1818] opacity-60" />
-                  <span className="w-2 h-2 rounded-full bg-[#1A1818] opacity-30" />
-                </div>
-                
+            <section className="py-16 md:py-24 lg:py-32">
+              <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
+                {/* Main headline - AG style */}
+                <h1
+                  className="text-[2.5rem] sm:text-[3.5rem] lg:text-[4.5rem] text-black leading-[1.1] max-w-4xl mb-8"
+                  style={{ fontFamily: 'Lora, serif', fontWeight: 400 }}
+                >
+                  Finding simple solutions to complex messages.
+                </h1>
+
                 {/* Subheadline */}
-                <p className="text-xl md:text-2xl text-[#595959] max-w-2xl leading-relaxed mb-12 animate-fade-in" style={{ animationDelay: '300ms' }}>
-                  Tell us about your challenge and we'll curate relevant case studies and strategic insights tailored to your needs.
+                <p className="text-xl md:text-2xl text-[#313131] max-w-2xl mb-12 leading-relaxed">
+                  Communicating a vision is hard. We're really good at it. Tell us your challenge.
                 </p>
-                
-                {/* Input Area - Premium Style */}
-                <div className="max-w-2xl animate-fade-in" style={{ animationDelay: '400ms' }}>
+
+                {/* Input Area */}
+                <div className="max-w-2xl">
                   <form onSubmit={handleSubmit} className="relative">
                     <textarea
                       ref={inputRef}
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
                       onKeyDown={handleKeyDown}
-                      placeholder="Describe your challenge..."
+                      placeholder="What challenge can we help you with?"
                       className="
                         w-full px-6 py-5 pr-16
                         bg-white
-                        border-2 border-[#EEEEEE]
-                        rounded-2xl
-                        text-lg text-[#1A1818]
-                        placeholder:text-[#8A8A8A]
-                        focus:outline-none focus:border-[#1A1818]
-                        transition-all duration-300
+                        border border-[#313131]
+                        text-lg text-black
+                        placeholder:text-[#6B6B6B]
+                        focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2
+                        transition-all duration-200
                         resize-none
                         min-h-[72px] max-h-[150px]
-                        shadow-sm
-                        hover:shadow-md hover:border-[#D4D4D4]
                       "
                       rows={1}
                       disabled={isLoading}
                     />
-                    
-                    {/* Submit button */}
+
                     <button
                       type="submit"
                       disabled={!query.trim() || isLoading}
                       className="
-                        absolute right-4 bottom-4
-                        w-12 h-12 rounded-xl
-                        bg-[#1A1818]
+                        absolute right-3 bottom-3
+                        w-12 h-12
+                        bg-[#32373c]
                         text-white
                         flex items-center justify-center
-                        disabled:opacity-20 disabled:cursor-not-allowed
-                        hover:bg-[#333] hover:scale-105
-                        transition-all duration-200
+                        disabled:opacity-30 disabled:cursor-not-allowed
+                        hover:bg-black
+                        transition-colors duration-200
                       "
                       aria-label="Send message"
                     >
@@ -321,74 +297,57 @@ export default function ConciergePage() {
                       )}
                     </button>
                   </form>
-                  
-                  <p className="text-sm text-[#8A8A8A] mt-3 text-center">
-                    Press Enter to send · Shift+Enter for new line
+
+                  <p className="text-sm text-[#6B6B6B] mt-3">
+                    Press Enter to send
                   </p>
                 </div>
               </div>
             </section>
-            
-            {/* Example Prompts Section */}
-            <section className="bg-white py-16 border-t border-[#F3F3F3]">
-              <div className="max-w-5xl mx-auto px-6">
-                <p className="text-sm font-medium text-[#8A8A8A] uppercase tracking-wider mb-8">
+
+            {/* Example Prompts */}
+            <section className="py-16 bg-[#F5F5F5]">
+              <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
+                <p className="text-sm font-medium text-[#6B6B6B] uppercase tracking-wider mb-8">
                   Or explore by challenge
                 </p>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {examplePrompts.map((item, i) => (
                     <button
                       key={i}
                       onClick={() => handleSubmit(undefined, item.prompt)}
                       className="
-                        group p-6 text-left 
-                        bg-[#FAFAFA] hover:bg-white
-                        border border-[#EEEEEE] hover:border-[#1A1818]
-                        rounded-xl
-                        transition-all duration-300
-                        hover:shadow-lg
+                        group p-6 text-left
+                        bg-white
+                        border border-transparent hover:border-black
+                        transition-all duration-200
                       "
                     >
-                      <div className="flex items-start gap-4">
-                        <span className="text-2xl text-[#F96A63] group-hover:scale-110 transition-transform">
-                          {item.icon}
-                        </span>
-                        <div className="flex-1">
-                          <h3 className="font-medium text-[#1A1818] mb-1 group-hover:text-[#F96A63] transition-colors">
-                            {item.label}
-                          </h3>
-                          <p className="text-sm text-[#595959] leading-relaxed">
-                            {item.prompt}
-                          </p>
-                        </div>
-                        <svg 
-                          className="w-5 h-5 text-[#8A8A8A] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" 
-                          fill="none" 
-                          viewBox="0 0 24 24" 
-                          stroke="currentColor"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </div>
+                      <h3 className="font-medium text-black mb-2 group-hover:text-[#fc5d4c] transition-colors">
+                        {item.label}
+                      </h3>
+                      <p className="text-sm text-[#313131] leading-relaxed">
+                        {item.prompt}
+                      </p>
                     </button>
                   ))}
                 </div>
               </div>
             </section>
-            
-            {/* Client Logos Section */}
-            <section className="py-16 bg-[#FAFAFA]">
-              <div className="max-w-5xl mx-auto px-6">
-                <p className="text-center text-[#595959] mb-10 text-lg">
-                  You're in good company. The world's most successful brands trust us with their vision.
+
+            {/* Client Logos - Marquee style like AG */}
+            <section className="py-16">
+              <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
+                <p className="text-center text-[#313131] mb-10 text-lg">
+                  Trusted by the world's most innovative companies.
                 </p>
-                
-                <div className="flex flex-wrap justify-center items-center gap-x-10 gap-y-6">
+
+                <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-6">
                   {clients.map((client, i) => (
-                    <span 
+                    <span
                       key={i}
-                      className="text-[#8A8A8A] font-medium text-lg hover:text-[#1A1818] transition-colors cursor-default"
+                      className="text-[#6B6B6B] font-medium text-lg hover:text-black transition-colors"
                     >
                       {client}
                     </span>
@@ -396,34 +355,40 @@ export default function ConciergePage() {
                 </div>
               </div>
             </section>
-            
-            {/* Testimonial Section */}
-            <section className="py-20 bg-white">
-              <div className="max-w-3xl mx-auto px-6 text-center">
+
+            {/* Testimonial */}
+            <section className="py-20 bg-[#F5F5F5]">
+              <div className="max-w-3xl mx-auto px-6 lg:px-8 text-center">
                 <blockquote className="mb-8">
-                  <p className="font-serif text-2xl md:text-3xl text-[#1A1818] leading-relaxed italic">
+                  <p
+                    className="text-2xl md:text-3xl text-black leading-relaxed"
+                    style={{ fontFamily: 'Lora, serif' }}
+                  >
                     "Working with Article Group, you get the ideal mix of technology-translator, storyteller, and teammate. And they deliver the most beautiful work."
                   </p>
                 </blockquote>
                 <cite className="not-italic">
-                  <span className="font-semibold text-[#1A1818]">Dr. Werner Vogels</span>
-                  <span className="text-[#595959]"> · CTO of Amazon.com</span>
+                  <span className="font-semibold text-black">Dr. Werner Vogels</span>
+                  <span className="text-[#313131]"> · CTO of Amazon.com</span>
                 </cite>
               </div>
             </section>
-            
+
             {/* CTA Section */}
-            <section className="py-16 bg-[#1A1818]">
-              <div className="max-w-3xl mx-auto px-6 text-center">
-                <h3 className="font-serif text-3xl md:text-4xl text-white mb-6">
+            <section className="py-20 bg-black">
+              <div className="max-w-3xl mx-auto px-6 lg:px-8 text-center">
+                <h3
+                  className="text-3xl md:text-4xl text-white mb-6"
+                  style={{ fontFamily: 'Lora, serif' }}
+                >
                   Ready to tell your story?
                 </h3>
-                <p className="text-white/60 text-lg mb-10">
-                  Start a conversation above or reach out directly. We'd love to hear from you.
+                <p className="text-white/70 text-lg mb-10">
+                  Start a conversation above or reach out directly.
                 </p>
                 <Link
                   href="/contact"
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-[#F96A63] text-white font-semibold rounded-full hover:bg-[#e85d56] transition-all duration-300 text-lg"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-[#fc5d4c] text-white font-medium hover:bg-[#e54d3c] transition-colors text-lg"
                 >
                   Contact Us
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -434,149 +399,155 @@ export default function ConciergePage() {
             </section>
           </div>
         )}
-        
+
         {/* Conversation View */}
         {isHydrated && messages.length > 0 && (
-          <div className="flex-1 overflow-y-auto bg-[#FAFAFA]">
-            <div className="max-w-5xl mx-auto px-6 py-12">
-              {messages.map((message, index) => (
-                <div key={message.id} className="mb-12 animate-fade-in">
-                  {/* User Message */}
-                  {message.role === 'user' && (
-                    <div className="mb-12">
-                      {/* User query styled like AG's headline approach */}
-                      <div className="max-w-3xl">
-                        <p className="text-[#F96A63] text-sm font-medium mb-2">Your challenge</p>
-                        <h2 className="font-serif text-2xl md:text-3xl text-[#1A1818] leading-relaxed">
-                          "{message.content}"
-                        </h2>
-                        <div className="flex items-center gap-2 mt-4">
-                          <div className="w-1.5 h-1.5 rounded-full bg-[#1A1818]" />
-                          <div className="w-1.5 h-1.5 rounded-full bg-[#1A1818] opacity-60" />
-                          <div className="w-1.5 h-1.5 rounded-full bg-[#1A1818] opacity-30" />
+          <div className="flex-1 overflow-y-auto bg-[#F5F5F5]">
+            <div className="max-w-[1000px] mx-auto px-6 lg:px-8 py-12">
+              {messages.map((message, index) => {
+                const isLatestUserMessage = message.role === 'user' &&
+                  (index === messages.length - 1 || index === messages.length - 2);
+
+                return (
+                  <div key={message.id} className="mb-12">
+                    {/* User Message */}
+                    {message.role === 'user' && (
+                      <div
+                        className="mb-8"
+                        ref={isLatestUserMessage ? latestResponseRef : null}
+                      >
+                        <div className="max-w-3xl">
+                          <p className="text-[#fc5d4c] text-sm font-medium mb-2 uppercase tracking-wider">
+                            Your challenge
+                          </p>
+                          <h2
+                            className="text-2xl md:text-3xl text-black leading-relaxed"
+                            style={{ fontFamily: 'Lora, serif' }}
+                          >
+                            "{message.content}"
+                          </h2>
                         </div>
                       </div>
-                    </div>
-                  )}
-                  
-                  {/* Assistant Message */}
-                  {message.role === 'assistant' && (
-                    <div className="space-y-10">
-                      {/* Section header if there's a layout */}
-                      {message.layoutPlan && message.layoutPlan.layout.length > 0 && (
-                        <div className="mb-8">
-                          <p className="text-[#595959] text-lg md:text-xl leading-relaxed max-w-3xl">
-                            {message.content}
-                          </p>
-                        </div>
-                      )}
-                      
-                      {/* Layout/Case Studies */}
-                      {message.layoutPlan && message.layoutPlan.layout.length > 0 && (
-                        <div className="bg-white rounded-2xl p-8 md:p-10 shadow-sm border border-[#EEEEEE]">
-                          {/* Results header */}
-                          <div className="flex items-center justify-between mb-8">
-                            <div>
-                              <p className="text-xs font-medium text-[#8A8A8A] uppercase tracking-wider mb-1">
-                                Relevant Work
-                              </p>
-                              <h3 className="font-serif text-2xl text-[#1A1818]">
-                                Case Studies
-                              </h3>
+                    )}
+
+                    {/* Assistant Message */}
+                    {message.role === 'assistant' && (
+                      <div className="space-y-8">
+                        {/* Response text */}
+                        {message.layoutPlan && message.layoutPlan.layout.length > 0 && (
+                          <div className="mb-6">
+                            <p className="text-[#313131] text-lg md:text-xl leading-relaxed max-w-3xl">
+                              {message.content}
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Layout/Case Studies */}
+                        {message.layoutPlan && message.layoutPlan.layout.length > 0 && (
+                          <div className="bg-white p-8 md:p-10 border border-[#eee]">
+                            <div className="flex items-center justify-between mb-8">
+                              <div>
+                                <p className="text-xs font-medium text-[#6B6B6B] uppercase tracking-wider mb-1">
+                                  Relevant Work
+                                </p>
+                                <h3
+                                  className="text-2xl text-black"
+                                  style={{ fontFamily: 'Lora, serif' }}
+                                >
+                                  Case Studies
+                                </h3>
+                              </div>
+                              <div className="hidden md:block text-sm text-[#6B6B6B]">
+                                Click to view details
+                              </div>
                             </div>
-                            <div className="hidden md:flex items-center gap-2 text-sm text-[#595959]">
-                              <span>Click to explore</span>
-                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                              </svg>
+
+                            <LayoutRenderer layoutPlan={message.layoutPlan} />
+                          </div>
+                        )}
+
+                        {/* Response without layout */}
+                        {(!message.layoutPlan || message.layoutPlan.layout.length === 0) && (
+                          <div className="bg-white p-8 border border-[#eee]">
+                            <div className="flex gap-5">
+                              <div className="flex-shrink-0 w-10 h-10 bg-black rounded flex items-center justify-center">
+                                <span className="text-white font-semibold text-sm">AG</span>
+                              </div>
+                              <div className="flex-1">
+                                <p className="text-[#313131] text-lg leading-relaxed">
+                                  {message.content}
+                                </p>
+                              </div>
                             </div>
                           </div>
-                          
-                          <LayoutRenderer layoutPlan={message.layoutPlan} />
-                        </div>
-                      )}
-                      
-                      {/* Explanation without layout */}
-                      {(!message.layoutPlan || message.layoutPlan.layout.length === 0) && (
-                        <div className="bg-white rounded-2xl p-8 shadow-sm border border-[#EEEEEE]">
-                          <div className="flex gap-5">
-                            <div className="flex-shrink-0 w-10 h-10 bg-[#1A1818] rounded-xl flex items-center justify-center">
-                              <span className="text-white font-bold text-sm">AG</span>
-                            </div>
-                            <div className="flex-1">
-                              <p className="text-[#595959] text-lg leading-relaxed">
-                                {message.content}
-                              </p>
+                        )}
+
+                        {/* Follow-up suggestions */}
+                        {message.suggestedFollowUps && message.suggestedFollowUps.length > 0 && index === messages.length - 1 && (
+                          <div className="bg-white p-8 border border-[#eee]">
+                            <p className="text-xs font-medium text-[#6B6B6B] uppercase tracking-wider mb-4">
+                              Continue exploring
+                            </p>
+                            <div className="flex flex-wrap gap-3">
+                              {message.suggestedFollowUps.map((followUp, i) => (
+                                <button
+                                  key={i}
+                                  onClick={() => handleFollowUp(followUp)}
+                                  className="group px-5 py-3 text-sm text-black bg-[#F5F5F5] border border-transparent hover:border-black transition-all duration-200 flex items-center gap-2"
+                                >
+                                  <span>{followUp}</span>
+                                  <svg className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                  </svg>
+                                </button>
+                              ))}
                             </div>
                           </div>
-                        </div>
-                      )}
-                      
-                      {/* Follow-up suggestions */}
-                      {message.suggestedFollowUps && message.suggestedFollowUps.length > 0 && index === messages.length - 1 && (
-                        <div className="bg-white rounded-2xl p-8 shadow-sm border border-[#EEEEEE]">
-                          <p className="text-xs font-medium text-[#8A8A8A] uppercase tracking-wider mb-4">
-                            Explore further
-                          </p>
-                          <div className="flex flex-wrap gap-3">
-                            {message.suggestedFollowUps.map((followUp, i) => (
-                              <button
-                                key={i}
-                                onClick={() => handleFollowUp(followUp)}
-                                className="group px-5 py-3 text-sm text-[#1A1818] bg-[#FAFAFA] border border-[#EEEEEE] rounded-full hover:border-[#1A1818] hover:bg-white transition-all duration-300 flex items-center gap-2"
-                              >
-                                <span>{followUp}</span>
-                                <svg className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                </svg>
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              ))}
-              
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+
               {/* Loading indicator */}
               {isLoading && (
-                <div className="bg-white rounded-2xl p-8 shadow-sm border border-[#EEEEEE] animate-fade-in">
+                <div className="bg-white p-8 border border-[#eee]">
                   <div className="flex gap-5">
-                    <div className="flex-shrink-0 w-10 h-10 bg-[#1A1818] rounded-xl flex items-center justify-center">
+                    <div className="flex-shrink-0 w-10 h-10 bg-black rounded flex items-center justify-center">
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-[#8A8A8A] mb-3">Finding relevant case studies...</p>
+                      <p className="text-[#6B6B6B] mb-3">Finding relevant case studies...</p>
                       <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-[#F96A63] rounded-full animate-pulse" />
-                        <div className="w-2 h-2 bg-[#0097A7] rounded-full animate-pulse" style={{ animationDelay: '150ms' }} />
-                        <div className="w-2 h-2 bg-[#3FD9A3] rounded-full animate-pulse" style={{ animationDelay: '300ms' }} />
+                        <div className="w-2 h-2 bg-[#fc5d4c] rounded-full animate-pulse" />
+                        <div className="w-2 h-2 bg-[#47ddb2] rounded-full animate-pulse" style={{ animationDelay: '150ms' }} />
+                        <div className="w-2 h-2 bg-[#0d72d1] rounded-full animate-pulse" style={{ animationDelay: '300ms' }} />
                       </div>
                     </div>
                   </div>
                 </div>
               )}
-              
+
               <div ref={messagesEndRef} />
             </div>
           </div>
         )}
-        
+
         {/* Error message */}
         {error && (
           <div className="max-w-4xl mx-auto px-6 mb-4">
-            <div className="p-4 rounded-xl bg-red-50 border border-red-100 text-red-700 text-sm text-center">
+            <div className="p-4 bg-[#fc5d4c]/10 border border-[#fc5d4c]/20 text-[#fc5d4c] text-sm text-center">
               {error}
             </div>
           </div>
         )}
       </main>
-      
-      {/* Input area - Fixed at bottom (only in conversation mode) */}
+
+      {/* Input area - Fixed at bottom (conversation mode) */}
       {isHydrated && messages.length > 0 && (
-        <div className="sticky bottom-0 bg-white border-t border-gray-100">
-          <div className="max-w-4xl mx-auto px-6 py-4">
+        <div className="sticky bottom-0 bg-white border-t border-[#eee]">
+          <div className="max-w-[800px] mx-auto px-6 py-4">
             <form onSubmit={handleSubmit} className="relative">
               <textarea
                 ref={inputRef}
@@ -586,13 +557,11 @@ export default function ConciergePage() {
                 placeholder="Continue the conversation..."
                 className="
                   w-full px-5 py-4 pr-14
-                  bg-gray-50
-                  border border-gray-200
-                  rounded-2xl
-                  text-base text-[#1A1818]
-                  placeholder:text-gray-400
-                  focus:outline-none focus:border-[#1A1818] focus:bg-white
-                  focus:ring-1 focus:ring-[#1A1818]
+                  bg-[#F5F5F5]
+                  border border-transparent
+                  text-base text-black
+                  placeholder:text-[#6B6B6B]
+                  focus:outline-none focus:border-black focus:bg-white
                   transition-all duration-200
                   resize-none
                   min-h-[56px] max-h-[150px]
@@ -600,20 +569,19 @@ export default function ConciergePage() {
                 rows={1}
                 disabled={isLoading}
               />
-              
-              {/* Submit button */}
+
               <button
                 type="submit"
                 disabled={!query.trim() || isLoading}
                 className="
-                  absolute right-3 bottom-3
-                  w-10 h-10 rounded-xl
-                  bg-[#1A1818]
+                  absolute right-2 bottom-2
+                  w-10 h-10
+                  bg-[#32373c]
                   text-white
                   flex items-center justify-center
                   disabled:opacity-30 disabled:cursor-not-allowed
-                  hover:bg-[#333]
-                  transition-all duration-200
+                  hover:bg-black
+                  transition-colors duration-200
                 "
                 aria-label="Send message"
               >
@@ -626,24 +594,30 @@ export default function ConciergePage() {
                 )}
               </button>
             </form>
-            
-            <p className="text-xs text-gray-400 mt-2 text-center">
-              Press Enter to send · Shift+Enter for new line
-            </p>
           </div>
         </div>
       )}
-      
-      {/* Add animation styles */}
-      <style jsx global>{`
-        @keyframes fade-in {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in {
-          animation: fade-in 0.4s ease-out forwards;
-        }
-      `}</style>
+
+      {/* Footer - only on welcome screen */}
+      {showWelcome && (
+        <footer className="py-8 border-t border-[#eee]">
+          <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <p className="text-sm text-[#6B6B6B]">
+                © {new Date().getFullYear()} Article Group
+              </p>
+              <div className="flex items-center gap-6 text-sm text-[#6B6B6B]">
+                <Link href="https://articlegroup.com" target="_blank" className="hover:text-black transition-colors">
+                  articlegroup.com
+                </Link>
+                <Link href="https://articlegroup.com/privacy-policy" target="_blank" className="hover:text-black transition-colors">
+                  Privacy
+                </Link>
+              </div>
+            </div>
+          </div>
+        </footer>
+      )}
     </div>
   );
 }

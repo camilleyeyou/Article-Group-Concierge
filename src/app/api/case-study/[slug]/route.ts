@@ -15,6 +15,16 @@ interface RelatedArticle {
   relevance_score?: number;
 }
 
+interface RelatedCaseStudy {
+  id: string;
+  title: string;
+  slug: string;
+  client_name: string | null;
+  summary: string | null;
+  thumbnail_url: string | null;
+  relevance_score?: number;
+}
+
 interface SupportVideo {
   id: string;
   video_url: string;
@@ -215,6 +225,94 @@ export async function GET(
     // Limit to 6 articles
     relatedArticles = relatedArticles.slice(0, 6);
 
+    // Fetch related case studies (other case studies with shared capabilities/industries)
+    let relatedCaseStudies: RelatedCaseStudy[] = [];
+
+    // Strategy 1: Find case studies with shared capabilities
+    if (capabilityLinks && capabilityLinks.length > 0) {
+      const capIds = capabilityLinks.map(c => c.capability_id);
+
+      // Get document IDs that share capabilities
+      const { data: sharedCapDocs } = await supabase
+        .from('document_capabilities')
+        .select('document_id')
+        .in('capability_id', capIds)
+        .neq('document_id', caseStudy.id);
+
+      if (sharedCapDocs && sharedCapDocs.length > 0) {
+        const docIds = [...new Set(sharedCapDocs.map(d => d.document_id))];
+
+        const { data: capCaseStudies } = await supabase
+          .from('documents')
+          .select('id, title, slug, client_name, summary, thumbnail_url')
+          .eq('doc_type', 'case_study')
+          .in('id', docIds)
+          .limit(6);
+
+        if (capCaseStudies) {
+          relatedCaseStudies = capCaseStudies.map(cs => ({
+            ...cs,
+            relevance_score: 0.8
+          }));
+        }
+      }
+    }
+
+    // Strategy 2: Find case studies with shared industries if not enough
+    if (relatedCaseStudies.length < 3 && industryLinks && industryLinks.length > 0) {
+      const indIds = industryLinks.map(i => i.industry_id);
+
+      const { data: sharedIndDocs } = await supabase
+        .from('document_industries')
+        .select('document_id')
+        .in('industry_id', indIds)
+        .neq('document_id', caseStudy.id);
+
+      if (sharedIndDocs && sharedIndDocs.length > 0) {
+        const docIds = [...new Set(sharedIndDocs.map(d => d.document_id))];
+        const existingIds = new Set(relatedCaseStudies.map(cs => cs.id));
+
+        const { data: indCaseStudies } = await supabase
+          .from('documents')
+          .select('id, title, slug, client_name, summary, thumbnail_url')
+          .eq('doc_type', 'case_study')
+          .in('id', docIds)
+          .not('id', 'in', `(${[...existingIds].join(',')})`)
+          .limit(6);
+
+        if (indCaseStudies) {
+          for (const cs of indCaseStudies) {
+            if (!existingIds.has(cs.id)) {
+              relatedCaseStudies.push({ ...cs, relevance_score: 0.6 });
+            }
+          }
+        }
+      }
+    }
+
+    // Strategy 3: Get other case studies if still not enough
+    if (relatedCaseStudies.length < 3) {
+      const existingIds = new Set(relatedCaseStudies.map(cs => cs.id));
+
+      const { data: otherCaseStudies } = await supabase
+        .from('documents')
+        .select('id, title, slug, client_name, summary, thumbnail_url')
+        .eq('doc_type', 'case_study')
+        .neq('id', caseStudy.id)
+        .limit(6);
+
+      if (otherCaseStudies) {
+        for (const cs of otherCaseStudies) {
+          if (!existingIds.has(cs.id) && relatedCaseStudies.length < 6) {
+            relatedCaseStudies.push({ ...cs, relevance_score: 0.3 });
+          }
+        }
+      }
+    }
+
+    // Limit to 4 case studies
+    relatedCaseStudies = relatedCaseStudies.slice(0, 4);
+
     const response = NextResponse.json({
       caseStudy,
       chunks: chunks || [],
@@ -224,6 +322,7 @@ export async function GET(
       metrics: metrics || [],
       supportVideos,
       relatedArticles,
+      relatedCaseStudies,
     });
     
     // Prevent caching
