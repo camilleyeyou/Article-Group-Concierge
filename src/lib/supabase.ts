@@ -451,9 +451,9 @@ export async function retrieveContext({
   // IMPROVEMENT 2: Separate by document type for balanced results
   const caseStudyChunks = relevantChunks.filter(c => c.document_type === 'case_study');
   const articleChunks = relevantChunks.filter(c => c.document_type === 'article');
-  
+
   console.log(`[Retrieval] Case studies: ${caseStudyChunks.length}, Articles: ${articleChunks.length}`);
-  
+
   // IMPROVEMENT 3: Deduplicate - keep best chunk per document
   const getBestPerDocument = (chunks: typeof rawChunks) => {
     const bestChunkPerDocument = new Map<string, typeof rawChunks[0]>();
@@ -466,16 +466,29 @@ export async function retrieveContext({
     return [...bestChunkPerDocument.values()]
       .sort((a, b) => b.combined_score - a.combined_score);
   };
-  
+
   const bestCaseStudies = getBestPerDocument(caseStudyChunks);
   const bestArticles = getBestPerDocument(articleChunks);
-  
+
+  // FIX: If no case studies passed relevance filter but raw results had them,
+  // include top 2 case studies anyway (addresses "missing 50% of time" issue)
+  let fallbackCaseStudies: typeof rawChunks = [];
+  if (bestCaseStudies.length === 0) {
+    const allRawCaseStudies = rawChunks.filter(c => c.document_type === 'case_study');
+    if (allRawCaseStudies.length > 0) {
+      console.log(`[Retrieval] No case studies passed filter, including top 2 as fallback`);
+      fallbackCaseStudies = getBestPerDocument(allRawCaseStudies).slice(0, 2);
+    }
+  }
+
   // IMPROVEMENT 4: Prioritize case studies, but include relevant articles
-  // Take up to 4 case studies and up to 2 articles
+  // Take up to 4 case studies (or fallback if none passed filter) and up to 2 articles
   const maxCaseStudies = 4;
   const maxArticles = 2;
-  
-  const selectedCaseStudies = bestCaseStudies.slice(0, maxCaseStudies);
+
+  const selectedCaseStudies = bestCaseStudies.length > 0
+    ? bestCaseStudies.slice(0, maxCaseStudies)
+    : fallbackCaseStudies;
   const selectedArticles = bestArticles.slice(0, maxArticles);
   
   // Combine and sort by score
