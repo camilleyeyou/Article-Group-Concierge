@@ -16,109 +16,75 @@ export const CaseStudyTeaser: React.FC<CaseStudyTeaserProps> = ({
   summary,
   capabilities = [],
   industries = [],
-  thumbnailUrl,
   slug,
 }) => {
-  // Generate gradient based on client name for visual variety
-  // Using AG website color palette
-  const gradients = [
-    'from-[#32373c] to-[#1a1a1a]',
-    'from-[#0d72d1] to-[#084d8c]',
-    'from-[#fc5d4c] to-[#c94a3c]',
-    'from-[#47ddb2] to-[#2eb88e]',
-    'from-[#b47bd5] to-[#8a5ca8]',
-    'from-[#4a5568] to-[#2d3748]',
-  ];
-  const gradientIndex = (clientName || title).charCodeAt(0) % gradients.length;
-  const gradient = gradients[gradientIndex];
-
   // Parse title to separate client name if format is "Client: Project Title"
   const titleParts = title.split(':');
   const displayClientName = titleParts.length > 1 ? titleParts[0].trim() : clientName;
   const displayTitle = titleParts.length > 1 ? titleParts.slice(1).join(':').trim() : title;
 
   const content = (
-    <div className="group relative overflow-hidden bg-white border border-transparent hover:border-black transition-all duration-300">
-      {/* Image/Gradient Background - AG uses larger aspect ratio */}
-      <div className="relative aspect-[4/3] overflow-hidden bg-[#F5F5F5]">
-        {thumbnailUrl ? (
-          <img
-            src={thumbnailUrl}
-            alt={`${displayClientName || displayTitle} case study`}
-            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-            loading="lazy"
-          />
-        ) : (
-          <div className={`absolute inset-0 bg-gradient-to-br ${gradient}`}>
-            {/* Decorative elements - more subtle */}
-            <div className="absolute inset-0 opacity-5">
-              <div className="absolute top-1/4 left-1/4 w-40 h-40 border border-white rounded-full" />
-              <div className="absolute bottom-1/4 right-1/4 w-32 h-32 border border-white rounded-full" />
-            </div>
-            {/* Client initial - larger, more prominent */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span
-                className="text-8xl text-white/10"
-                style={{ fontFamily: 'Lora, serif' }}
-              >
-                {(displayClientName || displayTitle).charAt(0)}
-              </span>
-            </div>
-          </div>
-        )}
-
-        {/* Overlay gradient - more subtle for cleaner look */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      </div>
-
-      {/* Content area - cleaner layout */}
-      <div className="p-6">
-        {/* Client name - subtle label style */}
-        {displayClientName && (
-          <p className="text-xs font-medium text-[#0d72d1] uppercase tracking-wider mb-2">
-            {displayClientName}
+    <div className="group relative overflow-hidden bg-white border border-[#eee] hover:border-black transition-all duration-300">
+      {/* Black overlay header - AG style (fixes "lost black overlay" feedback) */}
+      <div className="bg-[#1a1a1a] px-6 py-8">
+        {/* Category label - teal accent */}
+        {capabilities.length > 0 && (
+          <p className="text-[#47ddb2] text-xs font-medium uppercase tracking-wider mb-4">
+            {capabilities[0]}
+            {capabilities.length > 1 && ` / ${capabilities[1]}`}
           </p>
         )}
 
-        {/* Project title - using Lora for editorial feel */}
+        {/* Title - white text on dark background */}
         <h3
-          className="text-lg md:text-xl text-black leading-snug mb-3 group-hover:text-[#fc5d4c] transition-colors duration-300"
+          className="text-white text-xl md:text-2xl leading-tight mb-4"
           style={{ fontFamily: 'Lora, serif', fontWeight: 400 }}
         >
           {displayTitle}
         </h3>
 
-        {/* Summary - if available */}
+        {/* Summary - lighter text */}
         {summary && (
-          <p className="text-sm text-[#6B6B6B] leading-relaxed line-clamp-2 mb-4">
+          <p className="text-white/70 text-sm leading-relaxed">
             {summary}
           </p>
         )}
+      </div>
 
-        {/* Tags - minimal, inline style */}
-        {(capabilities.length > 0 || industries.length > 0) && (
-          <div className="flex flex-wrap gap-2 mb-5">
-            {capabilities.slice(0, 2).map((cap, i) => (
-              <span
-                key={`cap-${i}`}
-                className="px-2 py-0.5 text-xs text-[#0d72d1] bg-[#0d72d1]/8 font-medium"
-              >
-                {cap}
-              </span>
-            ))}
-            {industries.slice(0, 1).map((ind, i) => (
-              <span
-                key={`ind-${i}`}
-                className="px-2 py-0.5 text-xs text-[#6B6B6B] bg-[#F5F5F5] font-medium"
-              >
-                {ind}
-              </span>
-            ))}
+      {/* White content area with details */}
+      <div className="bg-white px-6 py-5 border-t border-[#eee]">
+        {/* Client name if available */}
+        {displayClientName && (
+          <div className="flex items-start gap-3 mb-4">
+            <div className="flex-shrink-0 mt-1">
+              <svg className="w-5 h-5 text-[#6B6B6B]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-xs text-[#6B6B6B] uppercase tracking-wider mb-1">Client</p>
+              <p className="text-sm text-black font-medium">{displayClientName}</p>
+            </div>
           </div>
         )}
 
-        {/* View link - AG style with arrow animation */}
-        <div className="flex items-center gap-2 text-[#fc5d4c] font-medium text-sm">
+        {/* Industries */}
+        {industries.length > 0 && (
+          <div className="flex items-start gap-3 mb-4">
+            <div className="flex-shrink-0 mt-1">
+              <svg className="w-5 h-5 text-[#6B6B6B]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-xs text-[#6B6B6B] uppercase tracking-wider mb-1">Industry</p>
+              <p className="text-sm text-black">{industries.slice(0, 2).join(', ')}</p>
+            </div>
+          </div>
+        )}
+
+        {/* View link */}
+        <div className="flex items-center gap-2 text-[#fc5d4c] font-medium text-sm pt-2">
           <span>View project</span>
           <svg
             className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300"

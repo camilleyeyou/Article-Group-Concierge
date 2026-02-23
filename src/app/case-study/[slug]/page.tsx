@@ -288,7 +288,7 @@ export default function CaseStudyDetailPage() {
           </div>
         </div>
 
-        {/* PDF Viewer - Native embed for speed */}
+        {/* PDF Viewer - Native embed with reasonable height */}
         {caseStudy.pdf_url ? (
           <div className="w-full bg-[#525659]">
             <embed
@@ -296,7 +296,8 @@ export default function CaseStudyDetailPage() {
               type="application/pdf"
               className="w-full"
               style={{
-                height: 'calc(100vh - 60px)',
+                height: '85vh',
+                maxHeight: '900px',
                 minHeight: '600px',
               }}
             />

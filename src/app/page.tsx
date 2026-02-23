@@ -236,11 +236,6 @@ export default function ConciergePage() {
             {/* Hero Section - Full viewport height like AG */}
             <section className="min-h-[calc(100vh-64px)] flex flex-col justify-center py-16 md:py-24">
               <div className="max-w-[1200px] mx-auto px-6 lg:px-8 flex-1 flex flex-col justify-center">
-                {/* Subtle label */}
-                <p className="text-sm font-medium text-[#6B6B6B] uppercase tracking-wider mb-6 animate-fade-in">
-                  Strategic Advisory & Creative Studio
-                </p>
-
                 {/* Main headline - AG style with tighter line height */}
                 <h1
                   className="text-[2.75rem] sm:text-[4rem] lg:text-[5rem] text-black leading-[1.05] max-w-5xl mb-8 animate-fade-in-up"
@@ -523,26 +518,9 @@ export default function ConciergePage() {
                           </div>
                         )}
 
-                        {/* Layout/Case Studies */}
+                        {/* Layout/Visual Content */}
                         {message.layoutPlan && message.layoutPlan.layout.length > 0 && (
                           <div className="bg-white p-8 md:p-10 border border-[#eee]">
-                            <div className="flex items-center justify-between mb-8">
-                              <div>
-                                <p className="text-xs font-medium text-[#6B6B6B] uppercase tracking-wider mb-1">
-                                  Relevant Work
-                                </p>
-                                <h3
-                                  className="text-2xl text-black"
-                                  style={{ fontFamily: 'Lora, serif' }}
-                                >
-                                  Case Studies
-                                </h3>
-                              </div>
-                              <div className="hidden md:block text-sm text-[#6B6B6B]">
-                                Click to view details
-                              </div>
-                            </div>
-
                             <LayoutRenderer layoutPlan={message.layoutPlan} />
                           </div>
                         )}
