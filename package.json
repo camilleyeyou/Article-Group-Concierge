@@ -22,7 +22,11 @@
     "ingest:articles": "tsx scripts/ingest-articles.ts",
     "ingest:images": "tsx scripts/ingest-images.ts",
     "upload:pdfs": "tsx scripts/upload-pdfs.ts",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.30.0",

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
+import { APILogger } from '@/lib/logger';
 
 // Disable caching for this route
 export const dynamic = 'force-dynamic';
@@ -95,7 +96,7 @@ export async function GET(
       .order('chunk_index', { ascending: true });
 
     if (chunksError) {
-      console.error('Error fetching chunks:', chunksError);
+      APILogger.error('Error fetching chunks', chunksError);
     }
 
     // Fetch capabilities
@@ -170,7 +171,7 @@ export async function GET(
         relatedArticles = capArticles;
       }
     } catch (e) {
-      console.log('get_related_articles function not available');
+      APILogger.debug('get_related_articles function not available');
     }
     
     // Strategy 2: Keyword-based search using case study title/client
@@ -331,7 +332,7 @@ export async function GET(
     return response;
 
   } catch (error) {
-    console.error('Error fetching case study:', error);
+    APILogger.error('Error fetching case study', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

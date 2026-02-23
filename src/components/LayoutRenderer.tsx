@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 import { ComponentRegistry, isValidComponent } from './index';
 import type { LayoutPlan, LayoutComponent, ComponentType } from '../types';
+import { UILogger } from '../lib/logger';
+import { LayoutErrorBoundary } from './ErrorBoundary';
 
 /**
  * LayoutRenderer Component
@@ -31,7 +33,7 @@ const ComponentWrapper: React.FC<ComponentWrapperProps> = ({
   
   // Validate component exists
   if (!isValidComponent(component)) {
-    console.warn(`Unknown component: ${component}`);
+    UILogger.warn('Unknown component', { component });
     return (
       <div className="p-4 rounded-lg border border-dashed border-gray-300 bg-gray-50 text-gray-500 text-center text-sm">
         Unknown component: <code className="font-mono">{component}</code>
@@ -40,13 +42,17 @@ const ComponentWrapper: React.FC<ComponentWrapperProps> = ({
   }
   
   const Component = ComponentRegistry[component as ComponentType];
-  
+
   try {
-    return <Component {...props} />;
+    return (
+      <LayoutErrorBoundary>
+        <Component {...props} />
+      </LayoutErrorBoundary>
+    );
   } catch (error) {
-    console.error(`Error rendering ${component}:`, error);
+    UILogger.error('Error rendering component', error, { component });
     onError?.(error as Error, item);
-    
+
     return (
       <div className="p-4 rounded-lg border border-red-200 bg-red-50 text-red-600 text-center text-sm">
         Error rendering: <code className="font-mono">{component}</code>

@@ -13,6 +13,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { retrieveContext } from '@/lib/supabase';
 import { orchestrate } from '@/lib/orchestrator';
 import type { OrchestratorOutput } from '@/types';
+import { APILogger } from '@/lib/logger';
+import { rateLimiter, RATE_LIMITS } from '@/lib/rate-limit';
+import { analytics } from '@/lib/analytics';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60; // Allow up to 60s for complex queries
@@ -29,10 +32,19 @@ interface ChatRequest {
   }>;
 }
 
-export async function POST(request: NextRequest): Promise<NextResponse<OrchestratorOutput | { error: string }>> {
+export async function POST(request: NextRequest): Promise<NextResponse> {
+  // Check rate limit
+  const rateLimitResponse = rateLimiter.check(request, RATE_LIMITS.CHAT);
+  if (rateLimitResponse) {
+    return rateLimitResponse;
+  }
+
+  // Start timer for analytics
+  const requestTimer = analytics.startTimer('chat_request');
+
   try {
     const body: ChatRequest = await request.json();
-    
+
     // Validate request
     if (!body.query || typeof body.query !== 'string') {
       return NextResponse.json(
@@ -40,7 +52,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<Orchestra
         { status: 400 }
       );
     }
-    
+
     const query = body.query.trim();
     if (query.length < 3) {
       return NextResponse.json(
@@ -48,7 +60,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<Orchestra
         { status: 400 }
       );
     }
-    
+
     if (query.length > 2000) {
       return NextResponse.json(
         { error: 'Query too long (max 2000 characters)' },
@@ -57,8 +69,8 @@ export async function POST(request: NextRequest): Promise<NextResponse<Orchestra
     }
     
     // Step 1: Retrieve relevant context
-    console.log(`Processing query: "${query.slice(0, 50)}..."`);
-    
+    APILogger.info('Processing query', { query: query.slice(0, 50) + '...' });
+
     const context = await retrieveContext({
       query,
       capabilitySlugs: body.filters?.capabilities,
@@ -66,8 +78,11 @@ export async function POST(request: NextRequest): Promise<NextResponse<Orchestra
       maxChunks: 10,
       maxAssets: 5,
     });
-    
-    console.log(`Retrieved ${context.chunks.length} chunks, ${context.visualAssets.length} assets`);
+
+    APILogger.info('Retrieved context', {
+      chunks: context.chunks.length,
+      assets: context.visualAssets.length,
+    });
     
     // Step 2: Run orchestrator
     const result = await orchestrate({
@@ -75,15 +90,38 @@ export async function POST(request: NextRequest): Promise<NextResponse<Orchestra
       context,
       conversationHistory: body.conversationHistory,
     });
-    
-    console.log(`Generated layout with ${result.layoutPlan.layout.length} components`);
-    
+
+    APILogger.info('Generated layout', {
+      components: result.layoutPlan.layout.length,
+    });
+
+    // Track successful query
+    requestTimer({ success: true, components: result.layoutPlan.layout.length });
+    analytics.trackQuery({
+      query,
+      componentsGenerated: result.layoutPlan.layout.length,
+      cacheHit: false, // TODO: Detect cache hits
+      error: false,
+    });
+
+    // Track component usage
+    result.layoutPlan.layout.forEach(item => {
+      analytics.trackComponentUsage(item.component);
+    });
+
     // Return the result
     return NextResponse.json(result);
     
   } catch (error) {
-    console.error('Chat API error:', error);
-    
+    APILogger.error('Chat API error', error);
+
+    // Track error
+    requestTimer({ success: false, error: true });
+    analytics.trackQuery({
+      query: 'unknown',
+      error: true,
+    });
+
     return NextResponse.json(
       { 
         error: 'An error occurred processing your request',

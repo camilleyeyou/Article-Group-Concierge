@@ -17,6 +17,8 @@ import type {
   Topic,
   RetrievedContext,
 } from '../types';
+import { RAGLogger } from './logger';
+import { cache, CACHE_PREFIXES, CACHE_TTL } from './cache';
 
 // Lazy-initialized Supabase client
 let _supabase: SupabaseClient | null = null;
@@ -52,8 +54,16 @@ export const supabase = new Proxy({} as SupabaseClient, {
 /**
  * Generate embeddings using OpenAI's text-embedding-3-small
  * You can swap this for any embedding model that outputs 1536 dimensions
+ *
+ * CACHED: Embeddings are cached for 24 hours to reduce API costs
  */
 export async function generateEmbedding(text: string): Promise<number[]> {
+  // Check cache first
+  const cached = cache.get<number[]>(CACHE_PREFIXES.EMBEDDING, text);
+  if (cached) {
+    return cached;
+  }
+
   const response = await fetch('https://api.openai.com/v1/embeddings', {
     method: 'POST',
     headers: {
@@ -65,13 +75,18 @@ export async function generateEmbedding(text: string): Promise<number[]> {
       input: text,
     }),
   });
-  
+
   if (!response.ok) {
     throw new Error(`Embedding API error: ${response.statusText}`);
   }
-  
+
   const data = await response.json();
-  return data.data[0].embedding;
+  const embedding = data.data[0].embedding;
+
+  // Cache the embedding
+  cache.set(CACHE_PREFIXES.EMBEDDING, text, embedding, CACHE_TTL.EMBEDDING);
+
+  return embedding;
 }
 
 // ============================================
@@ -117,7 +132,7 @@ export async function hybridSearch({
   });
   
   if (error) {
-    console.error('Hybrid search error:', error);
+    RAGLogger.error('Hybrid search error', error);
     throw error;
   }
   
@@ -157,7 +172,7 @@ export async function searchVisualAssets({
   });
   
   if (error) {
-    console.error('Visual asset search error:', error);
+    RAGLogger.error('Visual asset search error', error);
     throw error;
   }
   
@@ -195,7 +210,7 @@ export async function getDocumentMetrics(
     .order('display_order', { ascending: true });
   
   if (error) {
-    console.error('Metrics fetch error:', error);
+    RAGLogger.error('Metrics fetch error', error);
     throw error;
   }
   
@@ -219,7 +234,7 @@ export async function getCapabilities(): Promise<Capability[]> {
     .order('name', { ascending: true });
   
   if (error) {
-    console.error('Capabilities fetch error:', error);
+    RAGLogger.error('Capabilities fetch error', error);
     throw error;
   }
   
@@ -236,7 +251,7 @@ export async function getIndustries(): Promise<Industry[]> {
     .order('name', { ascending: true });
   
   if (error) {
-    console.error('Industries fetch error:', error);
+    RAGLogger.error('Industries fetch error', error);
     throw error;
   }
   
@@ -253,7 +268,7 @@ export async function getTopics(): Promise<Topic[]> {
     .order('name', { ascending: true });
   
   if (error) {
-    console.error('Topics fetch error:', error);
+    RAGLogger.error('Topics fetch error', error);
     throw error;
   }
   
@@ -342,9 +357,11 @@ function detectQueryIntent(query: string): { capabilities: string[]; industries:
 /**
  * Main retrieval function that gathers all context needed for the orchestrator.
  * This is called before sending the user query to Claude.
- * 
+ *
  * Includes relevance filtering and deduplication to improve result quality.
  * IMPORTANT: Ensures a balanced mix of case studies and articles.
+ *
+ * CACHED: Results are cached for 1 hour to reduce database load and API costs
  */
 export async function retrieveContext({
   query,
@@ -354,6 +371,23 @@ export async function retrieveContext({
   maxAssets = 5,
   minRelevanceScore = 0.15, // Lowered threshold - semantic scores are often 0.2-0.4
 }: RetrieveContextParams): Promise<RetrievedContext> {
+  // Create cache key from query and filters
+  const cacheKey = {
+    query,
+    capabilitySlugs: capabilitySlugs?.sort(),
+    industrySlugs: industrySlugs?.sort(),
+    maxChunks,
+    maxAssets,
+    minRelevanceScore,
+  };
+
+  // Check cache first
+  const cached = cache.get<RetrievedContext>(CACHE_PREFIXES.RAG_SEARCH, cacheKey);
+  if (cached) {
+    RAGLogger.debug('Using cached RAG results', { query: query.slice(0, 50) });
+    return cached;
+  }
+
   // IMPROVEMENT: Auto-detect capabilities and industries from query
   const detectedIntent = detectQueryIntent(query);
 
@@ -367,8 +401,10 @@ export async function retrieveContext({
     ...detectedIntent.industries.filter(i => !industrySlugs?.includes(i))
   ];
 
-  console.log(`[Retrieval] Detected capabilities: ${detectedIntent.capabilities.join(', ') || 'none'}`);
-  console.log(`[Retrieval] Detected industries: ${detectedIntent.industries.join(', ') || 'none'}`);
+  RAGLogger.debug('Detected intent from query', {
+    capabilities: detectedIntent.capabilities.join(', ') || 'none',
+    industries: detectedIntent.industries.join(', ') || 'none',
+  });
 
   // Run searches in parallel for performance
   // First search: with detected filters for better case study matching
@@ -433,18 +469,20 @@ export async function retrieveContext({
   rawChunks.sort((a, b) => b.combined_score - a.combined_score);
   
   // Log raw results for debugging
-  console.log(`[Retrieval] Query: "${query.slice(0, 50)}..."`);
-  console.log(`[Retrieval] Raw chunks returned: ${rawChunks.length}`);
-  if (rawChunks.length > 0) {
-    console.log(`[Retrieval] Score range: ${rawChunks[rawChunks.length - 1]?.combined_score?.toFixed(3)} - ${rawChunks[0]?.combined_score?.toFixed(3)}`);
-  }
+  RAGLogger.debug('Raw search results', {
+    query: query.slice(0, 50) + '...',
+    chunks_returned: rawChunks.length,
+    score_range: rawChunks.length > 0
+      ? `${rawChunks[rawChunks.length - 1]?.combined_score?.toFixed(3)} - ${rawChunks[0]?.combined_score?.toFixed(3)}`
+      : 'N/A',
+  });
   
   // IMPROVEMENT 1: Filter by minimum relevance score
   let relevantChunks = rawChunks.filter(chunk => chunk.combined_score >= minRelevanceScore);
   
   // FALLBACK: If filtering removed everything, use top results anyway
   if (relevantChunks.length === 0 && rawChunks.length > 0) {
-    console.log(`[Retrieval] All chunks below threshold, using top results as fallback`);
+    RAGLogger.debug('All chunks below threshold, using top results as fallback');
     relevantChunks = rawChunks.slice(0, 10);
   }
   
@@ -452,7 +490,10 @@ export async function retrieveContext({
   const caseStudyChunks = relevantChunks.filter(c => c.document_type === 'case_study');
   const articleChunks = relevantChunks.filter(c => c.document_type === 'article');
 
-  console.log(`[Retrieval] Case studies: ${caseStudyChunks.length}, Articles: ${articleChunks.length}`);
+  RAGLogger.debug('Document type breakdown', {
+    case_studies: caseStudyChunks.length,
+    articles: articleChunks.length,
+  });
 
   // IMPROVEMENT 3: Deduplicate - keep best chunk per document
   const getBestPerDocument = (chunks: typeof rawChunks) => {
@@ -476,7 +517,7 @@ export async function retrieveContext({
   if (bestCaseStudies.length === 0) {
     const allRawCaseStudies = rawChunks.filter(c => c.document_type === 'case_study');
     if (allRawCaseStudies.length > 0) {
-      console.log(`[Retrieval] No case studies passed filter, including top 2 as fallback`);
+      RAGLogger.debug('No case studies passed filter, including top 2 as fallback');
       fallbackCaseStudies = getBestPerDocument(allRawCaseStudies).slice(0, 2);
     }
   }
@@ -496,9 +537,13 @@ export async function retrieveContext({
     .sort((a, b) => b.combined_score - a.combined_score);
   
   // Log for debugging
-  console.log(`[Retrieval] Query: "${query.slice(0, 50)}..."`);
-  console.log(`[Retrieval] Raw chunks: ${rawChunks.length}, After filtering: ${relevantChunks.length}, Final: ${finalChunks.length}`);
-  console.log(`[Retrieval] Top scores: ${finalChunks.slice(0, 3).map(c => c.combined_score.toFixed(3)).join(', ')}`);
+  RAGLogger.debug('Final retrieval results', {
+    query: query.slice(0, 50) + '...',
+    raw_chunks: rawChunks.length,
+    after_filtering: relevantChunks.length,
+    final: finalChunks.length,
+    top_scores: finalChunks.slice(0, 3).map(c => c.combined_score.toFixed(3)).join(', '),
+  });
   
   // Get unique document IDs from final chunks
   const documentIds = [...new Set(finalChunks.map((c) => c.document_id))];
@@ -507,8 +552,8 @@ export async function retrieveContext({
   const relatedMetrics = documentIds.length > 0
     ? await getDocumentMetrics(documentIds)
     : [];
-  
-  return {
+
+  const result: RetrievedContext = {
     chunks: finalChunks,
     visualAssets,
     relatedMetrics,
@@ -516,6 +561,11 @@ export async function retrieveContext({
     industries,
     topics,
   };
+
+  // Cache the result
+  cache.set(CACHE_PREFIXES.RAG_SEARCH, cacheKey, result, CACHE_TTL.RAG_SEARCH);
+
+  return result;
 }
 
 // ============================================
@@ -536,7 +586,7 @@ export async function getSignedUrl(
     .createSignedUrl(storagePath, expiresIn);
   
   if (error) {
-    console.error('Signed URL error:', error);
+    RAGLogger.error('Signed URL error', error);
     return null;
   }
   

@@ -8,6 +8,7 @@
  */
 
 import React, { useState } from 'react';
+import { UILogger } from '@/lib/logger';
 import Link from 'next/link';
 
 // Service options for the form
@@ -50,7 +51,7 @@ export default function ContactPage() {
     await new Promise(resolve => setTimeout(resolve, 1500));
     
     // In production, send to your backend or email service
-    console.log('Form submitted:', formData);
+    UILogger.info('Form submitted', { formData });
     
     setIsSubmitting(false);
     setIsSubmitted(true);

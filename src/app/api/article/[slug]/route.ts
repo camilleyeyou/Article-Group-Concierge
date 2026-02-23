@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
+import { APILogger } from '@/lib/logger';
 
 // Disable caching for this route
 export const dynamic = 'force-dynamic';
@@ -86,7 +87,7 @@ export async function GET(
     return response;
 
   } catch (error) {
-    console.error('Error fetching article:', error);
+    APILogger.error('Error fetching article', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

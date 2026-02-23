@@ -13,6 +13,7 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { LayoutRenderer } from '@/components/LayoutRenderer';
+import { UILogger } from '@/lib/logger';
 import type { OrchestratorOutput } from '@/types';
 
 // Conversation message type
@@ -50,7 +51,7 @@ export default function ConciergePage() {
         setMessages(messagesWithDates);
       }
     } catch (e) {
-      console.error('Failed to parse saved messages:', e);
+      UILogger.error('Failed to parse saved messages', e);
     }
   }, []);
 
@@ -128,7 +129,7 @@ export default function ConciergePage() {
 
     } catch (err) {
       setError('Something went wrong. Please try again.');
-      console.error('Submit error:', err);
+      UILogger.error('Submit error', err);
     } finally {
       setIsLoading(false);
     }

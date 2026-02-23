@@ -20,6 +20,8 @@ import type {
   OrchestratorOutput,
   LayoutPlan,
 } from '../types';
+import { OrchLogger } from './logger';
+import { cache, CACHE_PREFIXES, CACHE_TTL } from './cache';
 
 // Initialize Anthropic client
 const anthropic = new Anthropic({
@@ -333,7 +335,7 @@ function parseOrchestratorResponse(response: string): OrchestratorOutput {
       // Remove the JSON block from the explanation
       explanation = response.replace(/```json[\s\S]*?```/, '').trim();
     } catch (e) {
-      console.error('Failed to parse layout JSON:', e);
+      OrchLogger.error('Failed to parse layout JSON', e);
       // Return error state with explanation
       return {
         layoutPlan: { layout: [] },
@@ -372,10 +374,35 @@ function parseOrchestratorResponse(response: string): OrchestratorOutput {
 /**
  * Main entry point for the orchestrator.
  * Takes user query + retrieved context, returns layout plan + explanation.
+ *
+ * CACHED: Responses are cached for 30 minutes to reduce Claude API costs
+ * Note: Cache includes context to ensure responses match the retrieved data
  */
 export async function orchestrate(input: OrchestratorInput): Promise<OrchestratorOutput> {
   const { userQuery, context, conversationHistory } = input;
-  
+
+  // Create cache key from query, context, and conversation history
+  // Include document IDs and metrics to ensure cache freshness
+  const cacheKey = {
+    userQuery,
+    documentIds: context.chunks.map(c => c.document_id).sort(),
+    conversationLength: conversationHistory?.length || 0,
+    // Include last message to differentiate follow-ups
+    lastMessage: conversationHistory?.slice(-1)[0]?.content?.slice(0, 100),
+  };
+
+  // Check cache first (skip cache if there's conversation history for now)
+  // TODO: Improve caching strategy for multi-turn conversations
+  if (!conversationHistory || conversationHistory.length === 0) {
+    const cached = cache.get<OrchestratorOutput>(CACHE_PREFIXES.ORCHESTRATOR, cacheKey);
+    if (cached) {
+      OrchLogger.debug('Using cached orchestrator response', {
+        query: userQuery.slice(0, 50),
+      });
+      return cached;
+    }
+  }
+
   // Format the context for the prompt
   const formattedContext = formatContext(context);
   
@@ -418,13 +445,20 @@ Please assemble a pitch deck layout using the Component Registry. Remember to ou
     if (!textContent || textContent.type !== 'text') {
       throw new Error('No text content in response');
     }
-    
-    // Parse and return
-    return parseOrchestratorResponse(textContent.text);
+
+    // Parse the response
+    const result = parseOrchestratorResponse(textContent.text);
+
+    // Cache the result (only for queries without conversation history)
+    if (!conversationHistory || conversationHistory.length === 0) {
+      cache.set(CACHE_PREFIXES.ORCHESTRATOR, cacheKey, result, CACHE_TTL.ORCHESTRATOR);
+    }
+
+    return result;
     
   } catch (error) {
-    console.error('Orchestrator error:', error);
-    
+    OrchLogger.error('Orchestrator error', error);
+
     // Return graceful fallback
     return {
       layoutPlan: { layout: [] },
