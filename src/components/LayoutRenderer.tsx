@@ -172,9 +172,9 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({
   }, [layoutPlan, onError]);
   
   return (
-    <div 
+    <div
       className={`pitch-deck-layout ${className}`}
-      role="main"
+      role="region"
       aria-label="Personalized pitch deck"
     >
       {renderedLayout}

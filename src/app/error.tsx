@@ -46,7 +46,7 @@ export default function Error({
 
         <p className="text-sm text-gray-600 mb-6">
           We encountered an unexpected error while loading this page. This has been logged and
-          we'll look into it.
+          we&apos;ll look into it.
         </p>
 
         <div className="flex gap-3">

@@ -37,8 +37,8 @@ export const CaseStudyTeaser: React.FC<CaseStudyTeaserProps> = ({
 
         {/* Title - white text on dark background */}
         <h3
-          className="text-white text-xl md:text-2xl leading-tight mb-4"
-          style={{ fontFamily: 'Lora, serif', fontWeight: 400 }}
+          className="text-white text-xl md:text-2xl leading-tight mb-4 font-serif"
+          style={{ fontWeight: 400 }}
         >
           {displayTitle}
         </h3>

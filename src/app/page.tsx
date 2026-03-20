@@ -179,7 +179,7 @@ export default function ConciergePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-white flex flex-col" style={{ fontFamily: 'Poppins, sans-serif' }}>
+    <div className="min-h-screen bg-white flex flex-col font-sans">
       {/* Header - Clean AG style */}
       <header className="sticky top-0 z-50 bg-white border-b border-[#eee]">
         <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
@@ -189,7 +189,7 @@ export default function ConciergePage() {
               <div className="w-9 h-9 bg-black rounded flex items-center justify-center">
                 <span className="text-white font-semibold text-sm">AG</span>
               </div>
-              <span className="font-semibold text-black text-lg hidden sm:block" style={{ fontFamily: 'Lora, serif' }}>
+              <span className="font-semibold text-black text-lg hidden sm:block font-serif">
                 Article Group
               </span>
             </Link>
@@ -199,7 +199,7 @@ export default function ConciergePage() {
               {messages.length > 0 && (
                 <button
                   onClick={handleNewConversation}
-                  className="text-sm text-[#313131] hover:text-black transition-colors"
+                  className="text-sm text-[#313131] hover:text-black transition-colors cursor-pointer"
                 >
                   New Chat
                 </button>
@@ -223,7 +223,7 @@ export default function ConciergePage() {
       </header>
 
       {/* Main content */}
-      <main className="flex-1 flex flex-col">
+      <main id="main-content" className="flex-1 flex flex-col">
         {/* Loading state before hydration */}
         {!isHydrated && (
           <div className="flex-1 flex items-center justify-center">
@@ -239,8 +239,7 @@ export default function ConciergePage() {
               <div className="max-w-[1200px] mx-auto px-6 lg:px-8 flex-1 flex flex-col justify-center">
                 {/* Main headline - AG style with tighter line height */}
                 <h1
-                  className="text-[2.75rem] sm:text-[4rem] lg:text-[5rem] text-black leading-[1.05] max-w-5xl mb-8 animate-fade-in-up"
-                  style={{ fontFamily: 'Lora, serif', fontWeight: 400, letterSpacing: '-0.02em' }}
+                  className="text-[2.75rem] sm:text-[4rem] lg:text-[5rem] text-black leading-[1.05] max-w-5xl mb-8 animate-fade-in-up font-serif font-normal tracking-tight"
                 >
                   Finding simple solutions to complex messages.
                 </h1>
@@ -250,7 +249,7 @@ export default function ConciergePage() {
                   className="text-lg md:text-xl text-[#313131] max-w-2xl mb-14 leading-relaxed animate-fade-in-up"
                   style={{ animationDelay: '100ms' }}
                 >
-                  Communicating a vision is hard. We're really good at it. Tell us your challenge.
+                  Communicating a vision is hard. We&apos;re really good at it. Tell us your challenge.
                 </p>
 
                 {/* Input Area */}
@@ -267,7 +266,7 @@ export default function ConciergePage() {
                         bg-white
                         border-2 border-[#313131]
                         text-lg text-black
-                        placeholder:text-[#6B6B6B]
+                        placeholder:text-[#595959]
                         focus:outline-none focus:border-black
                         transition-all duration-300
                         resize-none
@@ -302,9 +301,9 @@ export default function ConciergePage() {
                     </button>
                   </form>
 
-                  <p className="text-sm text-[#6B6B6B] mt-4 flex items-center gap-2">
+                  <p className="text-sm text-[#595959] mt-4 flex items-center gap-2">
                     <span>Press Enter to send</span>
-                    <span className="text-[#eee]">|</span>
+                    <span className="text-[#D4D4D4]">|</span>
                     <span className="text-[#fc5d4c]">Shift+Enter for new line</span>
                   </p>
                 </div>
@@ -329,14 +328,11 @@ export default function ConciergePage() {
                     <p className="text-sm font-medium text-[#fc5d4c] uppercase tracking-wider mb-3">
                       Common Challenges
                     </p>
-                    <h2
-                      className="text-2xl md:text-3xl text-black"
-                      style={{ fontFamily: 'Lora, serif', fontWeight: 400 }}
-                    >
+                    <h2 className="text-2xl md:text-3xl text-black font-serif font-normal">
                       Or explore by topic
                     </h2>
                   </div>
-                  <p className="text-[#6B6B6B] text-sm md:text-right max-w-xs">
+                  <p className="text-[#595959] text-sm md:text-right max-w-xs">
                     Click any card to start a conversation about that challenge
                   </p>
                 </div>
@@ -352,6 +348,7 @@ export default function ConciergePage() {
                         border border-transparent hover:border-black
                         transition-all duration-300
                         relative overflow-hidden
+                        cursor-pointer
                       "
                       style={{ animationDelay: `${i * 100}ms` }}
                     >
@@ -366,7 +363,7 @@ export default function ConciergePage() {
                             {item.label}
                           </h3>
                           <p className="text-[#313131] leading-relaxed">
-                            "{item.prompt}"
+                            &ldquo;{item.prompt}&rdquo;
                           </p>
                         </div>
                         <svg
@@ -394,18 +391,15 @@ export default function ConciergePage() {
                   <div className="w-2 h-2 rounded-full bg-[#0d72d1]" />
                 </div>
 
-                <p
-                  className="text-center text-black mb-14 text-lg md:text-xl"
-                  style={{ fontFamily: 'Lora, serif' }}
-                >
-                  Trusted by the world's most innovative companies.
+                <p className="text-center text-black mb-14 text-lg md:text-xl font-serif">
+                  Trusted by the world&apos;s most innovative companies.
                 </p>
 
                 <div className="flex flex-wrap justify-center items-center gap-x-10 gap-y-6 lg:gap-x-16">
                   {clients.map((client, i) => (
                     <span
                       key={i}
-                      className="text-[#9B9B9B] font-medium text-base lg:text-lg hover:text-black transition-colors duration-300 cursor-default"
+                      className="text-[#737373] font-medium text-base lg:text-lg hover:text-black transition-colors duration-300 cursor-default"
                     >
                       {client}
                     </span>
@@ -417,19 +411,13 @@ export default function ConciergePage() {
             {/* Testimonial - AG style with large quote */}
             <section className="py-24 lg:py-32 bg-[#F5F5F5] relative">
               {/* Large decorative quote */}
-              <div
-                className="absolute top-12 left-1/2 transform -translate-x-1/2 text-[12rem] lg:text-[16rem] text-[#eee] leading-none select-none pointer-events-none"
-                style={{ fontFamily: 'Lora, serif' }}
-              >
-                "
+              <div className="absolute top-12 left-1/2 transform -translate-x-1/2 text-[12rem] lg:text-[16rem] text-[#eee] leading-none select-none pointer-events-none font-serif">
+                &ldquo;
               </div>
 
               <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center relative">
                 <blockquote className="mb-10">
-                  <p
-                    className="text-2xl md:text-3xl lg:text-4xl text-black leading-snug"
-                    style={{ fontFamily: 'Lora, serif', fontWeight: 400 }}
-                  >
+                  <p className="text-2xl md:text-3xl lg:text-4xl text-black leading-snug font-serif font-normal">
                     Working with Article Group, you get the ideal mix of technology-translator, storyteller, and teammate. And they deliver the most beautiful work.
                   </p>
                 </blockquote>
@@ -449,10 +437,7 @@ export default function ConciergePage() {
               <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#0d72d1]/10 rounded-full blur-3xl" />
 
               <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center relative">
-                <h3
-                  className="text-3xl md:text-4xl lg:text-5xl text-white mb-6"
-                  style={{ fontFamily: 'Lora, serif', fontWeight: 400, letterSpacing: '-0.02em' }}
-                >
+                <h3 className="text-3xl md:text-4xl lg:text-5xl text-white mb-6 font-serif font-normal tracking-tight">
                   Ready to tell your story?
                 </h3>
                 <p className="text-white/60 text-lg md:text-xl mb-12 max-w-xl mx-auto">
@@ -497,11 +482,8 @@ export default function ConciergePage() {
                           <p className="text-[#fc5d4c] text-sm font-medium mb-2 uppercase tracking-wider">
                             Your challenge
                           </p>
-                          <h2
-                            className="text-2xl md:text-3xl text-black leading-relaxed"
-                            style={{ fontFamily: 'Lora, serif' }}
-                          >
-                            "{message.content}"
+                          <h2 className="text-2xl md:text-3xl text-black leading-relaxed font-serif">
+                            &ldquo;{message.content}&rdquo;
                           </h2>
                         </div>
                       </div>
@@ -553,7 +535,8 @@ export default function ConciergePage() {
                                 <button
                                   key={i}
                                   onClick={() => handleFollowUp(followUp)}
-                                  className="group px-5 py-3 text-sm text-black bg-[#F5F5F5] border border-transparent hover:border-black transition-all duration-200 flex items-center gap-2"
+                                  disabled={isLoading}
+                                  className="group px-5 py-3 text-sm text-black bg-[#F5F5F5] border border-transparent hover:border-black transition-all duration-200 flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                   <span>{followUp}</span>
                                   <svg className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -596,7 +579,7 @@ export default function ConciergePage() {
 
         {/* Error message */}
         {error && (
-          <div className="max-w-4xl mx-auto px-6 mb-4">
+          <div className="max-w-4xl mx-auto px-6 mb-4" role="alert" aria-live="assertive">
             <div className="p-4 bg-[#fc5d4c]/10 border border-[#fc5d4c]/20 text-[#fc5d4c] text-sm text-center">
               {error}
             </div>
@@ -615,12 +598,13 @@ export default function ConciergePage() {
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Continue the conversation..."
+                aria-label="Continue the conversation"
                 className="
                   w-full px-5 py-4 pr-14
                   bg-[#F5F5F5]
                   border border-transparent
                   text-base text-black
-                  placeholder:text-[#6B6B6B]
+                  placeholder:text-[#595959]
                   focus:outline-none focus:border-black focus:bg-white
                   transition-all duration-200
                   resize-none

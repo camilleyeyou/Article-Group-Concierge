@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import Image from 'next/image';
 import type { VideoPlayerProps } from '../types';
 
 /**
@@ -103,11 +104,13 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             aria-label="Play video"
           >
             {/* Thumbnail image */}
-            <img
+            <Image
               src={thumbnailUrl}
               alt=""
+              fill
+              sizes="(max-width: 768px) 100vw, 800px"
               className="
-                absolute inset-0 w-full h-full object-cover
+                object-cover
                 transition-transform duration-700 ease-out
                 group-hover/play:scale-105
               "

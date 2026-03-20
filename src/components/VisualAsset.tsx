@@ -1,4 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
+import Image from 'next/image';
+import { supabaseLoader } from '@/lib/supabase-image-loader';
 import type { VisualAssetProps } from '../types';
 
 /**
@@ -141,14 +143,17 @@ export const VisualAsset: React.FC<VisualAssetProps> = ({
           )}
           
           {/* The actual image */}
-          <img
+          <Image
+            loader={supabaseLoader}
             src={src}
             alt={alt}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1000px"
             loading={loading}
             onLoad={handleLoad}
             onError={handleError}
             className={`
-              w-full h-full object-cover
+              object-cover
               transition-all duration-700 ease-out
               ${isLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}
               ${enableLightbox ? 'group-hover:scale-[1.02]' : ''}
@@ -244,6 +249,7 @@ export const VisualAsset: React.FC<VisualAssetProps> = ({
           </button>
           
           {/* Fullsize image - clicking also closes */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={src}
             alt={alt}

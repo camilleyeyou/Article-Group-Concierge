@@ -12,6 +12,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
+import { supabaseLoader } from '@/lib/supabase-image-loader';
 
 interface CaseStudy {
   id: string;
@@ -99,7 +101,7 @@ export default function CaseStudyDetailPage() {
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center" style={{ fontFamily: 'Poppins, sans-serif' }}>
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-[#eee] border-t-[#fc5d4c] rounded-full animate-spin" />
           <p className="text-[#6B6B6B] font-medium">
@@ -113,13 +115,13 @@ export default function CaseStudyDetailPage() {
   // Error state
   if (error || !caseStudy) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center" style={{ fontFamily: 'Poppins, sans-serif' }}>
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center px-6">
-          <h1 className="text-3xl text-black mb-4" style={{ fontFamily: 'Lora, serif' }}>
+          <h1 className="text-3xl text-black mb-4 font-serif">
             Case Study Not Found
           </h1>
           <p className="text-[#6B6B6B] mb-8">
-            We couldn't find the case study you're looking for.
+            We couldn&apos;t find the case study you&apos;re looking for.
           </p>
           <button
             onClick={() => router.push('/')}
@@ -142,7 +144,7 @@ export default function CaseStudyDetailPage() {
     (caseStudy.vimeo_url?.includes('.mp4') ? caseStudy.vimeo_url : null);
 
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: 'Poppins, sans-serif' }}>
+    <div className="min-h-screen bg-white">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-[#eee]">
         <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
@@ -161,7 +163,7 @@ export default function CaseStudyDetailPage() {
               <div className="w-9 h-9 bg-black rounded flex items-center justify-center">
                 <span className="text-white font-semibold text-sm">AG</span>
               </div>
-              <span className="font-semibold text-black text-lg hidden sm:block" style={{ fontFamily: 'Lora, serif' }}>
+              <span className="font-semibold text-black text-lg hidden sm:block font-serif">
                 Article Group
               </span>
             </Link>
@@ -223,8 +225,7 @@ export default function CaseStudyDetailPage() {
 
             {/* Project title - dramatic sizing */}
             <h1
-              className="text-3xl sm:text-5xl lg:text-6xl text-white leading-[1.1] max-w-4xl mb-6 animate-fade-in-up"
-              style={{ fontFamily: 'Lora, serif', fontWeight: 400, letterSpacing: '-0.02em' }}
+              className="text-3xl sm:text-5xl lg:text-6xl text-white leading-[1.1] max-w-4xl mb-6 animate-fade-in-up font-serif font-normal tracking-tight"
             >
               {projectTitle}
             </h1>
@@ -309,7 +310,7 @@ export default function CaseStudyDetailPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
-            <h3 className="text-xl text-black mb-3" style={{ fontFamily: 'Lora, serif' }}>
+            <h3 className="text-xl text-black mb-3 font-serif">
               Document Coming Soon
             </h3>
             <p className="text-[#6B6B6B]">
@@ -333,8 +334,7 @@ export default function CaseStudyDetailPage() {
                 <div className="w-2 h-2 rounded-full bg-[#0d72d1]" />
               </div>
               <h2
-                className="text-3xl sm:text-4xl text-black mb-3"
-                style={{ fontFamily: 'Lora, serif', fontWeight: 400 }}
+                className="text-3xl sm:text-4xl text-black mb-3 font-serif font-normal"
               >
                 Related Resources
               </h2>
@@ -367,15 +367,18 @@ export default function CaseStudyDetailPage() {
                       >
                         <div className="aspect-[4/3] bg-[#eee] relative overflow-hidden">
                           {cs.thumbnail_url ? (
-                            <img
+                            <Image
+                              loader={supabaseLoader}
                               src={cs.thumbnail_url}
                               alt={cs.title}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              fill
+                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                              className="object-cover group-hover:scale-105 transition-transform duration-300"
                               loading="lazy"
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#0d72d1]/20 to-[#32373c]">
-                              <span className="text-4xl text-white/20" style={{ fontFamily: 'Lora, serif' }}>
+                              <span className="text-4xl text-white/20 font-serif">
                                 {(clientLabel || displayTitle).charAt(0)}
                               </span>
                             </div>
@@ -420,10 +423,13 @@ export default function CaseStudyDetailPage() {
                     >
                       <div className="aspect-[16/10] bg-[#eee] relative overflow-hidden">
                         {article.thumbnail_url ? (
-                          <img
+                          <Image
+                            loader={supabaseLoader}
                             src={article.thumbnail_url}
                             alt={article.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            fill
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
                             loading="lazy"
                           />
                         ) : (
@@ -493,13 +499,12 @@ export default function CaseStudyDetailPage() {
 
         <div className="max-w-4xl mx-auto px-6 lg:px-8 py-20 sm:py-28 text-center relative">
           <h2
-            className="text-3xl sm:text-4xl lg:text-5xl text-white mb-6"
-            style={{ fontFamily: 'Lora, serif', fontWeight: 400, letterSpacing: '-0.02em' }}
+            className="text-3xl sm:text-4xl lg:text-5xl text-white mb-6 font-serif font-normal tracking-tight"
           >
             Interested in similar work?
           </h2>
           <p className="text-white/60 text-lg sm:text-xl mb-10 max-w-xl mx-auto">
-            Let's discuss how Article Group can help with your next project.
+            Let&apos;s discuss how Article Group can help with your next project.
           </p>
           <Link
             href="/contact"
@@ -526,7 +531,7 @@ export default function CaseStudyDetailPage() {
               <div className="w-8 h-8 bg-black rounded flex items-center justify-center">
                 <span className="text-white font-semibold text-xs">AG</span>
               </div>
-              <span className="text-black text-base" style={{ fontFamily: 'Lora, serif' }}>
+              <span className="text-black text-base font-serif">
                 Article Group
               </span>
             </Link>

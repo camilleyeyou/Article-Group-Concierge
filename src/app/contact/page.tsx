@@ -59,42 +59,38 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
-        <div className="max-w-6xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-[#1A1818] rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">AG</span>
+      {/* Header — consistent with home page */}
+      <header className="sticky top-0 z-50 bg-white border-b border-[#eee]">
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <Link href="/" className="flex items-center gap-3">
+              <div className="w-9 h-9 bg-black rounded flex items-center justify-center">
+                <span className="text-white font-semibold text-sm">AG</span>
               </div>
-              <div>
-                <h1 className="font-semibold text-[#1A1818] text-lg leading-tight">
-                  Article Group
-                </h1>
-                <p className="text-xs text-gray-500">
-                  Strategic Concierge
-                </p>
-              </div>
+              <span className="font-semibold text-black text-lg hidden sm:block font-serif">
+                Article Group
+              </span>
             </Link>
-            
+
             <Link
               href="/"
-              className="flex items-center gap-2 text-[#595959] hover:text-[#1A1818] transition-colors"
+              className="flex items-center gap-2 text-[#313131] hover:text-black transition-colors"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
-              <span className="font-medium">Back to Concierge</span>
+              <span className="font-medium text-sm">Back to Concierge</span>
             </Link>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="bg-[#FAFAFA] py-16 md:py-24">
+      <main id="main-content">
+      <section className="bg-[#F5F5F5] py-16 md:py-24">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-[#1A1818] mb-6 leading-tight">
-            Let's do great work together
+            Let&apos;s do great work together
           </h1>
           <p className="text-xl text-[#595959]">
             Please get in touch
@@ -104,7 +100,7 @@ export default function ContactPage() {
 
       {/* Main Content */}
       <section className="py-16 md:py-24">
-        <div className="max-w-6xl mx-auto px-6">
+        <div className="max-w-[1200px] mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
             
             {/* Contact Form */}
@@ -228,7 +224,6 @@ export default function ContactPage() {
                       className="
                         w-full sm:w-auto px-10 py-4 
                         bg-[#F96A63] text-white font-semibold 
-                        rounded-full 
                         hover:bg-[#e85d56] 
                         disabled:opacity-50 disabled:cursor-not-allowed
                         transition-all duration-300
@@ -261,7 +256,7 @@ export default function ContactPage() {
                     Thank you!
                   </h2>
                   <p className="text-xl text-[#595959] mb-8">
-                    We'll be in touch soon.
+                    We&apos;ll be in touch soon.
                   </p>
                   <Link
                     href="/"
@@ -282,7 +277,7 @@ export default function ContactPage() {
               
               <div className="space-y-8">
                 {/* New York */}
-                <div className="p-6 bg-[#FAFAFA] rounded-xl">
+                <div className="p-6 bg-[#F5F5F5] rounded-xl">
                   <h3 className="font-semibold text-[#1A1818] text-lg mb-3">New York, NY</h3>
                   <p className="text-[#595959] leading-relaxed">
                     224 W 35th St Ste 500-1142<br />
@@ -291,7 +286,7 @@ export default function ContactPage() {
                 </div>
                 
                 {/* Rochester */}
-                <div className="p-6 bg-[#FAFAFA] rounded-xl">
+                <div className="p-6 bg-[#F5F5F5] rounded-xl">
                   <h3 className="font-semibold text-[#1A1818] text-lg mb-3">Rochester, NY</h3>
                   <p className="text-[#595959] leading-relaxed">
                     210 South Ave, Suite 140<br />
@@ -318,9 +313,11 @@ export default function ContactPage() {
         </div>
       </section>
 
+      </main>
+
       {/* Footer */}
       <footer className="bg-[#1A1818] py-12">
-        <div className="max-w-6xl mx-auto px-6">
+        <div className="max-w-[1200px] mx-auto px-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">

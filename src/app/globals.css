@@ -1,24 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Import our design system */
+/* Import our design system (includes Google Fonts import) */
 @import '../styles/design-system.css';
-
-/* 
- * Article Group Brand Typography
- * Poppins: Body text, UI elements
- * Lora: Display headlines, editorial content
- * Space Mono: Data, metrics, code
- */
-
-:root {
-  --font-display: 'Lora', Georgia, serif;
-  --font-body: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: 'Space Mono', 'Courier New', monospace;
-}
 
 /* Smooth scrolling */
 html {

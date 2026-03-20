@@ -54,7 +54,7 @@ export default function ArticleDetailPage() {
       <div className="min-h-screen bg-[#1A1818] flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-[#333] border-t-[#F96A63] rounded-full animate-spin" />
-          <p className="text-white/60 font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>
+          <p className="text-white/60 font-medium">
             Loading article...
           </p>
         </div>
@@ -67,17 +67,16 @@ export default function ArticleDetailPage() {
     return (
       <div className="min-h-screen bg-[#1A1818] flex items-center justify-center">
         <div className="text-center px-6">
-          <h1 className="text-3xl text-white mb-4" style={{ fontFamily: 'Lora, serif' }}>
+          <h1 className="text-3xl text-white mb-4 font-serif">
             Article Not Found
           </h1>
-          <p className="text-white/60 mb-8" style={{ fontFamily: 'Poppins, sans-serif' }}>
-            We couldn't find the article you're looking for.
+          <p className="text-white/60 mb-8">
+            We couldn&apos;t find the article you&apos;re looking for.
           </p>
           <button 
             onClick={() => router.back()} 
-            className="px-8 py-3 bg-[#F96A63] text-white rounded-full font-medium hover:bg-[#e85a53] transition-colors"
-            style={{ fontFamily: 'Poppins, sans-serif' }}
-          >
+            className="px-8 py-3 bg-[#fc5d4c] text-white font-medium hover:bg-[#e54d3c] transition-colors cursor-pointer"
+                     >
             Go Back
           </button>
         </div>
@@ -97,23 +96,21 @@ export default function ArticleDetailPage() {
             <button 
               onClick={() => router.back()}
               className="flex items-center gap-2 text-white/60 hover:text-white transition-colors"
-              style={{ fontFamily: 'Poppins, sans-serif' }}
-            >
+                         >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
               <span className="font-medium">Back</span>
             </button>
             
-            <Link href="/" className="text-xl text-white" style={{ fontFamily: 'Lora, serif' }}>
+            <Link href="/" className="text-xl text-white font-serif">
               Article Group
             </Link>
             
             <Link
               href="/contact"
-              className="px-6 py-2.5 bg-[#F96A63] text-white text-sm font-medium rounded-full hover:bg-[#e85a53] transition-colors"
-              style={{ fontFamily: 'Poppins, sans-serif' }}
-            >
+              className="px-5 py-2 bg-[#fc5d4c] text-white text-sm font-medium hover:bg-[#e54d3c] transition-colors"
+                         >
               Get in Touch
             </Link>
           </div>
@@ -126,24 +123,22 @@ export default function ArticleDetailPage() {
           {/* Article badge */}
           <div className="mb-4">
             <span 
-              className="inline-block px-4 py-1.5 bg-[#0097A7]/20 text-[#4DD0E1] text-sm font-medium rounded-full"
-              style={{ fontFamily: 'Poppins, sans-serif' }}
-            >
+              className="inline-block px-4 py-1.5 bg-[#47ddb2]/20 text-[#47ddb2] text-sm font-medium"
+                         >
               Article
             </span>
           </div>
           
           {/* Title */}
           <h1 
-            className="text-3xl sm:text-4xl lg:text-5xl text-white leading-tight mb-4"
-            style={{ fontFamily: 'Lora, serif', fontWeight: 400 }}
+            className="text-3xl sm:text-4xl lg:text-5xl text-white leading-tight mb-4 font-serif font-normal"
           >
             {cleanTitle}
           </h1>
 
           {/* Meta */}
           {(article.author || article.published_date) && (
-            <div className="flex items-center gap-4 text-white/50" style={{ fontFamily: 'Poppins, sans-serif' }}>
+            <div className="flex items-center gap-4 text-white/50">
               {article.author && <span>By {article.author}</span>}
               {article.published_date && (
                 <span>{new Date(article.published_date).toLocaleDateString('en-US', { 
@@ -159,8 +154,7 @@ export default function ArticleDetailPage() {
           {article.summary && (
             <p 
               className="text-lg text-white/60 mt-6 max-w-3xl"
-              style={{ fontFamily: 'Poppins, sans-serif' }}
-            >
+                         >
               {article.summary}
             </p>
           )}
@@ -177,7 +171,7 @@ export default function ArticleDetailPage() {
                 <div className="absolute inset-0 flex items-center justify-center bg-white z-10">
                   <div className="flex flex-col items-center gap-4">
                     <div className="w-10 h-10 border-4 border-[#EEEEEE] border-t-[#F96A63] rounded-full animate-spin" />
-                    <p className="text-[#595959]" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                    <p className="text-[#595959]">
                       Loading document...
                     </p>
                   </div>
@@ -200,9 +194,8 @@ export default function ArticleDetailPage() {
                   href={article.pdf_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-4 py-2 bg-[#1A1818] text-white text-sm font-medium rounded-full hover:bg-black transition-colors shadow-lg"
-                  style={{ fontFamily: 'Poppins, sans-serif' }}
-                >
+                  className="flex items-center gap-2 px-4 py-2 bg-[#1A1818] text-white text-sm font-medium hover:bg-black transition-colors shadow-lg"
+                                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                   </svg>
@@ -217,10 +210,10 @@ export default function ArticleDetailPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
-              <h3 className="text-xl text-white mb-3" style={{ fontFamily: 'Lora, serif' }}>
+              <h3 className="text-xl text-white mb-3 font-serif">
                 PDF Coming Soon
               </h3>
-              <p className="text-white/60 max-w-md mx-auto" style={{ fontFamily: 'Poppins, sans-serif' }}>
+              <p className="text-white/60 max-w-md mx-auto">
                 The document for this article is being prepared.
               </p>
             </div>
@@ -233,17 +226,15 @@ export default function ArticleDetailPage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <Link 
-              href="/" 
-              className="text-lg text-white"
-              style={{ fontFamily: 'Lora, serif' }}
-            >
+              href="/"
+              className="text-lg text-white font-serif"
+                         >
               Article Group
             </Link>
             
             <p 
               className="text-white/30 text-sm"
-              style={{ fontFamily: 'Poppins, sans-serif' }}
-            >
+                         >
               © {new Date().getFullYear()} Article Group
             </p>
           </div>
