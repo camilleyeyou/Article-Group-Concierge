@@ -74,6 +74,7 @@ const nextConfig = {
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: blob: https://*.supabase.co https://vumbnail.com",
               "media-src 'self' https://*.supabase.co",
+              "object-src https://*.supabase.co",
               "frame-src https://player.vimeo.com https://docs.google.com",
               "connect-src 'self' https://*.supabase.co https://api.openai.com https://api.anthropic.com https://*.ingest.sentry.io",
             ].join('; '),
