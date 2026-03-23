@@ -50,12 +50,14 @@ This system transforms user queries into compelling, visually-driven pitch decks
 
 ## Tech Stack
 
-- **Frontend:** Next.js 14, React, Tailwind CSS
+- **Frontend:** Next.js 14, React 18, Tailwind CSS
 - **Database:** Supabase (PostgreSQL + pgvector)
-- **Storage:** Supabase Storage (signed URLs)
-- **Orchestrator:** Claude 3.5 Sonnet
+- **Storage:** Supabase Storage (signed URLs for images, PDFs, videos)
+- **Orchestrator:** Claude 3.5 Sonnet (Anthropic SDK)
 - **Embeddings:** OpenAI text-embedding-3-small
 - **Parsing:** LlamaCloud API (cloud-hosted LlamaParse)
+- **Monitoring:** Sentry (error tracking + performance)
+- **Testing:** Playwright (E2E), Storybook (component dev)
 
 ## Component Registry
 
@@ -66,7 +68,7 @@ This system transforms user queries into compelling, visually-driven pitch decks
 | `VideoPlayer` | Vimeo case study videos | url, caption |
 | `MetricGrid` | KPI/stat displays (2-4 metrics) | stats[], columns, variant |
 | `VisualAsset` | Images, charts, diagrams | src, alt, caption |
-| `CaseStudyTeaser` | Links to full articles | title, summary, slug |
+| `CaseStudyTeaser` | Links to full case study articles | title, summary, slug |
 
 ## Getting Started
 
@@ -107,27 +109,35 @@ OPENAI_API_KEY=sk-xxxxx
 LLAMA_CLOUD_API_KEY=llx-xxxxx
 ```
 
-## Ingesting Content
+## Content Ingestion
 
 ### Single-Page Case Studies PDF
 
-Article Group provides case studies as a single multi-page PDF (e.g., "AG single page case studies 2025.pdf") where each page is a separate case study. To handle this:
+Article Group provides case studies as a single multi-page PDF where each page is a separate case study:
 
 ```bash
-# 1. First, ingest the case studies to create database records
+# 1. Ingest case studies to create database records
 npm run ingest:split "./AG single page case studies 2025.pdf"
 
-# 2. Then split the PDF and upload individual pages to Supabase Storage
+# 2. Split the PDF and upload individual pages to Supabase Storage
 npm run split:upload "./AG single page case studies 2025.pdf"
 ```
 
-This two-step process:
-1. **ingest:split** - Extracts text, creates embeddings, and stores metadata for each case study
-2. **split:upload** - Splits the PDF into individual files and uploads them to Supabase Storage, then links the `pdf_url` to each case study record
+### Other Ingestion Scripts
 
-The case study detail page (`/case-study/[slug]`) will automatically display the PDF when `pdf_url` is set.
+```bash
+npm run ingest              # General ingestion
+npm run ingest:single       # Single document
+npm run ingest:batch        # Batch processing
+npm run ingest:articles     # Article content
+npm run ingest:images       # Image assets
+npm run upload:pdfs         # Upload PDFs to storage
+npm run upload:videos       # Upload videos to storage
+npm run populate            # Populate case study records
+npm run generate:thumbnails # Generate video thumbnails
+```
 
-### Single Document
+### Programmatic Ingestion
 
 ```typescript
 import { ingestDocument } from '@/lib/ingestion';
@@ -140,19 +150,6 @@ await ingestDocument('/path/to/case-study.pdf', {
   vimeoUrl: 'https://vimeo.com/123456789',
   capabilitySlugs: ['brand-strategy', 'creative-direction'],
   industrySlugs: ['finance'],
-});
-```
-
-### Batch Ingestion
-
-```typescript
-import { batchIngest } from '@/lib/ingestion';
-
-await batchIngest([
-  { filePath: '/docs/case1.pdf', options: { title: '...', slug: '...' } },
-  { filePath: '/docs/case2.pdf', options: { title: '...', slug: '...' } },
-], (completed, total, current) => {
-  console.log(`Progress: ${completed}/${total} - ${current}`);
 });
 ```
 
@@ -180,7 +177,7 @@ Query the concierge for a personalized pitch deck.
   "layoutPlan": {
     "layout": [
       { "component": "HeroBlock", "props": { "title": "..." } },
-      { "component": "MetricGrid", "props": { "stats": [...] } }
+      { "component": "MetricGrid", "props": { "stats": [] } }
     ]
   },
   "explanation": "Based on your interest...",
@@ -188,6 +185,22 @@ Query the concierge for a personalized pitch deck.
   "contactCTA": false
 }
 ```
+
+### GET /api/health
+
+Health check endpoint returning system status.
+
+### GET /api/analytics
+
+Analytics data endpoint for tracking usage.
+
+### GET /api/case-study/[slug]
+
+Retrieve full case study data by slug.
+
+### GET /api/article/[slug]
+
+Retrieve article content by slug.
 
 ## Database Schema
 
@@ -210,6 +223,96 @@ Query the concierge for a personalized pitch deck.
 - `hybrid_search()` - Combined semantic + keyword search
 - `search_visual_assets()` - Image/chart retrieval
 
+## Testing
+
+### E2E Tests (Playwright)
+
+```bash
+npm run test:e2e          # Run all E2E tests
+npm run test:e2e:ui       # Run with Playwright UI
+```
+
+### Component Development (Storybook)
+
+```bash
+npm run storybook         # Start Storybook dev server on port 6006
+npm run build-storybook   # Build static Storybook
+```
+
+### User Testing
+
+We provide structured user testing materials for validating the AI Concierge with real users:
+
+- **[USER-TESTING-SCRIPT.md](USER-TESTING-SCRIPT.md)** - Complete facilitator guide with 9 test scenarios
+- **[TEST-SESSION-CHECKLIST.md](TEST-SESSION-CHECKLIST.md)** - Quick session tracker and checklist
+- **[TESTER-README.md](TESTER-README.md)** - Instructions to send to test participants
+- **[PARTICIPANT-RECRUITMENT-EMAIL.md](PARTICIPANT-RECRUITMENT-EMAIL.md)** - Email templates for recruiting testers
+
+## Project Structure
+
+```
+article-group-concierge/
+├── src/
+│   ├── app/
+│   │   ├── api/
+│   │   │   ├── chat/route.ts         # Chat endpoint
+│   │   │   ├── health/route.ts       # Health check
+│   │   │   ├── analytics/route.ts    # Analytics
+│   │   │   ├── case-study/[slug]/    # Case study API
+│   │   │   └── article/[slug]/       # Article API
+│   │   ├── article/[slug]/page.tsx   # Article pages
+│   │   ├── case-study/[slug]/page.tsx# Case study pages
+│   │   ├── contact/page.tsx          # Contact page
+│   │   ├── layout.tsx                # Root layout
+│   │   ├── page.tsx                  # Main concierge UI
+│   │   ├── error.tsx                 # Error boundary page
+│   │   └── global-error.tsx          # Global error handler
+│   ├── components/
+│   │   ├── HeroBlock.tsx
+│   │   ├── StrategyCard.tsx
+│   │   ├── VideoPlayer.tsx
+│   │   ├── MetricGrid.tsx
+│   │   ├── VisualAsset.tsx
+│   │   ├── CaseStudyTeaser.tsx
+│   │   ├── LayoutRenderer.tsx        # Assembly engine
+│   │   ├── ErrorBoundary.tsx         # React error boundary
+│   │   └── index.ts                  # Component registry
+│   ├── lib/
+│   │   ├── supabase.ts               # DB client & RAG queries
+│   │   ├── orchestrator.ts           # Claude integration
+│   │   ├── ingestion.ts              # Document pipeline
+│   │   ├── cache.ts                  # Response caching
+│   │   ├── rate-limit.ts             # API rate limiting
+│   │   ├── analytics.ts              # Usage analytics
+│   │   ├── ab-testing.ts             # A/B testing
+│   │   ├── performance.ts            # Performance monitoring
+│   │   ├── logger.ts                 # Structured logging
+│   │   ├── sentry.ts                 # Sentry integration
+│   │   ├── admin-auth.ts             # Admin authentication
+│   │   └── supabase-image-loader.ts  # Next.js image loader
+│   ├── types/
+│   │   └── index.ts                  # TypeScript types
+│   └── instrumentation.ts            # Sentry instrumentation
+├── scripts/                           # Ingestion & upload scripts
+├── content/                           # Source content
+│   ├── Articles/
+│   ├── case-studies/
+│   ├── images/
+│   └── videos/
+├── tests/
+│   └── e2e/                           # Playwright E2E tests
+├── supabase/
+│   ├── schema.sql                     # Database setup
+│   └── migrations/                    # DB migrations
+├── sentry.server.config.ts
+├── sentry.edge.config.ts
+├── playwright.config.ts
+├── next.config.js
+├── tailwind.config.ts
+├── tsconfig.json
+└── package.json
+```
+
 ## Customization
 
 ### Adding Components
@@ -221,13 +324,12 @@ Query the concierge for a personalized pitch deck.
 
 ### Modifying Brand Styles
 
-Edit CSS variables in `src/styles/design-system.css`:
+Edit CSS variables in `src/app/globals.css`:
 
 ```css
 :root {
-  --color-accent: #0A0A0A;
-  --font-display: 'Your Font', serif;
-  /* ... */
+  --color-accent: #32373c;  /* Dark charcoal */
+  /* Accent colors: coral (#fc5d4c), teal (#47ddb2), blue (#0d72d1) */
 }
 ```
 
@@ -240,46 +342,18 @@ The orchestrator enforces:
 3. **Component-only output** - No raw HTML/CSS generation
 4. **Fallback CTA** - Directs to Strategy Lead when no match
 
-## Project Structure
+## Key Commands
 
-```
-article-group-concierge/
-├── src/
-│   ├── app/
-│   │   ├── api/chat/route.ts    # Chat endpoint
-│   │   ├── globals.css          # Global styles
-│   │   ├── layout.tsx           # Root layout
-│   │   └── page.tsx             # Main UI
-│   ├── components/
-│   │   ├── HeroBlock.tsx
-│   │   ├── StrategyCard.tsx
-│   │   ├── VideoPlayer.tsx
-│   │   ├── MetricGrid.tsx
-│   │   ├── VisualAsset.tsx
-│   │   ├── CaseStudyTeaser.tsx
-│   │   ├── LayoutRenderer.tsx   # Assembly engine
-│   │   └── index.ts             # Registry
-│   ├── lib/
-│   │   ├── supabase.ts          # DB client & RAG
-│   │   ├── orchestrator.ts      # Claude integration
-│   │   └── ingestion.ts         # Document pipeline
-│   ├── styles/
-│   │   └── design-system.css    # Brand variables
-│   └── types/
-│       └── index.ts             # TypeScript types
-├── supabase/
-│   └── schema.sql               # Database setup
-├── .env.example
-├── package.json
-├── tailwind.config.ts
-├── tsconfig.json
-└── README.md
+```bash
+npm run dev               # Start dev server
+npm run build             # Production build
+npm run start             # Start production server
+npm run lint              # Run ESLint
+npm run type-check        # TypeScript type checking
+npm run test:e2e          # Run Playwright tests
+npm run storybook         # Component development
 ```
 
 ## License
 
 Proprietary - Article Group
-
----
-
-Built with Claude by Anthropic 🤖
