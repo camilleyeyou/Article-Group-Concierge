@@ -4,12 +4,15 @@ import type { VideoPlayerProps } from '../types';
 
 /**
  * VideoPlayer Component
- * 
- * Embeds Vimeo videos with a custom thumbnail overlay.
- * Supports lazy loading and custom aspect ratios.
- * 
+ *
+ * Plays either a Vimeo video (via player.vimeo.com iframe) or a direct
+ * MP4 URL (e.g. Supabase Storage) using a native <video> element.
+ * Both flavors share a tap-to-play thumbnail overlay so we never load
+ * video bytes until the user interacts.
+ *
  * Usage in layout plan:
- * { "component": "VideoPlayer", "props": { "url": "https://vimeo.com/...", "caption": "..." } }
+ *   { "component": "VideoPlayer", "props": { "url": "https://vimeo.com/...", "caption": "..." } }
+ *   { "component": "VideoPlayer", "props": { "url": "https://....supabase.co/.../video.mp4" } }
  */
 
 // Extract Vimeo ID from various URL formats
@@ -20,13 +23,16 @@ const extractVimeoId = (url: string): string | null => {
     /vimeo\.com\/channels\/[\w-]+\/(\d+)/,
     /vimeo\.com\/groups\/[\w-]+\/videos\/(\d+)/,
   ];
-  
+
   for (const pattern of patterns) {
     const match = url.match(pattern);
     if (match) return match[1];
   }
   return null;
 };
+
+const isDirectVideoUrl = (url: string): boolean =>
+  /\.(mp4|webm|mov|m4v)(\?|$)/i.test(url);
 
 const aspectRatioClasses = {
   '16:9': 'aspect-video',
@@ -42,18 +48,19 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(autoplay);
-  
+
   const vimeoId = extractVimeoId(url);
-  
+  const isDirect = !vimeoId && isDirectVideoUrl(url);
+
   const handlePlay = useCallback(() => {
     setHasInteracted(true);
   }, []);
-  
+
   const handleIframeLoad = useCallback(() => {
     setIsLoaded(true);
   }, []);
-  
-  if (!vimeoId) {
+
+  if (!vimeoId && !isDirect) {
     return (
       <div className="card bg-[var(--color-bg-muted)] p-8 text-center">
         <p className="text-[var(--color-text-tertiary)]">
@@ -63,21 +70,26 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     );
   }
   
-  const embedUrl = `https://player.vimeo.com/video/${vimeoId}?${new URLSearchParams({
-    autoplay: hasInteracted ? '1' : '0',
-    loop: '0',
-    title: '0',
-    byline: '0',
-    portrait: '0',
-    dnt: '1',
-    color: '0A0A0A',
-  }).toString()}`;
-  
-  const thumbnailUrl = `https://vumbnail.com/${vimeoId}.jpg`;
-  
+  const embedUrl = vimeoId
+    ? `https://player.vimeo.com/video/${vimeoId}?${new URLSearchParams({
+        autoplay: hasInteracted ? '1' : '0',
+        loop: '0',
+        title: '0',
+        byline: '0',
+        portrait: '0',
+        dnt: '1',
+        color: '0A0A0A',
+      }).toString()}`
+    : '';
+
+  // Vimeo gives us a free thumbnail via vumbnail.com. For direct MP4 URLs
+  // we don't have a still — fall back to a dark placeholder behind the
+  // play button. The browser will fetch the first frame once <video> mounts.
+  const vimeoThumbnail = vimeoId ? `https://vumbnail.com/${vimeoId}.jpg` : null;
+
   return (
     <figure className="group">
-      <div 
+      <div
         className={`
           relative overflow-hidden rounded-xl
           bg-[var(--color-bg-muted)]
@@ -90,7 +102,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             <div className="w-12 h-12 border-2 border-[var(--color-border)] border-t-[var(--color-text-primary)] rounded-full animate-spin" />
           </div>
         )}
-        
+
         {/* Thumbnail overlay (before interaction) */}
         {!hasInteracted && (
           <button
@@ -103,31 +115,35 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             "
             aria-label="Play video"
           >
-            {/* Thumbnail image */}
-            <Image
-              src={thumbnailUrl}
-              alt=""
-              fill
-              sizes="(max-width: 768px) 100vw, 800px"
-              className="
-                object-cover
-                transition-transform duration-700 ease-out
-                group-hover/play:scale-105
-              "
-              loading="lazy"
-            />
-            
+            {/* Thumbnail image (Vimeo only — direct videos use a dark bg) */}
+            {vimeoThumbnail ? (
+              <Image
+                src={vimeoThumbnail}
+                alt=""
+                fill
+                sizes="(max-width: 768px) 100vw, 800px"
+                className="
+                  object-cover
+                  transition-transform duration-700 ease-out
+                  group-hover/play:scale-105
+                "
+                loading="lazy"
+              />
+            ) : (
+              <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a1a] via-[#32373c] to-[#1a1a1a]" />
+            )}
+
             {/* Dark overlay */}
-            <div 
+            <div
               className="
                 absolute inset-0 bg-black/30
                 transition-opacity duration-300
                 group-hover/play:bg-black/40
-              " 
+              "
             />
-            
+
             {/* Play button */}
-            <div 
+            <div
               className="
                 relative z-10
                 w-20 h-20 rounded-full
@@ -138,9 +154,9 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                 group-hover/play:scale-110
               "
             >
-              <svg 
+              <svg
                 className="w-8 h-8 text-[var(--color-text-primary)] ml-1"
-                fill="currentColor" 
+                fill="currentColor"
                 viewBox="0 0 24 24"
               >
                 <path d="M8 5v14l11-7z" />
@@ -148,9 +164,9 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             </div>
           </button>
         )}
-        
+
         {/* Vimeo iframe */}
-        {hasInteracted && (
+        {hasInteracted && vimeoId && (
           <iframe
             src={embedUrl}
             className={`
@@ -162,6 +178,24 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             allowFullScreen
             onLoad={handleIframeLoad}
             title={caption || 'Video'}
+          />
+        )}
+
+        {/* Direct MP4/WebM (Supabase Storage) */}
+        {hasInteracted && isDirect && (
+          <video
+            src={url}
+            className={`
+              absolute inset-0 w-full h-full object-cover
+              transition-opacity duration-500
+              ${isLoaded ? 'opacity-100' : 'opacity-0'}
+            `}
+            controls
+            autoPlay
+            playsInline
+            preload="metadata"
+            onLoadedData={handleIframeLoad}
+            aria-label={caption || 'Video'}
           />
         )}
       </div>
