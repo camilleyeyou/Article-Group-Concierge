@@ -77,6 +77,26 @@ export default function CaseStudyDetailPage() {
   const [supportVideos, setSupportVideos] = useState<SupportVideo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [embedReady, setEmbedReady] = useState(false);
+
+  // Defer the PDF embed until after first paint so it doesn't block hero render.
+  // Also skip mounting the embed entirely on small screens — many mobile browsers
+  // can't render inline PDFs and the user gets a far better experience tapping
+  // through to their native PDF viewer.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
+    if (!isDesktop) return;
+    const idle = (window as Window & {
+      requestIdleCallback?: (cb: () => void) => number;
+    }).requestIdleCallback;
+    if (idle) {
+      idle(() => setEmbedReady(true));
+    } else {
+      const t = setTimeout(() => setEmbedReady(true), 200);
+      return () => clearTimeout(t);
+    }
+  }, [slug]);
 
   useEffect(() => {
     async function fetchCaseStudy() {
@@ -182,7 +202,7 @@ export default function CaseStudyDetailPage() {
       {/* ============================================ */}
       {/* SECTION 1: HERO - Full viewport dramatic */}
       {/* ============================================ */}
-      <section className="relative min-h-[60vh] lg:min-h-[70vh] flex items-end overflow-hidden">
+      <section className="relative min-h-[55vh] sm:min-h-[60vh] lg:min-h-[70vh] flex items-end overflow-hidden">
         {/* Background: Video, Hero Image, or Gradient (preference order) */}
         {heroVideoUrl ? (
           <>
@@ -227,12 +247,12 @@ export default function CaseStudyDetailPage() {
         )}
 
         {/* Content Overlay */}
-        <div className="relative z-10 w-full pb-12 sm:pb-16 lg:pb-20 pt-28 px-6 lg:px-8">
+        <div className="relative z-10 w-full pb-10 sm:pb-16 lg:pb-20 pt-24 sm:pt-28 px-4 sm:px-6 lg:px-8">
           <div className="max-w-[1200px] mx-auto">
             {/* Client name label */}
             {clientName && (
-              <div className="mb-4 animate-fade-in">
-                <span className="text-[#fc5d4c] text-sm font-medium uppercase tracking-wider">
+              <div className="mb-3 sm:mb-4 animate-fade-in">
+                <span className="text-[#fc5d4c] text-xs sm:text-sm font-medium uppercase tracking-wider">
                   {clientName}
                 </span>
               </div>
@@ -240,7 +260,7 @@ export default function CaseStudyDetailPage() {
 
             {/* Project title - dramatic sizing */}
             <h1
-              className="text-3xl sm:text-5xl lg:text-6xl text-white leading-[1.1] max-w-4xl mb-6 animate-fade-in-up font-serif font-normal tracking-tight"
+              className="text-[28px] leading-[1.15] sm:text-5xl lg:text-6xl sm:leading-[1.1] text-white max-w-4xl mb-5 sm:mb-6 animate-fade-in-up font-serif font-normal tracking-tight"
             >
               {projectTitle}
             </h1>
@@ -282,8 +302,8 @@ export default function CaseStudyDetailPage() {
       {/* ============================================ */}
       <section className="bg-[#F5F5F5]">
         {/* PDF Header Bar */}
-        <div className="bg-black border-b border-white/10 px-6 lg:px-8 py-3">
-          <div className="max-w-[1200px] mx-auto flex items-center justify-between">
+        <div className="bg-black border-b border-white/10 px-4 sm:px-6 lg:px-8 py-3">
+          <div className="max-w-[1200px] mx-auto flex items-center justify-between gap-3">
             <h2 className="text-white text-sm sm:text-base font-medium">
               Case Study Document
             </h2>
@@ -292,7 +312,7 @@ export default function CaseStudyDetailPage() {
                 href={caseStudy.pdf_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 bg-[#fc5d4c] text-white text-sm font-medium hover:bg-[#e54d3c] transition-colors"
+                className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-[#fc5d4c] text-white text-sm font-medium hover:bg-[#e54d3c] transition-colors"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -304,20 +324,80 @@ export default function CaseStudyDetailPage() {
           </div>
         </div>
 
-        {/* PDF Viewer - Native embed with reasonable height */}
         {caseStudy.pdf_url ? (
-          <div className="w-full bg-[#525659]">
-            <embed
-              src={`${caseStudy.pdf_url}#toolbar=1&navpanes=0&scrollbar=1&view=FitH`}
-              type="application/pdf"
-              className="w-full"
-              style={{
-                height: '85vh',
-                maxHeight: '900px',
-                minHeight: '600px',
-              }}
-            />
-          </div>
+          <>
+            {/* Mobile / tablet: image preview + CTAs.
+                Many mobile browsers can't inline-render PDFs, so we show the
+                page-1 hero image and let users tap through to their native
+                viewer. Hidden on lg+ where the embed below works reliably. */}
+            <div className="lg:hidden bg-[#F5F5F5] py-6 px-4 sm:px-6">
+              <div className="max-w-2xl mx-auto">
+                {caseStudy.hero_image_url ? (
+                  <a
+                    href={caseStudy.pdf_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Open ${caseStudy.title} PDF in new tab`}
+                    className="group block relative w-full overflow-hidden bg-white border border-[#eee] shadow-sm active:scale-[0.99] transition-transform"
+                    style={{ aspectRatio: '8.5 / 11' }}
+                  >
+                    <Image
+                      loader={supabaseLoader}
+                      src={caseStudy.hero_image_url}
+                      alt={`${caseStudy.title} — first page preview`}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 600px"
+                      className="object-contain"
+                    />
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/50 to-transparent p-4 sm:p-6 flex items-end justify-center">
+                      <div className="flex items-center gap-2 px-5 py-3 bg-white text-black text-sm font-medium shadow-lg">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                        <span>Open Full PDF</span>
+                      </div>
+                    </div>
+                  </a>
+                ) : (
+                  <a
+                    href={caseStudy.pdf_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-col items-center justify-center gap-3 w-full py-16 bg-white border border-[#eee] text-black active:bg-[#f9f9f9] transition-colors"
+                  >
+                    <svg className="w-12 h-12 text-[#fc5d4c]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span className="font-medium">Open Full PDF</span>
+                  </a>
+                )}
+                <p className="text-xs text-[#6B6B6B] mt-3 text-center">
+                  Tap to open the full document in your PDF viewer.
+                </p>
+              </div>
+            </div>
+
+            {/* Desktop: embedded inline viewer (lazy-mounted after first paint) */}
+            <div className="hidden lg:block w-full bg-[#525659]" style={{ minHeight: 600 }}>
+              {embedReady ? (
+                <iframe
+                  title={`${caseStudy.title} PDF`}
+                  src={`${caseStudy.pdf_url}#toolbar=1&navpanes=0&scrollbar=1&view=FitH`}
+                  className="w-full block border-0"
+                  loading="lazy"
+                  style={{
+                    height: '85vh',
+                    maxHeight: 900,
+                    minHeight: 600,
+                  }}
+                />
+              ) : (
+                <div className="w-full flex items-center justify-center" style={{ height: '85vh', maxHeight: 900, minHeight: 600 }}>
+                  <div className="w-10 h-10 border-4 border-white/20 border-t-white/70 rounded-full animate-spin" />
+                </div>
+              )}
+            </div>
+          </>
         ) : (
           <div className="py-20 text-center bg-[#F5F5F5]">
             <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-[#eee] flex items-center justify-center">
