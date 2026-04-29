@@ -1,12 +1,16 @@
 /**
- * Generate PDF Thumbnails Script
- * 
- * Generates thumbnail images from PDF first pages and uploads to Supabase Storage.
- * Updates the thumbnail_url in the documents table.
- * 
+ * Generate PDF Thumbnails & Hero Images Script
+ *
+ * Generates two images from each PDF's first page and uploads to Supabase Storage:
+ *   - thumbnail: 800x600 WebP for cards / search results
+ *   - hero:      1600px wide WebP for detail page hero sections
+ *
+ * Updates thumbnail_url and hero_image_url in the documents table.
+ *
  * Usage:
- *   npm run generate:thumbnails
- * 
+ *   npm run generate:thumbnails              (only docs missing images)
+ *   npm run generate:thumbnails -- --force   (regenerate all)
+ *
  * Prerequisites:
  *   pip3 install pymupdf Pillow
  */
@@ -31,18 +35,20 @@ if (!supabaseUrl || !supabaseKey) {
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const THUMBNAIL_BUCKET = 'thumbnails';
+const HERO_BUCKET = 'hero-images';
 const THUMBNAIL_WIDTH = 800;
 const THUMBNAIL_HEIGHT = 600;
+const HERO_WIDTH = 1600;
 
-async function ensureBucketExists(): Promise<void> {
+async function ensureBucketExists(bucketName: string, fileSizeLimit: number): Promise<void> {
   const { data: buckets } = await supabase.storage.listBuckets();
-  const exists = buckets?.some(b => b.name === THUMBNAIL_BUCKET);
-  
+  const exists = buckets?.some(b => b.name === bucketName);
+
   if (!exists) {
-    console.log(`📦 Creating bucket: ${THUMBNAIL_BUCKET}`);
-    const { error } = await supabase.storage.createBucket(THUMBNAIL_BUCKET, {
+    console.log(`📦 Creating bucket: ${bucketName}`);
+    const { error } = await supabase.storage.createBucket(bucketName, {
       public: true,
-      fileSizeLimit: 10 * 1024 * 1024, // 10MB
+      fileSizeLimit,
     });
     if (error && !error.message.includes('already exists')) {
       console.error('Bucket creation error:', error);
@@ -51,14 +57,18 @@ async function ensureBucketExists(): Promise<void> {
 }
 
 /**
- * Generate thumbnail from PDF using PyMuPDF (no poppler required)
+ * Render PDF page 1 into both a thumbnail (fixed-canvas WebP) and a
+ * hero image (aspect-preserving WebP) using PyMuPDF.
  */
-function generateThumbnailFromPdf(pdfUrl: string, outputPath: string): boolean {
+function renderPdfImages(
+  pdfUrl: string,
+  thumbPath: string,
+  heroPath: string
+): boolean {
   const pythonScript = `
 import sys
 import json
 import urllib.request
-import io
 
 try:
     import fitz  # PyMuPDF
@@ -68,49 +78,45 @@ except ImportError as e:
     sys.exit(1)
 
 pdf_url = sys.argv[1]
-output_path = sys.argv[2]
-width = int(sys.argv[3])
-height = int(sys.argv[4])
+thumb_path = sys.argv[2]
+hero_path = sys.argv[3]
+thumb_w = int(sys.argv[4])
+thumb_h = int(sys.argv[5])
+hero_w = int(sys.argv[6])
 
 try:
-    # Download PDF
     req = urllib.request.Request(pdf_url, headers={'User-Agent': 'Mozilla/5.0'})
     with urllib.request.urlopen(req, timeout=30) as response:
         pdf_bytes = response.read()
-    
-    # Open PDF with PyMuPDF
+
     doc = fitz.open(stream=pdf_bytes, filetype="pdf")
-    
     if len(doc) == 0:
         print(json.dumps({"error": "No pages in PDF"}))
         sys.exit(1)
-    
-    # Get first page
+
     page = doc[0]
-    
-    # Render page to image (2x for better quality)
-    mat = fitz.Matrix(2, 2)
-    pix = page.get_pixmap(matrix=mat)
-    
-    # Convert to PIL Image
-    img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
-    
-    # Resize to thumbnail maintaining aspect ratio
-    img.thumbnail((width, height), Image.Resampling.LANCZOS)
-    
-    # Create new image with white background
-    thumb = Image.new('RGB', (width, height), (255, 255, 255))
-    
-    # Paste the resized image centered
-    x = (width - img.width) // 2
-    y = (height - img.height) // 2
-    thumb.paste(img, (x, y))
-    
-    # Save as JPEG
-    thumb.save(output_path, 'JPEG', quality=85)
-    
+
+    # Render at 3x for hero quality, then derive thumbnail from same source
+    mat = fitz.Matrix(3, 3)
+    pix = page.get_pixmap(matrix=mat, alpha=False)
+    src = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+
+    # Hero: aspect-preserving resize to HERO_WIDTH
+    hero_height = int(src.height * (hero_w / src.width))
+    hero_img = src.resize((hero_w, hero_height), Image.Resampling.LANCZOS)
+    hero_img.save(hero_path, 'WEBP', quality=85, method=6)
+
+    # Thumbnail: fit-inside thumb_w x thumb_h on white canvas, centered
+    thumb_src = src.copy()
+    thumb_src.thumbnail((thumb_w, thumb_h), Image.Resampling.LANCZOS)
+    thumb_canvas = Image.new('RGB', (thumb_w, thumb_h), (255, 255, 255))
+    x = (thumb_w - thumb_src.width) // 2
+    y = (thumb_h - thumb_src.height) // 2
+    thumb_canvas.paste(thumb_src, (x, y))
+    thumb_canvas.save(thumb_path, 'WEBP', quality=82, method=6)
+
     doc.close()
-    print(json.dumps({"success": True, "path": output_path}))
+    print(json.dumps({"success": True}))
 except Exception as e:
     print(json.dumps({"error": str(e)}))
     sys.exit(1)
@@ -121,24 +127,24 @@ except Exception as e:
 
   try {
     const result = execSync(
-      `python3 "${tempScript}" "${pdfUrl}" "${outputPath}" ${THUMBNAIL_WIDTH} ${THUMBNAIL_HEIGHT}`,
-      { encoding: 'utf-8', timeout: 60000, stdio: ['pipe', 'pipe', 'pipe'] }
+      `python3 "${tempScript}" "${pdfUrl}" "${thumbPath}" "${heroPath}" ${THUMBNAIL_WIDTH} ${THUMBNAIL_HEIGHT} ${HERO_WIDTH}`,
+      { encoding: 'utf-8', timeout: 180000, stdio: ['pipe', 'pipe', 'pipe'] }
     );
-    
+
     fs.unlinkSync(tempScript);
-    
+
     const lines = result.trim().split('\n');
     const lastLine = lines[lines.length - 1];
     const parsed = JSON.parse(lastLine);
     if (parsed.error) {
-      console.log(`⚠️ ${parsed.error.slice(0, 50)}`);
+      console.log(`⚠️ ${parsed.error.slice(0, 80)}`);
       return false;
     }
     return true;
   } catch (error: any) {
     if (fs.existsSync(tempScript)) fs.unlinkSync(tempScript);
     const errMsg = error.stderr?.toString() || error.message || 'Unknown error';
-    console.log(`⚠️ ${errMsg.slice(0, 60)}`);
+    console.log(`⚠️ ${errMsg.slice(0, 80)}`);
     return false;
   }
 }
@@ -152,77 +158,102 @@ async function processDocument(doc: { id: string; slug: string; pdf_url: string;
     return false;
   }
 
+  const tempThumbPath = path.join(process.cwd(), `.temp-thumb-${doc.slug}.webp`);
+  const tempHeroPath = path.join(process.cwd(), `.temp-hero-${doc.slug}.webp`);
+
   try {
-    // Create temp file for thumbnail
-    const tempThumbPath = path.join(process.cwd(), `.temp-thumb-${doc.slug}.jpg`);
-    
-    // Generate thumbnail
-    const success = generateThumbnailFromPdf(doc.pdf_url, tempThumbPath);
-    
-    if (!success || !fs.existsSync(tempThumbPath)) {
-      console.log('❌ Failed to generate');
+    const success = renderPdfImages(doc.pdf_url, tempThumbPath, tempHeroPath);
+
+    if (!success || !fs.existsSync(tempThumbPath) || !fs.existsSync(tempHeroPath)) {
+      console.log('❌ Failed to render');
       return false;
     }
 
-    // Upload to Supabase Storage
-    const thumbBuffer = fs.readFileSync(tempThumbPath);
-    const storagePath = `${doc.slug}.jpg`;
+    const storagePath = `${doc.slug}.webp`;
 
-    const { error: uploadError } = await supabase.storage
+    // Upload thumbnail
+    const thumbBuffer = fs.readFileSync(tempThumbPath);
+    const { error: thumbUploadError } = await supabase.storage
       .from(THUMBNAIL_BUCKET)
       .upload(storagePath, thumbBuffer, {
-        contentType: 'image/jpeg',
+        contentType: 'image/webp',
         upsert: true,
       });
 
-    // Clean up temp file
-    fs.unlinkSync(tempThumbPath);
-
-    if (uploadError) {
-      console.log(`❌ Upload error: ${uploadError.message}`);
+    if (thumbUploadError) {
+      console.log(`❌ Thumb upload: ${thumbUploadError.message}`);
       return false;
     }
 
-    // Get public URL
-    const { data: urlData } = supabase.storage
+    // Upload hero
+    const heroBuffer = fs.readFileSync(tempHeroPath);
+    const { error: heroUploadError } = await supabase.storage
+      .from(HERO_BUCKET)
+      .upload(storagePath, heroBuffer, {
+        contentType: 'image/webp',
+        upsert: true,
+      });
+
+    if (heroUploadError) {
+      console.log(`❌ Hero upload: ${heroUploadError.message}`);
+      return false;
+    }
+
+    const { data: thumbUrl } = supabase.storage
       .from(THUMBNAIL_BUCKET)
       .getPublicUrl(storagePath);
+    const { data: heroUrl } = supabase.storage
+      .from(HERO_BUCKET)
+      .getPublicUrl(storagePath);
 
-    // Update document
     const { error: updateError } = await supabase
       .from('documents')
-      .update({ thumbnail_url: urlData.publicUrl })
+      .update({
+        thumbnail_url: thumbUrl.publicUrl,
+        hero_image_url: heroUrl.publicUrl,
+      })
       .eq('id', doc.id);
 
     if (updateError) {
-      console.log(`❌ DB update error: ${updateError.message}`);
+      console.log(`❌ DB update: ${updateError.message}`);
       return false;
     }
 
     console.log('✅');
     return true;
-
   } catch (error: any) {
     console.log(`❌ ${error.message}`);
     return false;
+  } finally {
+    if (fs.existsSync(tempThumbPath)) fs.unlinkSync(tempThumbPath);
+    if (fs.existsSync(tempHeroPath)) fs.unlinkSync(tempHeroPath);
   }
 }
 
 async function main() {
+  const force = process.argv.includes('--force');
+
   console.log(`
-🖼️  PDF Thumbnail Generator
+🖼️  PDF Thumbnail & Hero Image Generator
+==========================================
+Mode: ${force ? 'force regenerate all' : 'only docs missing images'}
 ==========================================
 `);
 
-  // Ensure bucket exists
-  await ensureBucketExists();
+  await ensureBucketExists(THUMBNAIL_BUCKET, 10 * 1024 * 1024);
+  await ensureBucketExists(HERO_BUCKET, 25 * 1024 * 1024);
 
-  // Get all documents with PDF URLs but no thumbnail
-  const { data: docs, error } = await supabase
+  // Get documents with PDF URLs that need images
+  let query = supabase
     .from('documents')
     .select('id, slug, pdf_url, title, doc_type')
-    .not('pdf_url', 'is', null)
-    .is('thumbnail_url', null)
+    .not('pdf_url', 'is', null);
+
+  if (!force) {
+    query = query.or('thumbnail_url.is.null,hero_image_url.is.null');
+  }
+
+  const { data: docs, error } = await query
     .order('doc_type', { ascending: false }) // Case studies first
     .order('title');
 
@@ -232,11 +263,11 @@ async function main() {
   }
 
   if (!docs || docs.length === 0) {
-    console.log('✅ All documents already have thumbnails!');
+    console.log('✅ All documents already have thumbnail and hero images!');
     return;
   }
 
-  console.log(`Found ${docs.length} documents needing thumbnails\n`);
+  console.log(`Found ${docs.length} documents needing images\n`);
 
   let successful = 0;
   let failed = 0;
@@ -257,7 +288,7 @@ async function main() {
 
   console.log(`
 ==========================================
-📊 THUMBNAIL GENERATION COMPLETE
+📊 IMAGE GENERATION COMPLETE
 ==========================================
 Successful: ${successful}
 Failed:     ${failed}
