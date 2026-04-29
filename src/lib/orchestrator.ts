@@ -201,6 +201,7 @@ Your response:
         "summary": "A complete brand transformation that positioned a challenger bank as a serious alternative to legacy institutions, achieving +340% brand awareness.",
         "capabilities": ["Brand Strategy", "Creative Direction"],
         "industries": ["Finance"],
+        "thumbnailUrl": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/thumbnails/neobank-rebrand.webp",
         "slug": "neobank-rebrand"
       }
     }

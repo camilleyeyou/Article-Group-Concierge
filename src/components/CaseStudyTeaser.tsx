@@ -1,5 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
+import { supabaseLoader } from '@/lib/supabase-image-loader';
 import type { CaseStudyTeaserProps } from '../types';
 
 /**
@@ -16,6 +18,7 @@ export const CaseStudyTeaser: React.FC<CaseStudyTeaserProps> = ({
   summary,
   capabilities = [],
   industries = [],
+  thumbnailUrl,
   slug,
 }) => {
   // Parse title to separate client name if format is "Client: Project Title"
@@ -25,7 +28,22 @@ export const CaseStudyTeaser: React.FC<CaseStudyTeaserProps> = ({
 
   const content = (
     <div className="group relative overflow-hidden bg-white border border-[#eee] hover:border-black transition-all duration-300">
-      {/* Black overlay header - AG style (fixes "lost black overlay" feedback) */}
+      {/* Thumbnail image (PDF first-page render) */}
+      {thumbnailUrl && (
+        <div className="relative aspect-[4/3] bg-[#eee] overflow-hidden">
+          <Image
+            loader={supabaseLoader}
+            src={thumbnailUrl}
+            alt={title}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            loading="lazy"
+          />
+        </div>
+      )}
+
+      {/* Black overlay header - AG style */}
       <div className="bg-[#1a1a1a] px-6 py-8">
         {/* Category label - teal accent */}
         {capabilities.length > 0 && (

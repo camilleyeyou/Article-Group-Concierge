@@ -23,6 +23,7 @@ interface CaseStudy {
   summary: string;
   pdf_url: string | null;
   thumbnail_url: string | null;
+  hero_image_url: string | null;
   hero_video_url: string | null;
   vimeo_url: string | null;
 }
@@ -182,7 +183,7 @@ export default function CaseStudyDetailPage() {
       {/* SECTION 1: HERO - Full viewport dramatic */}
       {/* ============================================ */}
       <section className="relative min-h-[60vh] lg:min-h-[70vh] flex items-end overflow-hidden">
-        {/* Background: Video or Gradient */}
+        {/* Background: Video, Hero Image, or Gradient (preference order) */}
         {heroVideoUrl ? (
           <>
             <video
@@ -196,6 +197,20 @@ export default function CaseStudyDetailPage() {
               <source src={heroVideoUrl} type="video/mp4" />
             </video>
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/20" />
+          </>
+        ) : caseStudy.hero_image_url ? (
+          <>
+            <Image
+              loader={supabaseLoader}
+              src={caseStudy.hero_image_url}
+              alt={caseStudy.title}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+            />
+            {/* Dark gradient overlay so the title remains readable */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/40" />
           </>
         ) : (
           <div
