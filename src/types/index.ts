@@ -250,11 +250,20 @@ export interface OrchestratorInput {
   }>;
 }
 
+export type OrchestratorErrorCode =
+  | 'embeddings_unavailable'
+  | 'orchestrator_unavailable'
+  | 'upstream_rate_limit'
+  | 'database_unavailable'
+  | 'internal_error';
+
 export interface OrchestratorOutput {
   layoutPlan: LayoutPlan;
   explanation: string;
   suggestedFollowUps?: string[];
   contactCTA?: boolean; // True if no relevant content found
+  errorCode?: OrchestratorErrorCode; // Set when the response is a graceful failure
+  retryable?: boolean; // True when the user should be invited to retry
 }
 
 // ============================================

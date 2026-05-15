@@ -30,7 +30,7 @@ export default function ConciergePage() {
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<{ message: string; retryable: boolean; failedQuery: string } | null>(null);
   const [isHydrated, setIsHydrated] = useState(false);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -111,11 +111,23 @@ export default function ConciergePage() {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to get response');
-      }
+      // Always try to read the body — server returns a structured OrchestratorOutput
+      // even on failure, with `explanation` set to a user-friendly message.
+      const data: OrchestratorOutput = await response.json().catch(() => ({
+        layoutPlan: { layout: [] },
+        explanation: 'We had trouble reaching the concierge. Please try again.',
+        retryable: true,
+      }));
 
-      const data: OrchestratorOutput = await response.json();
+      if (!response.ok) {
+        setError({
+          message: data.explanation,
+          retryable: data.retryable ?? true,
+          failedQuery: trimmedQuery,
+        });
+        UILogger.error('Submit error', { status: response.status, errorCode: data.errorCode });
+        return;
+      }
 
       const assistantMessage: Message = {
         id: `assistant-${Date.now()}`,
@@ -128,12 +140,33 @@ export default function ConciergePage() {
       setMessages(prev => [...prev, assistantMessage]);
 
     } catch (err) {
-      setError('Something went wrong. Please try again.');
+      // Network-level failure (offline, DNS, etc.)
+      setError({
+        message: "We couldn't reach the concierge. Check your connection and try again.",
+        retryable: true,
+        failedQuery: trimmedQuery,
+      });
       UILogger.error('Submit error', err);
     } finally {
       setIsLoading(false);
     }
   }, [query, isLoading, messages]);
+
+  const handleRetry = useCallback(() => {
+    if (!error) return;
+    const queryToRetry = error.failedQuery;
+    setError(null);
+    // Drop the trailing user message we added for the failed attempt — handleSubmit
+    // will re-add it. This keeps the conversation clean.
+    setMessages(prev => {
+      const last = prev[prev.length - 1];
+      if (last && last.role === 'user' && last.content === queryToRetry) {
+        return prev.slice(0, -1);
+      }
+      return prev;
+    });
+    handleSubmit(undefined, queryToRetry);
+  }, [error, handleSubmit]);
 
   const handleFollowUp = useCallback((followUp: string) => {
     handleSubmit(undefined, followUp);
@@ -580,8 +613,28 @@ export default function ConciergePage() {
         {/* Error message */}
         {error && (
           <div className="max-w-4xl mx-auto px-6 mb-4" role="alert" aria-live="assertive">
-            <div className="p-4 bg-[#fc5d4c]/10 border border-[#fc5d4c]/20 text-[#fc5d4c] text-sm text-center">
-              {error}
+            <div className="p-4 bg-[#fc5d4c]/10 border border-[#fc5d4c]/20 text-[#fc5d4c] text-sm flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
+              <span className="flex-1">{error.message}</span>
+              <div className="flex gap-2 shrink-0">
+                {error.retryable && (
+                  <button
+                    type="button"
+                    onClick={handleRetry}
+                    disabled={isLoading}
+                    className="px-3 py-1.5 border border-[#fc5d4c] text-[#fc5d4c] hover:bg-[#fc5d4c] hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Try again
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setError(null)}
+                  className="px-3 py-1.5 text-[#fc5d4c]/80 hover:text-[#fc5d4c] transition-colors"
+                  aria-label="Dismiss error"
+                >
+                  Dismiss
+                </button>
+              </div>
             </div>
           </div>
         )}

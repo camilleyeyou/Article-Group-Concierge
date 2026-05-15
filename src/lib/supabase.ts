@@ -77,7 +77,19 @@ export async function generateEmbedding(text: string): Promise<number[]> {
   });
 
   if (!response.ok) {
-    throw new Error(`Embedding API error: ${response.statusText}`);
+    const bodyText = await response.text().catch(() => '');
+    const err = new Error(
+      `Embedding API error (${response.status} ${response.statusText}): ${bodyText.slice(0, 200)}`
+    ) as Error & { code: string; status: number };
+    err.status = response.status;
+    if (response.status === 429 && bodyText.includes('insufficient_quota')) {
+      err.code = 'embeddings_quota_exceeded';
+    } else if (response.status === 429) {
+      err.code = 'embeddings_rate_limited';
+    } else {
+      err.code = 'embeddings_failed';
+    }
+    throw err;
   }
 
   const data = await response.json();
