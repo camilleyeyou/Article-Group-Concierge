@@ -19,9 +19,14 @@ interface ImageLoaderParams {
   quality?: number;
 }
 
+// Image transforms are a paid Supabase feature; when it's off the render
+// endpoint returns 403 FeatureNotEnabled and every image breaks. Opt in only
+// when the project plan supports it.
+const TRANSFORMS_ENABLED = process.env.NEXT_PUBLIC_SUPABASE_IMAGE_TRANSFORMS === 'true';
+
 export function supabaseLoader({ src, width, quality }: ImageLoaderParams): string {
   // Only transform Supabase Storage URLs
-  if (!src.includes('supabase.co/storage/')) {
+  if (!TRANSFORMS_ENABLED || !src.includes('supabase.co/storage/')) {
     return src;
   }
 
