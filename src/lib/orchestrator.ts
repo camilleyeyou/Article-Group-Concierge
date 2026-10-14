@@ -28,6 +28,11 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
+// Overridable so a future model retirement is an env change, not a deploy
+const MODEL = process.env.ANTHROPIC_MODEL || 'claude-sonnet-5-5';
+// Sonnet 5.5 thinks by default and thinking counts toward max_tokens
+const MAX_TOKENS = 16000;
+
 // ============================================
 // SYSTEM PROMPT
 // ============================================
@@ -435,8 +440,8 @@ Please assemble a pitch deck layout using the Component Registry. Remember to ou
   try {
     // Call Claude
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 4096,
+      model: MODEL,
+      max_tokens: MAX_TOKENS,
       system: SYSTEM_PROMPT,
       messages,
     });
@@ -505,8 +510,8 @@ Please assemble a pitch deck layout using the Component Registry. Remember to ou
   });
   
   const stream = await anthropic.messages.stream({
-    model: 'claude-sonnet-4-20250514',
-    max_tokens: 4096,
+    model: MODEL,
+    max_tokens: MAX_TOKENS,
     system: SYSTEM_PROMPT,
     messages,
   });
