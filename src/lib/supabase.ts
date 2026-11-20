@@ -19,6 +19,7 @@ import type {
 } from '../types';
 import { RAGLogger } from './logger';
 import { cache, CACHE_PREFIXES, CACHE_TTL } from './cache';
+import { embeddingConfig } from './llm-config';
 
 // Lazy-initialized Supabase client
 let _supabase: SupabaseClient | null = null;
@@ -52,7 +53,7 @@ export const supabase = new Proxy({} as SupabaseClient, {
 // ============================================
 
 /**
- * Generate embeddings using OpenAI's text-embedding-3-small
+ * Generate embeddings using OpenAI's text-embedding-3-small (directly or via OpenRouter)
  * You can swap this for any embedding model that outputs 1536 dimensions
  *
  * CACHED: Embeddings are cached for 24 hours to reduce API costs
@@ -64,14 +65,15 @@ export async function generateEmbedding(text: string): Promise<number[]> {
     return cached;
   }
 
-  const response = await fetch('https://api.openai.com/v1/embeddings', {
+  const { baseURL, apiKey, model } = embeddingConfig();
+  const response = await fetch(`${baseURL}/embeddings`, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+      'Authorization': `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'text-embedding-3-small',
+      model,
       input: text,
     }),
   });
@@ -82,7 +84,8 @@ export async function generateEmbedding(text: string): Promise<number[]> {
       `Embedding API error (${response.status} ${response.statusText}): ${bodyText.slice(0, 200)}`
     ) as Error & { code: string; status: number };
     err.status = response.status;
-    if (response.status === 429 && bodyText.includes('insufficient_quota')) {
+    // OpenAI: 429 insufficient_quota; OpenRouter: 402 Payment Required
+    if (response.status === 402 || (response.status === 429 && bodyText.includes('insufficient_quota'))) {
       err.code = 'embeddings_quota_exceeded';
     } else if (response.status === 429) {
       err.code = 'embeddings_rate_limited';
@@ -298,6 +301,7 @@ interface RetrieveContextParams {
   maxChunks?: number;
   maxAssets?: number;
   minRelevanceScore?: number;
+  skipCache?: boolean; // Eval runs need fresh results after reingestion
 }
 
 /**
@@ -382,6 +386,7 @@ export async function retrieveContext({
   maxChunks = 10,
   maxAssets = 5,
   minRelevanceScore = 0.15, // Lowered threshold - semantic scores are often 0.2-0.4
+  skipCache = false,
 }: RetrieveContextParams): Promise<RetrievedContext> {
   // Create cache key from query and filters
   const cacheKey = {
@@ -394,7 +399,9 @@ export async function retrieveContext({
   };
 
   // Check cache first
-  const cached = cache.get<RetrievedContext>(CACHE_PREFIXES.RAG_SEARCH, cacheKey);
+  const cached = skipCache
+    ? null
+    : cache.get<RetrievedContext>(CACHE_PREFIXES.RAG_SEARCH, cacheKey);
   if (cached) {
     RAGLogger.debug('Using cached RAG results', { query: query.slice(0, 50) });
     return cached;

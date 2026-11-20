@@ -32,3 +32,6 @@ build/
 # Content (PDFs)
 content/
 *.pdf
+
+# Eval run outputs (contain signed storage URLs)
+eval/results/

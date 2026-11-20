@@ -264,11 +264,14 @@ async function main() {
   const requiredEnvVars = [
     'NEXT_PUBLIC_SUPABASE_URL',
     'SUPABASE_SERVICE_ROLE_KEY',
-    'OPENAI_API_KEY',
     'LLAMA_CLOUD_API_KEY',
   ];
-  
+
   const missingVars = requiredEnvVars.filter(v => !process.env[v]);
+  // Embeddings (via src/lib/supabase.ts) need one of these
+  if (!process.env.OPENAI_API_KEY && !process.env.OPENROUTER_API_KEY) {
+    missingVars.push('OPENAI_API_KEY (or OPENROUTER_API_KEY)');
+  }
   if (missingVars.length > 0) {
     console.error('❌ Missing required environment variables:');
     missingVars.forEach(v => console.error(`   - ${v}`));

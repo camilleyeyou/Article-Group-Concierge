@@ -18,11 +18,14 @@ import * as path from 'path';
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
 
 import { createClient } from '@supabase/supabase-js';
+import { embeddingConfig } from '../src/lib/llm-config';
 
 // Initialize Supabase
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-const openaiKey = process.env.OPENAI_API_KEY!;
+// Embeddings go to OpenAI directly, or via OpenRouter when OPENROUTER_API_KEY is set
+const embedding = embeddingConfig();
+const openaiKey = embedding.apiKey!;
 
 if (!supabaseUrl || !supabaseKey) {
   console.error('❌ Missing Supabase environment variables. Check .env.local');
@@ -30,7 +33,7 @@ if (!supabaseUrl || !supabaseKey) {
 }
 
 if (!openaiKey) {
-  console.error('❌ Missing OPENAI_API_KEY. Check .env.local');
+  console.error('❌ Missing OPENAI_API_KEY (or OPENROUTER_API_KEY). Check .env.local');
   process.exit(1);
 }
 
@@ -45,14 +48,14 @@ const BUCKET_NAME = 'case-study-pdfs';
 async function generateEmbedding(text: string, retries = 3): Promise<number[]> {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      const response = await fetch('https://api.openai.com/v1/embeddings', {
+      const response = await fetch(`${embedding.baseURL}/embeddings`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${openaiKey}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'text-embedding-3-small',
+          model: embedding.model,
           input: text,
         }),
       });

@@ -248,6 +248,7 @@ export interface OrchestratorInput {
     role: 'user' | 'assistant';
     content: string;
   }>;
+  skipCache?: boolean; // Eval runs need fresh responses after reingestion
 }
 
 export type OrchestratorErrorCode =
@@ -264,6 +265,9 @@ export interface OrchestratorOutput {
   contactCTA?: boolean; // True if no relevant content found
   errorCode?: OrchestratorErrorCode; // Set when the response is a graceful failure
   retryable?: boolean; // True when the user should be invited to retry
+  // Internal only - the chat route strips these unless eval debug mode is on
+  rawResponse?: string; // Unparsed model text
+  orchestratorError?: string; // Set when the model call failed and a fallback was returned
 }
 
 // ============================================

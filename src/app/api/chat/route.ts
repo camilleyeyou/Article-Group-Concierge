@@ -30,6 +30,7 @@ interface ChatRequest {
     role: 'user' | 'assistant';
     content: string;
   }>;
+  debug?: boolean; // Honoured only when the server runs with EVAL_DEBUG=true
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -68,6 +69,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
     
+    // Eval debug mode: bypass caches and return retrieval alongside the response.
+    // Never set EVAL_DEBUG in production - it exposes retrieved content and raw model output.
+    const debug = body.debug === true && process.env.EVAL_DEBUG === 'true';
+
     // Step 1: Retrieve relevant context
     APILogger.info('Processing query', { query: query.slice(0, 50) + '...' });
 
@@ -77,6 +82,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       industrySlugs: body.filters?.industries,
       maxChunks: 10,
       maxAssets: 5,
+      skipCache: debug,
     });
 
     APILogger.info('Retrieved context', {
@@ -89,6 +95,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       userQuery: query,
       context,
       conversationHistory: body.conversationHistory,
+      skipCache: debug,
     });
 
     APILogger.info('Generated layout', {
@@ -110,7 +117,22 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     });
 
     // Return the result
-    return NextResponse.json(result);
+    const { rawResponse, orchestratorError, ...publicResult } = result;
+    if (!debug) {
+      return NextResponse.json(publicResult);
+    }
+    return NextResponse.json({
+      ...publicResult,
+      debug: {
+        rawResponse: rawResponse ?? null,
+        orchestratorError: orchestratorError ?? null,
+        retrieval: {
+          chunks: context.chunks,
+          visualAssets: context.visualAssets,
+          relatedMetrics: context.relatedMetrics,
+        },
+      },
+    });
     
   } catch (error) {
     APILogger.error('Chat API error', error);

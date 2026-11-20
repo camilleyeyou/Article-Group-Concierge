@@ -1,0 +1,81 @@
+{
+  "generated_at": "2026-10-27",
+  "source": [
+    "https://articlegroup.com/",
+    "https://articlegroup.com/work/",
+    "https://articlegroup.com/about-us/"
+  ],
+  "notes": "The site has no dedicated services page; services come from the homepage 'What we do' section. The showcased work is mostly enterprise tech / B2B (Google, AWS, CrowdStrike, Salesforce, Meta), plus financial services (AIG, J.P. Morgan), HR (ADP), energy (Renew Home) and science philanthropy (Simons Foundation). p5 is deliberately outside all of these.",
+  "personas": [
+    {
+      "id": "p1",
+      "label": "Startup security PMM",
+      "role": "Head of Product Marketing",
+      "company_type": "Venture-backed B2B SaaS startup (Series B)",
+      "company_size": "~120 employees",
+      "industry": "Cybersecurity (API / cloud security)",
+      "marketing_problem": "They're launching a second product that creates a new sub-category. Analysts and buyers don't get the platform story, sales decks are inconsistent, and a much larger competitor owns the category language.",
+      "technical_level": "high",
+      "articulateness": "high: uses PMM vocabulary (positioning, marketecture, ICP, GTM, messaging house)",
+      "win": "A positioning and messaging framework, plus a marketecture visual that sales actually uses, ready in time for their RSA Conference launch.",
+      "site_alignment": "core",
+      "likely_relevant_work": ["CrowdStrike marketecture", "Salt Security: Defending Market Territory", "Chorus (Alphabet X) asset visibility brand", "Chrome Enterprise security video"]
+    },
+    {
+      "id": "p2",
+      "label": "Fortune 100 financial-services comms VP",
+      "role": "VP, Corporate Communications & Brand",
+      "company_type": "Global insurer / financial-services enterprise",
+      "company_size": "40,000+ employees",
+      "industry": "Financial services / insurance",
+      "marketing_problem": "After a restructuring, the company has to re-introduce itself to institutional clients and brokers, and the CEO has a high-stakes investor-day keynote in five months. Internal stakeholders and legal slow everything down.",
+      "technical_level": "low",
+      "articulateness": "high: polished, executive and risk-averse; asks about process, governance and senior-level experience",
+      "win": "A credible repositioning narrative the board signs off on, and a CEO keynote that lands with analysts without creating legal exposure.",
+      "site_alignment": "core",
+      "likely_relevant_work": ["AIG: When Stakes Are High", "J.P. Morgan naming", "ADP: Creating Keynotes That Connect", "AWS: Keynotes That Reshape Perspectives"]
+    },
+    {
+      "id": "p3",
+      "label": "Big-tech partner marketing lead",
+      "role": "Director, Partner & Ecosystem Marketing",
+      "company_type": "Large enterprise cloud / productivity software company",
+      "company_size": "10,000+ employees",
+      "industry": "Enterprise technology",
+      "marketing_problem": "They need to scale co-marketing across hundreds of partners: enablement kits, co-branded video, a virtual partner summit, and customer stories. Their in-house team is stretched and output is inconsistent.",
+      "technical_level": "medium-high",
+      "articulateness": "medium: busy and practical; writes short multi-part asks about capacity, speed and repeatable templates",
+      "win": "A repeatable partner-marketing system (templates, video, an event) that partners actually use, and that they can show pipeline influence from.",
+      "site_alignment": "core",
+      "likely_relevant_work": ["UpShow/ChromeOS: Purposeful Partner Marketing", "Salesforce/Slack: Strategic Sales Enablement", "AWS/NVIDIA co-branded video", "Slalom: Celebrating Customer Success", "Android: Crafting a Brand New Virtual Event"]
+    },
+    {
+      "id": "p4",
+      "label": "Science foundation comms director",
+      "role": "Director of Communications",
+      "company_type": "Private research foundation / science nonprofit",
+      "company_size": "~250 staff, grant-making plus in-house research institutes",
+      "industry": "Science / philanthropy / education",
+      "marketing_problem": "Their brand looks dated and fragmented across programs. They need to explain basic research to the public, to policymakers and to prospective scientists, and they're launching a new education initiative.",
+      "technical_level": "low on marketing, high on subject matter",
+      "articulateness": "high: thoughtful, long-form; wary of 'marketing speak'; asks about values and audience understanding",
+      "win": "A unified brand identity and content approach that makes the science approachable without dumbing it down, and that internal researchers respect.",
+      "site_alignment": "edge: one showcased client (Simons Foundation), otherwise thin coverage",
+      "likely_relevant_work": ["Simons Foundation: Illuminating a New Brand Identity", "Google Cloud: Illuminating a New Brand Identity", "Amazon re:MARS docuseries"]
+    },
+    {
+      "id": "p5",
+      "label": "Regional restaurant group owner (out of domain)",
+      "role": "Owner / Operator",
+      "company_type": "Family-owned regional restaurant group",
+      "company_size": "4 locations, ~90 staff, no marketing team",
+      "industry": "Hospitality / food & beverage (local consumer)",
+      "marketing_problem": "Weeknight foot traffic is down, a new chain is opening nearby, and they want Instagram/TikTok content, a better website with online ordering, and a local launch event for a fifth location. Budget is small.",
+      "technical_level": "very low",
+      "articulateness": "low: short, informal, sometimes vague messages; asks about price early",
+      "win": "More covers on weeknights and a busy opening for the new location, on a budget they can afford.",
+      "site_alignment": "outside: no hospitality, restaurant, local-business or small-budget consumer work on the site. Use this persona to test the fallback and whether the model forces irrelevant enterprise tech case studies onto it.",
+      "likely_relevant_work": []
+    }
+  ]
+}

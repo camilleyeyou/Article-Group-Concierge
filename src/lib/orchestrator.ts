@@ -22,14 +22,13 @@ import type {
 } from '../types';
 import { OrchLogger } from './logger';
 import { cache, CACHE_PREFIXES, CACHE_TTL } from './cache';
+import { anthropicClientOptions, claudeModelId } from './llm-config';
 
-// Initialize Anthropic client
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+// Initialize Anthropic client (direct, or via OpenRouter when OPENROUTER_API_KEY is set)
+const anthropic = new Anthropic(anthropicClientOptions());
 
 // Overridable so a future model retirement is an env change, not a deploy
-const MODEL = process.env.ANTHROPIC_MODEL || 'claude-sonnet-5-5';
+const MODEL = claudeModelId(process.env.ANTHROPIC_MODEL || 'claude-sonnet-5-5');
 // Sonnet 5.5 thinks by default and thinking counts toward max_tokens
 const MAX_TOKENS = 16000;
 
@@ -37,7 +36,8 @@ const MAX_TOKENS = 16000;
 // SYSTEM PROMPT
 // ============================================
 
-const SYSTEM_PROMPT = `You are the AI Concierge for Article Group, a premium New York-based strategy and creative agency. Your role is to act as a "Layout Orchestrator" - assembling personalized pitch decks by selecting from pre-built UI components.
+// Exported so the eval grader judges voice and component usage against the live prompt
+export const SYSTEM_PROMPT = `You are the AI Concierge for Article Group, a premium New York-based strategy and creative agency. Your role is to act as a "Layout Orchestrator" - assembling personalized pitch decks by selecting from pre-built UI components.
 
 ## YOUR CORE MISSION
 Transform user queries into compelling, visually-driven pitch presentations by:
@@ -385,7 +385,7 @@ function parseOrchestratorResponse(response: string): OrchestratorOutput {
  * Note: Cache includes context to ensure responses match the retrieved data
  */
 export async function orchestrate(input: OrchestratorInput): Promise<OrchestratorOutput> {
-  const { userQuery, context, conversationHistory } = input;
+  const { userQuery, context, conversationHistory, skipCache } = input;
 
   // Create cache key from query, context, and conversation history
   // Include document IDs and metrics to ensure cache freshness
@@ -399,7 +399,7 @@ export async function orchestrate(input: OrchestratorInput): Promise<Orchestrato
 
   // Check cache first (skip cache if there's conversation history for now)
   // TODO: Improve caching strategy for multi-turn conversations
-  if (!conversationHistory || conversationHistory.length === 0) {
+  if (!skipCache && (!conversationHistory || conversationHistory.length === 0)) {
     const cached = cache.get<OrchestratorOutput>(CACHE_PREFIXES.ORCHESTRATOR, cacheKey);
     if (cached) {
       OrchLogger.debug('Using cached orchestrator response', {
@@ -454,6 +454,7 @@ Please assemble a pitch deck layout using the Component Registry. Remember to ou
 
     // Parse the response
     const result = parseOrchestratorResponse(textContent.text);
+    result.rawResponse = textContent.text;
 
     // Cache the result (only for queries without conversation history)
     if (!conversationHistory || conversationHistory.length === 0) {
@@ -470,6 +471,7 @@ Please assemble a pitch deck layout using the Component Registry. Remember to ou
       layoutPlan: { layout: [] },
       explanation: 'I apologize, but I encountered an issue while assembling your pitch deck. Please try again or contact our Strategy Lead directly for assistance.',
       contactCTA: true,
+      orchestratorError: error instanceof Error ? error.message : String(error),
     };
   }
 }

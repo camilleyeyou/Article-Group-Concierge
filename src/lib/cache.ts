@@ -29,6 +29,8 @@ class InMemoryCache {
     // Run cleanup every 5 minutes
     if (typeof setInterval !== 'undefined') {
       this.cleanupInterval = setInterval(() => this.cleanup(), 5 * 60 * 1000);
+      // Don't keep the process alive for cleanup alone (lets eval scripts that import this exit)
+      (this.cleanupInterval as { unref?: () => void }).unref?.();
     }
   }
 

@@ -10,6 +10,7 @@ import * as path from 'path';
 import { execSync } from 'child_process';
 import { createClient } from '@supabase/supabase-js';
 import OpenAI from 'openai';
+import { embeddingConfig } from '../src/lib/llm-config';
 import * as dotenv from 'dotenv';
 
 // Load environment variables
@@ -22,9 +23,15 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
-});
+// Created lazily: dotenv loads after imports, and the provider (OpenAI or OpenRouter) is chosen from env
+let openai: OpenAI | null = null;
+const getOpenAI = () => {
+  if (!openai) {
+    const { baseURL, apiKey } = embeddingConfig();
+    openai = new OpenAI({ apiKey: apiKey!, baseURL });
+  }
+  return openai;
+};
 
 // ============================================
 // CASE STUDY DEFINITIONS
@@ -240,8 +247,8 @@ function cleanSection(text: string): string {
 // ============================================
 
 async function generateEmbedding(text: string): Promise<number[]> {
-  const response = await openai.embeddings.create({
-    model: 'text-embedding-3-small',
+  const response = await getOpenAI().embeddings.create({
+    model: embeddingConfig().model,
     input: text.slice(0, 8000), // Limit input size
   });
   return response.data[0].embedding;

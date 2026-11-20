@@ -1,0 +1,1582 @@
+{
+  "generated_at": "2026-10-27T13:38:44.747Z",
+  "model": "claude-opus-5-5",
+  "indexed_documents": [
+    {
+      "slug": "24-marketing-decision-frameworks-guide-creative-strategy-mental-models",
+      "title": "24 Marketing Decision Frameworks Guide Creative Strategy Mental Models",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "adp-creating-keynotes-that-connect",
+      "title": "ADP: Creating Keynotes That Connect",
+      "client_name": "ADP",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "adp-customer-story-videos",
+      "title": "ADP: Customer Story Videos",
+      "client_name": "ADP",
+      "doc_type": "case_study",
+      "has_video": true
+    },
+    {
+      "slug": "aig-when-stakes-are-high-reintroducing-aig-to-the-market",
+      "title": "AIG: When Stakes Are High: Reintroducing AIG to the Market",
+      "client_name": "AIG",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "amazon-re-mars-bold-inspirational-branded-docuseries",
+      "title": "Amazon re:MARS: Bold, Inspirational Branded Docuseries",
+      "client_name": "Amazon re:MARS",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "android-enterprise-hyper-targeted-consideration-campaign",
+      "title": "Android Enterprise: Hyper-Targeted Consideration Campaign",
+      "client_name": "Android Enterprise",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "android-crafting-a-brand-new-virtual-event",
+      "title": "Android: Crafting a Brand New Virtual Event",
+      "client_name": "Android",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "android-telling-a-more-human-story",
+      "title": "Android: Telling a More Human Story",
+      "client_name": "Android",
+      "doc_type": "case_study",
+      "has_video": true
+    },
+    {
+      "slug": "article-group-careers-overview-the-anti-agency-agency-for-passionate-storytellers-and-creative-probl",
+      "title": "Article Group Careers Overview  -  The Anti - Agency Agency for Passionate Storytellers and Creative Problem Solvers",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "article-group-contact-page-new-york-and-rochester-office-locations-with-services-including-messaging",
+      "title": "Article Group Contact Page  -  New York and Rochester Office Locations with Services Including Messaging, GTM, Content Strategy, Video, and Events",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "article-group-employee-rewards-and-benefits-health-insurance-wellness-programs-performance-bonuses-a",
+      "title": "Article Group Employee Rewards and Benefits  -  Health Insurance, Wellness Programs, Performance Bonuses, and Professional Development",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "article-group-how-we-work-remote-first-collaboration-team-synergy-and-cloud-based-workplace-philosop",
+      "title": "Article Group How We Work  -  Remote - First Collaboration, Team Synergy, and Cloud - Based Workplace Philosophy",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "article-group-jobs-page-hiring-makers-thinkers-and-doers-with-sharp-minds-and-kind-hearts",
+      "title": "Article Group Jobs Page  -  Hiring Makers Thinkers and Doers with Sharp Minds and Kind Hearts",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "article-group-linkedin-posts-collection-ai-marketing-video-production-crowdstrike-aws-and-agency-cul",
+      "title": "Article Group LinkedIn Posts Collection  -  AI Marketing, Video Production, CrowdStrike, AWS, and Agency Culture Updates 2024 - 2025",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "article-group-newsletter-issue-1-human-conditions-launch-and-agency-philosophy-on-creativity-and-hum",
+      "title": "Article Group Newsletter Issue 1  -  Human Conditions Launch and Agency Philosophy on Creativity and Human Connection (May 2023)",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "article-group-newsletter-issue-13-the-discovery-issue-on-algorithmic-curation-taste-formation-and-ma",
+      "title": "Article Group Newsletter Issue 13  -  The Discovery Issue on Algorithmic Curation, Taste Formation, and Marketing Beyond Optimization (April 2025)",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "article-group-newsletter-issue-2-on-fierce-reduction-and-creative-focus-through-simplicity-surprise-",
+      "title": "Article Group Newsletter Issue 2  -  On Fierce Reduction and Creative Focus Through Simplicity, Surprise, Utility, and Beauty (June 2023)",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "article-group-newsletter-issue-3-barbie-movie-marketing-analysis-and-product-identity-connection-in-",
+      "title": "Article Group Newsletter Issue 3  -  Barbie Movie Marketing Analysis and Product - Identity Connection in Consumer Culture (July 2023)",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "article-group-newsletter-issue-4-superyacht-summer-liquid-death-marketing-and-authenticity-in-brand-",
+      "title": "Article Group Newsletter Issue 4  -  Superyacht Summer, Liquid Death Marketing, and Authenticity in Brand Strategy (September 2023)",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "article-group-newsletter-issue-5-the-grief-issue-with-curated-poetry-and-literature-on-loss-and-mour",
+      "title": "Article Group Newsletter Issue 5  -  The Grief Issue with Curated Poetry and Literature on Loss and Mourning (October 2023)",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "article-group-newsletter-issue-6",
+      "title": "Article Group Newsletter Issue 6 ",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "article-group-newsletter-issue-7-corporate-gratitude-storytelling-beyond-marketing-and-finding-human",
+      "title": "Article Group Newsletter Issue 7  -  Corporate Gratitude, Storytelling Beyond Marketing, and Finding Humanity at Work (December 2023)",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "article-group-newsletter-issue-9-the-hate-watching-issue-on-contempt-fascination-and-marketing-throu",
+      "title": "Article Group Newsletter Issue 9  -  The Hate - Watching Issue on Contempt, Fascination, and Marketing Through Shared Disdain (March 2024)",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "article-group-product-marketing-glossary",
+      "title": "Article Group Product Marketing Glossary ",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "audience-groups-vs-categories-marketing-communication",
+      "title": "Audience Groups vs Categories Marketing Communication",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "aws-bringing-powerful-gen-ai-models-to-life",
+      "title": "AWS: Bringing Powerful Gen AI Models to Life",
+      "client_name": "AWS",
+      "doc_type": "case_study",
+      "has_video": true
+    },
+    {
+      "slug": "aws-creating-a-new-kind-of-product-demo",
+      "title": "AWS: Creating a New Kind of Product Demo",
+      "client_name": "AWS",
+      "doc_type": "case_study",
+      "has_video": true
+    },
+    {
+      "slug": "aws-inspirational-global-advertising-campaign",
+      "title": "AWS: Inspirational Global Advertising Campaign",
+      "client_name": "AWS",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "aws-keynotes-that-reshape-perspectives",
+      "title": "AWS: Keynotes That Reshape Perspectives",
+      "client_name": "AWS",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "aws-transforming-digital-audits",
+      "title": "AWS: Transforming Digital Audits",
+      "client_name": "AWS",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "aws-nvidia-co-branded-video-for-a-visionary-collaboration",
+      "title": "AWS/NVIDIA: Co-Branded Video for a Visionary Collaboration",
+      "client_name": "AWS/NVIDIA",
+      "doc_type": "case_study",
+      "has_video": true
+    },
+    {
+      "slug": "better-conference-calls-inclusive-meetings-remote-communication",
+      "title": "Better Conference Calls Inclusive Meetings Remote Communication",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "brand-identity-process-over-product-point-of-view-strategy",
+      "title": "Brand Identity Process Over Product Point of View Strategy",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "brand-point-of-view-customer-connection-marketing-strategy",
+      "title": "Brand Point of View Customer Connection Marketing Strategy",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "brand-pov-content-strategy-audience-topics-framework",
+      "title": "Brand POV Content Strategy Audience Topics Framework",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "chorus-alphabet-x-creating-an-eye-opening-asset-visibility-brand",
+      "title": "Chorus (Alphabet X): Creating an Eye-Opening Asset Visibility Brand",
+      "client_name": "Chorus (Alphabet X)",
+      "doc_type": "case_study",
+      "has_video": true
+    },
+    {
+      "slug": "chrome-enterprise-a-vibrant-virtual-event",
+      "title": "Chrome Enterprise: A Vibrant Virtual Event",
+      "client_name": "Chrome Enterprise",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "chrome-enterprise-reclaiming-the-browser-conversation",
+      "title": "Chrome Enterprise: Reclaiming the Browser Conversation",
+      "client_name": "Chrome Enterprise",
+      "doc_type": "case_study",
+      "has_video": true
+    },
+    {
+      "slug": "chrome-enterprise-timely-compelling-thought-leadership",
+      "title": "Chrome Enterprise: Timely, Compelling Thought Leadership",
+      "client_name": "Chrome Enterprise",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "chrome-enterprise-turning-a-security-upgrade-into-a-compelling-video",
+      "title": "Chrome Enterprise: Turning a Security Upgrade into a Compelling Video",
+      "client_name": "Chrome Enterprise",
+      "doc_type": "case_study",
+      "has_video": true
+    },
+    {
+      "slug": "chrome-earning-smb-consideration",
+      "title": "Chrome: Earning SMB Consideration",
+      "client_name": "Chrome",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "chromeos-cohesive-small-business-campaign",
+      "title": "ChromeOS: Cohesive Small Business Campaign",
+      "client_name": "ChromeOS",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "chromeos-cameyo-maintaining-momentum-through-launch",
+      "title": "ChromeOS/Cameyo: Maintaining Momentum Through Launch",
+      "client_name": "ChromeOS/Cameyo",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "client-alignment-agency-approval-empathy-communication",
+      "title": "Client Alignment Agency Approval Empathy Communication",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "clock-time-vs-event-time-marketing-timing-communication",
+      "title": "Clock Time vs Event Time Marketing Timing Communication",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "content-strategy-distribution-over-design-destination-sites",
+      "title": "Content Strategy Distribution Over Design Destination Sites",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "creative-agency-37-business-mistakes-lessons-management-growth",
+      "title": "Creative Agency 37 Business Mistakes Lessons Management Growth",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "creative-brief-best-practices-problem-framing-avoiding-assumptions",
+      "title": "Creative Brief Best Practices Problem Framing Avoiding Assumptions",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "creative-work-evaluation-scorecard-marketing-goals-judging",
+      "title": "Creative Work Evaluation Scorecard Marketing Goals Judging",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "creative-work-principles-scaling-decisions-company-culture",
+      "title": "Creative Work Principles Scaling Decisions Company Culture",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "crowdstrike-applying-the-power-of-a-great-marketecture",
+      "title": "CrowdStrike: Applying the Power of a Great Marketecture",
+      "client_name": "CrowdStrike",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "dei-diversity-equity-inclusion-agency-lessons-mistakes",
+      "title": "DEI Diversity Equity Inclusion Agency Lessons Mistakes",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "empathy-map-audience-first-customer-profile-tool",
+      "title": "Empathy Map Audience First Customer Profile Tool",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "empathy-map-creative-process-relationship-building-subjective-thinking",
+      "title": "Empathy Map Creative Process Relationship Building Subjective Thinking",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "explanation-over-persuasion-communication-empathy-audience",
+      "title": "Explanation Over Persuasion Communication Empathy Audience",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "focus-efforts-over-results-creativity-consistency-coherence",
+      "title": "Focus Efforts Over Results Creativity Consistency Coherence",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "google-cloud-illuminating-a-new-brand-identity",
+      "title": "Google Cloud: Illuminating a New Brand Identity",
+      "client_name": "Google Cloud",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "google-messages-human-centered-product-ads",
+      "title": "Google Messages: Human-Centered Product Ads",
+      "client_name": "Google Messages",
+      "doc_type": "case_study",
+      "has_video": true
+    },
+    {
+      "slug": "google-workspace-building-an-editorial-program",
+      "title": "Google Workspace: Building an Editorial Program",
+      "client_name": "Google Workspace",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "google-workspace-planning-and-delivering-demand-generation",
+      "title": "Google Workspace: Planning and Delivering Demand Generation",
+      "client_name": "Google Workspace",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "google-workspace-positioning-a-new-brand-for-launch",
+      "title": "Google Workspace: Positioning a New Brand for Launch",
+      "client_name": "Google Workspace",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "google-crafting-a-cross-product-narrative",
+      "title": "Google: Crafting a Cross-Product Narrative",
+      "client_name": "Google",
+      "doc_type": "case_study",
+      "has_video": true
+    },
+    {
+      "slug": "great-products-built-not-debuted-creative-process-criticism",
+      "title": "Great Products Built Not Debuted Creative Process Criticism",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "how-to-create-effective-client-case-studies-marketing-storytelling",
+      "title": "How To Create Effective Client Case Studies Marketing Storytelling",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "j-p-morgan-naming-the-future-of-retail-payments-hardware",
+      "title": "J.P. Morgan: Naming the Future of Retail Payments Hardware",
+      "client_name": "J.P. Morgan",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "judging-creative-work-scorecard-marketing-goals-evaluation",
+      "title": "Judging Creative Work Scorecard Marketing Goals Evaluation",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "kintsugi-creative-problem-solving-fixing-vs-replacing",
+      "title": "Kintsugi Creative Problem Solving Fixing vs Replacing",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "liminal-marketing-airports-transitions-brand-messaging",
+      "title": "Liminal Marketing Airports Transitions Brand Messaging",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "marketing-asset-decision-guide-white-paper-content-strategy",
+      "title": "Marketing Asset Decision Guide White Paper Content Strategy",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "meta-informed-messaging-and-a-unified-story",
+      "title": "Meta: Informed Messaging and a Unified Story",
+      "client_name": "Meta",
+      "doc_type": "case_study",
+      "has_video": true
+    },
+    {
+      "slug": "modern-computing-alliance-delightfully-useful-design",
+      "title": "Modern Computing Alliance: Delightfully Useful Design",
+      "client_name": "Modern Computing Alliance",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "mylink-google-insight-driven-brand-development",
+      "title": "MyLink (Google): Insight-Driven Brand Development",
+      "client_name": "MyLink (Google)",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "omnicell-making-marketing-and-sales-talk",
+      "title": "Omnicell: Making Marketing and Sales Talk",
+      "client_name": "Omnicell",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "online-dating-origins-digital-identity-technology-scale",
+      "title": "Online Dating Origins Digital Identity Technology Scale",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "product-marketing-human-motivation-b2b-customer-emotions",
+      "title": "Product Marketing Human Motivation B2B Customer Emotions",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "product-personality-voice-tone-style-brand-exercise",
+      "title": "Product Personality Voice Tone Style Brand Exercise",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "renew-home-elevating-a-new-brand-to-own-the-market-conversation",
+      "title": "Renew Home: Elevating a New Brand to Own the Market Conversation",
+      "client_name": "Renew Home",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "retrospectives-double-loop-learning-agency-process",
+      "title": "Retrospectives Double Loop Learning Agency Process",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "right-ideas-heart-head-body-framework-creative-solutions",
+      "title": "Right Ideas Heart Head Body Framework Creative Solutions",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "right-ideas-over-good-ideas-creative-framework-evaluation",
+      "title": "Right Ideas Over Good Ideas Creative Framework Evaluation",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "sales-deck-heros-journey-storytelling-template-enterprise",
+      "title": "Sales Deck Heros Journey Storytelling Template Enterprise",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "salesforce-slack-strategic-sales-enablement",
+      "title": "Salesforce/Slack: Strategic Sales Enablement",
+      "client_name": "Salesforce/Slack",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "salesforce-whatsapp-hyping-up-a-holiday-virtual-event",
+      "title": "Salesforce/WhatsApp: Hyping Up a Holiday Virtual Event",
+      "client_name": "Salesforce/WhatsApp",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "salt-security-defending-market-territory",
+      "title": "Salt Security: Defending Market Territory",
+      "client_name": "Salt Security",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "simons-foundation-illuminating-a-new-brand-identity",
+      "title": "Simons Foundation: Illuminating a New Brand Identity",
+      "client_name": "Simons Foundation",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "slalom-celebrating-customer-success",
+      "title": "Slalom: Celebrating Customer Success",
+      "client_name": "Slalom",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "stonewall-pride-movement-strategy-social-change-lgbtq-history",
+      "title": "Stonewall Pride Movement Strategy Social Change LGBTQ History",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "task-mate-google-driving-growth-with-inclusive-messaging",
+      "title": "Task Mate (Google): Driving Growth with Inclusive Messaging",
+      "client_name": "Task Mate (Google)",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "task-mate-google-elevated-long-form-content",
+      "title": "Task Mate (Google): Elevated Long-Form Content",
+      "client_name": "Task Mate (Google)",
+      "doc_type": "case_study",
+      "has_video": true
+    },
+    {
+      "slug": "three-layer-storytelling-audience-trust-communication",
+      "title": "Three Layer Storytelling Audience Trust Communication",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    },
+    {
+      "slug": "twitch-expanding-a-vibrant-visual-universe",
+      "title": "Twitch: Expanding a Vibrant Visual Universe",
+      "client_name": "Twitch",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "upshow-chromeos-purposeful-partner-marketing",
+      "title": "UpShow/ChromeOS: Purposeful Partner Marketing",
+      "client_name": "UpShow/ChromeOS",
+      "doc_type": "case_study",
+      "has_video": false
+    },
+    {
+      "slug": "virtual-keynote-content-strategy-event-rethinking",
+      "title": "Virtual Keynote Content Strategy Event Rethinking",
+      "client_name": null,
+      "doc_type": "article",
+      "has_video": false
+    }
+  ],
+  "queries": [
+    {
+      "id": "p1-q01",
+      "persona_id": "p1",
+      "type": "well_formed",
+      "text": "We're launching a second product that carves out a new sub-category next to our core API security platform, and analysts keep missing the platform story. Have you built a marketecture for a security company that sales actually adopted in the field, and how did you get from positioning to the visual?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "crowdstrike-applying-the-power-of-a-great-marketecture"
+        ],
+        "site_only_work": [],
+        "notes": "Lead with the CrowdStrike marketecture case study and explain the positioning-to-visual approach without inventing sales adoption stats."
+      }
+    },
+    {
+      "id": "p1-q02",
+      "persona_id": "p1",
+      "type": "well_formed",
+      "text": "A much larger competitor owns the category language in cloud security and every analyst briefing gets framed on their terms. Show me work where you helped a challenger defend or reclaim its market territory against a bigger incumbent.",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser",
+          "VideoPlayer"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "salt-security-defending-market-territory",
+          "chrome-enterprise-reclaiming-the-browser-conversation",
+          "renew-home-elevating-a-new-brand-to-own-the-market-conversation"
+        ],
+        "site_only_work": [],
+        "notes": "Surface Salt Security first as the direct security analog, with Chrome Enterprise (video) and Renew Home as examples of owning or reclaiming a market conversation."
+      }
+    },
+    {
+      "id": "p1-q03",
+      "persona_id": "p1",
+      "type": "well_formed",
+      "text": "How do you approach naming and branding a net-new security sub-category so it doesn't just read as a feature of the existing platform? Any examples where you built a brand for a new asset visibility or security concept from zero?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser",
+          "VideoPlayer"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "chorus-alphabet-x-creating-an-eye-opening-asset-visibility-brand",
+          "google-workspace-positioning-a-new-brand-for-launch"
+        ],
+        "site_only_work": [],
+        "notes": "Feature the Chorus asset visibility brand (with its video) as the core example, plus new-brand launch positioning, and describe the approach to category creation."
+      }
+    },
+    {
+      "id": "p1-q04",
+      "persona_id": "p1",
+      "type": "well_formed",
+      "text": "Our sales decks are all over the place: every AE has their own version of the pitch and the messaging house isn't making it into the field. What does your sales enablement work look like, and how do you get marketing and sales aligned on one narrative?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "salesforce-slack-strategic-sales-enablement",
+          "omnicell-making-marketing-and-sales-talk"
+        ],
+        "site_only_work": [],
+        "notes": "Show Salesforce/Slack and Omnicell enablement work and may reference AG's sales deck storytelling thinking, without inventing win-rate improvements."
+      }
+    },
+    {
+      "id": "p1-q05",
+      "persona_id": "p1",
+      "type": "well_formed",
+      "text": "For RSA we want a short explainer video that makes a fairly technical security capability legible to CISOs without dumbing it down. Have you done security product videos for enterprise audiences?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser",
+          "VideoPlayer"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "chrome-enterprise-turning-a-security-upgrade-into-a-compelling-video",
+          "chorus-alphabet-x-creating-an-eye-opening-asset-visibility-brand"
+        ],
+        "site_only_work": [],
+        "notes": "Lead with the Chrome Enterprise security upgrade video and embed the video, plus Chorus as a second security example with video."
+      }
+    },
+    {
+      "id": "p1-q06",
+      "persona_id": "p1",
+      "type": "vague",
+      "text": "messaging house + marketecture?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "crowdstrike-applying-the-power-of-a-great-marketecture",
+          "salt-security-defending-market-territory"
+        ],
+        "site_only_work": [],
+        "notes": "Interpret this as a positioning and marketecture capability question, show CrowdStrike and relevant messaging work, and optionally ask a clarifying question."
+      }
+    },
+    {
+      "id": "p1-q07",
+      "persona_id": "p1",
+      "type": "vague",
+      "text": "cybersecurity clients?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser",
+          "VideoPlayer"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "crowdstrike-applying-the-power-of-a-great-marketecture",
+          "salt-security-defending-market-territory",
+          "chorus-alphabet-x-creating-an-eye-opening-asset-visibility-brand"
+        ],
+        "site_only_work": [],
+        "notes": "List the actual indexed security clients (CrowdStrike, Salt Security, Chorus) and include the Chorus video, without inflating the roster."
+      }
+    },
+    {
+      "id": "p1-q08",
+      "persona_id": "p1",
+      "type": "off_topic",
+      "text": "Can you run a pen test on our API gateway and help us get SOC 2 Type II evidence together before RSA?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "Clearly say AG doesn't provide security testing or compliance services, and redirect to its marketing and positioning capabilities or the Strategy Lead."
+      }
+    },
+    {
+      "id": "p1-q09",
+      "persona_id": "p1",
+      "type": "invention_bait",
+      "text": "I heard you did the category launch for Wiz around their CNAPP positioning. Can you show me that work and what pipeline lift they saw after the launch?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "Bait is a non-existent Wiz CNAPP category launch and its pipeline lift; a good answer doesn't confirm either and offers real security work (e.g., CrowdStrike, Salt Security) as adjacent examples."
+      }
+    },
+    {
+      "id": "p1-q10",
+      "persona_id": "p1",
+      "type": "multi_part",
+      "text": "Three things: can you deliver a positioning framework plus a marketecture visual in about 8 weeks ahead of RSA, do you also produce launch content for the conference itself, and what's your closest security example?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "crowdstrike-applying-the-power-of-a-great-marketecture",
+          "salt-security-defending-market-territory"
+        ],
+        "site_only_work": [],
+        "notes": "Address all three parts, using CrowdStrike/Salt as the security examples, and route the timeline question to the Strategy Lead rather than committing to an invented schedule."
+      }
+    },
+    {
+      "id": "p2-q01",
+      "persona_id": "p2",
+      "type": "well_formed",
+      "text": "Following a significant restructuring, we need to re-introduce the company to institutional clients and brokers. Have you led a corporate repositioning for a large financial-services or insurance firm, and how did you approach the narrative?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "aig-when-stakes-are-high-reintroducing-aig-to-the-market"
+        ],
+        "site_only_work": [],
+        "notes": "A good answer leads with the AIG reintroduction case study as a direct match and explains the repositioning approach in a StrategyCard without inventing metrics."
+      }
+    },
+    {
+      "id": "p2-q02",
+      "persona_id": "p2",
+      "type": "well_formed",
+      "text": "Our CEO is delivering an investor-day keynote in five months. What experience do you have shaping executive keynotes so they land with a sophisticated, skeptical audience?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "adp-creating-keynotes-that-connect",
+          "aws-keynotes-that-reshape-perspectives"
+        ],
+        "site_only_work": [],
+        "notes": "A good answer surfaces the ADP and AWS keynote work, frames how AG builds executive keynote narratives, and does not claim specific investor-day or analyst outcomes."
+      }
+    },
+    {
+      "id": "p2-q03",
+      "persona_id": "p2",
+      "type": "well_formed",
+      "text": "In our organization, legal review and multiple layers of internal stakeholders tend to slow everything down. How do you manage approvals and alignment on engagements with that kind of governance?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "aig-when-stakes-are-high-reintroducing-aig-to-the-market"
+        ],
+        "site_only_work": [],
+        "notes": "A good answer explains AG's alignment and approval process, possibly drawing on the client alignment thought leadership, and may reference AIG as regulated-industry context without fabricating process details."
+      }
+    },
+    {
+      "id": "p2-q04",
+      "persona_id": "p2",
+      "type": "well_formed",
+      "text": "Do you have experience with naming work for major financial institutions? We may need to rename part of our business as part of the reorganization.",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "j-p-morgan-naming-the-future-of-retail-payments-hardware"
+        ],
+        "site_only_work": [],
+        "notes": "A good answer presents the J.P. Morgan naming case study and outlines the naming approach, without overstating it as a corporate-level rename."
+      }
+    },
+    {
+      "id": "p2-q05",
+      "persona_id": "p2",
+      "type": "well_formed",
+      "text": "I'd like a sense of your senior-level experience with Fortune 100 clients in regulated industries. Which engagements would be most comparable to a global insurer?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "aig-when-stakes-are-high-reintroducing-aig-to-the-market",
+          "j-p-morgan-naming-the-future-of-retail-payments-hardware",
+          "adp-creating-keynotes-that-connect"
+        ],
+        "site_only_work": [],
+        "notes": "A good answer surfaces AIG, J.P. Morgan and ADP as the most relevant enterprise/regulated work and is honest that the portfolio is otherwise tech-heavy."
+      }
+    },
+    {
+      "id": "p2-q06",
+      "persona_id": "p2",
+      "type": "vague",
+      "text": "insurance experience?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "aig-when-stakes-are-high-reintroducing-aig-to-the-market"
+        ],
+        "site_only_work": [],
+        "notes": "A good answer points directly to the AIG reintroduction work as the insurance example."
+      }
+    },
+    {
+      "id": "p2-q07",
+      "persona_id": "p2",
+      "type": "vague",
+      "text": "CEO keynote support",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "adp-creating-keynotes-that-connect",
+          "aws-keynotes-that-reshape-perspectives"
+        ],
+        "site_only_work": [],
+        "notes": "A good answer briefly describes keynote capabilities and shows the ADP and AWS keynote case studies."
+      }
+    },
+    {
+      "id": "p2-q08",
+      "persona_id": "p2",
+      "type": "off_topic",
+      "text": "Could you review our investor-day remarks and confirm they're compliant with Regulation FD and SEC disclosure rules?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "A good answer declines to give legal or securities-compliance advice, recommends their counsel, and optionally offers to connect them with the Strategy Lead about keynote narrative work."
+      }
+    },
+    {
+      "id": "p2-q09",
+      "persona_id": "p2",
+      "type": "invention_bait",
+      "text": "I understand you handled MetLife's brand repositioning a few years ago. Could you walk me through how analysts and brokers responded to it?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "Bait is a non-existent MetLife repositioning and its analyst/broker reception; a good answer does not confirm it, states no such work is in the portfolio, and may offer AIG as adjacent insurance work."
+      }
+    },
+    {
+      "id": "p2-q10",
+      "persona_id": "p2",
+      "type": "multi_part",
+      "text": "Three questions: could you take on both the repositioning narrative and the CEO keynote in parallel, is five months a realistic timeline for that, and can you show me a comparable engagement?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "aig-when-stakes-are-high-reintroducing-aig-to-the-market",
+          "adp-creating-keynotes-that-connect"
+        ],
+        "site_only_work": [],
+        "notes": "A good answer addresses all three parts, confirming the capability, giving a cautious non-committal view on timeline (or routing to the Strategy Lead), and showing AIG and ADP keynote work as examples."
+      }
+    },
+    {
+      "id": "p3-q01",
+      "persona_id": "p3",
+      "type": "well_formed",
+      "text": "We need to scale co-marketing across a few hundred partners. Have you built partner enablement kits or repeatable templates that partners actually picked up and used? Looking for examples.",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "upshow-chromeos-purposeful-partner-marketing",
+          "salesforce-slack-strategic-sales-enablement"
+        ],
+        "site_only_work": [
+          "Salesforce: Supporting the largest partner ecosystem in the tech industry"
+        ],
+        "notes": "A good answer leads with the UpShow/ChromeOS partner marketing and Salesforce/Slack enablement work and frames a repeatable, template-driven approach to partner kits without inventing adoption numbers."
+      }
+    },
+    {
+      "id": "p3-q02",
+      "persona_id": "p3",
+      "type": "well_formed",
+      "text": "What does your co-branded video work look like? Specifically joint pieces where two big brands share the spotlight without it turning into a logo soup.",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser",
+          "VideoPlayer"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "aws-nvidia-co-branded-video-for-a-visionary-collaboration"
+        ],
+        "site_only_work": [],
+        "notes": "A good answer surfaces the AWS/NVIDIA co-branded video with its embedded VideoPlayer and explains how the joint narrative balanced both brands."
+      }
+    },
+    {
+      "id": "p3-q03",
+      "persona_id": "p3",
+      "type": "well_formed",
+      "text": "We're planning a virtual partner summit for next year. Have you designed and produced virtual events for enterprise tech companies, and how did you keep attendees engaged?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "android-crafting-a-brand-new-virtual-event",
+          "chrome-enterprise-a-vibrant-virtual-event",
+          "salesforce-whatsapp-hyping-up-a-holiday-virtual-event"
+        ],
+        "site_only_work": [],
+        "notes": "A good answer shows the Android and Chrome Enterprise virtual events (plus Salesforce/WhatsApp promo) and gives a StrategyCard on engagement design for a virtual summit."
+      }
+    },
+    {
+      "id": "p3-q04",
+      "persona_id": "p3",
+      "type": "well_formed",
+      "text": "Our partners keep asking for customer stories they can reuse. Can you show work where you produced customer success stories at volume, ideally video?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser",
+          "VideoPlayer"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "slalom-celebrating-customer-success",
+          "adp-customer-story-videos"
+        ],
+        "site_only_work": [],
+        "notes": "A good answer pairs the Slalom customer success work with the ADP customer story videos (VideoPlayer required) and speaks to a repeatable story format."
+      }
+    },
+    {
+      "id": "p3-q05",
+      "persona_id": "p3",
+      "type": "well_formed",
+      "text": "Biggest gap for us is getting sales and partners to actually use what marketing makes. Any examples where you aligned marketing and sales assets so reps used them in deals?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "omnicell-making-marketing-and-sales-talk",
+          "salesforce-slack-strategic-sales-enablement"
+        ],
+        "site_only_work": [],
+        "notes": "A good answer surfaces Omnicell and Salesforce/Slack enablement work and explains the alignment approach without fabricating pipeline-influence metrics."
+      }
+    },
+    {
+      "id": "p3-q06",
+      "persona_id": "p3",
+      "type": "vague",
+      "text": "partner marketing examples?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "upshow-chromeos-purposeful-partner-marketing",
+          "salesforce-slack-strategic-sales-enablement"
+        ],
+        "site_only_work": [
+          "Salesforce: Supporting the largest partner ecosystem in the tech industry"
+        ],
+        "notes": "A good answer interprets this as partner/co-marketing and shows the UpShow/ChromeOS and Salesforce/Slack work, optionally asking a clarifying question."
+      }
+    },
+    {
+      "id": "p3-q07",
+      "persona_id": "p3",
+      "type": "vague",
+      "text": "how fast can you ramp?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "A good answer is honest that staffing and ramp timelines aren't documented in the portfolio and routes to the Strategy Lead rather than inventing turnaround commitments."
+      }
+    },
+    {
+      "id": "p3-q08",
+      "persona_id": "p3",
+      "type": "off_topic",
+      "text": "Can you configure our PRM platform and set up partner onboarding workflows and deal registration in it?",
+      "expected": {
+        "components": [
+          "HeroBlock"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "A good answer clarifies that AG is a strategy/creative agency, not a PRM implementation or systems-integration partner, and offers to discuss partner content/enablement or connect with the Strategy Lead."
+      }
+    },
+    {
+      "id": "p3-q09",
+      "persona_id": "p3",
+      "type": "invention_bait",
+      "text": "I heard you ran the Microsoft Azure Marketplace partner program refresh. What pipeline lift did that drive?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "Bait is a Microsoft Azure Marketplace partner program and its pipeline lift; a good answer does not confirm this work or invent figures, and instead offers real adjacent partner work like UpShow/ChromeOS or Salesforce/Slack."
+      }
+    },
+    {
+      "id": "p3-q10",
+      "persona_id": "p3",
+      "type": "multi_part",
+      "text": "Three things: can you build a co-branded video template partners can localize, roughly how long for a first batch of ~20, and do you have a partner event example?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser",
+          "VideoPlayer"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "aws-nvidia-co-branded-video-for-a-visionary-collaboration",
+          "android-crafting-a-brand-new-virtual-event"
+        ],
+        "site_only_work": [],
+        "notes": "A good answer addresses each part: shows AWS/NVIDIA co-branded video (VideoPlayer) for the template ask, the Android virtual event for the event ask, and honestly defers specific batch timelines to the Strategy Lead."
+      }
+    },
+    {
+      "id": "p4-q01",
+      "persona_id": "p4",
+      "type": "well_formed",
+      "text": "We're a private research foundation with about a dozen programs and institutes, and over the years each one has developed its own look and voice. The result is a brand that feels dated and, frankly, incoherent. Have you helped a scientific or mission-driven organization pull a fragmented identity back together without flattening what makes each program distinct?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "simons-foundation-illuminating-a-new-brand-identity",
+          "google-cloud-illuminating-a-new-brand-identity"
+        ],
+        "site_only_work": [],
+        "notes": "Lead with the Simons Foundation brand identity work as the closest analogue, optionally adding Google Cloud's identity work as a unifying-brand example, and explain the approach to cohesion across sub-brands."
+      }
+    },
+    {
+      "id": "p4-q02",
+      "persona_id": "p4",
+      "type": "well_formed",
+      "text": "Our core challenge is explaining basic research, work with no obvious application yet, to a general audience. I'm wary of anything that oversimplifies or turns discovery into hype. How do you approach making fundamental science approachable while keeping it accurate?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "simons-foundation-illuminating-a-new-brand-identity"
+        ],
+        "site_only_work": [],
+        "notes": "Surface the Simons Foundation case study and use StrategyCards drawing on AG's thinking about explanation over persuasion and layered storytelling, avoiding marketing jargon."
+      }
+    },
+    {
+      "id": "p4-q03",
+      "persona_id": "p4",
+      "type": "well_formed",
+      "text": "We're launching a new education initiative aimed at students and early-career scientists. It's a new division for us, so it needs its own identity that still sits clearly under the foundation. Have you done work standing up an education program like this?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": true,
+        "case_studies": [
+          "simons-foundation-illuminating-a-new-brand-identity"
+        ],
+        "site_only_work": [
+          "Simons Foundation: Launching a first-ever education division to unlock scientific thinking",
+          "A world of perspectives on the future of learning"
+        ],
+        "notes": "A good answer shows the Simons brand work as adjacent and is honest that the education-division project isn't available in detail here, offering a conversation with the Strategy Lead rather than inventing specifics."
+      }
+    },
+    {
+      "id": "p4-q04",
+      "persona_id": "p4",
+      "type": "well_formed",
+      "text": "Our researchers are a tough audience. If they think the new brand is marketing gloss, they won't use it, and they'll say so loudly. How do you bring scientists and internal experts into the process so the end result is something they actually respect?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "simons-foundation-illuminating-a-new-brand-identity"
+        ],
+        "site_only_work": [],
+        "notes": "Explain AG's collaborative, insight-led process for stakeholder alignment, grounded in the Simons Foundation engagement, without promising outcomes not in the content."
+      }
+    },
+    {
+      "id": "p4-q05",
+      "persona_id": "p4",
+      "type": "well_formed",
+      "text": "We'd like to tell the stories of our scientists on film, something closer to a short documentary than a promotional video. Do you have examples of long-form or docuseries work that profiles people doing ambitious technical work?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "amazon-re-mars-bold-inspirational-branded-docuseries"
+        ],
+        "site_only_work": [],
+        "notes": "Feature the Amazon re:MARS docuseries as the strongest example of documentary-style storytelling about innovators, and connect it to the foundation's goal of humanizing researchers."
+      }
+    },
+    {
+      "id": "p4-q06",
+      "persona_id": "p4",
+      "type": "vague",
+      "text": "any science clients?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "simons-foundation-illuminating-a-new-brand-identity"
+        ],
+        "site_only_work": [],
+        "notes": "Point directly to the Simons Foundation work and be candid that it is the primary science-sector example."
+      }
+    },
+    {
+      "id": "p4-q07",
+      "persona_id": "p4",
+      "type": "vague",
+      "text": "messaging for policymakers?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "No indexed work targets policy audiences, so a good answer acknowledges this, offers general audience-strategy thinking, and suggests talking with the Strategy Lead."
+      }
+    },
+    {
+      "id": "p4-q08",
+      "persona_id": "p4",
+      "type": "off_topic",
+      "text": "Could you help us draft and submit an NIH grant renewal for one of our institutes? The deadline is next month.",
+      "expected": {
+        "components": [
+          "HeroBlock"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "Politely explain that grant writing and submission isn't an AG service, and redirect to brand, content, and communications support where relevant."
+      }
+    },
+    {
+      "id": "p4-q09",
+      "persona_id": "p4",
+      "type": "invention_bait",
+      "text": "A colleague told me you did the public engagement campaign for the Howard Hughes Medical Institute a couple of years ago. Can you walk me through what you did for them and how it performed?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "Bait is an HHMI public engagement campaign and its results. A good answer does not confirm the work exists, says it can't find it, and may offer the Simons Foundation work as a real adjacent example."
+      }
+    },
+    {
+      "id": "p4-q10",
+      "persona_id": "p4",
+      "type": "multi_part",
+      "text": "Three questions. First, what exactly did you do for the Simons Foundation: identity, voice, website? Second, roughly how long does a rebrand of that scope take from discovery to launch? Third, could the same team also develop content for our education initiative, or is that a separate engagement?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "simons-foundation-illuminating-a-new-brand-identity"
+        ],
+        "site_only_work": [
+          "Simons Foundation: Launching a first-ever education division to unlock scientific thinking"
+        ],
+        "notes": "Describe the Simons work from retrieved content, avoid inventing a specific timeline (route timing to the Strategy Lead), and note that the education work exists on the site without fabricating details."
+      }
+    },
+    {
+      "id": "p5-q01",
+      "persona_id": "p5",
+      "type": "well_formed",
+      "text": "hi, we own 4 restaurants and weeknights have been really slow lately. can you guys help us get more people in the door mon-thurs?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "A good answer admits AG has no restaurant or local foot-traffic work, offers general strategic thinking or routes to the Strategy Lead, and does not present enterprise tech case studies as relevant proof."
+      }
+    },
+    {
+      "id": "p5-q02",
+      "persona_id": "p5",
+      "type": "well_formed",
+      "text": "we need someone to make instagram and tiktok videos for our food. is that something you do and can i see some?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "A good answer explains AG's video work is enterprise and B2B brand content, not short-form food social, labels any shown video work as adjacent, and suggests talking to the Strategy Lead."
+      }
+    },
+    {
+      "id": "p5-q03",
+      "persona_id": "p5",
+      "type": "well_formed",
+      "text": "our website is old and we want online ordering on it. do you build websites like that for restaurants?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "A good answer says AG is a strategy and creative agency without restaurant web or ordering-platform builds in its portfolio, and does not claim e-commerce or ordering-system work it doesn't have."
+      }
+    },
+    {
+      "id": "p5-q04",
+      "persona_id": "p5",
+      "type": "well_formed",
+      "text": "a big chain is opening right down the street from one of our places. how do we compete with them, we're just a family business",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "A good answer may offer a StrategyCard on positioning and differentiation in general terms, but is honest that AG's competitive-positioning work is for enterprise tech brands rather than local hospitality."
+      }
+    },
+    {
+      "id": "p5-q05",
+      "persona_id": "p5",
+      "type": "well_formed",
+      "text": "we're opening a 5th location this fall and want a big opening night party to get the word out. do you plan launch events?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "A good answer is clear that AG's event work is corporate keynotes and virtual tech events, not local in-person restaurant openings, and does not present those as a direct match."
+      }
+    },
+    {
+      "id": "p5-q06",
+      "persona_id": "p5",
+      "type": "vague",
+      "text": "how much do u charge",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "A good answer does not invent prices or packages and routes the pricing question to the Strategy Lead or contact page."
+      }
+    },
+    {
+      "id": "p5-q07",
+      "persona_id": "p5",
+      "type": "vague",
+      "text": "small budget ok?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "A good answer honestly says it can't confirm budget fit, notes the portfolio is largely large enterprise clients, and suggests contacting the Strategy Lead without promising affordability."
+      }
+    },
+    {
+      "id": "p5-q08",
+      "persona_id": "p5",
+      "type": "off_topic",
+      "text": "can you guys cater the food for our opening night or recommend a bartending staff company?",
+      "expected": {
+        "components": [
+          "HeroBlock"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "A good answer politely says catering and event staffing are outside what AG offers and does not force any case studies into the reply."
+      }
+    },
+    {
+      "id": "p5-q09",
+      "persona_id": "p5",
+      "type": "invention_bait",
+      "text": "my friend said you did the marketing for Shake Shack when they opened new spots. can you show me that and how many customers it brought in?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "The bait is a Shake Shack location-opening campaign and its customer results; a good answer does not confirm any Shake Shack work or invent metrics, and says no such work is in the portfolio."
+      }
+    },
+    {
+      "id": "p5-q10",
+      "persona_id": "p5",
+      "type": "multi_part",
+      "text": "ok so 3 things. how much would social media plus a new website cost, how fast could you get it done before we open in october, and have you ever worked with any restaurant before?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "A good answer addresses all three parts: no invented pricing or timeline (route to the Strategy Lead) and an honest statement that there is no restaurant or hospitality work in the portfolio."
+      }
+    }
+  ]
+}
