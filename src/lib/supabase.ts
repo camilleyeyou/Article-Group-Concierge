@@ -20,6 +20,7 @@ import type {
 import { RAGLogger } from './logger';
 import { cache, CACHE_PREFIXES, CACHE_TTL } from './cache';
 import { embeddingConfig } from './llm-config';
+import { detectQueryIntent } from './intent-keywords';
 
 // Lazy-initialized Supabase client
 let _supabase: SupabaseClient | null = null;
@@ -134,8 +135,7 @@ export async function hybridSearch({
   // Generate embedding for the query
   const queryEmbedding = await generateEmbedding(query);
   
-  // Call the hybrid_search function
-  const { data, error } = await supabase.rpc('hybrid_search', {
+  const params = {
     query_embedding: queryEmbedding,
     query_text: query,
     doc_types: docTypes || null,
@@ -144,8 +144,18 @@ export async function hybridSearch({
     topic_slugs: topicSlugs || null,
     match_count: matchCount,
     semantic_weight: semanticWeight,
-  });
-  
+  };
+
+  // hybrid_search_exact (migration 004) is hybrid_search with ivfflat.probes = 100, so the
+  // vector scan is exact. Plain hybrid_search probes 1 of 100 ivfflat lists once its cached
+  // generic plan uses the index, silently dropping most rows. Fall back to the old function
+  // only if 004 has not been applied yet (PostgREST "function not found").
+  let { data, error } = await supabase.rpc('hybrid_search_exact', params);
+  if (error && (error.code === 'PGRST202' || error.code === '42883')) {
+    RAGLogger.error('hybrid_search_exact missing; falling back to lossy hybrid_search', error);
+    ({ data, error } = await supabase.rpc('hybrid_search', params));
+  }
+
   if (error) {
     RAGLogger.error('Hybrid search error', error);
     throw error;
@@ -302,72 +312,6 @@ interface RetrieveContextParams {
   maxAssets?: number;
   minRelevanceScore?: number;
   skipCache?: boolean; // Eval runs need fresh results after reingestion
-}
-
-/**
- * Capability keyword mapping for query enhancement.
- * Maps common terms users might use to capability slugs.
- */
-const CAPABILITY_KEYWORDS: Record<string, string[]> = {
-  'brand-strategy': ['brand', 'branding', 'rebrand', 'brand identity', 'brand positioning', 'brand architecture'],
-  'creative-direction': ['creative', 'visual', 'design', 'art direction', 'look and feel'],
-  'content-strategy': ['content', 'storytelling', 'narrative', 'messaging', 'copywriting', 'editorial'],
-  'social-media': ['social', 'social media', 'instagram', 'tiktok', 'twitter', 'facebook', 'linkedin', 'community'],
-  'video-production': ['video', 'film', 'commercial', 'documentary', 'motion', 'animation'],
-  'digital-marketing': ['digital', 'marketing', 'paid media', 'advertising', 'campaign', 'ads'],
-  'experiential': ['experiential', 'event', 'activation', 'pop-up', 'launch event', 'experience'],
-  'web-development': ['web', 'website', 'digital product', 'app', 'platform', 'ux', 'ui'],
-};
-
-/**
- * Industry keyword mapping for query enhancement.
- * Maps common terms to industry slugs.
- */
-const INDUSTRY_KEYWORDS: Record<string, string[]> = {
-  'technology': ['tech', 'technology', 'software', 'saas', 'startup', 'ai', 'fintech', 'b2b tech'],
-  'finance': ['finance', 'financial', 'banking', 'fintech', 'investment', 'insurance', 'wealth'],
-  'healthcare': ['health', 'healthcare', 'medical', 'pharma', 'wellness', 'fitness', 'biotech'],
-  'consumer': ['consumer', 'cpg', 'retail', 'ecommerce', 'dtc', 'food', 'beverage', 'fashion'],
-  'entertainment': ['entertainment', 'media', 'streaming', 'gaming', 'sports', 'music'],
-  'real-estate': ['real estate', 'property', 'commercial real estate', 'residential'],
-  'education': ['education', 'edtech', 'learning', 'university', 'school'],
-  'nonprofit': ['nonprofit', 'ngo', 'charity', 'foundation', 'social impact'],
-};
-
-/**
- * Detects capabilities and industries from user query.
- * Returns slugs that match keywords in the query.
- */
-function detectQueryIntent(query: string): { capabilities: string[]; industries: string[] } {
-  const lowerQuery = query.toLowerCase();
-  const detectedCapabilities: string[] = [];
-  const detectedIndustries: string[] = [];
-
-  // Check for capability keywords
-  for (const [slug, keywords] of Object.entries(CAPABILITY_KEYWORDS)) {
-    for (const keyword of keywords) {
-      if (lowerQuery.includes(keyword.toLowerCase())) {
-        if (!detectedCapabilities.includes(slug)) {
-          detectedCapabilities.push(slug);
-        }
-        break;
-      }
-    }
-  }
-
-  // Check for industry keywords
-  for (const [slug, keywords] of Object.entries(INDUSTRY_KEYWORDS)) {
-    for (const keyword of keywords) {
-      if (lowerQuery.includes(keyword.toLowerCase())) {
-        if (!detectedIndustries.includes(slug)) {
-          detectedIndustries.push(slug);
-        }
-        break;
-      }
-    }
-  }
-
-  return { capabilities: detectedCapabilities, industries: detectedIndustries };
 }
 
 /**

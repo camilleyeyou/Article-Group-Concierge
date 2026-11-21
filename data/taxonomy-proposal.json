@@ -1,0 +1,1748 @@
+{
+  "version": 1,
+  "new_capabilities": [
+    {
+      "slug": "messaging-positioning",
+      "name": "Messaging & Positioning",
+      "description": "Defining positioning, narrative and messaging frameworks."
+    },
+    {
+      "slug": "content-strategy",
+      "name": "Content Strategy",
+      "description": "Planning editorial programs and content systems."
+    },
+    {
+      "slug": "events-keynotes",
+      "name": "Events & Keynotes",
+      "description": "Keynote narrative and design, and virtual or live events."
+    },
+    {
+      "slug": "thought-leadership",
+      "name": "Thought Leadership",
+      "description": "Content that builds a client's authority on a topic."
+    },
+    {
+      "slug": "naming",
+      "name": "Naming",
+      "description": "Naming and nomenclature strategy."
+    },
+    {
+      "slug": "research-insights",
+      "name": "Research & Insights",
+      "description": "Audience and market research that informs strategy."
+    },
+    {
+      "slug": "go-to-market",
+      "name": "Go-to-Market",
+      "description": "Launch narrative and launch-ready content."
+    }
+  ],
+  "new_industries": [
+    {
+      "slug": "cybersecurity",
+      "name": "Cybersecurity",
+      "description": "Cybersecurity sector."
+    },
+    {
+      "slug": "cloud-infrastructure",
+      "name": "Cloud & Infrastructure",
+      "description": "Cloud & Infrastructure sector."
+    },
+    {
+      "slug": "artificial-intelligence",
+      "name": "Artificial Intelligence",
+      "description": "Artificial Intelligence sector."
+    },
+    {
+      "slug": "enterprise-software",
+      "name": "Enterprise Software",
+      "description": "Enterprise Software sector."
+    },
+    {
+      "slug": "consumer-tech",
+      "name": "Consumer Tech",
+      "description": "Consumer Tech sector."
+    },
+    {
+      "slug": "energy",
+      "name": "Energy",
+      "description": "Energy sector."
+    },
+    {
+      "slug": "education",
+      "name": "Education",
+      "description": "Education sector."
+    },
+    {
+      "slug": "real-estate",
+      "name": "Real Estate",
+      "description": "Real Estate sector."
+    }
+  ],
+  "documents": [
+    {
+      "slug": "chromeos-cohesive-small-business-campaign",
+      "client": "ChromeOS",
+      "title": "ChromeOS: Cohesive Small Business Campaign",
+      "current": {
+        "capabilities": [
+          "content-marketing",
+          "growth-marketing"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "content-marketing",
+            "quote": "animated slides exploring tips to simplify IT"
+          },
+          {
+            "slug": "growth-marketing",
+            "quote": "LinkedIn lead generation ads"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "consumer-tech",
+            "quote": "ChromeOS"
+          }
+        ]
+      },
+      "reason": "Content and lead-gen campaign for ChromeOS; no sector word in text beyond the product name."
+    },
+    {
+      "slug": "google-workspace-building-an-editorial-program",
+      "client": "Google Workspace",
+      "title": "Google Workspace: Building an Editorial Program",
+      "current": {
+        "capabilities": [
+          "content-marketing",
+          "brand-strategy"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "content-strategy",
+            "quote": "developed a content strategy to deliver a three-year-long editorial program"
+          },
+          {
+            "slug": "thought-leadership",
+            "quote": "establish Google executives as thought leaders"
+          },
+          {
+            "slug": "content-marketing",
+            "quote": "a series of long-form articles with custom voice and tone"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "enterprise-software",
+            "quote": "business decision makers trying to navigate the complexities of hybrid and remote work"
+          }
+        ]
+      },
+      "reason": "Three-year editorial program for business decision makers."
+    },
+    {
+      "slug": "google-workspace-positioning-a-new-brand-for-launch",
+      "client": "Google Workspace",
+      "title": "Google Workspace: Positioning a New Brand for Launch",
+      "current": {
+        "capabilities": [
+          "brand-strategy",
+          "creative-direction"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "messaging-positioning",
+            "quote": "strategic planning and positioning"
+          },
+          {
+            "slug": "video-production",
+            "quote": "a series of launch announcement videos"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "enterprise-software",
+            "quote": "the value of virtual collaboration"
+          }
+        ]
+      },
+      "reason": "Positioning and launch videos for the G Suite to Workspace rebrand."
+    },
+    {
+      "slug": "task-mate-google-driving-growth-with-inclusive-messaging",
+      "client": "Task Mate (Google)",
+      "title": "Task Mate (Google): Driving Growth with Inclusive Messaging",
+      "current": {
+        "capabilities": [
+          "growth-marketing",
+          "creative-direction"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "growth-marketing",
+            "quote": "first-ever in-market app campaign"
+          },
+          {
+            "slug": "video-production",
+            "quote": "animated video spots"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "consumer-tech",
+            "quote": "a microtasking platform and mobile app"
+          }
+        ]
+      },
+      "reason": "In-market app install campaign with animated video spots."
+    },
+    {
+      "slug": "modern-computing-alliance-delightfully-useful-design",
+      "client": "Modern Computing Alliance",
+      "title": "Modern Computing Alliance: Delightfully Useful Design",
+      "current": {
+        "capabilities": [
+          "content-marketing",
+          "creative-direction"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "content-marketing",
+            "quote": "digital paper summarizing strategic insights"
+          },
+          {
+            "slug": "creative-direction",
+            "quote": "modern, refined look & feel"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "technology",
+            "quote": "a collaborative effort among tech companies"
+          }
+        ]
+      },
+      "reason": "Report-derived asset system for a cross-company tech alliance; no narrower sector stated."
+    },
+    {
+      "slug": "chrome-enterprise-a-vibrant-virtual-event",
+      "client": "Chrome Enterprise",
+      "title": "Chrome Enterprise: A Vibrant Virtual Event",
+      "current": {
+        "capabilities": [
+          "experience-design",
+          "creative-direction",
+          "video-production"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "events-keynotes",
+            "quote": "virtual event called Demo Day"
+          },
+          {
+            "slug": "video-production",
+            "quote": "on-site production, post-production"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "enterprise-software",
+            "quote": "Chrome Enterprise's exceptional security, productivity, and collaboration"
+          }
+        ]
+      },
+      "reason": "Demo Day virtual event for Chrome Enterprise."
+    },
+    {
+      "slug": "chrome-earning-smb-consideration",
+      "client": "Chrome",
+      "title": "Chrome: Earning SMB Consideration",
+      "current": {
+        "capabilities": [
+          "growth-marketing",
+          "content-marketing",
+          "creative-direction"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "growth-marketing",
+            "quote": "increase consideration"
+          },
+          {
+            "slug": "video-production",
+            "quote": "live action :45 second product ad"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "consumer-tech",
+            "quote": "ChromeOS and Chromebook"
+          }
+        ]
+      },
+      "reason": "Consideration campaign for ChromeOS/Chromebook with a live-action product ad."
+    },
+    {
+      "slug": "salesforce-slack-strategic-sales-enablement",
+      "client": "Salesforce/Slack",
+      "title": "Salesforce/Slack: Strategic Sales Enablement",
+      "current": {
+        "capabilities": [
+          "content-marketing"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "sales-enablement",
+            "quote": "give partners the tools, insights, and language"
+          },
+          {
+            "slug": "content-marketing",
+            "quote": "a holistic and tactical suite of downloadable content"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "enterprise-software",
+            "quote": "Slack implementation services"
+          }
+        ]
+      },
+      "reason": "Partner sales-enablement content suite for Slack implementation services."
+    },
+    {
+      "slug": "salesforce-whatsapp-hyping-up-a-holiday-virtual-event",
+      "client": "Salesforce/WhatsApp",
+      "title": "Salesforce/WhatsApp: Hyping Up a Holiday Virtual Event",
+      "current": {
+        "capabilities": [
+          "growth-marketing",
+          "content-marketing",
+          "experience-design"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "events-keynotes",
+            "quote": "virtual event hosted in Brazil"
+          },
+          {
+            "slug": "sales-enablement",
+            "quote": "pre-event sales enablement presentation"
+          },
+          {
+            "slug": "growth-marketing",
+            "quote": "consideration and conversion campaign"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "enterprise-software",
+            "quote": "business messaging integration"
+          }
+        ]
+      },
+      "reason": "Holiday virtual event and campaign for a business messaging integration."
+    },
+    {
+      "slug": "slalom-celebrating-customer-success",
+      "client": "Slalom",
+      "title": "Slalom: Celebrating Customer Success",
+      "current": {
+        "capabilities": [
+          "content-marketing",
+          "creative-direction"
+        ],
+        "industries": [
+          "technology",
+          "b2b-services"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "content-marketing",
+            "quote": "10 customer success stories"
+          },
+          {
+            "slug": "creative-direction",
+            "quote": "custom Slalom-branded case study design template"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "b2b-services",
+            "quote": "Slalom's Salesforce implementation practice"
+          }
+        ]
+      },
+      "reason": "Case-study template and customer success stories for a Salesforce implementation practice."
+    },
+    {
+      "slug": "crowdstrike-applying-the-power-of-a-great-marketecture",
+      "client": "CrowdStrike",
+      "title": "CrowdStrike: Applying the Power of a Great Marketecture",
+      "current": {
+        "capabilities": [
+          "brand-strategy",
+          "content-marketing"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "messaging-positioning",
+            "quote": "reorganized CrowdStrike's portfolio through the eyes of their customers"
+          },
+          {
+            "slug": "events-keynotes",
+            "quote": "integrated into a cohesive keynote presentation"
+          }
+        ],
+        "industries": []
+      },
+      "reason": "Portfolio narrative (marketecture) and keynote; sector not stated in indexed text.",
+      "flag": "Indexed text never names the sector (cybersecurity); only user-asserted tagging would support an industry."
+    },
+    {
+      "slug": "amazon-re-mars-bold-inspirational-branded-docuseries",
+      "client": "Amazon re:MARS",
+      "title": "Amazon re:MARS: Bold, Inspirational Branded Docuseries",
+      "current": {
+        "capabilities": [
+          "video-production",
+          "creative-direction"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "video-production",
+            "quote": "developed and produced two branded documentary series"
+          },
+          {
+            "slug": "thought-leadership",
+            "quote": "thought leadership in an always-on digital content experience"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "technology",
+            "quote": "machine learning, automation, robotics, and space"
+          }
+        ]
+      },
+      "reason": "Two branded documentary series for re:MARS; sector spans ML, robotics and space so no narrower slug."
+    },
+    {
+      "slug": "aws-inspirational-global-advertising-campaign",
+      "client": "AWS",
+      "title": "AWS: Inspirational Global Advertising Campaign",
+      "current": {
+        "capabilities": [
+          "brand-strategy",
+          "creative-direction"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "brand-strategy",
+            "quote": "start building a brand in earnest"
+          },
+          {
+            "slug": "research-insights",
+            "quote": "research-driven insights report"
+          },
+          {
+            "slug": "video-production",
+            "quote": "storyboarded, produced, and edited sample creative videos"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "cloud-infrastructure",
+            "quote": "cloud-computing platform"
+          }
+        ]
+      },
+      "reason": "Global AWS brand campaign (\"AWS is How\")."
+    },
+    {
+      "slug": "simons-foundation-illuminating-a-new-brand-identity",
+      "client": "Simons Foundation",
+      "title": "Simons Foundation: Illuminating a New Brand Identity",
+      "current": {
+        "capabilities": [
+          "brand-strategy",
+          "creative-direction"
+        ],
+        "industries": [
+          "non-profit"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "brand-strategy",
+            "quote": "cohesive brand story"
+          },
+          {
+            "slug": "creative-direction",
+            "quote": "design system to unify and refresh visual identity"
+          },
+          {
+            "slug": "research-insights",
+            "quote": "research discovery report"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "non-profit",
+            "quote": "mission to champion basic science"
+          }
+        ]
+      },
+      "reason": "Foundation rebrand: research, brand story, design system."
+    },
+    {
+      "slug": "twitch-expanding-a-vibrant-visual-universe",
+      "client": "Twitch",
+      "title": "Twitch: Expanding a Vibrant Visual Universe",
+      "current": {
+        "capabilities": [
+          "creative-direction",
+          "brand-strategy"
+        ],
+        "industries": [
+          "media-entertainment"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "creative-direction",
+            "quote": "Twitch Sports brand expression playbook"
+          },
+          {
+            "slug": "brand-strategy",
+            "quote": "extending the Twitch brand"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "media-entertainment",
+            "quote": "sports and adventure TV"
+          }
+        ]
+      },
+      "reason": "Brand expression work for Twitch content categories."
+    },
+    {
+      "slug": "adp-customer-story-videos",
+      "client": "ADP",
+      "title": "ADP: Customer Story Videos",
+      "current": {
+        "capabilities": [
+          "video-production",
+          "creative-direction"
+        ],
+        "industries": [
+          "technology",
+          "b2b-services"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "video-production",
+            "quote": "compelling testimonial video content"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "b2b-services",
+            "quote": "Next-Gen HCM, Voice of the Employee HR, and Payroll applications"
+          }
+        ]
+      },
+      "reason": "Customer testimonial videos for HR/payroll products."
+    },
+    {
+      "slug": "aws-creating-a-new-kind-of-product-demo",
+      "client": "AWS",
+      "title": "AWS: Creating a New Kind of Product Demo",
+      "current": {
+        "capabilities": [
+          "creative-direction",
+          "content-marketing"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "experience-design",
+            "quote": "interactive, modular click-through experience"
+          },
+          {
+            "slug": "creative-direction",
+            "quote": "copywriting, design, and animation"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "artificial-intelligence",
+            "quote": "building, training, and deploying machine learning models"
+          }
+        ]
+      },
+      "reason": "Interactive click-through demo for Amazon SageMaker."
+    },
+    {
+      "slug": "chrome-enterprise-reclaiming-the-browser-conversation",
+      "client": "Chrome Enterprise",
+      "title": "Chrome Enterprise: Reclaiming the Browser Conversation",
+      "current": {
+        "capabilities": [
+          "brand-strategy",
+          "creative-direction",
+          "growth-marketing"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "messaging-positioning",
+            "quote": "reimagined campaign visuals and messaging"
+          },
+          {
+            "slug": "video-production",
+            "quote": "new campaign videos"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "enterprise-software",
+            "quote": "tailored to enterprise buyers"
+          }
+        ]
+      },
+      "reason": "Enterprise campaign refresh with new videos."
+    },
+    {
+      "slug": "renew-home-elevating-a-new-brand-to-own-the-market-conversation",
+      "client": "Renew Home",
+      "title": "Renew Home: Elevating a New Brand to Own the Market Conversation",
+      "current": {
+        "capabilities": [
+          "brand-strategy",
+          "content-marketing",
+          "creative-direction"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "go-to-market",
+            "quote": "develop their go-to-market story"
+          },
+          {
+            "slug": "events-keynotes",
+            "quote": "CEO and Chief Product Officer's keynotes"
+          },
+          {
+            "slug": "messaging-positioning",
+            "quote": "strategic narrative and messaging"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "energy",
+            "quote": "sustainable energy company"
+          }
+        ]
+      },
+      "reason": "Launch narrative and executive keynotes for a new energy company."
+    },
+    {
+      "slug": "aws-keynotes-that-reshape-perspectives",
+      "client": "AWS",
+      "title": "AWS: Keynotes That Reshape Perspectives",
+      "current": {
+        "capabilities": [
+          "creative-direction",
+          "content-marketing"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "events-keynotes",
+            "quote": "hundreds of keynote presentation slides"
+          },
+          {
+            "slug": "creative-direction",
+            "quote": "stunning visuals that turned slides into memorable keynote moments"
+          }
+        ],
+        "industries": []
+      },
+      "reason": "re:Invent keynote design; sector not stated in indexed text.",
+      "flag": "Indexed text names AWS and re:Invent but never states the sector (cloud); only user-asserted tagging would support an industry."
+    },
+    {
+      "slug": "google-workspace-planning-and-delivering-demand-generation",
+      "client": "Google Workspace",
+      "title": "Google Workspace: Planning and Delivering Demand Generation",
+      "current": {
+        "capabilities": [
+          "content-marketing",
+          "growth-marketing"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "content-marketing",
+            "quote": "detailed handbooks and compelling 1-pagers"
+          },
+          {
+            "slug": "growth-marketing",
+            "quote": "demand generation content"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "enterprise-software",
+            "quote": "Gemini for Google Workspace"
+          },
+          {
+            "slug": "artificial-intelligence",
+            "quote": "AI-driven advantages of Gemini"
+          }
+        ]
+      },
+      "reason": "Year-long demand-gen content for Workspace AI features."
+    },
+    {
+      "slug": "salt-security-defending-market-territory",
+      "client": "Salt Security",
+      "title": "Salt Security: Defending Market Territory",
+      "current": {
+        "capabilities": [
+          "brand-strategy",
+          "creative-direction"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "brand-strategy",
+            "quote": "updating and upgrading their brand"
+          },
+          {
+            "slug": "messaging-positioning",
+            "quote": "messaging framework and core narrative"
+          },
+          {
+            "slug": "research-insights",
+            "quote": "market research and discovery report"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "cybersecurity",
+            "quote": "API security"
+          }
+        ]
+      },
+      "reason": "Brand and messaging refresh for an API security company."
+    },
+    {
+      "slug": "aws-transforming-digital-audits",
+      "client": "AWS",
+      "title": "AWS: Transforming Digital Audits",
+      "current": {
+        "capabilities": [
+          "video-production",
+          "content-marketing"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "video-production",
+            "quote": "more than 70 videos"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "cloud-infrastructure",
+            "quote": "AWS security and infrastructure"
+          }
+        ]
+      },
+      "reason": "70+ videos for the AWS Digital Audit Symposium."
+    },
+    {
+      "slug": "adp-creating-keynotes-that-connect",
+      "client": "ADP",
+      "title": "ADP: Creating Keynotes That Connect",
+      "current": {
+        "capabilities": [
+          "creative-direction",
+          "content-marketing"
+        ],
+        "industries": [
+          "technology",
+          "b2b-services"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "events-keynotes",
+            "quote": "keynote presentation narrative and design"
+          },
+          {
+            "slug": "video-production",
+            "quote": "produced three customer success story videos"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "b2b-services",
+            "quote": "human capital management, payroll, compliance"
+          }
+        ]
+      },
+      "reason": "Keynote narrative/design and customer videos for an HR/payroll provider."
+    },
+    {
+      "slug": "aig-when-stakes-are-high-reintroducing-aig-to-the-market",
+      "client": "AIG",
+      "title": "AIG: When Stakes Are High: Reintroducing AIG to the Market",
+      "current": {
+        "capabilities": [
+          "creative-direction",
+          "content-marketing"
+        ],
+        "industries": [
+          "finance"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "events-keynotes",
+            "quote": "event and keynote visual direction and design guide"
+          },
+          {
+            "slug": "creative-direction",
+            "quote": "keynote visual design system"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "finance",
+            "quote": "global insurance giant AIG"
+          }
+        ]
+      },
+      "reason": "Investor Day keynote design for an insurer."
+    },
+    {
+      "slug": "android-enterprise-hyper-targeted-consideration-campaign",
+      "client": "Android Enterprise",
+      "title": "Android Enterprise: Hyper-Targeted Consideration Campaign",
+      "current": {
+        "capabilities": [
+          "content-marketing",
+          "growth-marketing"
+        ],
+        "industries": [
+          "technology",
+          "finance"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "content-marketing",
+            "quote": "16-page eBook"
+          },
+          {
+            "slug": "growth-marketing",
+            "quote": "consideration campaign"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "finance",
+            "quote": "industry sub-sectors like banking, insurance, investing, and fintech"
+          },
+          {
+            "slug": "enterprise-software",
+            "quote": "mobile device management"
+          }
+        ]
+      },
+      "reason": "Campaign aimed at financial services audience (finance tag reflects the audience); mobile device management product."
+    },
+    {
+      "slug": "android-crafting-a-brand-new-virtual-event",
+      "client": "Android",
+      "title": "Android: Crafting a Brand New Virtual Event",
+      "current": {
+        "capabilities": [
+          "brand-strategy",
+          "experience-design",
+          "video-production"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "messaging-positioning",
+            "quote": "identified and tested positioning territories"
+          },
+          {
+            "slug": "research-insights",
+            "quote": "quantitative and qualitative research"
+          },
+          {
+            "slug": "events-keynotes",
+            "quote": "virtual event including content planning"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "enterprise-software",
+            "quote": "refresh messaging around management and security"
+          }
+        ]
+      },
+      "reason": "Positioning research and the Art of Control virtual event for Android Enterprise."
+    },
+    {
+      "slug": "android-gen-z-workplace-research-and-creative-strategy",
+      "client": "Android",
+      "title": "Android: Gen Z workplace research and creative strategy",
+      "current": {
+        "capabilities": [],
+        "industries": []
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "research-insights",
+            "quote": "conduct quantitative research into the workplace values"
+          },
+          {
+            "slug": "messaging-positioning",
+            "quote": "Messaging strategy"
+          },
+          {
+            "slug": "video-production",
+            "quote": "Video production, set design, scripting, and video editing"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "technology",
+            "quote": "expectations around work and technology"
+          }
+        ]
+      },
+      "reason": "Gen Z workplace research, messaging, and Android Talks video."
+    },
+    {
+      "slug": "google-for-education-a-world-of-perspectives-on-the-future-of-learning",
+      "client": "Google for Education",
+      "title": "Google for Education: A world of perspectives on the future of learning",
+      "current": {
+        "capabilities": [],
+        "industries": []
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "content-strategy",
+            "quote": "Content strategy"
+          },
+          {
+            "slug": "thought-leadership",
+            "quote": "ongoing thought leadership video series"
+          },
+          {
+            "slug": "video-production",
+            "quote": "Production, recording, and editing"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "education",
+            "quote": "future of education"
+          },
+          {
+            "slug": "artificial-intelligence",
+            "quote": "the potential of AI to transform teaching and learning"
+          }
+        ]
+      },
+      "reason": "Thought leadership video series on the future of education."
+    },
+    {
+      "slug": "chrome-enterprise-timely-compelling-thought-leadership",
+      "client": "Chrome Enterprise",
+      "title": "Chrome Enterprise: Timely, Compelling Thought Leadership",
+      "current": {
+        "capabilities": [
+          "content-marketing"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "thought-leadership",
+            "quote": "thought leadership content"
+          },
+          {
+            "slug": "content-marketing",
+            "quote": "an executive paper"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "enterprise-software",
+            "quote": "the IT professionals who supported them"
+          }
+        ]
+      },
+      "reason": "Remote-work thought leadership content suite for IT audiences."
+    },
+    {
+      "slug": "chromeos-cameyo-maintaining-momentum-through-launch",
+      "client": "ChromeOS/Cameyo",
+      "title": "ChromeOS/Cameyo: Maintaining Momentum Through Launch",
+      "current": {
+        "capabilities": [
+          "content-marketing",
+          "growth-marketing"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "content-marketing",
+            "quote": "email series approach and content calendar"
+          },
+          {
+            "slug": "go-to-market",
+            "quote": "marketing launch assets"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "enterprise-software",
+            "quote": "virtual app delivery (VAD) platform"
+          }
+        ]
+      },
+      "reason": "Pre-launch email series and content calendar for a virtual app delivery platform."
+    },
+    {
+      "slug": "chrome-enterprise-turning-a-security-upgrade-into-a-compelling-video",
+      "client": "Chrome Enterprise",
+      "title": "Chrome Enterprise: Turning a Security Upgrade into a Compelling Video",
+      "current": {
+        "capabilities": [
+          "video-production",
+          "creative-direction"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "video-production",
+            "quote": "Article Group handled every aspect of the video"
+          },
+          {
+            "slug": "creative-direction",
+            "quote": "from concept and scriptwriting to storyboarding"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "cybersecurity",
+            "quote": "modern cybersecurity demands"
+          },
+          {
+            "slug": "enterprise-software",
+            "quote": "premium tier for enterprise users"
+          }
+        ]
+      },
+      "reason": "Premium security explainer video."
+    },
+    {
+      "slug": "google-cloud-illuminating-a-new-brand-identity",
+      "client": "Google Cloud",
+      "title": "Google Cloud: Illuminating a New Brand Identity",
+      "current": {
+        "capabilities": [
+          "brand-strategy",
+          "creative-direction"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "creative-direction",
+            "quote": "visual identity and style standards playbook"
+          },
+          {
+            "slug": "brand-strategy",
+            "quote": "establish a visual identity"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "cloud-infrastructure",
+            "quote": "Google Cloud services"
+          }
+        ]
+      },
+      "reason": "Visual identity for the Cloud Innovators Program."
+    },
+    {
+      "slug": "j-p-morgan-naming-the-future-of-retail-payments-hardware",
+      "client": "J.P. Morgan",
+      "title": "J.P. Morgan: Naming the Future of Retail Payments Hardware",
+      "current": {
+        "capabilities": [
+          "brand-strategy"
+        ],
+        "industries": [
+          "finance"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "naming",
+            "quote": "naming and nomenclature strategy, name generation"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "finance",
+            "quote": "new payments hardware terminals"
+          }
+        ]
+      },
+      "reason": "Naming for payments hardware terminals."
+    },
+    {
+      "slug": "mylink-google-insight-driven-brand-development",
+      "client": "MyLink (Google)",
+      "title": "MyLink (Google): Insight-Driven Brand Development",
+      "current": {
+        "capabilities": [
+          "brand-strategy",
+          "creative-direction"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "brand-strategy",
+            "quote": "cohesive brand identity"
+          },
+          {
+            "slug": "research-insights",
+            "quote": "primary research with MyLink's target audience"
+          },
+          {
+            "slug": "messaging-positioning",
+            "quote": "messaging framework"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "consumer-tech",
+            "quote": "a free link-in-bio catalog and app"
+          }
+        ]
+      },
+      "reason": "Research-led brand and messaging for a link-in-bio app."
+    },
+    {
+      "slug": "amazon-building-a-flagship-thought-leadership-brand",
+      "client": "Amazon re:MARS",
+      "title": "Amazon re:MARS: Building a flagship thought leadership brand for Amazon",
+      "current": {
+        "capabilities": [],
+        "industries": []
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "brand-strategy",
+            "quote": "foundational positioning and messaging alongside a new visual language and identity"
+          },
+          {
+            "slug": "events-keynotes",
+            "quote": "Mainstage keynote design"
+          },
+          {
+            "slug": "video-production",
+            "quote": "developing and producing two original long-form video formats"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "technology",
+            "quote": "machine learning, automation, robotics, and space"
+          }
+        ]
+      },
+      "reason": "re:MARS brand identity, content hub, event and two video series."
+    },
+    {
+      "slug": "salesforce-supporting-the-largest-partner-ecosystem-in-the-tech-industry",
+      "client": "Salesforce",
+      "title": "Salesforce: Supporting the largest partner ecosystem in the tech industry",
+      "current": {
+        "capabilities": [],
+        "industries": []
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "content-marketing",
+            "quote": "run a content production program"
+          },
+          {
+            "slug": "sales-enablement",
+            "quote": "create internal assets and partner resources that drive new business"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "enterprise-software",
+            "quote": "sell, configure, and implement solutions for customers"
+          }
+        ]
+      },
+      "reason": "Partner Value Program content for Salesforce partners."
+    },
+    {
+      "slug": "box-establishing-thought-leadership-by-publishing-share-worthy-content",
+      "client": "Box",
+      "title": "Box: Establishing thought leadership by publishing share-worthy content",
+      "current": {
+        "capabilities": [],
+        "industries": []
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "content-strategy",
+            "quote": "build our publishing and distribution strategy around an editorial calendar"
+          },
+          {
+            "slug": "content-marketing",
+            "quote": "create ebooks, slideshares, and whitepapers"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "enterprise-software",
+            "quote": "Box has built the solution into their software"
+          }
+        ]
+      },
+      "reason": "Editorial calendar and whitepaper program for Box."
+    },
+    {
+      "slug": "simons-foundation-launching-a-first-ever-education-division-to-unlock-scientific",
+      "client": "Simons Foundation",
+      "title": "Simons Foundation: Launching a first-ever education division to unlock scientific thinking",
+      "current": {
+        "capabilities": [],
+        "industries": []
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "brand-strategy",
+            "quote": "We launched the brand for the Simons"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "non-profit",
+            "quote": "improve its grantmaking process"
+          }
+        ]
+      },
+      "reason": "Brand launch for the Education & Outreach division (Science Sandbox)."
+    },
+    {
+      "slug": "omnicell-making-marketing-and-sales-talk",
+      "client": "Omnicell",
+      "title": "Omnicell: Making Marketing and Sales Talk",
+      "current": {
+        "capabilities": [
+          "brand-strategy",
+          "content-marketing"
+        ],
+        "industries": [
+          "healthcare",
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "messaging-positioning",
+            "quote": "messaging hierarchies"
+          },
+          {
+            "slug": "sales-enablement",
+            "quote": "tactical content for their sales team"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "healthcare",
+            "quote": "pharmaceutical technology company"
+          }
+        ]
+      },
+      "reason": "Messaging hierarchies and sales decks for a pharmacy automation company."
+    },
+    {
+      "slug": "upshow-chromeos-purposeful-partner-marketing",
+      "client": "UpShow/ChromeOS",
+      "title": "UpShow/ChromeOS: Purposeful Partner Marketing",
+      "current": {
+        "capabilities": [
+          "content-marketing",
+          "growth-marketing"
+        ],
+        "industries": [
+          "technology",
+          "healthcare"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "growth-marketing",
+            "quote": "awareness campaign"
+          },
+          {
+            "slug": "video-production",
+            "quote": ":10, :15, and :30 second video advertisements"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "healthcare",
+            "quote": "retail health organizations"
+          }
+        ]
+      },
+      "reason": "Awareness campaign targeting retail health organizations."
+    },
+    {
+      "slug": "aws-nvidia-co-branded-video-for-a-visionary-collaboration",
+      "client": "AWS/NVIDIA",
+      "title": "AWS/NVIDIA: Co-Branded Video for a Visionary Collaboration",
+      "current": {
+        "capabilities": [
+          "video-production",
+          "creative-direction"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "video-production",
+            "quote": "cinematic storytelling blending interviews"
+          },
+          {
+            "slug": "creative-direction",
+            "quote": "creative direction that developed the video from concept to execution"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "artificial-intelligence",
+            "quote": "AI supercomputer, Project Ceiba"
+          }
+        ]
+      },
+      "reason": "Co-branded video about an AI supercomputer."
+    },
+    {
+      "slug": "google-crafting-a-cross-product-narrative",
+      "client": "Google",
+      "title": "Google: Crafting a Cross-Product Narrative",
+      "current": {
+        "capabilities": [
+          "brand-strategy",
+          "content-marketing"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "messaging-positioning",
+            "quote": "unify its product messaging"
+          },
+          {
+            "slug": "creative-direction",
+            "quote": "co-branded design system in Google Slides"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "technology",
+            "quote": "suite of products"
+          }
+        ]
+      },
+      "reason": "Cross-product narrative deck and design system; no narrower sector stated."
+    },
+    {
+      "slug": "task-mate-google-elevated-long-form-content",
+      "client": "Task Mate (Google)",
+      "title": "Task Mate (Google): Elevated Long-Form Content",
+      "current": {
+        "capabilities": [
+          "content-marketing",
+          "creative-direction"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "content-marketing",
+            "quote": "Task Mate-branded eBook"
+          },
+          {
+            "slug": "thought-leadership",
+            "quote": "a thought leadership blog"
+          }
+        ],
+        "industries": []
+      },
+      "reason": "Interactive eBook and thought leadership blog; sector not stated in indexed text.",
+      "flag": "Indexed text does not state the sector; the sibling Task Mate study is consumer-tech (microtasking app). Only user-asserted tagging would support an industry."
+    },
+    {
+      "slug": "chorus-alphabet-x-creating-an-eye-opening-asset-visibility-brand",
+      "client": "Chorus (Alphabet X)",
+      "title": "Chorus (Alphabet X): Creating an Eye-Opening Asset Visibility Brand",
+      "current": {
+        "capabilities": [
+          "brand-strategy",
+          "creative-direction"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "brand-strategy",
+            "quote": "AG developed a brand narrative"
+          },
+          {
+            "slug": "naming",
+            "quote": "product naming and nomenclature"
+          },
+          {
+            "slug": "creative-direction",
+            "quote": "visual identity system"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "enterprise-software",
+            "quote": "an industry-changing asset visibility platform"
+          }
+        ]
+      },
+      "reason": "Brand narrative, identity and product naming for a platform startup."
+    },
+    {
+      "slug": "google-messages-human-centered-product-ads",
+      "client": "Google Messages",
+      "title": "Google Messages: Human-Centered Product Ads",
+      "current": {
+        "capabilities": [
+          "creative-direction",
+          "video-production"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "video-production",
+            "quote": "1:00 product ad video"
+          },
+          {
+            "slug": "brand-strategy",
+            "quote": "raise awareness that Messages is powered by Google"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "consumer-tech",
+            "quote": "Messages, a cutting-edge messaging app"
+          }
+        ]
+      },
+      "reason": "Product ad campaign for the Messages app."
+    },
+    {
+      "slug": "nar-houselogic",
+      "client": "HouseLogic (NAR)",
+      "title": "HouseLogic (NAR): Leading the home buying conversation",
+      "current": {
+        "capabilities": [],
+        "industries": []
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "content-strategy",
+            "quote": "a new content series"
+          },
+          {
+            "slug": "research-insights",
+            "quote": "We heard it at every focus group"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "real-estate",
+            "quote": "National Association of Realtors"
+          }
+        ]
+      },
+      "reason": "Content series for buyers/sellers, informed by focus groups."
+    },
+    {
+      "slug": "android-telling-a-more-human-story",
+      "client": "Android",
+      "title": "Android: Telling a More Human Story",
+      "current": {
+        "capabilities": [
+          "brand-strategy",
+          "content-marketing"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "messaging-positioning",
+            "quote": "recommended positioning territories"
+          },
+          {
+            "slug": "research-insights",
+            "quote": "evaluated the mobile security landscape"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "consumer-tech",
+            "quote": "operating system"
+          }
+        ]
+      },
+      "reason": "Positioning territories and messaging framework for Android security."
+    },
+    {
+      "slug": "aws-bringing-powerful-gen-ai-models-to-life",
+      "client": "AWS",
+      "title": "AWS: Bringing Powerful Gen AI Models to Life",
+      "current": {
+        "capabilities": [
+          "video-production",
+          "creative-direction"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "video-production",
+            "quote": "bold, elegant videos"
+          },
+          {
+            "slug": "creative-direction",
+            "quote": "animated beautiful branded design"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "artificial-intelligence",
+            "quote": "generative AI models"
+          }
+        ]
+      },
+      "reason": "Promo videos for Amazon Nova Canvas and Reel."
+    },
+    {
+      "slug": "meta-informed-messaging-and-a-unified-story",
+      "client": "Meta",
+      "title": "Meta: Informed Messaging and a Unified Story",
+      "current": {
+        "capabilities": [
+          "brand-strategy",
+          "content-marketing"
+        ],
+        "industries": [
+          "technology"
+        ]
+      },
+      "proposed": {
+        "capabilities": [
+          {
+            "slug": "messaging-positioning",
+            "quote": "narrative and messaging frameworks"
+          },
+          {
+            "slug": "research-insights",
+            "quote": "audience insight research report"
+          },
+          {
+            "slug": "video-production",
+            "quote": "explainer video"
+          }
+        ],
+        "industries": [
+          {
+            "slug": "consumer-tech",
+            "quote": "Messenger, WhatsApp, and Instagram"
+          }
+        ]
+      },
+      "reason": "Messaging frameworks and explainer for Meta business messaging."
+    }
+  ]
+}

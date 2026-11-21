@@ -1,0 +1,786 @@
+{
+  "timestamp": "2026-11-21T13:05:28.421Z",
+  "capabilities": [
+    {
+      "id": "97cb85c9-5643-4d7b-955a-b4c5f261c4f6",
+      "slug": "brand-strategy",
+      "name": "Brand Strategy"
+    },
+    {
+      "id": "9401d24f-d440-4e08-928f-acbd81657ded",
+      "slug": "content-marketing",
+      "name": "Content Marketing"
+    },
+    {
+      "id": "71577b5e-135b-4d94-9bb3-222ac77aeb93",
+      "slug": "creative-direction",
+      "name": "Creative Direction"
+    },
+    {
+      "id": "de360da0-a568-4ed2-a6e8-660f00cfda11",
+      "slug": "digital-transformation",
+      "name": "Digital Transformation"
+    },
+    {
+      "id": "144d1297-e64c-4ca3-8fe7-bc412e8d814e",
+      "slug": "experience-design",
+      "name": "Experience Design"
+    },
+    {
+      "id": "f00a9e1f-7a9a-464a-bfc5-56425d75cedb",
+      "slug": "growth-marketing",
+      "name": "Growth Marketing"
+    },
+    {
+      "id": "59d35ef3-f06c-4381-b6bd-ea7f6a165cbd",
+      "slug": "social-strategy",
+      "name": "Social Strategy"
+    },
+    {
+      "id": "10365bd1-658a-4b66-89e7-b4f14e2893e6",
+      "slug": "video-production",
+      "name": "Video Production"
+    },
+    {
+      "id": "df0552ba-3bcb-4e95-b63a-4d70008eda7b",
+      "slug": "sales-enablement",
+      "name": "Sales Enablement"
+    }
+  ],
+  "industries": [
+    {
+      "id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology",
+      "name": "Technology"
+    },
+    {
+      "id": "5becfb0b-b0d4-45ca-84b5-e17786d9a4eb",
+      "slug": "healthcare",
+      "name": "Healthcare"
+    },
+    {
+      "id": "c39308af-394c-4d7a-9a93-eb11c8620a0f",
+      "slug": "finance",
+      "name": "Finance"
+    },
+    {
+      "id": "aa0ac6db-d567-4f82-b75b-85340c2b5aa5",
+      "slug": "retail",
+      "name": "Retail"
+    },
+    {
+      "id": "3800a76d-1f11-4dee-95bb-d433b0504ae8",
+      "slug": "media-entertainment",
+      "name": "Media & Entertainment"
+    },
+    {
+      "id": "0d554f78-cbcc-454a-a8ba-9fe8a0e4b1f7",
+      "slug": "b2b-services",
+      "name": "B2B Services"
+    },
+    {
+      "id": "212450bb-950e-4a0d-a6c3-f493909cb09d",
+      "slug": "consumer-goods",
+      "name": "Consumer Goods"
+    },
+    {
+      "id": "8e836f98-9961-4b76-b539-4e24ff22f6f0",
+      "slug": "non-profit",
+      "name": "Non-Profit"
+    }
+  ],
+  "document_capabilities": [
+    {
+      "document_id": "dceab0d8-5cc8-4612-b516-b4f4db043dc8",
+      "capability_id": "97cb85c9-5643-4d7b-955a-b4c5f261c4f6",
+      "slug": "brand-strategy"
+    },
+    {
+      "document_id": "719140a6-1d6d-4b9e-aa7f-6326c1292279",
+      "capability_id": "97cb85c9-5643-4d7b-955a-b4c5f261c4f6",
+      "slug": "brand-strategy"
+    },
+    {
+      "document_id": "719140a6-1d6d-4b9e-aa7f-6326c1292279",
+      "capability_id": "71577b5e-135b-4d94-9bb3-222ac77aeb93",
+      "slug": "creative-direction"
+    },
+    {
+      "document_id": "621a3cf5-8ae3-4d67-9c90-2c71c491ccae",
+      "capability_id": "97cb85c9-5643-4d7b-955a-b4c5f261c4f6",
+      "slug": "brand-strategy"
+    },
+    {
+      "document_id": "621a3cf5-8ae3-4d67-9c90-2c71c491ccae",
+      "capability_id": "9401d24f-d440-4e08-928f-acbd81657ded",
+      "slug": "content-marketing"
+    },
+    {
+      "document_id": "c76440f2-8c07-410b-88a5-d17015d978b4",
+      "capability_id": "9401d24f-d440-4e08-928f-acbd81657ded",
+      "slug": "content-marketing"
+    },
+    {
+      "document_id": "c76440f2-8c07-410b-88a5-d17015d978b4",
+      "capability_id": "f00a9e1f-7a9a-464a-bfc5-56425d75cedb",
+      "slug": "growth-marketing"
+    },
+    {
+      "document_id": "26a8458b-3064-4aee-9a74-26a62e53ed8f",
+      "capability_id": "9401d24f-d440-4e08-928f-acbd81657ded",
+      "slug": "content-marketing"
+    },
+    {
+      "document_id": "26a8458b-3064-4aee-9a74-26a62e53ed8f",
+      "capability_id": "f00a9e1f-7a9a-464a-bfc5-56425d75cedb",
+      "slug": "growth-marketing"
+    },
+    {
+      "document_id": "f41c9afc-4596-4174-9501-f0da600218a6",
+      "capability_id": "9401d24f-d440-4e08-928f-acbd81657ded",
+      "slug": "content-marketing"
+    },
+    {
+      "document_id": "f41c9afc-4596-4174-9501-f0da600218a6",
+      "capability_id": "f00a9e1f-7a9a-464a-bfc5-56425d75cedb",
+      "slug": "growth-marketing"
+    },
+    {
+      "document_id": "582f4bb6-7360-4a88-b097-d09a19432351",
+      "capability_id": "97cb85c9-5643-4d7b-955a-b4c5f261c4f6",
+      "slug": "brand-strategy"
+    },
+    {
+      "document_id": "582f4bb6-7360-4a88-b097-d09a19432351",
+      "capability_id": "71577b5e-135b-4d94-9bb3-222ac77aeb93",
+      "slug": "creative-direction"
+    },
+    {
+      "document_id": "b9f5a041-b659-4b3f-b5e4-f4838292d1c4",
+      "capability_id": "9401d24f-d440-4e08-928f-acbd81657ded",
+      "slug": "content-marketing"
+    },
+    {
+      "document_id": "b9f5a041-b659-4b3f-b5e4-f4838292d1c4",
+      "capability_id": "97cb85c9-5643-4d7b-955a-b4c5f261c4f6",
+      "slug": "brand-strategy"
+    },
+    {
+      "document_id": "0e752194-215f-4cba-9498-3dbcc167ddc0",
+      "capability_id": "9401d24f-d440-4e08-928f-acbd81657ded",
+      "slug": "content-marketing"
+    },
+    {
+      "document_id": "0e752194-215f-4cba-9498-3dbcc167ddc0",
+      "capability_id": "f00a9e1f-7a9a-464a-bfc5-56425d75cedb",
+      "slug": "growth-marketing"
+    },
+    {
+      "document_id": "082b7b08-5fd2-4eab-9a1f-9f99a20980cd",
+      "capability_id": "9401d24f-d440-4e08-928f-acbd81657ded",
+      "slug": "content-marketing"
+    },
+    {
+      "document_id": "082b7b08-5fd2-4eab-9a1f-9f99a20980cd",
+      "capability_id": "71577b5e-135b-4d94-9bb3-222ac77aeb93",
+      "slug": "creative-direction"
+    },
+    {
+      "document_id": "8ff4692d-de87-4998-a7a3-f585df3a3765",
+      "capability_id": "f00a9e1f-7a9a-464a-bfc5-56425d75cedb",
+      "slug": "growth-marketing"
+    },
+    {
+      "document_id": "8ff4692d-de87-4998-a7a3-f585df3a3765",
+      "capability_id": "71577b5e-135b-4d94-9bb3-222ac77aeb93",
+      "slug": "creative-direction"
+    },
+    {
+      "document_id": "6a2176bc-2b47-4146-b29b-9e2e0939251c",
+      "capability_id": "97cb85c9-5643-4d7b-955a-b4c5f261c4f6",
+      "slug": "brand-strategy"
+    },
+    {
+      "document_id": "6a2176bc-2b47-4146-b29b-9e2e0939251c",
+      "capability_id": "71577b5e-135b-4d94-9bb3-222ac77aeb93",
+      "slug": "creative-direction"
+    },
+    {
+      "document_id": "24eac3d1-026e-4d9e-9468-11b9dc31efde",
+      "capability_id": "9401d24f-d440-4e08-928f-acbd81657ded",
+      "slug": "content-marketing"
+    },
+    {
+      "document_id": "a299a17b-6249-4f5d-a685-968c11e790e5",
+      "capability_id": "9401d24f-d440-4e08-928f-acbd81657ded",
+      "slug": "content-marketing"
+    },
+    {
+      "document_id": "a299a17b-6249-4f5d-a685-968c11e790e5",
+      "capability_id": "71577b5e-135b-4d94-9bb3-222ac77aeb93",
+      "slug": "creative-direction"
+    },
+    {
+      "document_id": "58d9424c-526c-4809-aa51-bbed492fe27b",
+      "capability_id": "144d1297-e64c-4ca3-8fe7-bc412e8d814e",
+      "slug": "experience-design"
+    },
+    {
+      "document_id": "58d9424c-526c-4809-aa51-bbed492fe27b",
+      "capability_id": "71577b5e-135b-4d94-9bb3-222ac77aeb93",
+      "slug": "creative-direction"
+    },
+    {
+      "document_id": "58d9424c-526c-4809-aa51-bbed492fe27b",
+      "capability_id": "10365bd1-658a-4b66-89e7-b4f14e2893e6",
+      "slug": "video-production"
+    },
+    {
+      "document_id": "d5f4edee-899a-4bba-baed-7883ac4baf02",
+      "capability_id": "71577b5e-135b-4d94-9bb3-222ac77aeb93",
+      "slug": "creative-direction"
+    },
+    {
+      "document_id": "d5f4edee-899a-4bba-baed-7883ac4baf02",
+      "capability_id": "10365bd1-658a-4b66-89e7-b4f14e2893e6",
+      "slug": "video-production"
+    },
+    {
+      "document_id": "93ea9ac4-1363-4d78-80b3-31e1637b9515",
+      "capability_id": "97cb85c9-5643-4d7b-955a-b4c5f261c4f6",
+      "slug": "brand-strategy"
+    },
+    {
+      "document_id": "93ea9ac4-1363-4d78-80b3-31e1637b9515",
+      "capability_id": "9401d24f-d440-4e08-928f-acbd81657ded",
+      "slug": "content-marketing"
+    },
+    {
+      "document_id": "9887737b-45d3-486f-9962-6618d5793f88",
+      "capability_id": "9401d24f-d440-4e08-928f-acbd81657ded",
+      "slug": "content-marketing"
+    },
+    {
+      "document_id": "9887737b-45d3-486f-9962-6618d5793f88",
+      "capability_id": "f00a9e1f-7a9a-464a-bfc5-56425d75cedb",
+      "slug": "growth-marketing"
+    },
+    {
+      "document_id": "196c9d33-f74e-4d38-b993-7eaa811cd37b",
+      "capability_id": "f00a9e1f-7a9a-464a-bfc5-56425d75cedb",
+      "slug": "growth-marketing"
+    },
+    {
+      "document_id": "196c9d33-f74e-4d38-b993-7eaa811cd37b",
+      "capability_id": "9401d24f-d440-4e08-928f-acbd81657ded",
+      "slug": "content-marketing"
+    },
+    {
+      "document_id": "196c9d33-f74e-4d38-b993-7eaa811cd37b",
+      "capability_id": "71577b5e-135b-4d94-9bb3-222ac77aeb93",
+      "slug": "creative-direction"
+    },
+    {
+      "document_id": "a9530971-6545-497a-a92a-2f14644c63ec",
+      "capability_id": "9401d24f-d440-4e08-928f-acbd81657ded",
+      "slug": "content-marketing"
+    },
+    {
+      "document_id": "be657e88-a604-48a3-86da-f8c64b4a97f0",
+      "capability_id": "9401d24f-d440-4e08-928f-acbd81657ded",
+      "slug": "content-marketing"
+    },
+    {
+      "document_id": "be657e88-a604-48a3-86da-f8c64b4a97f0",
+      "capability_id": "71577b5e-135b-4d94-9bb3-222ac77aeb93",
+      "slug": "creative-direction"
+    },
+    {
+      "document_id": "631363cb-34ea-4661-be19-8d3d3b011a1b",
+      "capability_id": "f00a9e1f-7a9a-464a-bfc5-56425d75cedb",
+      "slug": "growth-marketing"
+    },
+    {
+      "document_id": "631363cb-34ea-4661-be19-8d3d3b011a1b",
+      "capability_id": "9401d24f-d440-4e08-928f-acbd81657ded",
+      "slug": "content-marketing"
+    },
+    {
+      "document_id": "631363cb-34ea-4661-be19-8d3d3b011a1b",
+      "capability_id": "144d1297-e64c-4ca3-8fe7-bc412e8d814e",
+      "slug": "experience-design"
+    },
+    {
+      "document_id": "b77644fa-f821-47f0-94a5-3d4bf0c7a28e",
+      "capability_id": "97cb85c9-5643-4d7b-955a-b4c5f261c4f6",
+      "slug": "brand-strategy"
+    },
+    {
+      "document_id": "b77644fa-f821-47f0-94a5-3d4bf0c7a28e",
+      "capability_id": "144d1297-e64c-4ca3-8fe7-bc412e8d814e",
+      "slug": "experience-design"
+    },
+    {
+      "document_id": "b77644fa-f821-47f0-94a5-3d4bf0c7a28e",
+      "capability_id": "10365bd1-658a-4b66-89e7-b4f14e2893e6",
+      "slug": "video-production"
+    },
+    {
+      "document_id": "ca366c06-686d-4b85-9873-d8c11746071b",
+      "capability_id": "97cb85c9-5643-4d7b-955a-b4c5f261c4f6",
+      "slug": "brand-strategy"
+    },
+    {
+      "document_id": "ca366c06-686d-4b85-9873-d8c11746071b",
+      "capability_id": "71577b5e-135b-4d94-9bb3-222ac77aeb93",
+      "slug": "creative-direction"
+    },
+    {
+      "document_id": "e4bb08fe-a0f0-4816-9ffd-9995a6fb9e09",
+      "capability_id": "71577b5e-135b-4d94-9bb3-222ac77aeb93",
+      "slug": "creative-direction"
+    },
+    {
+      "document_id": "e4bb08fe-a0f0-4816-9ffd-9995a6fb9e09",
+      "capability_id": "9401d24f-d440-4e08-928f-acbd81657ded",
+      "slug": "content-marketing"
+    },
+    {
+      "document_id": "e8cb8cc6-98e7-4717-b166-b2a54f94c068",
+      "capability_id": "97cb85c9-5643-4d7b-955a-b4c5f261c4f6",
+      "slug": "brand-strategy"
+    },
+    {
+      "document_id": "e8cb8cc6-98e7-4717-b166-b2a54f94c068",
+      "capability_id": "9401d24f-d440-4e08-928f-acbd81657ded",
+      "slug": "content-marketing"
+    },
+    {
+      "document_id": "46916bc5-433a-48d5-b605-1f40b6dd1155",
+      "capability_id": "10365bd1-658a-4b66-89e7-b4f14e2893e6",
+      "slug": "video-production"
+    },
+    {
+      "document_id": "46916bc5-433a-48d5-b605-1f40b6dd1155",
+      "capability_id": "71577b5e-135b-4d94-9bb3-222ac77aeb93",
+      "slug": "creative-direction"
+    },
+    {
+      "document_id": "5565441c-ff42-49e1-a077-85df39f4d869",
+      "capability_id": "71577b5e-135b-4d94-9bb3-222ac77aeb93",
+      "slug": "creative-direction"
+    },
+    {
+      "document_id": "5565441c-ff42-49e1-a077-85df39f4d869",
+      "capability_id": "9401d24f-d440-4e08-928f-acbd81657ded",
+      "slug": "content-marketing"
+    },
+    {
+      "document_id": "64aee986-7457-41cc-a83f-8485c024f1e8",
+      "capability_id": "97cb85c9-5643-4d7b-955a-b4c5f261c4f6",
+      "slug": "brand-strategy"
+    },
+    {
+      "document_id": "64aee986-7457-41cc-a83f-8485c024f1e8",
+      "capability_id": "71577b5e-135b-4d94-9bb3-222ac77aeb93",
+      "slug": "creative-direction"
+    },
+    {
+      "document_id": "626e5b14-f477-4047-93d5-d9011cd788bf",
+      "capability_id": "97cb85c9-5643-4d7b-955a-b4c5f261c4f6",
+      "slug": "brand-strategy"
+    },
+    {
+      "document_id": "626e5b14-f477-4047-93d5-d9011cd788bf",
+      "capability_id": "71577b5e-135b-4d94-9bb3-222ac77aeb93",
+      "slug": "creative-direction"
+    },
+    {
+      "document_id": "d174d856-2a7a-4679-a57c-303b1aca78f9",
+      "capability_id": "97cb85c9-5643-4d7b-955a-b4c5f261c4f6",
+      "slug": "brand-strategy"
+    },
+    {
+      "document_id": "d174d856-2a7a-4679-a57c-303b1aca78f9",
+      "capability_id": "71577b5e-135b-4d94-9bb3-222ac77aeb93",
+      "slug": "creative-direction"
+    },
+    {
+      "document_id": "bb7d62f9-6a77-4308-8345-d76d33543929",
+      "capability_id": "97cb85c9-5643-4d7b-955a-b4c5f261c4f6",
+      "slug": "brand-strategy"
+    },
+    {
+      "document_id": "bb7d62f9-6a77-4308-8345-d76d33543929",
+      "capability_id": "9401d24f-d440-4e08-928f-acbd81657ded",
+      "slug": "content-marketing"
+    },
+    {
+      "document_id": "00448183-b796-436c-84ed-fac37003cb72",
+      "capability_id": "97cb85c9-5643-4d7b-955a-b4c5f261c4f6",
+      "slug": "brand-strategy"
+    },
+    {
+      "document_id": "00448183-b796-436c-84ed-fac37003cb72",
+      "capability_id": "9401d24f-d440-4e08-928f-acbd81657ded",
+      "slug": "content-marketing"
+    },
+    {
+      "document_id": "5cda1f8c-80e1-4e00-a199-6245497ec95d",
+      "capability_id": "10365bd1-658a-4b66-89e7-b4f14e2893e6",
+      "slug": "video-production"
+    },
+    {
+      "document_id": "5cda1f8c-80e1-4e00-a199-6245497ec95d",
+      "capability_id": "9401d24f-d440-4e08-928f-acbd81657ded",
+      "slug": "content-marketing"
+    },
+    {
+      "document_id": "90df27fb-f69b-41c1-99c4-bbfeecac1192",
+      "capability_id": "10365bd1-658a-4b66-89e7-b4f14e2893e6",
+      "slug": "video-production"
+    },
+    {
+      "document_id": "90df27fb-f69b-41c1-99c4-bbfeecac1192",
+      "capability_id": "71577b5e-135b-4d94-9bb3-222ac77aeb93",
+      "slug": "creative-direction"
+    },
+    {
+      "document_id": "505bd856-e04b-4012-a8e9-04a69b599e7a",
+      "capability_id": "10365bd1-658a-4b66-89e7-b4f14e2893e6",
+      "slug": "video-production"
+    },
+    {
+      "document_id": "505bd856-e04b-4012-a8e9-04a69b599e7a",
+      "capability_id": "71577b5e-135b-4d94-9bb3-222ac77aeb93",
+      "slug": "creative-direction"
+    },
+    {
+      "document_id": "451c9469-a7fc-4204-9476-b5b1b11324e9",
+      "capability_id": "97cb85c9-5643-4d7b-955a-b4c5f261c4f6",
+      "slug": "brand-strategy"
+    },
+    {
+      "document_id": "451c9469-a7fc-4204-9476-b5b1b11324e9",
+      "capability_id": "9401d24f-d440-4e08-928f-acbd81657ded",
+      "slug": "content-marketing"
+    },
+    {
+      "document_id": "451c9469-a7fc-4204-9476-b5b1b11324e9",
+      "capability_id": "71577b5e-135b-4d94-9bb3-222ac77aeb93",
+      "slug": "creative-direction"
+    },
+    {
+      "document_id": "8477f361-8d5c-41e0-880e-2419636620aa",
+      "capability_id": "71577b5e-135b-4d94-9bb3-222ac77aeb93",
+      "slug": "creative-direction"
+    },
+    {
+      "document_id": "8477f361-8d5c-41e0-880e-2419636620aa",
+      "capability_id": "97cb85c9-5643-4d7b-955a-b4c5f261c4f6",
+      "slug": "brand-strategy"
+    },
+    {
+      "document_id": "68a76a31-f8a9-445c-93dc-b7a6928dc42d",
+      "capability_id": "71577b5e-135b-4d94-9bb3-222ac77aeb93",
+      "slug": "creative-direction"
+    },
+    {
+      "document_id": "68a76a31-f8a9-445c-93dc-b7a6928dc42d",
+      "capability_id": "9401d24f-d440-4e08-928f-acbd81657ded",
+      "slug": "content-marketing"
+    },
+    {
+      "document_id": "42b28c51-a9a2-4c20-9d7e-4bbed7f683d8",
+      "capability_id": "71577b5e-135b-4d94-9bb3-222ac77aeb93",
+      "slug": "creative-direction"
+    },
+    {
+      "document_id": "42b28c51-a9a2-4c20-9d7e-4bbed7f683d8",
+      "capability_id": "9401d24f-d440-4e08-928f-acbd81657ded",
+      "slug": "content-marketing"
+    },
+    {
+      "document_id": "815f42b5-e4f1-48fa-8589-ff7db87941d1",
+      "capability_id": "10365bd1-658a-4b66-89e7-b4f14e2893e6",
+      "slug": "video-production"
+    },
+    {
+      "document_id": "815f42b5-e4f1-48fa-8589-ff7db87941d1",
+      "capability_id": "71577b5e-135b-4d94-9bb3-222ac77aeb93",
+      "slug": "creative-direction"
+    },
+    {
+      "document_id": "128910a2-5dcc-4001-a382-c87cc11b9962",
+      "capability_id": "10365bd1-658a-4b66-89e7-b4f14e2893e6",
+      "slug": "video-production"
+    },
+    {
+      "document_id": "128910a2-5dcc-4001-a382-c87cc11b9962",
+      "capability_id": "71577b5e-135b-4d94-9bb3-222ac77aeb93",
+      "slug": "creative-direction"
+    },
+    {
+      "document_id": "485d5833-d289-44f9-bde6-554942519ee6",
+      "capability_id": "97cb85c9-5643-4d7b-955a-b4c5f261c4f6",
+      "slug": "brand-strategy"
+    },
+    {
+      "document_id": "485d5833-d289-44f9-bde6-554942519ee6",
+      "capability_id": "71577b5e-135b-4d94-9bb3-222ac77aeb93",
+      "slug": "creative-direction"
+    },
+    {
+      "document_id": "485d5833-d289-44f9-bde6-554942519ee6",
+      "capability_id": "f00a9e1f-7a9a-464a-bfc5-56425d75cedb",
+      "slug": "growth-marketing"
+    }
+  ],
+  "document_industries": [
+    {
+      "document_id": "dceab0d8-5cc8-4612-b516-b4f4db043dc8",
+      "industry_id": "c39308af-394c-4d7a-9a93-eb11c8620a0f",
+      "slug": "finance"
+    },
+    {
+      "document_id": "719140a6-1d6d-4b9e-aa7f-6326c1292279",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "621a3cf5-8ae3-4d67-9c90-2c71c491ccae",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "c76440f2-8c07-410b-88a5-d17015d978b4",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "c76440f2-8c07-410b-88a5-d17015d978b4",
+      "industry_id": "c39308af-394c-4d7a-9a93-eb11c8620a0f",
+      "slug": "finance"
+    },
+    {
+      "document_id": "26a8458b-3064-4aee-9a74-26a62e53ed8f",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "f41c9afc-4596-4174-9501-f0da600218a6",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "582f4bb6-7360-4a88-b097-d09a19432351",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "b9f5a041-b659-4b3f-b5e4-f4838292d1c4",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "0e752194-215f-4cba-9498-3dbcc167ddc0",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "082b7b08-5fd2-4eab-9a1f-9f99a20980cd",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "8ff4692d-de87-4998-a7a3-f585df3a3765",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "6a2176bc-2b47-4146-b29b-9e2e0939251c",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "24eac3d1-026e-4d9e-9468-11b9dc31efde",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "a299a17b-6249-4f5d-a685-968c11e790e5",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "58d9424c-526c-4809-aa51-bbed492fe27b",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "d5f4edee-899a-4bba-baed-7883ac4baf02",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "93ea9ac4-1363-4d78-80b3-31e1637b9515",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "9887737b-45d3-486f-9962-6618d5793f88",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "9887737b-45d3-486f-9962-6618d5793f88",
+      "industry_id": "5becfb0b-b0d4-45ca-84b5-e17786d9a4eb",
+      "slug": "healthcare"
+    },
+    {
+      "document_id": "196c9d33-f74e-4d38-b993-7eaa811cd37b",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "a9530971-6545-497a-a92a-2f14644c63ec",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "be657e88-a604-48a3-86da-f8c64b4a97f0",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "be657e88-a604-48a3-86da-f8c64b4a97f0",
+      "industry_id": "0d554f78-cbcc-454a-a8ba-9fe8a0e4b1f7",
+      "slug": "b2b-services"
+    },
+    {
+      "document_id": "631363cb-34ea-4661-be19-8d3d3b011a1b",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "b77644fa-f821-47f0-94a5-3d4bf0c7a28e",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "ca366c06-686d-4b85-9873-d8c11746071b",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "e4bb08fe-a0f0-4816-9ffd-9995a6fb9e09",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "e8cb8cc6-98e7-4717-b166-b2a54f94c068",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "46916bc5-433a-48d5-b605-1f40b6dd1155",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "5565441c-ff42-49e1-a077-85df39f4d869",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "5565441c-ff42-49e1-a077-85df39f4d869",
+      "industry_id": "0d554f78-cbcc-454a-a8ba-9fe8a0e4b1f7",
+      "slug": "b2b-services"
+    },
+    {
+      "document_id": "64aee986-7457-41cc-a83f-8485c024f1e8",
+      "industry_id": "8e836f98-9961-4b76-b539-4e24ff22f6f0",
+      "slug": "non-profit"
+    },
+    {
+      "document_id": "626e5b14-f477-4047-93d5-d9011cd788bf",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "d174d856-2a7a-4679-a57c-303b1aca78f9",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "bb7d62f9-6a77-4308-8345-d76d33543929",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "00448183-b796-436c-84ed-fac37003cb72",
+      "industry_id": "5becfb0b-b0d4-45ca-84b5-e17786d9a4eb",
+      "slug": "healthcare"
+    },
+    {
+      "document_id": "00448183-b796-436c-84ed-fac37003cb72",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "5cda1f8c-80e1-4e00-a199-6245497ec95d",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "90df27fb-f69b-41c1-99c4-bbfeecac1192",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "90df27fb-f69b-41c1-99c4-bbfeecac1192",
+      "industry_id": "0d554f78-cbcc-454a-a8ba-9fe8a0e4b1f7",
+      "slug": "b2b-services"
+    },
+    {
+      "document_id": "505bd856-e04b-4012-a8e9-04a69b599e7a",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "451c9469-a7fc-4204-9476-b5b1b11324e9",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "8477f361-8d5c-41e0-880e-2419636620aa",
+      "industry_id": "3800a76d-1f11-4dee-95bb-d433b0504ae8",
+      "slug": "media-entertainment"
+    },
+    {
+      "document_id": "68a76a31-f8a9-445c-93dc-b7a6928dc42d",
+      "industry_id": "c39308af-394c-4d7a-9a93-eb11c8620a0f",
+      "slug": "finance"
+    },
+    {
+      "document_id": "42b28c51-a9a2-4c20-9d7e-4bbed7f683d8",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "815f42b5-e4f1-48fa-8589-ff7db87941d1",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "128910a2-5dcc-4001-a382-c87cc11b9962",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    },
+    {
+      "document_id": "485d5833-d289-44f9-bde6-554942519ee6",
+      "industry_id": "ded78322-ad83-4811-a500-f0564a2b1441",
+      "slug": "technology"
+    }
+  ]
+}

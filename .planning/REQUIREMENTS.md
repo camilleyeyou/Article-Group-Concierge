@@ -17,11 +17,11 @@
 
 ### Content and data
 
-- [ ] **DATA-01**: All 50 articles are chunked and embedded (additive only; no deletes), and `hybrid_search` can return them
-- [ ] **DATA-02**: A diff of articlegroup.com/work against the index lists every missing piece of work, and each one (including the Simons Foundation education division and the Salesforce partner-ecosystem work) is ingested after user confirmation
-- [ ] **DATA-03**: The capability/industry taxonomy reflects each case study accurately (not 39/43 "technology"). Data changes are applied only after user approval
-- [ ] **DATA-04**: The slug maps in `detectQueryIntent` reference only slugs that exist in the DB
-- [ ] **DATA-05**: Every case-study video has been checked against its case study. Mismatches (e.g. Google cross-product → `Google_Recruiting_-_Technical_Judgment.mp4`) are fixed or removed, with the audit result recorded
+- [x] **DATA-01**: All 50 articles are chunked and embedded (additive only; no deletes), and `hybrid_search` can return them
+- [x] **DATA-02**: A diff of articlegroup.com/work against the index lists every missing piece of work, and each one (including the Simons Foundation education division and the Salesforce partner-ecosystem work) is ingested after user confirmation
+- [x] **DATA-03**: The capability/industry taxonomy reflects each case study accurately (not 39/43 "technology"). Data changes are applied only after user approval
+- [x] **DATA-04**: The slug maps in `detectQueryIntent` reference only slugs that exist in the DB
+- [x] **DATA-05**: Every case-study video has been checked against its case study. Mismatches (e.g. Google cross-product → `Google_Recruiting_-_Technical_Judgment.mp4`) are fixed or removed, with the audit result recorded
 
 ### Retrieval
 
@@ -80,11 +80,11 @@
 | EVAL-05 | Phase 1 | Complete |
 | EVAL-06 | Phase 1 | Complete |
 | EVAL-07 | Phase 1 | Complete |
-| DATA-01 | Phase 2 | Pending |
-| DATA-02 | Phase 2 | Pending |
-| DATA-03 | Phase 2 | Pending |
-| DATA-04 | Phase 2 | Pending |
-| DATA-05 | Phase 2 | Pending |
+| DATA-01 | Phase 2 | Complete |
+| DATA-02 | Phase 2 | Complete |
+| DATA-03 | Phase 2 | Complete |
+| DATA-04 | Phase 2 | Complete |
+| DATA-05 | Phase 2 | Complete |
 | RETR-01 | Phase 3 | Pending |
 | RETR-02 | Phase 3 | Pending |
 | RETR-03 | Phase 3 | Pending |

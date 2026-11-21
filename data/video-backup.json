@@ -1,0 +1,373 @@
+{
+  "taken_at": "2026-11-21T16:57:33.648Z",
+  "documents": [
+    {
+      "id": "26a8458b-3064-4aee-9a74-26a62e53ed8f",
+      "slug": "chromeos-cohesive-small-business-campaign",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "b9f5a041-b659-4b3f-b5e4-f4838292d1c4",
+      "slug": "google-workspace-building-an-editorial-program",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "582f4bb6-7360-4a88-b097-d09a19432351",
+      "slug": "google-workspace-positioning-a-new-brand-for-launch",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "8ff4692d-de87-4998-a7a3-f585df3a3765",
+      "slug": "task-mate-google-driving-growth-with-inclusive-messaging",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "a299a17b-6249-4f5d-a685-968c11e790e5",
+      "slug": "modern-computing-alliance-delightfully-useful-design",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "58d9424c-526c-4809-aa51-bbed492fe27b",
+      "slug": "chrome-enterprise-a-vibrant-virtual-event",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "196c9d33-f74e-4d38-b993-7eaa811cd37b",
+      "slug": "chrome-earning-smb-consideration",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "a9530971-6545-497a-a92a-2f14644c63ec",
+      "slug": "salesforce-slack-strategic-sales-enablement",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "631363cb-34ea-4661-be19-8d3d3b011a1b",
+      "slug": "salesforce-whatsapp-hyping-up-a-holiday-virtual-event",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "be657e88-a604-48a3-86da-f8c64b4a97f0",
+      "slug": "slalom-celebrating-customer-success",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "e8cb8cc6-98e7-4717-b166-b2a54f94c068",
+      "slug": "crowdstrike-applying-the-power-of-a-great-marketecture",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "46916bc5-433a-48d5-b605-1f40b6dd1155",
+      "slug": "amazon-re-mars-bold-inspirational-branded-docuseries",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "626e5b14-f477-4047-93d5-d9011cd788bf",
+      "slug": "aws-inspirational-global-advertising-campaign",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "64aee986-7457-41cc-a83f-8485c024f1e8",
+      "slug": "simons-foundation-illuminating-a-new-brand-identity",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "8477f361-8d5c-41e0-880e-2419636620aa",
+      "slug": "twitch-expanding-a-vibrant-visual-universe",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "90df27fb-f69b-41c1-99c4-bbfeecac1192",
+      "slug": "adp-customer-story-videos",
+      "hero_video_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/adp-meeting-of-the-minds-product-videos/ADP_-_Waste_Pro_-_Voice_of_the_Employee_Testimonial.mp4",
+      "vimeo_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/adp-meeting-of-the-minds-product-videos/ADP_-_Waste_Pro_-_Voice_of_the_Employee_Testimonial.mp4"
+    },
+    {
+      "id": "42b28c51-a9a2-4c20-9d7e-4bbed7f683d8",
+      "slug": "aws-creating-a-new-kind-of-product-demo",
+      "hero_video_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/aws-amazon-sagemaker-product-demo/AWS_-_App_Studio_Demo.mp4",
+      "vimeo_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/aws-amazon-sagemaker-product-demo/AWS_-_App_Studio_Demo.mp4"
+    },
+    {
+      "id": "485d5833-d289-44f9-bde6-554942519ee6",
+      "slug": "chrome-enterprise-reclaiming-the-browser-conversation",
+      "hero_video_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/chrome-enterprise-no-place-like-chrome-campaign-reset/Chrome_Enterprise_-_Beyond_Browsing_-_CBCM_Mobile.mp4",
+      "vimeo_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/chrome-enterprise-no-place-like-chrome-campaign-reset/Chrome_Enterprise_-_Beyond_Browsing_-_CBCM_Mobile.mp4"
+    },
+    {
+      "id": "451c9469-a7fc-4204-9476-b5b1b11324e9",
+      "slug": "renew-home-elevating-a-new-brand-to-own-the-market-conversation",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "e4bb08fe-a0f0-4816-9ffd-9995a6fb9e09",
+      "slug": "aws-keynotes-that-reshape-perspectives",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "0e752194-215f-4cba-9498-3dbcc167ddc0",
+      "slug": "google-workspace-planning-and-delivering-demand-generation",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "d174d856-2a7a-4679-a57c-303b1aca78f9",
+      "slug": "salt-security-defending-market-territory",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "5cda1f8c-80e1-4e00-a199-6245497ec95d",
+      "slug": "aws-transforming-digital-audits",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "5565441c-ff42-49e1-a077-85df39f4d869",
+      "slug": "adp-creating-keynotes-that-connect",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "68a76a31-f8a9-445c-93dc-b7a6928dc42d",
+      "slug": "aig-when-stakes-are-high-reintroducing-aig-to-the-market",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "c76440f2-8c07-410b-88a5-d17015d978b4",
+      "slug": "android-enterprise-hyper-targeted-consideration-campaign",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "b77644fa-f821-47f0-94a5-3d4bf0c7a28e",
+      "slug": "android-crafting-a-brand-new-virtual-event",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "b648121f-e50a-4f76-9b70-4a65c4a6b667",
+      "slug": "android-gen-z-workplace-research-and-creative-strategy",
+      "hero_video_url": null,
+      "vimeo_url": "https://vimeo.com/1030871091"
+    },
+    {
+      "id": "a23ac8d4-0d67-48e1-bf83-c955589df31c",
+      "slug": "google-for-education-a-world-of-perspectives-on-the-future-of-learning",
+      "hero_video_url": null,
+      "vimeo_url": "https://vimeo.com/877614456"
+    },
+    {
+      "id": "24eac3d1-026e-4d9e-9468-11b9dc31efde",
+      "slug": "chrome-enterprise-timely-compelling-thought-leadership",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "f41c9afc-4596-4174-9501-f0da600218a6",
+      "slug": "chromeos-cameyo-maintaining-momentum-through-launch",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "128910a2-5dcc-4001-a382-c87cc11b9962",
+      "slug": "chrome-enterprise-turning-a-security-upgrade-into-a-compelling-video",
+      "hero_video_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/chrome-enterprise-chrome-enterprise-premium-security-video/Chrome_Enterprise_-_Chrome_Enterprise_Premium_Explainer_Video.mp4",
+      "vimeo_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/chrome-enterprise-chrome-enterprise-premium-security-video/Chrome_Enterprise_-_Chrome_Enterprise_Premium_Explainer_Video.mp4"
+    },
+    {
+      "id": "ca366c06-686d-4b85-9873-d8c11746071b",
+      "slug": "google-cloud-illuminating-a-new-brand-identity",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "dceab0d8-5cc8-4612-b516-b4f4db043dc8",
+      "slug": "j-p-morgan-naming-the-future-of-retail-payments-hardware",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "6a2176bc-2b47-4146-b29b-9e2e0939251c",
+      "slug": "mylink-google-insight-driven-brand-development",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "2daf09d9-451e-4249-8ce3-2bb9dd436f1a",
+      "slug": "amazon-building-a-flagship-thought-leadership-brand",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "a66d4ef5-0995-4d55-a0c8-4789ca5b58fb",
+      "slug": "salesforce-supporting-the-largest-partner-ecosystem-in-the-tech-industry",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "5d06e417-6af1-4c9f-9c2e-ff4fe0d4499f",
+      "slug": "box-establishing-thought-leadership-by-publishing-share-worthy-content",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "7bb34561-4385-424b-9532-6718b975a226",
+      "slug": "simons-foundation-launching-a-first-ever-education-division-to-unlock-scientific",
+      "hero_video_url": null,
+      "vimeo_url": "https://vimeo.com/190925687"
+    },
+    {
+      "id": "00448183-b796-436c-84ed-fac37003cb72",
+      "slug": "omnicell-making-marketing-and-sales-talk",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "9887737b-45d3-486f-9962-6618d5793f88",
+      "slug": "upshow-chromeos-purposeful-partner-marketing",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "505bd856-e04b-4012-a8e9-04a69b599e7a",
+      "slug": "aws-nvidia-co-branded-video-for-a-visionary-collaboration",
+      "hero_video_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/aws-global-brand-advertising-campaign/AWS_and_NVIDIA_-_Project_Ceiba.mp4",
+      "vimeo_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/aws-global-brand-advertising-campaign/AWS_and_NVIDIA_-_Project_Ceiba.mp4"
+    },
+    {
+      "id": "621a3cf5-8ae3-4d67-9c90-2c71c491ccae",
+      "slug": "google-crafting-a-cross-product-narrative",
+      "hero_video_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/google-cross-product-narrative-unification/Google_Recruiting_-_Technical_Judgment.mp4",
+      "vimeo_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/google-cross-product-narrative-unification/Google_Recruiting_-_Technical_Judgment.mp4"
+    },
+    {
+      "id": "082b7b08-5fd2-4eab-9a1f-9f99a20980cd",
+      "slug": "task-mate-google-elevated-long-form-content",
+      "hero_video_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/task-mate-inclusive-data-ebook-for-google-i-o/Google_-_Task_Mate_-_Field_Tasks.mp4",
+      "vimeo_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/task-mate-inclusive-data-ebook-for-google-i-o/Google_-_Task_Mate_-_Field_Tasks.mp4"
+    },
+    {
+      "id": "719140a6-1d6d-4b9e-aa7f-6326c1292279",
+      "slug": "chorus-alphabet-x-creating-an-eye-opening-asset-visibility-brand",
+      "hero_video_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/chorus-alphabet-x-brand-narrative-for-asset-visibility-platform/Chorus_-_Anthem_Video.mp4",
+      "vimeo_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/chorus-alphabet-x-brand-narrative-for-asset-visibility-platform/Chorus_-_Anthem_Video.mp4"
+    },
+    {
+      "id": "d5f4edee-899a-4bba-baed-7883ac4baf02",
+      "slug": "google-messages-human-centered-product-ads",
+      "hero_video_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/google-messages-product-awareness-campaign/Google_Messages_-_We_re_All_Connected.mp4",
+      "vimeo_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/google-messages-product-awareness-campaign/Google_Messages_-_We_re_All_Connected.mp4"
+    },
+    {
+      "id": "f1d9e204-8ae7-4397-b47b-47fcbed0cde6",
+      "slug": "nar-houselogic",
+      "hero_video_url": null,
+      "vimeo_url": null
+    },
+    {
+      "id": "93ea9ac4-1363-4d78-80b3-31e1637b9515",
+      "slug": "android-telling-a-more-human-story",
+      "hero_video_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/android-mobile-security-messaging/Android_-_Theft_Detection_Demo.mp4",
+      "vimeo_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/android-mobile-security-messaging/Android_-_Theft_Detection_Demo.mp4"
+    },
+    {
+      "id": "815f42b5-e4f1-48fa-8589-ff7db87941d1",
+      "slug": "aws-bringing-powerful-gen-ai-models-to-life",
+      "hero_video_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/aws-amazon-nova-ai-models-video-campaign/Amazon_Nova_-_Amazon_Nova_2_Explainer_Video.mp4",
+      "vimeo_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/aws-amazon-nova-ai-models-video-campaign/Amazon_Nova_-_Amazon_Nova_2_Explainer_Video.mp4"
+    },
+    {
+      "id": "bb7d62f9-6a77-4308-8345-d76d33543929",
+      "slug": "meta-informed-messaging-and-a-unified-story",
+      "hero_video_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/meta-b2b-messaging-platform-story/Meta_-_Business_Messenger_Explainer_Video.mp4",
+      "vimeo_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/meta-b2b-messaging-platform-story/Meta_-_Business_Messenger_Explainer_Video.mp4"
+    }
+  ],
+  "support_videos": [
+    {
+      "id": "cdda7356-5090-4f9d-a4f0-e76718e590fc",
+      "document_id": "93ea9ac4-1363-4d78-80b3-31e1637b9515",
+      "video_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/android-mobile-security-messaging/Android_Talks_Productivity_-_Intro.mp4",
+      "storage_path": null,
+      "title": "Android Talks Productivity — Intro",
+      "description": null,
+      "duration_seconds": null,
+      "display_order": 0,
+      "created_at": "2026-04-29T12:06:17.753599+00:00"
+    },
+    {
+      "id": "6e383c17-8386-4c7e-8b53-dcdcccc5e030",
+      "document_id": "815f42b5-e4f1-48fa-8589-ff7db87941d1",
+      "video_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/aws-amazon-nova-ai-models-video-campaign/Amazon_Nova_-_Amazon_Nova_Reel_1.1_Demo.mp4",
+      "storage_path": null,
+      "title": "Amazon Nova Reel 1.1 Demo",
+      "description": null,
+      "duration_seconds": null,
+      "display_order": 0,
+      "created_at": "2026-04-29T12:06:24.627627+00:00"
+    },
+    {
+      "id": "059d302b-e434-4a31-a3a6-4174b2caeb4b",
+      "document_id": "815f42b5-e4f1-48fa-8589-ff7db87941d1",
+      "video_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/aws-amazon-nova-ai-models-video-campaign/Amazon_Nova_-_Creative_Content_Models.mp4",
+      "storage_path": null,
+      "title": "Amazon Nova — Creative Content Models",
+      "description": null,
+      "duration_seconds": null,
+      "display_order": 1,
+      "created_at": "2026-04-29T12:06:25.796327+00:00"
+    },
+    {
+      "id": "a3236b8f-069b-4ad2-a7bd-044085602437",
+      "document_id": "815f42b5-e4f1-48fa-8589-ff7db87941d1",
+      "video_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/aws-amazon-nova-ai-models-video-campaign/Amazon_-_Thorn.mp4",
+      "storage_path": null,
+      "title": "Amazon — Thorn",
+      "description": null,
+      "duration_seconds": null,
+      "display_order": 2,
+      "created_at": "2026-04-29T12:06:29.100647+00:00"
+    },
+    {
+      "id": "7336517d-24c5-4f94-9fec-d7b49683c19e",
+      "document_id": "42b28c51-a9a2-4c20-9d7e-4bbed7f683d8",
+      "video_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/aws-amazon-sagemaker-product-demo/AWS_reInvent_-_Amazon_Connect_Demo.mp4",
+      "storage_path": null,
+      "title": "AWS re:Invent — Amazon Connect Demo",
+      "description": null,
+      "duration_seconds": null,
+      "display_order": 0,
+      "created_at": "2026-04-29T12:06:38.819037+00:00"
+    },
+    {
+      "id": "ce9d8a92-4997-433b-bd43-62314d9bf05d",
+      "document_id": "bb7d62f9-6a77-4308-8345-d76d33543929",
+      "video_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/meta-b2b-messaging-platform-story/Facebook_-_Chat_Plugin_-_ROYBI.mp4",
+      "storage_path": null,
+      "title": "Facebook Chat Plugin — ROYBI",
+      "description": null,
+      "duration_seconds": null,
+      "display_order": 0,
+      "created_at": "2026-04-29T12:07:23.519411+00:00"
+    }
+  ]
+}

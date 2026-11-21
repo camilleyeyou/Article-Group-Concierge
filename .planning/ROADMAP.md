@@ -56,7 +56,15 @@ Plans:
   4. Mismatched videos = 0: all 12 case-study videos are audited, the Google cross-product mismatch is fixed or removed, and the audit result is recorded.
   5. Eval rerun after the phase; report lists every metric's delta vs baseline run 2026-11-20T15-12-31.
 **Constraints / gates**: Ask the user before taxonomy data changes, before ingesting each piece of missing work, and before any destructive DB change or full re-index. Embedding articles is additive only (no deletes). Production shares the Supabase project, so keep changes non-breaking. Restore the paused Supabase project before eval runs.
-**Plans**: TBD
+**Plans**: 6 plans
+
+Plans:
+- [x] 02-01-PLAN.md — Embed articles idempotently; simulate live-retrieval impact; user decides before insert; company-info + LinkedIn held for Phase 3 (DATA-01)
+- [x] 02-02-PLAN.md — Scrape articlegroup.com/work, diff against the index, one approval table, ingest approved work in full text (DATA-02)
+- [x] 02-03-PLAN.md — Evidence-backed taxonomy proposal (new service-line + tech sub-sector slugs), one approval table, backup + apply (DATA-03)
+- [x] 02-04-PLAN.md — detectQueryIntent maps moved to src/lib/intent-keywords.ts, remapped to DB slugs, DB check script + tests (DATA-04)
+- [x] 02-05-PLAN.md — Video audit (keyframes + local transcripts), verdict table, user approval, relink/unlink with backup (DATA-05)
+- [x] 02-06-PLAN.md — Phase-end eval (1 run, ~$3.50), delta report vs both baselines, squash, push after approval
 
 ### Phase 3: Retrieval
 **Goal**: The concierge finds the case studies a prospect would expect to see, at 90% recall or better.
@@ -113,7 +121,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Eval improvements | 7/7 | Complete (push pending) | 2026-11-21 |
-| 2. Content and data | 0/TBD | Not started | - |
+| 2. Content and data | 0/6 | Planned | - |
 | 3. Retrieval | 0/TBD | Not started | - |
 | 4. Generation | 0/TBD | Not started | - |
 | 5. Speed | 0/TBD | Not started | - |

@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Phase 1 complete (pending push)
-stopped_at: Completed 01-07-PLAN.md
-last_updated: "2026-11-21T05:48:25.783Z"
+status: Ready to plan
+stopped_at: Completed 02-04-PLAN.md
+last_updated: "2026-11-21T21:48:40.883Z"
 progress:
   total_phases: 6
-  completed_phases: 1
-  total_plans: 7
-  completed_plans: 7
+  completed_phases: 2
+  total_plans: 13
+  completed_plans: 13
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-11-20)
 
 **Core value:** Never misrepresent AG's work. A wrong claim about a client engagement is worse than a weak answer.
-**Current focus:** Phase 01 — eval-improvements
+**Current focus:** Phase 02 — content-and-data
 
 ## Current Position
 
-Phase: 01 (eval-improvements) — COMPLETE (pending push)
-Plan: 7 of 7
+Phase: 3
+Plan: Not started
 
 ## Baseline Metrics (frozen)
 
@@ -68,6 +68,7 @@ Same responses as the frozen run, graded under harness v2. Like-for-like referen
 | Phase 01 P04 | 15min | 2 tasks | 3 files |
 | Phase 01 P05 | 20min | 3 tasks | 8 files |
 | Phase 01 P06 | 25min | 3 tasks | 7 files |
+| Phase 02 P04 | 10min | 2 tasks | 4 files |
 
 ### Decisions
 
@@ -87,6 +88,7 @@ Same responses as the frozen run, graded under harness v2. Like-for-like referen
 - [Phase 01]: Second grader = openai/gpt-5.6-sol (97% within 1 of Opus on 15 responses)
 - [Phase 01]: Default N = 1; phase ends use N = 2-3
 - [Phase 01]: Median latency uses the standard median (20.1 s for the frozen run, previously quoted as 20.2 s)
+- [Phase 02]: Intent keyword maps use only DB slugs; technology expands to sub-sector slugs
 
 ### Key Constraints
 
@@ -110,6 +112,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-11-21T05:48:25.776Z
-Stopped at: Completed 01-07-PLAN.md (push pending approval)
+Last session: 2026-11-21T13:10:25.101Z
+Stopped at: Completed 02-04-PLAN.md
 Resume file: None

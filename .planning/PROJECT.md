@@ -26,11 +26,11 @@ by indexed content.
 - ✓ Upstream errors classified and surfaced as retryable messages — existing
 - ✓ Eval harness (`npm run eval`: generate → run → grade → report) with Opus 5.5 judge — Phase 0 (`a5b2722`)
 - ✓ All model calls (Sonnet 5.5 generation, text-embedding-3-small) routed through OpenRouter in local, eval and production — Phase 0
+- ✓ All AG work on articlegroup.com indexed (50 case studies, 7 new), 44 articles embedded (6 company-info/LinkedIn docs held for Phase 3), evidence-backed taxonomy, videos audited (0 mismatched); exact vector search via `hybrid_search_exact` (migration 004) — Phase 2
 
 ### Active
 
 - [ ] Eval measures what matters reliably: normalised numbers, unsupported claims by kind, no persona leakage to the grader, config-driven Strategy Lead rule, N runs with mean and spread, optional second grader with an agreement score
-- [ ] Every piece of AG work on articlegroup.com is in the index, articles are embedded and retrievable, the taxonomy is accurate, and every video matches its case study
 - [ ] Retrieval finds the expected case studies (≥ 90% recall) via `hybrid_search_v2`
 - [ ] Generation is honest: no goals stated as results, no invented capabilities or tags, invention-bait handled, "we" voice, Strategy Lead offered where configured
 - [ ] Fast first content: teasers on screen in about 1.5 s, streamed hero in about 3–4 s

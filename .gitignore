@@ -35,3 +35,6 @@ content/
 
 # Eval run outputs (contain signed storage URLs)
 eval/results/
+
+# Embedding caches, downloaded media (never committed)
+data/.cache/
