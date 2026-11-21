@@ -160,5 +160,10 @@ Other keys on the same account spent ~$26 earlier.
 ## Next step
 
 Phase 0 done (2026-11-20): harness + OpenRouter routing committed as the baseline.
-Not yet pushed, so Vercel hasn't redeployed with `OPENROUTER_API_KEY`; confirm after the push.
-`EMAIL-TO-CLIENT.md` has an unrelated uncommitted edit, left alone. Next: Phase 1 (eval changes).
+Pushed as `a5b2722`; production deploy verified on article-group-concierge.vercel.app
+(a query raised OpenRouter key usage, and `debug: true` is ignored in production).
+`EMAIL-TO-CLIENT.md` has an unrelated uncommitted edit, left alone.
+
+**From Phase 1 on, the plan runs through GSD.** Live state is in `.planning/` (PROJECT.md,
+REQUIREMENTS.md, ROADMAP.md, STATE.md). This file stays as the record of verified findings.
+Next: `/gsd:plan-phase 1`.

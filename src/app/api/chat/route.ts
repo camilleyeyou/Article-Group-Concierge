@@ -11,7 +11,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { retrieveContext } from '@/lib/supabase';
-import { orchestrate } from '@/lib/orchestrator';
+import { orchestrate, GENERATION_MODEL } from '@/lib/orchestrator';
+import { embeddingConfig, providerRoute } from '@/lib/llm-config';
 import type { OrchestratorOutput } from '@/types';
 import { APILogger } from '@/lib/logger';
 import { rateLimiter, RATE_LIMITS } from '@/lib/rate-limit';
@@ -126,6 +127,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       debug: {
         rawResponse: rawResponse ?? null,
         orchestratorError: orchestratorError ?? null,
+        models: { route: providerRoute(), generation: GENERATION_MODEL, embedding: embeddingConfig().model },
         retrieval: {
           chunks: context.chunks,
           visualAssets: context.visualAssets,

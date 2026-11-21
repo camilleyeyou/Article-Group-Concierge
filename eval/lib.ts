@@ -17,6 +17,8 @@ import type {
   VisualAssetSearchResult,
 } from '../src/types';
 import { anthropicClientOptions, claudeModelId, usingOpenRouter } from '../src/lib/llm-config';
+import { CONCIERGE_CONFIG, isNoContext } from '../src/lib/concierge-config';
+import { metricValueInContext } from './numbers';
 
 dotenv.config({ path: path.join(__dirname, '..', '.env') });
 dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
@@ -108,6 +110,19 @@ export interface RetrievalSnapshot {
   relatedMetrics: DocumentMetric[];
 }
 
+export const FROZEN_BASELINE_ID = '2026-11-20T15-12-31';
+export const CLAIM_KINDS = ['goal_as_result', 'capability_not_shown', 'generated_tags', 'other'] as const;
+export type ClaimKind = (typeof CLAIM_KINDS)[number];
+export interface UnsupportedClaim {
+  claim: string;
+  kind: ClaimKind;
+}
+export interface RunModels {
+  route: string;
+  generation: string;
+  embedding: string;
+}
+
 export interface RunRecord {
   id: string;
   persona_id: string;
@@ -131,6 +146,9 @@ export interface RunFile {
   git_commit: string | null;
   query_count: number;
   records: RunRecord[];
+  models?: RunModels | null;
+  regrade_of?: string;
+  regraded_at?: string;
 }
 
 export interface CriterionScore {
@@ -150,6 +168,8 @@ export interface AutomatedChecks {
   non_verbatim_titles: string[];
   metrics_not_in_context: string[];
   videos_available_not_used: string[];
+  strategy_lead_expected?: boolean;
+  strategy_lead_offered?: boolean;
 }
 
 export interface GradeRecord {
@@ -160,6 +180,8 @@ export interface GradeRecord {
   grader_error: string | null;
   scores: Record<Criterion, CriterionScore> | null;
   invented_claims: string[];
+  claims?: UnsupportedClaim[];
+  harness_version?: number;
   context_relevant: boolean | null;
   would_strict_pass_fallback: boolean | null;
   hallucination: boolean;
@@ -168,6 +190,8 @@ export interface GradeRecord {
 
 export interface GradesFile {
   grader_model: string;
+  grader_route?: string;
+  harness_version?: number;
   grades: GradeRecord[];
 }
 
@@ -212,6 +236,13 @@ export function resolveResultsDir(): string {
     throw new Error('No eval runs found in eval/results. Run `npm run eval:run` first.');
   }
   return path.join(RESULTS_DIR, runs[runs.length - 1]);
+}
+
+/** The frozen baseline must never be overwritten; re-grade a copy with `npm run eval:regrade`. */
+export function assertWritableRunDir(dir: string): void {
+  if (path.basename(path.resolve(dir)) === FROZEN_BASELINE_ID) {
+    throw new Error(`${dir} is the frozen baseline and is read-only. Use \`npm run eval:regrade\` to grade a copy.`);
+  }
 }
 
 export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -340,6 +371,13 @@ export function runAutomatedChecks(record: RunRecord): AutomatedChecks {
     non_verbatim_titles: [],
     metrics_not_in_context: [],
     videos_available_not_used: [],
+    // Only the no_context trigger is deterministic; other triggers are left to the grader
+    strategy_lead_expected:
+      CONCIERGE_CONFIG.strategyLead.offerOn.includes('no_context') &&
+      isNoContext(record.retrieval ?? { chunks: [], visualAssets: [], relatedMetrics: [] }),
+    strategy_lead_offered: new RegExp(CONCIERGE_CONFIG.strategyLead.name, 'i').test(
+      record.raw_response ?? record.response?.explanation ?? '',
+    ),
   };
   if (!layout) return checks;
 
@@ -389,7 +427,7 @@ export function runAutomatedChecks(record: RunRecord): AutomatedChecks {
     if (component === 'MetricGrid' && Array.isArray(props.stats)) {
       for (const stat of props.stats as Array<{ value?: unknown }>) {
         const value = String(stat?.value ?? '');
-        if (value && !contextText.includes(normalize(value))) {
+        if (value && !metricValueInContext(value, contextText)) {
           checks.metrics_not_in_context.push(value);
         }
       }

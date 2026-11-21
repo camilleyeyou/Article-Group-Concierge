@@ -28,8 +28,10 @@ import {
   type QueriesFile,
   type RetrievalSnapshot,
   type RunFile,
+  type RunModels,
   type RunRecord,
 } from './lib';
+import { runPreflight, PreflightError } from './preflight';
 import type { OrchestratorOutput } from '../src/types';
 
 const BASE_URL = (process.env.EVAL_BASE_URL || 'http://localhost:3000').replace(/\/$/, '');
@@ -44,6 +46,7 @@ type DebugResponse = OrchestratorOutput & {
     rawResponse: string | null;
     orchestratorError: string | null;
     retrieval: RetrievalSnapshot;
+    models?: RunModels;
   };
 };
 
@@ -84,7 +87,8 @@ async function postQuery(query: string): Promise<{ status: number; body: DebugRe
   }
 }
 
-async function runQuery(q: EvalQuery): Promise<RunRecord> {
+async function runQuery(q: EvalQuery): Promise<{ record: RunRecord; models: RunModels | null }> {
+  let models: RunModels | null = null;
   const record: RunRecord = {
     id: q.id,
     persona_id: q.persona_id,
@@ -115,7 +119,7 @@ async function runQuery(q: EvalQuery): Promise<RunRecord> {
     const body = result.body;
     if (!body) {
       record.error = `Non-JSON response (HTTP ${result.status}): ${result.text.slice(0, 200)}`;
-      return record;
+      return { record, models };
     }
 
     const { debug, ...publicResponse } = body;
@@ -123,18 +127,19 @@ async function runQuery(q: EvalQuery): Promise<RunRecord> {
 
     if (result.status !== 200) {
       record.error = `HTTP ${result.status}: ${body.errorCode ?? body.error ?? 'unknown error'}`;
-      return record;
+      return { record, models };
     }
     if (!debug) throw new DebugDisabledError();
 
     record.raw_response = debug.rawResponse;
     record.orchestrator_error = debug.orchestratorError;
     record.retrieval = debug.retrieval;
+    models = debug.models ?? null;
 
     // The orchestrator swallows model errors and returns a polite fallback with HTTP 200
     if (debug.orchestratorError) {
       record.error = `Orchestrator error: ${debug.orchestratorError}`;
-      return record;
+      return { record, models };
     }
     record.status = 'ok';
   } catch (error) {
@@ -142,24 +147,22 @@ async function runQuery(q: EvalQuery): Promise<RunRecord> {
     record.latency_ms = Date.now() - started;
     record.error = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
   }
-  return record;
+  return { record, models };
 }
 
-async function main() {
+export async function runEval(opts: { persona?: string; limit?: number } = {}): Promise<string> {
   const { queries } = readJson<QueriesFile>(QUERIES_PATH);
-  const persona = argValue('--persona');
-  const limit = argValue('--limit');
 
-  let selected = persona ? queries.filter(q => q.persona_id === persona) : queries;
-  if (limit) selected = selected.slice(0, Number(limit));
+  let selected = opts.persona ? queries.filter(q => q.persona_id === opts.persona) : queries;
+  if (opts.limit) selected = selected.slice(0, opts.limit);
   if (selected.length === 0) throw new Error('No queries selected');
 
-  // Fail fast if the dev server isn't up
-  try {
-    await fetch(`${BASE_URL}/api/chat`);
-  } catch {
-    throw new Error(`Cannot reach ${BASE_URL}. Start the dev server with \`npm run dev\` (and EVAL_DEBUG=true).`);
-  }
+  await runPreflight({
+    supabase: true,
+    openrouter: true,
+    devServer: BASE_URL,
+    minCreditUsd: Number(process.env.EVAL_MIN_CREDIT_USD || 4),
+  });
 
   const outDir = path.join(RESULTS_DIR, timestamp());
   const outFile = path.join(outDir, 'responses.json');
@@ -169,15 +172,27 @@ async function main() {
     base_url: BASE_URL,
     git_commit: gitCommit(),
     query_count: selected.length,
+    models: null,
     records: [],
   };
 
   console.log(`Running ${selected.length} queries against ${BASE_URL} -> ${path.relative(process.cwd(), outDir)}`);
 
+  let modelsCaptured = false;
   for (const [i, q] of selected.entries()) {
     process.stdout.write(`[${i + 1}/${selected.length}] ${q.id} (${q.type}) `);
-    const record = await runQuery(q);
+    const { record, models } = await runQuery(q);
     run.records.push(record);
+
+    if (record.status === 'ok' && !modelsCaptured) {
+      modelsCaptured = true;
+      run.models = models;
+      if (models) {
+        console.log(`\nRoute: ${models.route}, generation: ${models.generation}, embedding: ${models.embedding}`);
+      } else {
+        console.warn('\nWarning: server did not report models (old server build?)');
+      }
+    }
     writeJson(outFile, run);
 
     const chunks = record.retrieval?.chunks.length ?? 0;
@@ -195,9 +210,13 @@ async function main() {
 
   const failed = run.records.filter(r => r.status === 'error').length;
   console.log(`Done: ${run.records.length - failed} ok, ${failed} errors. Results: ${outFile}`);
+  return outDir;
 }
 
-main().catch(error => {
-  console.error(error instanceof Error ? error.message : error);
-  process.exit(1);
-});
+if (require.main === module) {
+  const limit = argValue('--limit');
+  runEval({ persona: argValue('--persona'), limit: limit ? Number(limit) : undefined }).catch(error => {
+    console.error(error instanceof Error ? error.message : error);
+    process.exit(error instanceof PreflightError ? 2 : 1);
+  });
+}

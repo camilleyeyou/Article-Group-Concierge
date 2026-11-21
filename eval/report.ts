@@ -14,13 +14,19 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {
+  CLAIM_KINDS,
   CRITERIA,
+  FROZEN_BASELINE_ID,
+  RESULTS_DIR,
+  argValue,
+  assertWritableRunDir,
   PERSONAS_PATH,
   QUERIES_PATH,
   QUERY_TYPES,
   readJson,
   resolveResultsDir,
   type AutomatedChecks,
+  type ClaimKind,
   type GradeRecord,
   type GradesFile,
   type Persona,
@@ -28,10 +34,16 @@ import {
   type RunFile,
   type RunRecord,
 } from './lib';
+import type { AgreementResult } from './agreement';
+import { METRIC_DEFS, computeRunMetrics, findRegradeDir, formatDelta, formatValue, type RunMetrics } from './metrics';
 
 interface Row {
   record: RunRecord;
   grade: GradeRecord | undefined;
+}
+
+function claimText(g: GradeRecord): string {
+  return g.claims?.length ? g.claims.map(c => `${c.kind}: ${c.claim}`).join('; ') : g.invented_claims.join('; ');
 }
 
 const esc = (s: string) => s.replace(/\|/g, '\\|').replace(/\s*\n\s*/g, ' ');
@@ -64,8 +76,56 @@ function scoreRow(label: string, rows: Row[]): string[] {
 
 const SCORE_HEADERS = ['Group', 'Graded', ...CRITERIA, 'Hallucinations'];
 
-function main() {
-  const dir = resolveResultsDir();
+const KIND_LABELS: Record<ClaimKind, string> = {
+  goal_as_result: 'Goal stated as result',
+  capability_not_shown: 'Capability not shown',
+  generated_tags: 'Generated tags',
+  other: 'Other',
+};
+
+function comparisonSection(dir: string, m: RunMetrics): string[] {
+  const baselineDir = process.env.EVAL_BASELINE_DIR
+    ? path.resolve(process.env.EVAL_BASELINE_DIR)
+    : path.join(RESULTS_DIR, FROZEN_BASELINE_ID);
+  const out: string[] = [`## Comparison with baseline`];
+  if (!fs.existsSync(path.join(baselineDir, 'responses.json'))) {
+    out.push(`Baseline run not found at ${baselineDir}; no comparison.`);
+    return out;
+  }
+  const regradeArg = argValue('--baseline-regrade');
+  const regradeDir = regradeArg ? path.resolve(regradeArg) : findRegradeDir(FROZEN_BASELINE_ID);
+  const base = computeRunMetrics(baselineDir);
+  const regrade = regradeDir && fs.existsSync(path.join(regradeDir, 'responses.json')) ? computeRunMetrics(regradeDir) : null;
+
+  const rows = METRIC_DEFS.map(def => {
+    const cur = def.get(m);
+    const b = def.get(base);
+    const r = regrade ? def.get(regrade) : null;
+    return [
+      def.label,
+      formatValue(def, b),
+      regrade ? formatValue(def, r) : '–',
+      formatValue(def, cur),
+      formatDelta(def, cur, b, base, m),
+      regrade ? formatDelta(def, cur, r, regrade, m) : '–',
+    ];
+  });
+  out.push(
+    table(
+      ['Metric', `Frozen baseline (v${base.harness_version} grades)`, 'Baseline re-graded', 'This run', 'Δ vs frozen', 'Δ vs re-graded'],
+      rows,
+    ),
+  );
+  out.push(
+    `Δ vs re-graded compares the same harness (like-for-like). Δ vs frozen mixes harness changes with app changes. metrics_not_in_context, strategy-Lead and recall/latency rows are recomputed from responses with the current code, so they are comparable across both.`,
+  );
+  void dir;
+  return out;
+}
+
+export function writeReport(dir: string): void {
+  assertWritableRunDir(dir);
+  const m = computeRunMetrics(dir);
   const run = readJson<RunFile>(path.join(dir, 'responses.json'));
   const gradesPath = path.join(dir, 'grades.json');
   if (!fs.existsSync(gradesPath)) {
@@ -81,6 +141,10 @@ function main() {
   const rows: Row[] = run.records.map(record => ({ record, grade: gradeById.get(record.id) }));
   const graded = rows.filter(r => r.grade?.scores);
 
+  const agreementPath = path.join(dir, 'agreement.json');
+  const agreement = fs.existsSync(agreementPath) ? readJson<AgreementResult>(agreementPath) : null;
+  const pct0 = (x: number) => `${(x * 100).toFixed(0)}%`;
+
   const out: string[] = [];
   out.push(`# Concierge eval report`);
   out.push(
@@ -88,6 +152,13 @@ function main() {
       `- **Run:** \`${path.basename(dir)}\` against ${run.base_url} (commit \`${run.git_commit ?? 'unknown'}\`)`,
       `- **Started:** ${run.started_at}${run.finished_at ? `, finished ${run.finished_at}` : ' (did not finish)'}`,
       `- **Queries:** ${run.records.length} run, ${run.records.filter(r => r.status === 'ok').length} succeeded, ${graded.length} graded by \`${grades.grader_model}\``,
+      `- **Route:** ${m.models.route ?? 'not recorded'}`,
+      `- **Generation model:** \`${m.models.generation ?? 'not recorded'}\` · **Embedding model:** \`${m.models.embedding ?? 'not recorded'}\``,
+      `- **Judge:** \`${m.models.judge}\` via ${m.models.judge_route ?? 'not recorded'} (harness v${m.harness_version})`,
+      ...(agreement
+        ? [`- **Second grader:** \`${agreement.second_model}\` via openrouter on ${agreement.n} responses`]
+        : []),
+      ...(m.regrade_of ? [`- **Re-grade of:** \`${m.regrade_of}\` (same responses, current harness)`] : []),
       `- **Hallucination rule:** grounded score ≤ 2`,
     ].join('\n'),
   );
@@ -99,6 +170,8 @@ function main() {
   out.push(
     `Hallucination rate: **${hallucinations.length}/${graded.length}** (${graded.length ? ((100 * hallucinations.length) / graded.length).toFixed(0) : 0}%).`,
   );
+
+  out.push(...comparisonSection(dir, m));
 
   // By persona / type
   out.push(`## By persona`);
@@ -126,10 +199,73 @@ function main() {
         r.record.type,
         truncate(r.record.query, 100),
         `${r.grade!.scores!.grounded.score}: ${r.grade!.scores!.grounded.reason}`,
-        r.grade!.invented_claims.join('; ') || '(none listed)',
+        claimText(r.grade!) || '(none listed)',
       ]),
     ),
   );
+
+  // Unsupported claims by kind
+  out.push(`## Unsupported claims by kind`);
+  if (!m.claims_by_kind || !m.responses_by_kind) {
+    out.push(
+      `Claims were not classified by kind (graded with harness v1). Totals: ${m.unsupported_claims_total} claims in ${m.responses_with_unsupported_claims} responses.`,
+    );
+  } else {
+    out.push(
+      table(
+        ['Kind', 'Claims', 'Responses'],
+        [
+          ...CLAIM_KINDS.map(k => [KIND_LABELS[k], String(m.claims_by_kind![k]), String(m.responses_by_kind![k])]),
+          ['All', String(m.unsupported_claims_total), String(m.responses_with_unsupported_claims)],
+        ],
+      ),
+    );
+    const countKind = (g: GradeRecord, k: ClaimKind) => (g.claims ?? []).filter(c => c.kind === k).length;
+    out.push(
+      table(
+        ['ID', 'Query', 'Goal→result', 'Capability', 'Tags', 'Other', 'Claims'],
+        graded
+          .filter(r => (r.grade!.claims ?? []).length > 0)
+          .map(r => [
+            r.record.id,
+            truncate(r.record.query, 90),
+            String(countKind(r.grade!, 'goal_as_result')),
+            String(countKind(r.grade!, 'capability_not_shown')),
+            String(countKind(r.grade!, 'generated_tags')),
+            String(countKind(r.grade!, 'other')),
+            claimText(r.grade!),
+          ]),
+      ),
+    );
+  }
+
+  // Agreement with the second grader
+  if (agreement) {
+    out.push(`## Second grader agreement`);
+    out.push(
+      `Agreement score: **${pct0(agreement.agreementScore)}** of criterion scores within ±1 of Opus (exact match ${pct0(agreement.overall.exact)}, mean absolute difference ${agreement.overall.mad.toFixed(2)}).`,
+    );
+    out.push(
+      table(
+        ['Criterion', 'Exact', 'Within ±1', 'MAD', 'Weighted kappa'],
+        CRITERIA.map(c => {
+          const a = agreement.perCriterion[c];
+          return [c, pct0(a.exact), pct0(a.within1), a.mad.toFixed(2), a.qwk === null ? '–' : a.qwk.toFixed(2)];
+        }),
+      ),
+    );
+    out.push(
+      `Hallucination flag agreement: ${pct0(agreement.hallucinationAgreement)}. "Any unsupported claim" agreement: ${pct0(agreement.unsupportedClaimFlagAgreement)}.`,
+    );
+    out.push(
+      agreement.disagreements.length
+        ? table(
+            ['ID', 'Criterion', 'Opus', 'Second'],
+            agreement.disagreements.map(d => [d.id, d.criterion, String(d.primary), String(d.second)]),
+          )
+        : '_None._',
+    );
+  }
 
   // Fallback behaviour
   out.push(`## Fallback behaviour`);
@@ -276,7 +412,7 @@ function main() {
     'id', 'persona', 'type', 'query', 'status', 'latency_ms',
     ...CRITERIA.flatMap(c => [c, `${c}_reason`]),
     'average', 'hallucination', 'context_relevant', 'would_strict_pass_fallback',
-    'invented_claims', 'retrieved_case_studies', 'expected_case_studies', 'error',
+    'invented_claims', 'claim_kinds', 'strategy_lead_expected_offered', 'retrieved_case_studies', 'expected_case_studies', 'error',
   ];
   const csvRows = rows.map(({ record, grade }) => {
     const scores = grade?.scores;
@@ -287,6 +423,10 @@ function main() {
       nums.length ? (nums.reduce((a, b) => a + b, 0) / nums.length).toFixed(2) : '',
       grade?.hallucination ?? '', grade?.context_relevant ?? '', grade?.would_strict_pass_fallback ?? '',
       (grade?.invented_claims ?? []).join('; '),
+      (grade?.claims ?? []).map(c => c.kind).join('; '),
+      grade?.automated_checks && grade.automated_checks.strategy_lead_expected !== undefined
+        ? `${grade.automated_checks.strategy_lead_expected}/${grade.automated_checks.strategy_lead_offered}`
+        : '',
       [...new Set((record.retrieval?.chunks ?? []).map(c => c.slug))].join('; '),
       (record.expected.case_studies ?? []).join('; '),
       record.error ?? grade?.grader_error ?? grade?.skipped ?? '',
@@ -297,9 +437,11 @@ function main() {
   console.log(`Wrote ${csvPath}`);
 }
 
-try {
-  main();
-} catch (error) {
-  console.error(error instanceof Error ? error.message : error);
-  process.exit(1);
+if (require.main === module) {
+  try {
+    writeReport(resolveResultsDir());
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : error);
+    process.exit(1);
+  }
 }

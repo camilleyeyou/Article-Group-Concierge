@@ -23,12 +23,14 @@ import type {
 import { OrchLogger } from './logger';
 import { cache, CACHE_PREFIXES, CACHE_TTL } from './cache';
 import { anthropicClientOptions, claudeModelId } from './llm-config';
+import { componentCountRule, followUpInstruction, noContextMessage } from './concierge-config';
 
 // Initialize Anthropic client (direct, or via OpenRouter when OPENROUTER_API_KEY is set)
 const anthropic = new Anthropic(anthropicClientOptions());
 
 // Overridable so a future model retirement is an env change, not a deploy
 const MODEL = claudeModelId(process.env.ANTHROPIC_MODEL || 'claude-sonnet-5-5');
+export const GENERATION_MODEL = MODEL;
 // Sonnet 5.5 thinks by default and thinking counts toward max_tokens
 const MAX_TOKENS = 16000;
 
@@ -85,7 +87,7 @@ Every response MUST follow this exact structure:
    - Explains WHY these specific case studies are relevant
    - Creates a cohesive story, not just a list of what was retrieved
 
-3. Suggest 2-3 follow-up questions the user might want to explore.
+3. ${followUpInstruction()}
 
 ## CRITICAL RULES
 
@@ -147,7 +149,7 @@ When presenting results, mentally categorize:
 - Use StrategyCard to bridge the user's problem to AG's approach (1-2 cards max)
 - **MANDATORY: If case studies are in context, include CaseStudyTeaser for each one** - even if articles are more relevant, show the case studies
 - End with CaseStudyTeaser cards for case studies, grouped together
-- Typical deck: 4-8 components, never exceed 10
+- ${componentCountRule()}
 
 **Case Study Inclusion Rule:**
 Even if the user's query is better answered by thought leadership/articles, you MUST still include any case studies that appear in the context. The layout should be:
@@ -314,7 +316,7 @@ Relevance Score: ${asset.similarity_score.toFixed(3)}`;
   // If no context found
   if (sections.length <= 1) { // Only has relevance guidance
     return `## NO RELEVANT CONTENT FOUND
-No case studies or assets matched this query. Please direct the user to contact our Strategy Lead for a personalized consultation.`;
+${noContextMessage()}`;
   }
   
   return sections.join('\n\n---\n\n');

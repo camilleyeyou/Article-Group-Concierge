@@ -15,6 +15,13 @@ export function usingOpenRouter(): boolean {
   return Boolean(process.env.OPENROUTER_API_KEY);
 }
 
+export type ProviderRoute = 'openrouter' | 'direct';
+
+/** Which provider route model calls take right now (env is read at call time). */
+export function providerRoute(): ProviderRoute {
+  return usingOpenRouter() ? 'openrouter' : 'direct';
+}
+
 /**
  * Embedding endpoint settings. The model must stay text-embedding-3-small
  * (1536 dims) on both paths, or new query vectors won't match the stored index.
