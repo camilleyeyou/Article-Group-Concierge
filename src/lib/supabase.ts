@@ -215,7 +215,6 @@ export async function hybridSearchV2(p: HybridSearchV2Params): Promise<{
     throw error;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const rows: HybridSearchResult[] = ((data as any[]) || []).map((row) => ({
     ...row,
     similarity_score: row.semantic_score,
