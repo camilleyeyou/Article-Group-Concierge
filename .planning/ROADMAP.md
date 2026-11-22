@@ -16,7 +16,7 @@ Make the AG Concierge ready to show AG's owner, who is very detail-oriented. Cor
 
 - [x] **Phase 1: Eval improvements** - Make the eval measure what matters reliably
 - [ ] **Phase 2: Content and data** - Complete, accurate index: articles embedded, missing work ingested, taxonomy and videos correct
-- [ ] **Phase 3: Retrieval** - Find the expected case studies at 90% recall via `hybrid_search_v2`
+- [x] **Phase 3: Retrieval** - Find the expected case studies at 90% recall via `hybrid_search_v2`
 - [ ] **Phase 4: Generation** - Honest, on-voice answers with no invented claims
 - [ ] **Phase 5: Speed** - Teasers in about 1.5 s, streamed hero in about 3-4 s
 - [ ] **Phase 6: Proof** - Ready bar cleared on three consecutive runs, with before/after and demo queries
@@ -77,7 +77,7 @@ Plans:
   4. A query with fewer than 4 relevant case studies shows only what exists, with no padding or misrepresentation.
   5. Eval rerun after the phase; report lists every metric's delta vs baseline run 2026-11-20T15-12-31.
 **Constraints / gates**: New SQL goes in `hybrid_search_v2` alongside `hybrid_search`, never a replacement in place. Research: enable for this phase. Check current docs before choosing the prompt-caching approach and before adding any reranker or query rewriting (only if recall is still < 90% after RETR-01..05). Ask before any destructive DB change.
-**Plans:** 10 plans (03-08 conditional on the offline recall gate)
+**Plans:** 13 plans (03-08 conditional on the offline recall gate; 03-11..13 RETR-06 gap closure)
 
 Plans:
 - [x] 03-01-PLAN.md — Migration 005 `hybrid_search_v2` (additive), RPC check script, guarded held-chunk insert script; user applies 005 (checkpoint)
@@ -90,6 +90,9 @@ Plans:
 - [x] 03-08-PLAN.md — CONDITIONAL: cohere/rerank-5-fast reranker via OpenRouter (Cohere processor checkpoint), RRF fallback, re-gate
 - [x] 03-09-PLAN.md — Smoke + single full eval run; 03-EVAL-DELTA.md vs frozen and re-graded baselines
 - [x] 03-10-PLAN.md — Squash + push on user go-ahead; confirm production on v2; insert held docs (approval) and verify filters
+- [x] 03-11-PLAN.md — GAP (RETR-06): Haiku listwise rerank (disabled) + offline bake-off of cap 7/8, Cohere, Haiku; verdict in 03-BAKEOFF.md (D-305)
+- [x] 03-12-PLAN.md — GAP: stop if no winner; ship winner, offline gate PASS, smoke + one full eval, 03-GAP-EVAL-DELTA.md with RETR-05 guard (D-307)
+- [x] 03-13-PLAN.md — GAP: user go-ahead, squash + push, deploy + live smoke, STATE/ROADMAP update
 
 ### Phase 4: Generation
 **Goal**: Every answer is honest, in AG's voice, and supported by indexed content.

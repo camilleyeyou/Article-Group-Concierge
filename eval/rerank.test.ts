@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import type { HybridSearchResult } from '../src/types';
-import { buildRerankPool, rerankDocuments, applyRerank } from '../src/lib/rerank';
+import { buildRerankPool, rerankDocuments, applyRerank, parseListwiseRanking, listwiseScores } from '../src/lib/rerank';
 
 function row(id: string, sim: number, kw: number, type: 'case_study' | 'article' = 'case_study'): HybridSearchResult {
   return {
@@ -80,4 +80,18 @@ test('rerankDocuments returns null on reject, non-2xx, malformed JSON, timeout',
   })) as typeof fetch, async () => {
     assert.equal(await rerankDocuments('q', docs), null);
   });
+});
+
+test('parseListwiseRanking: plain, noisy, fenced, and unusable output', () => {
+  assert.deepEqual(parseListwiseRanking('[2,0,1]', 3), [2, 0, 1]);
+  assert.deepEqual(parseListwiseRanking('Ranking: [1, 1, 5, 0]', 3), [1, 0]);
+  assert.equal(parseListwiseRanking('no array here', 3), null);
+  assert.equal(parseListwiseRanking('[]', 3), null);
+  assert.deepEqual(parseListwiseRanking('```json\n[0,2]\n```', 3), [0, 2]);
+});
+
+test('listwiseScores: listed indexes ranked, unlisted get no score', () => {
+  const s = listwiseScores([2, 0], 3);
+  assert.ok(s.get(2)! > s.get(0)!);
+  assert.equal(s.has(1), false);
 });

@@ -33,6 +33,20 @@ Retrieval returns the case studies a prospect would expect (recall >= 90%), via 
 ### Grader sees catalogue (D-304)
 - The eval harness passes the cached catalogue to the grader as part of the context the app saw, so catalogue facts (title, client, tags) are not marked as unsupported claims.
 
+### Gap closure: recall lever bake-off (D-305, user decision 2026-11-22)
+- RETR-06 gap closure uses an **offline bake-off**: measure several recall levers with the offline recall gate (same retrieveContext code and the eval/metrics.ts recall rule, cents per run), ship the **cheapest/simplest lever that reaches >= 47/52 frozen**, then run ONE full eval (~$4.50) plus one p5 smoke run (~$0.06) and write the delta. No second grader.
+- Candidates, at minimum: (a) case-study cap 7 and 8 (`retrieval.maxCaseStudies`), reranker off; (b) Haiku listwise rerank over the existing over-retrieved pool (`buildRerankPool`), via OpenRouter `anthropic/claude-haiku-5.5` (slug verified on OpenRouter /api/v1/models on 2026-11-22: $0.10/M input, $0.50/M output), with timeout and fallback to the unreranked RRF order, latency measured; (c) the existing Cohere rerank (`cohere/rerank-5-fast`) combined with cap 7/8.
+- Bake-off table per candidate: recall frozen and corrected (both passes), per-query misses, added latency (p50/max of the extra call), and per-query cost.
+- A candidate qualifies only if BOTH offline passes reach >= 47/52 frozen. Tie-break: reaches 47/52, then lowest added latency/cost, then least code (cap-only before any reranker; smaller cap before larger cap).
+- If NO candidate reaches 47/52: stop and checkpoint to the user with the table. Do not run the paid eval.
+- No re-index, no re-chunking, no DB schema change, no DB writes. This supersedes the "up to 6 case studies" number in D-302 only if a cap candidate wins; the relevant_only teaser rule stays.
+
+### Gap closure target (D-306, user decision 2026-11-22)
+- The target stays **frozen 47/52** (do NOT restate it as 45/49). Corrected recall is still reported.
+
+### RETR-05 regression guard (D-307, Claude's discretion within the user's instruction)
+- The final eval disqualifies the shipped lever if teaser padding regresses vs run 2026-11-22T11-56-17: `teasers_zero_expected_mean` > 1.70 (was 1.40), or responses with exactly 4 CaseStudyTeasers > 3/50 (was 1/50). Either trips GUARD FAIL: RETR-06 is not marked met and the user decides (revert or accept) before anything is pushed.
+
 ### Carried constraints
 - New SQL goes in `hybrid_search_v2` (migration 005), alongside `hybrid_search` and `hybrid_search_exact`; never replace in place. There is no DATABASE_URL, so the user runs the migration in the Supabase SQL Editor (human checkpoint).
 - Insert the 6 held docs (20 chunks) only after production is calling v2. Ask before any destructive DB change.

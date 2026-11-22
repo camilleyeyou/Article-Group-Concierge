@@ -19,12 +19,16 @@ export interface RetrievalConfig {
 
 export interface RerankConfig {
   enabled: boolean;
+  provider: 'cohere' | 'haiku';
   model: string;
+  haikuModel: string;
   semanticPool: number;
   keywordPool: number;
   /** Used only if the case-study chunk count cannot be read; not assumed to cover the corpus. */
   matchCountFallback: number;
   timeoutMs: number;
+  haikuTimeoutMs: number;
+  haikuMaxDocChars: number;
   maxDocChars: number;
 }
 
@@ -44,7 +48,9 @@ export const CONCIERGE_CONFIG: ConciergeConfig = {
   strategyLead: { name: 'Strategy Lead', offerOn: ['no_context'] },
   // intentBoost 0.003 is about +10 ranks at k=60; 0 disables the boost.
   retrieval: {
-    maxCaseStudies: 6,
+    // D-305 gap closure (2026-11-22): cap8 chosen by offline bake-off, 47/52 frozen offline; see 03-BAKEOFF.md.
+    // Supersedes the D-302 cap of 6; teasers stay relevant_only.
+    maxCaseStudies: 8,
     maxArticles: 2,
     matchCount: 60,
     rrfK: 60,
@@ -52,12 +58,17 @@ export const CONCIERGE_CONFIG: ConciergeConfig = {
     // RETR-06 (D-303): Cohere reranker via OpenRouter. Built and measured in 03-08 (44/52 vs 43/52,
     // ~0.9 s p50 latency); the user chose to keep it OFF. Re-enable here or with RERANK_ENABLED=true.
     rerank: {
+      // D-305 bake-off: provider 'haiku' = listwise rerank via anthropic/claude-haiku-5.5 (OpenRouter slug verified 2026-11-22)
       enabled: false,
+      provider: 'cohere',
       model: 'cohere/rerank-5-fast',
+      haikuModel: 'claude-haiku-5-5',
       semanticPool: 15,
       keywordPool: 10,
       matchCountFallback: 250,
       timeoutMs: 4000,
+      haikuTimeoutMs: 4000,
+      haikuMaxDocChars: 1200,
       maxDocChars: 2000,
     },
   },

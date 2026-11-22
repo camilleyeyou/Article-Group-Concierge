@@ -46,22 +46,40 @@ test('Strategy Lead is offered only on no_context (current app behaviour)', () =
 
 test('retrieval and teaser config', () => {
   assert.deepEqual(CONCIERGE_CONFIG.retrieval, {
-    maxCaseStudies: 6,
+    maxCaseStudies: 8,
     maxArticles: 2,
     matchCount: 60,
     rrfK: 60,
     intentBoost: 0.003,
     rerank: {
       enabled: false,
+      provider: 'cohere',
       model: 'cohere/rerank-5-fast',
+      haikuModel: 'claude-haiku-5-5',
       semanticPool: 15,
       keywordPool: 10,
       matchCountFallback: 250,
       timeoutMs: 4000,
+      haikuTimeoutMs: 4000,
+      haikuMaxDocChars: 1200,
       maxDocChars: 2000,
     },
   });
   assert.equal(CONCIERGE_CONFIG.teasers.policy, 'relevant_only');
+});
+
+test('retrievalConfigKey differs by rerank provider when rerank is enabled', () => {
+  const prev = process.env.RERANK_ENABLED;
+  process.env.RERANK_ENABLED = 'true';
+  try {
+    const r = CONCIERGE_CONFIG.retrieval;
+    const a = retrievalConfigKey({ ...r, rerank: { ...r.rerank, provider: 'cohere' } });
+    const b = retrievalConfigKey({ ...r, rerank: { ...r.rerank, provider: 'haiku' } });
+    assert.notEqual(a, b);
+  } finally {
+    if (prev === undefined) delete process.env.RERANK_ENABLED;
+    else process.env.RERANK_ENABLED = prev;
+  }
 });
 
 test('teaser prompt and rubric text follow the policy', () => {

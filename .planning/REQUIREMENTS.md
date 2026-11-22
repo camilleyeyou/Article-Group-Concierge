@@ -30,7 +30,7 @@
 - [x] **RETR-03**: Retrieval returns the top-k without the 0.15 combined-score cutoff
 - [x] **RETR-04**: A catalogue of all case studies is in the system prompt as a cached prefix, and cache hits are verified through OpenRouter usage fields
 - [x] **RETR-05**: When fewer than 4 relevant case studies exist, the response presents what exists without padding or misrepresentation
-- [ ] **RETR-06**: Expected case-study recall is ≥ 90% (baseline 75%). A reranker or query rewriting is added only if this isn't met otherwise, chosen after checking current docs
+- [x] **RETR-06**: Expected case-study recall is ≥ 90% (baseline 75%). A reranker or query rewriting is added only if this isn't met otherwise, chosen after checking current docs
 
 ### Generation
 
@@ -90,7 +90,7 @@
 | RETR-03 | Phase 3 | Complete |
 | RETR-04 | Phase 3 | Complete |
 | RETR-05 | Phase 3 | Complete |
-| RETR-06 | Phase 3 | Pending |
+| RETR-06 | Phase 3 | Complete |
 | GEN-01 | Phase 4 | Pending |
 | GEN-02 | Phase 4 | Pending |
 | GEN-03 | Phase 4 | Pending |

@@ -491,7 +491,7 @@ export async function retrieveContext({
   const bestCaseStudies = getBestPerDocument(rawChunks.filter(c => c.document_type === 'case_study'));
   const bestArticles = getBestPerDocument(rawChunks.filter(c => c.document_type === 'article'));
 
-  // RETR-06 rerank hook: CONCIERGE_CONFIG.retrieval.rerank (Plan 03-08) replaces the case-study selection here.
+  // RETR-06 rerank hook: CONCIERGE_CONFIG.retrieval.rerank (Cohere or Haiku listwise, provider switch) replaces the case-study selection here.
   let selectedCaseStudies = bestCaseStudies.slice(0, R.maxCaseStudies);
   if (poolSearch && poolSearch.fn === 'hybrid_search_v2') {
     if (poolSearch.rows.length >= poolSearch.asked && caseStudyChunkCache === null) {

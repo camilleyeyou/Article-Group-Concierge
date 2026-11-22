@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Phase complete — ready for verification
-stopped_at: Completed 03-10-PLAN.md
-last_updated: "2026-11-22T12:40:05.741Z"
+status: Ready to execute
+stopped_at: Completed 03-12-PLAN.md
+last_updated: "2026-11-22T16:43:11.222Z"
 progress:
   total_phases: 6
-  completed_phases: 3
-  total_plans: 23
-  completed_plans: 23
+  completed_phases: 2
+  total_plans: 26
+  completed_plans: 25
 ---
 
 # Project State
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-11-20)
 ## Current Position
 
 Phase: 03 (retrieval) — EXECUTING
-Plan: 10 of 10
+Plan: 3 of 13
 
 ## Baseline Metrics (frozen)
 
@@ -78,6 +78,8 @@ Same responses as the frozen run, graded under harness v2. Like-for-like referen
 | Phase 03 P07 | 10min | 2 tasks | 1 files |
 | Phase 03 P08 | 25min | 3 tasks | 6 files |
 | Phase 03 P09 | 35min | 3 tasks | 1 files |
+| Phase 03 P11 | 90min | 2 tasks | 9 files |
+| Phase 03 P12 | ~1h | 3 tasks | 4 files |
 
 ### Decisions
 
@@ -105,6 +107,9 @@ Same responses as the frozen run, graded under harness v2. Like-for-like referen
 - [Phase 03]: D-303 gate FAIL at 43/52 frozen (43/49 corrected); reranker plan 03-08 runs
 - [Phase 03]: User approved Cohere rerank-5-fast (data processor); rerank re-gate FAIL 44/52 (44/49 corrected), +1 vs 03-07, p50 892 ms, 0 fallbacks, ~$0.008
 - [Phase 03]: Phase 3 shipped as 2 commits (853bbe4 + build fix 120ab9d); prod on v2; 20 held chunks inserted, filters verified 8/8, recall unchanged 43/52
+- [Phase 03]: 03-11 bake-off: winner cap8 (no rerank), 47/52 frozen on both passes; Cohere cap7 47, cap8 48; Haiku cap8 47; Haiku needs thinking disabled; production still cap 6
+- [Phase 03]: Shipped cap8 (maxCaseStudies 8, no reranker) as retrieval default; eval recall 47/52 frozen, RETR-05 guard pass
+- [Phase 03 gap] D-305 bake-off: winner cap8; eval 2026-11-22T13-42-12 recall 47/52 frozen, 47/49 corrected; D-307 guard PASS (zero-expected teasers 1.45, exactly-4 1/50); spend $4.83; production: pushed lever (user option "Squash and push"); deploy: DEPLOY_PENDING; live smoke: SMOKE_PENDING
 
 ### Key Constraints
 
@@ -113,7 +118,7 @@ Same responses as the frozen run, graded under harness v2. Like-for-like referen
 - Squash each phase to one commit before pushing.
 - Ask before any destructive DB change or full re-index; ask before taxonomy data changes and before ingesting missing work.
 - Check current docs before choosing external products/APIs (research enabled for Phases 3 and 5).
-- Budget: OpenRouter key capped at $50, about $45 left; each eval run ~$3.50.
+- Budget: OpenRouter key capped at $50, about $16 credit left after the gap run; each eval run ~$3.50.
 - `EVAL_DEBUG=true` must never be set in production.
 - Supabase free tier pauses on inactivity; restore it before eval runs.
 
@@ -129,8 +134,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-11-22T12:40:05.732Z
-Stopped at: Completed 03-10-PLAN.md
+Last session: 2026-11-22T16:43:11.214Z
+Stopped at: Completed 03-13-PLAN.md
 Resume file: None
 
 - 2026-11-22 (03-08 follow-up): User chose to keep the Cohere reranker OFF (rerank.enabled=false). Net +1 recall (44/52) did not justify ~0.9 s p50 latency and a new data processor. Code and RRF fallback stay; re-enable via config or RERANK_ENABLED=true. Phase-end eval (03-09) approved by user despite gate FAIL; expected recall ≈ 43/52.
