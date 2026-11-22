@@ -89,7 +89,7 @@ Plans:
 - [x] 03-07-PLAN.md — Combined free checks + D-303 offline gate (>= 47/52 frozen)
 - [x] 03-08-PLAN.md — CONDITIONAL: cohere/rerank-5-fast reranker via OpenRouter (Cohere processor checkpoint), RRF fallback, re-gate
 - [x] 03-09-PLAN.md — Smoke + single full eval run; 03-EVAL-DELTA.md vs frozen and re-graded baselines
-- [ ] 03-10-PLAN.md — Squash + push on user go-ahead; confirm production on v2; insert held docs (approval) and verify filters
+- [x] 03-10-PLAN.md — Squash + push on user go-ahead; confirm production on v2; insert held docs (approval) and verify filters
 
 ### Phase 4: Generation
 **Goal**: Every answer is honest, in AG's voice, and supported by indexed content.

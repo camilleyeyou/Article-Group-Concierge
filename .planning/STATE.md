@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to execute
-stopped_at: Completed 03-09-PLAN.md
-last_updated: "2026-11-22T12:21:55.622Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 03-10-PLAN.md
+last_updated: "2026-11-22T12:40:05.741Z"
 progress:
   total_phases: 6
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 23
-  completed_plans: 22
+  completed_plans: 23
 ---
 
 # Project State
@@ -104,6 +104,7 @@ Same responses as the frozen run, graded under harness v2. Like-for-like referen
 - [Phase 03]: Catalogue cached as system block (explicit cache_control, ttl 1h); OpenRouter usage showed cache_read 10,542 tokens on repeat call; check cost $0.043
 - [Phase 03]: D-303 gate FAIL at 43/52 frozen (43/49 corrected); reranker plan 03-08 runs
 - [Phase 03]: User approved Cohere rerank-5-fast (data processor); rerank re-gate FAIL 44/52 (44/49 corrected), +1 vs 03-07, p50 892 ms, 0 fallbacks, ~$0.008
+- [Phase 03]: Phase 3 shipped as 2 commits (853bbe4 + build fix 120ab9d); prod on v2; 20 held chunks inserted, filters verified 8/8, recall unchanged 43/52
 
 ### Key Constraints
 
@@ -124,11 +125,12 @@ None yet.
 
 - `EMAIL-TO-CLIENT.md` and `eval/PLAN.md` have uncommitted edits unrelated to the roadmap; leave `EMAIL-TO-CLIENT.md` alone.
 - Phase 1 changes metric definitions, so baseline comparisons need a re-grade under the new harness.
+- ROLLBACK PRECONDITION: before rolling production back past the Phase 3 commit, or if hybrid_search_v2 is ever dropped or bypassed, first remove or relabel the 20 held chunks (5 company_info + 15 excluded LinkedIn; needs user approval, it is a destructive DB change). hybrid_search_exact and hybrid_search cannot filter metadata.article_class, so the old code path would surface LinkedIn and company-info text. Details and document_ids in 03-10-SUMMARY.md.
 
 ## Session Continuity
 
-Last session: 2026-11-22T12:21:55.612Z
-Stopped at: Completed 03-09-PLAN.md
+Last session: 2026-11-22T12:40:05.732Z
+Stopped at: Completed 03-10-PLAN.md
 Resume file: None
 
 - 2026-11-22 (03-08 follow-up): User chose to keep the Cohere reranker OFF (rerank.enabled=false). Net +1 recall (44/52) did not justify ~0.9 s p50 latency and a new data processor. Code and RRF fallback stay; re-enable via config or RERANK_ENABLED=true. Phase-end eval (03-09) approved by user despite gate FAIL; expected recall ≈ 43/52.
