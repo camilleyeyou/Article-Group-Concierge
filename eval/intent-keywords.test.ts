@@ -8,6 +8,8 @@ import {
   INDUSTRY_GROUPS,
   detectQueryIntent,
   allIntentSlugs,
+  keywordHit,
+  isAboutAG,
 } from '../src/lib/intent-keywords';
 
 const proposal = JSON.parse(readFileSync(join(process.cwd(), 'data', 'taxonomy-proposal.json'), 'utf8'));
@@ -91,4 +93,31 @@ test('every new keyword is >= 4 chars or contains a space', () => {
     }
   }
   assert.deepEqual(offenders, []);
+});
+
+// RETR-02: whole-word
+test('keywordHit matches whole words only', () => {
+  assert.equal(keywordHit('how do you maintain', 'ai'), false);
+  assert.equal(keywordHit('against a bigger incumbent', 'ai'), false);
+  assert.equal(keywordHit('ai strategy', 'ai'), true);
+  assert.equal(keywordHit('our brands', 'brand'), true);
+  assert.equal(keywordHit('keynotes for our ceo', 'keynote'), true);
+  assert.equal(keywordHit('approach', 'app'), false);
+  assert.equal(keywordHit('a mobile app', 'app'), true);
+  assert.equal(keywordHit('go to market plan', 'go-to-market'), true);
+  assert.equal(keywordHit('go-to-market plan', 'go-to-market'), true);
+  assert.equal(keywordHit('product launch event', 'launch event'), true);
+});
+
+test('no false technology intent from "maintain"', () => {
+  const { industries } = detectQueryIntent('How do you maintain brand consistency?');
+  assert.ok(!industries.includes('technology'));
+  for (const m of INDUSTRY_GROUPS.technology) assert.ok(!industries.includes(m), m);
+});
+
+test('isAboutAG', () => {
+  assert.equal(isAboutAG('Are you hiring?'), true);
+  assert.equal(isAboutAG('Where is your office located?'), true);
+  assert.equal(isAboutAG('cybersecurity clients?'), false);
+  assert.equal(isAboutAG('Have you done keynote work?'), false);
 });

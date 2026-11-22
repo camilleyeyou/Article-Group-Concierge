@@ -25,11 +25,11 @@
 
 ### Retrieval
 
-- [ ] **RETR-01**: `hybrid_search_v2` exists alongside `hybrid_search` and does keyword search over the whole corpus with OR semantics, title/client weighting and reciprocal rank fusion
-- [ ] **RETR-02**: Intent detection matches whole words only (no "ai" inside "maintain"), or the filter is removed if it doesn't help recall
-- [ ] **RETR-03**: Retrieval returns the top-k without the 0.15 combined-score cutoff
-- [ ] **RETR-04**: A catalogue of all case studies is in the system prompt as a cached prefix, and cache hits are verified through OpenRouter usage fields
-- [ ] **RETR-05**: When fewer than 4 relevant case studies exist, the response presents what exists without padding or misrepresentation
+- [x] **RETR-01**: `hybrid_search_v2` exists alongside `hybrid_search` and does keyword search over the whole corpus with OR semantics, title/client weighting and reciprocal rank fusion
+- [x] **RETR-02**: Intent detection matches whole words only (no "ai" inside "maintain"), or the filter is removed if it doesn't help recall
+- [x] **RETR-03**: Retrieval returns the top-k without the 0.15 combined-score cutoff
+- [x] **RETR-04**: A catalogue of all case studies is in the system prompt as a cached prefix, and cache hits are verified through OpenRouter usage fields
+- [x] **RETR-05**: When fewer than 4 relevant case studies exist, the response presents what exists without padding or misrepresentation
 - [ ] **RETR-06**: Expected case-study recall is ≥ 90% (baseline 75%). A reranker or query rewriting is added only if this isn't met otherwise, chosen after checking current docs
 
 ### Generation
@@ -85,11 +85,11 @@
 | DATA-03 | Phase 2 | Complete |
 | DATA-04 | Phase 2 | Complete |
 | DATA-05 | Phase 2 | Complete |
-| RETR-01 | Phase 3 | Pending |
-| RETR-02 | Phase 3 | Pending |
-| RETR-03 | Phase 3 | Pending |
-| RETR-04 | Phase 3 | Pending |
-| RETR-05 | Phase 3 | Pending |
+| RETR-01 | Phase 3 | Complete |
+| RETR-02 | Phase 3 | Complete |
+| RETR-03 | Phase 3 | Complete |
+| RETR-04 | Phase 3 | Complete |
+| RETR-05 | Phase 3 | Complete |
 | RETR-06 | Phase 3 | Pending |
 | GEN-01 | Phase 4 | Pending |
 | GEN-02 | Phase 4 | Pending |

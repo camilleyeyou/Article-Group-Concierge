@@ -12,6 +12,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { retrieveContext } from '@/lib/supabase';
 import { orchestrate, GENERATION_MODEL } from '@/lib/orchestrator';
+import { getCatalogue } from '@/lib/catalogue';
 import { embeddingConfig, providerRoute } from '@/lib/llm-config';
 import type { OrchestratorOutput } from '@/types';
 import { APILogger } from '@/lib/logger';
@@ -32,6 +33,15 @@ interface ChatRequest {
     content: string;
   }>;
   debug?: boolean; // Honoured only when the server runs with EVAL_DEBUG=true
+}
+
+// Debug payload only (EVAL_DEBUG): the catalogue text the model saw, if still the same version
+async function catalogueForDebug(version: string | null | undefined) {
+  if (!version) return null;
+  const cat = await getCatalogue();
+  if (cat && cat.version === version) return { version, text: cat.text };
+  APILogger.warn('Catalogue changed between generation and debug payload', { version });
+  return { version, text: null };
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -118,7 +128,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     });
 
     // Return the result
-    const { rawResponse, orchestratorError, ...publicResult } = result;
+    const { rawResponse, orchestratorError, usage, catalogueVersion, ...publicResult } = result;
     if (!debug) {
       return NextResponse.json(publicResult);
     }
@@ -127,11 +137,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       debug: {
         rawResponse: rawResponse ?? null,
         orchestratorError: orchestratorError ?? null,
+        usage: usage ?? null,
+        catalogue: await catalogueForDebug(catalogueVersion),
         models: { route: providerRoute(), generation: GENERATION_MODEL, embedding: embeddingConfig().model },
         retrieval: {
           chunks: context.chunks,
           visualAssets: context.visualAssets,
           relatedMetrics: context.relatedMetrics,
+          searchFunction: context.searchFunction ?? null,
         },
       },
     });

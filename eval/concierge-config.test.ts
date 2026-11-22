@@ -1,13 +1,18 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
 import {
   CONCIERGE_CONFIG,
   componentCountRule,
   followUpInstruction,
   noContextMessage,
   isNoContext,
+  teaserPromptRule,
+  teaserRubricText,
+  noDirectMatchPrompt,
+  fallbackRubricText,
+  retrievalConfigKey,
 } from '../src/lib/concierge-config';
+import { DISPUTED_LABELS, isDisputed } from './labels';
 import { SYSTEM_PROMPT } from '../src/lib/orchestrator';
 
 test('componentCountRule renders the legacy prompt text', () => {
@@ -39,9 +44,56 @@ test('Strategy Lead is offered only on no_context (current app behaviour)', () =
   assert.deepEqual(CONCIERGE_CONFIG.strategyLead.offerOn, ['no_context']);
 });
 
-test('SYSTEM_PROMPT is byte-identical to the pre-refactor prompt', () => {
-  assert.equal(
-    createHash('sha256').update(SYSTEM_PROMPT).digest('hex'),
-    '408483f12f864bd614c77e9b85277aee8bd3a78ff22bf21647bc80b5bfde286b'
-  );
+test('retrieval and teaser config', () => {
+  assert.deepEqual(CONCIERGE_CONFIG.retrieval, {
+    maxCaseStudies: 6,
+    maxArticles: 2,
+    matchCount: 60,
+    rrfK: 60,
+    intentBoost: 0.003,
+    rerank: {
+      enabled: false,
+      model: 'cohere/rerank-5-fast',
+      semanticPool: 15,
+      keywordPool: 10,
+      matchCountFallback: 250,
+      timeoutMs: 4000,
+      maxDocChars: 2000,
+    },
+  });
+  assert.equal(CONCIERGE_CONFIG.teasers.policy, 'relevant_only');
+});
+
+test('teaser prompt and rubric text follow the policy', () => {
+  assert.match(teaserPromptRule('relevant_only'), /genuinely match/);
+  assert.match(teaserPromptRule('relevant_only'), /Never pad/);
+  assert.match(teaserPromptRule('all_retrieved'), /for each one/);
+  assert.match(teaserRubricText('relevant_only'), /omitting/);
+  assert.doesNotMatch(teaserRubricText('relevant_only'), /for retrieved case studies/);
+  assert.match(teaserRubricText('all_retrieved'), /for retrieved case studies/);
+  assert.equal(teaserPromptRule(), teaserPromptRule(CONCIERGE_CONFIG.teasers.policy));
+  assert.equal(teaserRubricText(), teaserRubricText(CONCIERGE_CONFIG.teasers.policy));
+});
+
+test('retrievalConfigKey is stable and sensitive to changes', () => {
+  assert.equal(retrievalConfigKey(), retrievalConfigKey());
+  assert.notEqual(retrievalConfigKey(), retrievalConfigKey({ ...CONCIERGE_CONFIG.retrieval, maxCaseStudies: 5 }));
+});
+
+test('disputed labels', () => {
+  const chorus = 'chorus-alphabet-x-creating-an-eye-opening-asset-visibility-brand';
+  assert.equal(DISPUTED_LABELS.length, 3);
+  assert.equal(isDisputed('p1-q05', chorus), true);
+  assert.equal(isDisputed('p1-q03', chorus), false);
+});
+
+test('no-match prompt and fallback rubric text follow the policy', () => {
+  assert.match(noDirectMatchPrompt('relevant_only').rule, /say so plainly/);
+  assert.doesNotMatch(noDirectMatchPrompt('relevant_only').rule, /NEVER say/);
+  assert.match(noDirectMatchPrompt('all_retrieved').rule, /NEVER say: "We don't currently have X case studies"/);
+  assert.match(noDirectMatchPrompt('all_retrieved').intro, /Instead of saying/);
+  assert.match(fallbackRubricText('relevant_only'), /allowed, not required/);
+  assert.doesNotMatch(fallbackRubricText('relevant_only'), /still show case studies/);
+  assert.match(fallbackRubricText('all_retrieved'), /still show case studies, so showing adjacent work is allowed\./);
+  assert.match(teaserPromptRule('relevant_only'), /none with an honest note/);
 });

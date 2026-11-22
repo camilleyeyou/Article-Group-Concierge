@@ -19,11 +19,19 @@ import type {
   OrchestratorInput,
   OrchestratorOutput,
   LayoutPlan,
+  HybridSearchResult,
 } from '../types';
 import { OrchLogger } from './logger';
+import { getCatalogue } from './catalogue';
 import { cache, CACHE_PREFIXES, CACHE_TTL } from './cache';
 import { anthropicClientOptions, claudeModelId } from './llm-config';
-import { componentCountRule, followUpInstruction, noContextMessage } from './concierge-config';
+import {
+  componentCountRule,
+  followUpInstruction,
+  noContextMessage,
+  teaserPromptRule,
+  noDirectMatchPrompt,
+} from './concierge-config';
 
 // Initialize Anthropic client (direct, or via OpenRouter when OPENROUTER_API_KEY is set)
 const anthropic = new Anthropic(anthropicClientOptions());
@@ -57,7 +65,7 @@ You MUST only use these exact component names:
 - **StrategyCard**: High-level strategic advice or key insight. Use to connect case studies to the user's challenge.
   Props: { title: string, content: string, icon?: 'lightbulb' | 'target' | 'chart' | 'users' | 'rocket', accentColor?: string }
 
-- **VideoPlayer**: Case study videos. MANDATORY when vimeo_url is present in context for a relevant case study.
+- **VideoPlayer**: Case study videos. MANDATORY when a case study you present has a vimeo_url in context.
   Props: { url: string, caption?: string, aspectRatio?: '16:9' | '4:3' | '1:1' }
 
 - **MetricGrid**: Display 2-4 key statistics. ONLY use metrics explicitly found in the context.
@@ -121,25 +129,24 @@ Don't repeat the same points across HeroBlock → StrategyCard → explanation. 
 - Articles/blogs represent AG's THINKING; case studies represent AG's WORK
 
 ### WHEN WE DON'T HAVE EXACT MATCHES
-Instead of saying "We don't have TikTok-specific case studies", reframe positively:
+${noDirectMatchPrompt().intro}
 - Focus on the UNDERLYING capability: "What you're really looking for is platform-native content strategy..."
-- Connect to adjacent work: "Our experience creating authentic presence on emerging platforms..."
+- Connect to adjacent work where it genuinely transfers, and label it as adjacent: "Our experience creating authentic presence on emerging platforms..."
 - Emphasize transferable expertise: "The principles of building engaged communities apply across platforms..."
 
-NEVER say: "We don't currently have X case studies"
-INSTEAD say: "Your challenge is really about [broader capability], and here's how we've approached similar problems..."
+${noDirectMatchPrompt().rule}
 
 ### CONTENT HIERARCHY
 When presenting results, mentally categorize:
 - **"Here's what we've done"** = Case Studies (real client work with results)
 - **"Here's how we think"** = Articles (thought leadership, frameworks, perspectives)
 
-**CRITICAL: If ANY case studies appear in the context, you MUST include them as CaseStudyTeaser components, even if their relevance scores are lower.** Case studies should be presented more prominently than articles. If you have both, lead with case studies.
+**Case studies first:** Case studies should be presented more prominently than articles. If you have both, lead with case studies. ${teaserPromptRule()}
 
 **Title Preservation:** When creating CaseStudyTeaser components, use the EXACT title from the context. Do NOT shorten, paraphrase, or "improve" case study titles. Copy them verbatim. If a title seems too technical or long, that's intentional - use it as-is.
 
 ### VIDEO USAGE (Mandatory)
-- If a case study in context has a vimeo_url, you MUST include a VideoPlayer component
+- If a case study you present has a vimeo_url, you MUST include a VideoPlayer component
 - Videos should appear near the top of the layout, after HeroBlock
 - Caption should explain what the video shows (e.g., "See how we brought the rebrand to life")
 
@@ -147,17 +154,9 @@ When presenting results, mentally categorize:
 - Always start with a HeroBlock that speaks to the user's specific challenge
 - Include VideoPlayer IMMEDIATELY after HeroBlock if video is available
 - Use StrategyCard to bridge the user's problem to AG's approach (1-2 cards max)
-- **MANDATORY: If case studies are in context, include CaseStudyTeaser for each one** - even if articles are more relevant, show the case studies
+- ${teaserPromptRule()}
 - End with CaseStudyTeaser cards for case studies, grouped together
 - ${componentCountRule()}
-
-**Case Study Inclusion Rule:**
-Even if the user's query is better answered by thought leadership/articles, you MUST still include any case studies that appear in the context. The layout should be:
-1. HeroBlock (challenge)
-2. Articles/StrategyCards (our thinking/approach)
-3. CaseStudyTeaser components (related work, even if not perfect matches)
-
-This shows we have relevant experience even when the conceptual answer comes from our thought leadership.
 
 ### Tone & Voice
 - Premium, confident, but not arrogant
@@ -227,20 +226,27 @@ Rebranding in fintech is fundamentally about building trust—the challenge is l
 // CONTEXT FORMATTER
 // ============================================
 
+/** Retrieval signals for a chunk, shown in the context header. Legacy fallback rows carry no ranks. */
+function rankSignals(chunk: HybridSearchResult): string {
+  return [
+    chunk.rerank_score != null ? `reranker relevance ${chunk.rerank_score.toFixed(2)}` : null,
+    chunk.semantic_rank != null ? `semantic #${chunk.semantic_rank}` : null,
+    chunk.keyword_rank != null ? `keyword #${chunk.keyword_rank}` : (chunk.semantic_rank != null ? 'no keyword match' : null),
+    chunk.intent_match ? 'tag match' : null,
+  ].filter(Boolean).join(', ');
+}
+
 /**
  * Formats the retrieved context into a structured string for the prompt.
  * This is what Claude "sees" when deciding how to build the layout.
  * Separates case studies (AG's work) from articles (AG's thinking).
  */
-function formatContext(context: RetrievedContext): string {
+export function formatContext(context: RetrievedContext): string {
   const sections: string[] = [];
 
   // Add relevance and attribution guidance
   sections.push(`## IMPORTANT GUIDELINES
-**Relevance Scores:**
-- Scores above 0.35 = Good relevance
-- Scores 0.20-0.35 = Moderate relevance
-- Even with lower scores, include if topic broadly matches
+**Retrieval order:** Case studies are listed in retrieval order (best first). Order is not proof of relevance: judge each study against the query and present only those that fit.
 
 **Content Types:**
 - CASE STUDIES = AG's actual client work. You can say "We did this for [Client]"
@@ -257,28 +263,22 @@ function formatContext(context: RetrievedContext): string {
   // Format case studies (AG's work - higher priority)
   if (caseStudies.length > 0) {
     const caseStudySection = caseStudies.map((chunk, i) => {
-      const relevanceLabel = chunk.combined_score >= 0.35 ? '🟢 GOOD'
-        : chunk.combined_score >= 0.20 ? '🟡 MODERATE'
-        : '🔴 LOW';
-      return `[Case Study ${i + 1}] - Relevance: ${relevanceLabel} (${chunk.combined_score.toFixed(3)})
+      return `[Case Study ${i + 1}] - Retrieval rank ${i + 1} of ${caseStudies.length}${rankSignals(chunk) ? ` (${rankSignals(chunk)})` : ''}
 Title: ${chunk.document_title}
 Client: ${chunk.client_name || 'N/A'}
 Slug: ${chunk.slug || 'N/A'}
-Vimeo URL: ${chunk.vimeo_url || 'None'} ${chunk.vimeo_url ? '⚠️ MUST USE VideoPlayer COMPONENT' : ''}
+Vimeo URL: ${chunk.vimeo_url || 'None'} ${chunk.vimeo_url ? '(use a VideoPlayer if you present this study)' : ''}
 Thumbnail URL: ${chunk.thumbnail_url || 'None'}
 Content (use only facts stated here): ${chunk.content}`;
     }).join('\n\n');
 
-    sections.push(`## CASE STUDIES (AG's Actual Client Work - Present these prominently)\n${caseStudySection}`);
+    sections.push(`## CASE STUDIES (AG's Actual Client Work - present only those that fit the request)\n${caseStudySection}`);
   }
 
   // Format articles (AG's thinking - secondary)
   if (articles.length > 0) {
     const articlesSection = articles.map((chunk, i) => {
-      const relevanceLabel = chunk.combined_score >= 0.35 ? '🟢 GOOD'
-        : chunk.combined_score >= 0.20 ? '🟡 MODERATE'
-        : '🔴 LOW';
-      return `[Article ${i + 1}] - Relevance: ${relevanceLabel} (${chunk.combined_score.toFixed(3)})
+      return `[Article ${i + 1}] - Retrieval rank ${i + 1} of ${articles.length}${rankSignals(chunk) ? ` (${rankSignals(chunk)})` : ''}
 Title: ${chunk.document_title}
 Author: ${chunk.author || 'Article Group'}
 Slug: ${chunk.slug || 'N/A'}
@@ -379,6 +379,27 @@ function parseOrchestratorResponse(response: string): OrchestratorOutput {
 // MAIN ORCHESTRATOR FUNCTION
 // ============================================
 
+/** System prompt as two blocks; the catalogue block carries the cache breakpoint (RETR-04). */
+export function buildSystemBlocks(catalogueText: string | null) {
+  const blocks: Array<{ type: 'text'; text: string; cache_control?: { type: 'ephemeral'; ttl?: '5m' | '1h' } }> = [
+    { type: 'text', text: SYSTEM_PROMPT },
+  ];
+  if (catalogueText) blocks.push({ type: 'text', text: catalogueText, cache_control: { type: 'ephemeral', ttl: '1h' } });
+  else blocks[0].cache_control = { type: 'ephemeral', ttl: '1h' };
+  return blocks;
+}
+
+function extractUsage(response: unknown) {
+  const u = ((response as { usage?: unknown }).usage ?? {}) as Record<string, number | undefined>;
+  return {
+    input_tokens: u.input_tokens ?? null,
+    output_tokens: u.output_tokens ?? null,
+    cache_creation_input_tokens: u.cache_creation_input_tokens ?? null,
+    cache_read_input_tokens: u.cache_read_input_tokens ?? null,
+    cost: u.cost ?? null,
+  };
+}
+
 /**
  * Main entry point for the orchestrator.
  * Takes user query + retrieved context, returns layout plan + explanation.
@@ -389,6 +410,9 @@ function parseOrchestratorResponse(response: string): OrchestratorOutput {
 export async function orchestrate(input: OrchestratorInput): Promise<OrchestratorOutput> {
   const { userQuery, context, conversationHistory, skipCache } = input;
 
+  // Phase 5: getCatalogue runs before the cache lookup; cold-start DB cost on cache hits
+  const catalogue = await getCatalogue();
+
   // Create cache key from query, context, and conversation history
   // Include document IDs and metrics to ensure cache freshness
   const cacheKey = {
@@ -397,6 +421,7 @@ export async function orchestrate(input: OrchestratorInput): Promise<Orchestrato
     conversationLength: conversationHistory?.length || 0,
     // Include last message to differentiate follow-ups
     lastMessage: conversationHistory?.slice(-1)[0]?.content?.slice(0, 100),
+    catalogueVersion: catalogue?.version ?? null,
   };
 
   // Check cache first (skip cache if there's conversation history for now)
@@ -444,7 +469,8 @@ Please assemble a pitch deck layout using the Component Registry. Remember to ou
     const response = await anthropic.messages.create({
       model: MODEL,
       max_tokens: MAX_TOKENS,
-      system: SYSTEM_PROMPT,
+      // SDK 0.30.1 types lack cache_control; the body passes through unchanged (RETR-04)
+      system: buildSystemBlocks(catalogue?.text ?? null) as any,
       messages,
     });
     
@@ -457,6 +483,8 @@ Please assemble a pitch deck layout using the Component Registry. Remember to ou
     // Parse the response
     const result = parseOrchestratorResponse(textContent.text);
     result.rawResponse = textContent.text;
+    result.usage = extractUsage(response);
+    result.catalogueVersion = catalogue?.version ?? null;
 
     // Cache the result (only for queries without conversation history)
     if (!conversationHistory || conversationHistory.length === 0) {
@@ -513,10 +541,12 @@ ${formattedContext}
 Please assemble a pitch deck layout using the Component Registry. Remember to output the JSON layout plan first, then your explanation.`,
   });
   
+  const catalogue = await getCatalogue();
   const stream = await anthropic.messages.stream({
     model: MODEL,
     max_tokens: MAX_TOKENS,
-    system: SYSTEM_PROMPT,
+    // SDK 0.30.1 types lack cache_control; the body passes through unchanged (RETR-04)
+    system: buildSystemBlocks(catalogue?.text ?? null) as any,
     messages,
   });
   

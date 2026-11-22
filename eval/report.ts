@@ -35,6 +35,7 @@ import {
   type RunRecord,
 } from './lib';
 import type { AgreementResult } from './agreement';
+import { DISPUTED_LABELS } from './labels';
 import { METRIC_DEFS, computeRunMetrics, findRegradeDir, formatDelta, formatValue, type RunMetrics } from './metrics';
 
 interface Row {
@@ -320,6 +321,41 @@ export function writeReport(dir: string): void {
     `Expected case-study recall: **${expectedHit}/${expectedTotal}**${expectedTotal ? ` (${((100 * expectedHit) / expectedTotal).toFixed(0)}%)` : ''} across ${withExpectations.length} queries.`,
   );
   out.push(table(['ID', 'Query', 'Expected but missing', 'Retrieved instead'], gapRows));
+
+  {
+    const m = computeRunMetrics(dir);
+    const rc = m.recall_corrected;
+    out.push(
+      `Recall excluding disputed labels (D-301): **${rc.hit}/${rc.total}**${rc.pct === null ? '' : ` (${rc.pct.toFixed(0)}%)`}. Disputed labels (frozen in queries.json, excluded only here):`,
+    );
+    for (const d of DISPUTED_LABELS) {
+      const rec = rows.find(r => r.record.id === d.query_id)?.record;
+      const status = !rec?.retrieval
+        ? 'not in this run'
+        : rec.retrieval.chunks.some(c => c.slug === d.slug)
+          ? 'retrieved in this run'
+          : 'not retrieved in this run';
+      out.push(`- ${d.query_id}: ${docTitle(d.slug)} (${d.reason}); ${status}`);
+    }
+    const sr = m.shown_recall;
+    out.push(
+      `Shown recall (expected studies presented as CaseStudyTeaser): **${sr.hit}/${sr.total}**${sr.pct === null ? '' : ` (${sr.pct.toFixed(0)}%)`}. Retrieved but not shown: ${expectedHit - sr.hit}.`,
+    );
+    const fmt = (v: number | null) => (v === null ? 'n/a' : v.toFixed(2));
+    out.push(
+      `Teasers per response: zero-expected queries mean ${fmt(m.teasers.zero_expected_mean)} (n=${m.teasers.zero_expected_n}); all queries mean ${fmt(m.teasers.all_mean)}.`,
+    );
+    out.push(
+      m.prompt_cache.of ? `Prompt cache: hits ${m.prompt_cache.hits}/${m.prompt_cache.of} responses.` : `Prompt cache: no usage recorded.`,
+    );
+    const okRecs = rows.filter(r => r.record.status === 'ok');
+    const v2 = okRecs.filter(r => r.record.search_function === 'hybrid_search_v2').length;
+    out.push(
+      okRecs.some(r => r.record.search_function)
+        ? `Search function: hybrid_search_v2 on ${v2}/${okRecs.length} records.`
+        : `Search function: unknown (not recorded) on ${okRecs.length} records.`,
+    );
+  }
 
   // Content gaps
   out.push(`## Content gaps`);

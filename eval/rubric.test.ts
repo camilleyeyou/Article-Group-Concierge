@@ -1,14 +1,18 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import * as fs from 'fs';
-import { SYSTEM_PROMPT } from '../src/lib/orchestrator';
+import { SYSTEM_PROMPT, formatContext } from '../src/lib/orchestrator';
 import {
   CONCIERGE_CONFIG,
   STRATEGY_LEAD_TRIGGER_DESCRIPTIONS,
   componentCountRule,
+  teaserPromptRule,
+  noDirectMatchPrompt,
+  fallbackRubricText,
+  teaserRubricText,
 } from '../src/lib/concierge-config';
 import { CLAIM_KINDS, PERSONAS_PATH, runAutomatedChecks, type Persona, type RunRecord } from './lib';
-import { GRADER_SCHEMA, RUBRIC, buildGraderPrompt, strategyLeadRubricText } from './rubric';
+import { GRADER_SCHEMA, HARNESS_VERSION, RUBRIC, buildGraderPrompt, catalogueSection, formatGraderContext, strategyLeadRubricText } from './rubric';
 
 const record: RunRecord = {
   id: 'p1-q01',
@@ -102,4 +106,68 @@ test('strategy lead checks are computed for empty retrieval', () => {
   const checks = runAutomatedChecks(empty);
   assert.equal(checks.strategy_lead_expected, true);
   assert.equal(checks.strategy_lead_offered, false);
+});
+
+const chunk = (o: Record<string, unknown>) => ({
+  slug: 's', document_title: 'T', client_name: 'C', document_type: 'case_study', combined_score: 0.5,
+  vimeo_url: null, thumbnail_url: null, content: 'x', ...o,
+});
+const withChunks = (chunks: unknown[], layout: unknown[]): RunRecord =>
+  ({
+    ...record,
+    raw_response: '```json\n' + JSON.stringify({ layout }) + '\n```',
+    retrieval: { chunks, visualAssets: [], relatedMetrics: [] },
+  }) as unknown as RunRecord;
+
+test('prompt and rubric render the same config-driven rules', () => {
+  assert.ok(SYSTEM_PROMPT.includes(teaserPromptRule()));
+  assert.ok(SYSTEM_PROMPT.includes(noDirectMatchPrompt().intro));
+  assert.ok(SYSTEM_PROMPT.includes(noDirectMatchPrompt().rule));
+  assert.ok(RUBRIC.includes(teaserRubricText()));
+  assert.ok(RUBRIC.includes(fallbackRubricText()));
+  for (const old of ['include CaseStudyTeaser for each one', 'you MUST include them as CaseStudyTeaser', 'Case Study Inclusion Rule']) {
+    assert.ok(!SYSTEM_PROMPT.includes(old), old);
+  }
+  if (CONCIERGE_CONFIG.teasers.policy === 'relevant_only') {
+    assert.ok(!SYSTEM_PROMPT.includes('NEVER say: "We don\'t currently have X case studies"'));
+    assert.ok(!RUBRIC.includes('still show case studies'));
+    assert.ok(!RUBRIC.includes('a CaseStudyTeaser for retrieved case studies)'));
+  }
+});
+
+test('unused-video check only covers presented studies under relevant_only', () => {
+  const a = chunk({ slug: 'a', vimeo_url: 'https://vimeo.com/1' });
+  const b = chunk({ slug: 'b', vimeo_url: 'https://vimeo.com/2' });
+  const checks = runAutomatedChecks(
+    withChunks([a, b], [{ component: 'CaseStudyTeaser', props: { slug: 'a', title: 'T', summary: 's' } }]),
+  );
+  assert.deepEqual(checks.videos_available_not_used, ['a']);
+});
+
+test('grader context prints rank signals, falling back to score for legacy chunks', () => {
+  const r = withChunks([chunk({ semantic_rank: 2, keyword_rank: 1 }), chunk({})], []);
+  const ctx = formatGraderContext(r);
+  assert.ok(ctx.includes('rank 1, semantic #2, keyword #1'));
+  assert.ok(ctx.includes('score 0.500'));
+});
+
+test('formatContext labels by rank and signals, not score thresholds', () => {
+  const ctx = (chunks: unknown[]) =>
+    formatContext({ chunks, visualAssets: [], relatedMetrics: [] } as any);
+  const legacy = ctx([chunk({ semantic_rank: null, keyword_rank: null })]);
+  assert.ok(!legacy.includes('no keyword match') && !legacy.includes('semantic #'));
+  assert.ok(legacy.includes('Retrieval rank 1 of 1'));
+  const v2 = ctx([chunk({ semantic_rank: 3, keyword_rank: null })]);
+  assert.ok(v2.includes('semantic #3, no keyword match'));
+  assert.ok(!/GOOD|MODERATE|MUST USE VideoPlayer/.test(v2));
+});
+
+test('catalogueSection and harness version', () => {
+  assert.equal(catalogueSection(record), null);
+  const s = catalogueSection({ ...record, catalogue: 'CAT-LINES' });
+  assert.ok(s!.startsWith('## PORTFOLIO CATALOGUE (cached system prefix the concierge saw)'));
+  assert.ok(s!.includes('CAT-LINES'));
+  assert.ok(RUBRIC.includes('PORTFOLIO CATALOGUE'));
+  assert.match(RUBRIC, /no outcomes, results or metrics/);
+  assert.equal(HARNESS_VERSION, 3);
 });

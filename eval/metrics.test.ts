@@ -145,3 +145,50 @@ test('computeRunMetrics works without grades.json', () => {
   assert.equal(m.graded, 0);
   assert.equal(m.criteria.grounded, null);
 });
+
+function phase3Fixture(records: unknown[]): string {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'eval-metrics-p3-'));
+  fs.writeFileSync(
+    path.join(dir, 'responses.json'),
+    JSON.stringify({ started_at: 'a', finished_at: 'b', base_url: 'http://x', git_commit: null, query_count: records.length, records }),
+  );
+  return dir;
+}
+
+function withLayout(rec: ReturnType<typeof record>, teaserSlugs: string[], usage?: unknown) {
+  return {
+    ...rec,
+    usage,
+    response: {
+      layoutPlan: { layout: teaserSlugs.map(slug => ({ component: 'CaseStudyTeaser', props: { slug, title: slug } })) },
+    },
+  };
+}
+
+test('corrected recall, shown recall, teaser padding and cache hits', () => {
+  const chorus = 'chorus-alphabet-x-creating-an-eye-opening-asset-visibility-brand';
+  const dir = phase3Fixture([
+    withLayout(record('p1-q05', [chorus, 'x'], ['x']), [], { cache_read_input_tokens: 5000 }),
+    withLayout(record('p1-q03', ['y'], ['y']), ['y'], { cache_read_input_tokens: 0 }),
+    withLayout(record('z1', [], []), ['t1', 't2']),
+  ]);
+  const m = computeRunMetrics(dir);
+  assert.equal(m.recall.hit, 2);
+  assert.equal(m.recall.total, 3);
+  assert.equal(m.recall_corrected.hit, 2);
+  assert.equal(m.recall_corrected.total, 2);
+  assert.equal(m.recall_corrected.excluded, 1);
+  assert.equal(m.shown_recall.hit, 1);
+  assert.equal(m.shown_recall.total, 3);
+  assert.equal(m.teasers.zero_expected_mean, 2);
+  assert.equal(m.teasers.zero_expected_n, 1);
+  assert.deepEqual(m.prompt_cache, { hits: 1, of: 2 });
+  assert.equal(METRIC_DEFS.find(d => d.key === 'prompt_cache_hits')!.get(m), 1);
+});
+
+test('prompt_cache_hits is null when no usage was recorded', () => {
+  const m = computeRunMetrics(fixture([grade('A', 5, {}), grade('B', 5, {})]));
+  assert.equal(METRIC_DEFS.find(d => d.key === 'prompt_cache_hits')!.get(m), null);
+  assert.equal(METRIC_DEFS.find(d => d.key === 'teasers_zero_expected_mean')!.get(m), 0);
+  assert.equal(m.recall.pct, 50);
+});

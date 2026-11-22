@@ -4,13 +4,13 @@
  * Every key must be a real slug in the `capabilities` / `industries` tables
  * (verified by `npx tsx scripts/check-intent-slugs.ts`).
  *
- * Matching is lowercase substring (unchanged). Whole-word matching is RETR-02 (Phase 3),
- * so new keywords must be >= 4 characters or contain a space.
+ * Matching is whole-word (RETR-02): a keyword matches only as a full word, with an optional
+ * s/es plural, so 'ai' no longer fires inside 'maintain' and 'app' not inside 'approach'.
  */
 
 /** Maps common terms users might use to capability slugs. */
 export const CAPABILITY_KEYWORDS: Record<string, string[]> = {
-  'brand-strategy': ['brand', 'branding', 'rebrand', 'brand identity', 'brand positioning', 'brand architecture'],
+  'brand-strategy': ['brand', 'branding', 'branded', 'rebrand', 'brand identity', 'brand positioning', 'brand architecture'],
   'creative-direction': ['creative', 'visual', 'design', 'art direction', 'look and feel'],
   'content-strategy': ['content', 'storytelling', 'copywriting', 'editorial'],
   'messaging-positioning': ['messaging', 'positioning', 'narrative', 'marketecture', 'message house'],
@@ -58,17 +58,31 @@ export const INDUSTRY_GROUPS: Record<string, string[]> = {
   ],
 };
 
+const esc = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const regexCache = new Map<string, RegExp>();
+
+/** Whole-word match on a lowercased query, allowing an s/es plural and treating spaces and hyphens alike. */
+export function keywordHit(lowerQuery: string, keyword: string): boolean {
+  let re = regexCache.get(keyword);
+  if (!re) {
+    const k = esc(keyword.toLowerCase()).replace(/-|\s+/g, '[\\s-]+');
+    re = new RegExp(`(?<![a-z0-9])${k}(?:s|es)?(?![a-z0-9])`);
+    regexCache.set(keyword, re);
+  }
+  return re.test(lowerQuery);
+}
+
 function detect(lowerQuery: string, map: Record<string, string[]>): string[] {
   const out: string[] = [];
   for (const [slug, keywords] of Object.entries(map)) {
-    if (keywords.some((k) => lowerQuery.includes(k.toLowerCase())) && !out.includes(slug)) {
+    if (keywords.some((k) => keywordHit(lowerQuery, k)) && !out.includes(slug)) {
       out.push(slug);
     }
   }
   return out;
 }
 
-/** Detects capabilities and industries from a user query (lowercase substring match). */
+/** Detects capabilities and industries from a user query (whole-word match, RETR-02). */
 export function detectQueryIntent(query: string): { capabilities: string[]; industries: string[] } {
   const lower = query.toLowerCase();
   const capabilities = detect(lower, CAPABILITY_KEYWORDS);
@@ -87,4 +101,16 @@ export function allIntentSlugs(): { capabilities: string[]; industries: string[]
   const industries = new Set<string>(Object.keys(INDUSTRY_KEYWORDS));
   for (const members of Object.values(INDUSTRY_GROUPS)) members.forEach((m) => industries.add(m));
   return { capabilities: Object.keys(CAPABILITY_KEYWORDS), industries: [...industries] };
+}
+
+/** Phrases that mean the user is asking about Article Group itself (drives include_company_info, D-15). */
+export const AG_SELF_KEYWORDS = [
+  'career', 'careers', 'job', 'jobs', 'hiring', 'hire', 'intern', 'internship', 'benefits', 'office', 'offices',
+  'located', 'headquarters', 'remote', 'culture', 'work at article group', 'work for you', 'join your team',
+  'how do you work', 'your process', 'how big is your team', 'contact you',
+];
+
+export function isAboutAG(query: string): boolean {
+  const lower = query.toLowerCase();
+  return AG_SELF_KEYWORDS.some((k) => keywordHit(lower, k));
 }

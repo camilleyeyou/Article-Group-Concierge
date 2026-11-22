@@ -15,7 +15,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import OpenAI from 'openai';
 import { computeAgreement, selectSample, type AgreementResult } from './agreement';
-import { GRADER_SCHEMA, HARNESS_VERSION, RUBRIC, buildGraderPrompt, type GraderOutput } from './rubric';
+import { GRADER_SCHEMA, HARNESS_VERSION, RUBRIC, buildGraderPrompt, catalogueSection, type GraderOutput } from './rubric';
 import { PreflightError, runPreflight } from './preflight';
 import {
   assertWritableRunDir,
@@ -53,6 +53,7 @@ async function callOnce(client: OpenAI, record: RunRecord, prompt: string): Prom
     max_tokens: 16000,
     messages: [
       { role: 'system', content: RUBRIC },
+      ...(catalogueSection(record) ? [{ role: 'system' as const, content: catalogueSection(record)! }] : []),
       { role: 'user', content: prompt },
     ],
     response_format: {

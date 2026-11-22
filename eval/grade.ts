@@ -21,7 +21,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { claudeModelId, providerRoute } from '../src/lib/llm-config';
-import { GRADER_SCHEMA, HARNESS_VERSION, RUBRIC, buildGraderPrompt, type GraderOutput } from './rubric';
+import { GRADER_SCHEMA, HARNESS_VERSION, RUBRIC, buildGraderPrompt, catalogueSection, type GraderOutput } from './rubric';
 import {
   assertWritableRunDir,
   callClaudeJson,
@@ -65,10 +65,14 @@ async function gradeOne(record: RunRecord): Promise<GradeRecord> {
   }
 
   const checks = runAutomatedChecks(record);
+  const cat = catalogueSection(record);
   try {
     const output = await callClaudeJson<GraderOutput>({
       // Rubric + concierge prompt is identical for every call, so cache it
-      system: [{ type: 'text', text: RUBRIC, cache_control: { type: 'ephemeral' } }],
+      system: [
+        { type: 'text', text: RUBRIC, cache_control: { type: 'ephemeral' } },
+        ...(cat ? [{ type: 'text' as const, text: cat, cache_control: { type: 'ephemeral' as const } }] : []),
+      ],
       user: buildGraderPrompt(record, checks),
       schema: GRADER_SCHEMA,
       effort: 'high',

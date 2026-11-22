@@ -18,6 +18,7 @@ import {
   type GradesFile,
   type RunFile,
 } from './lib';
+import { isDisputed } from './labels';
 
 export interface Summary {
   n: number;
@@ -73,6 +74,10 @@ export interface RunMetrics {
   claims_by_kind: Record<ClaimKind, number> | null;
   responses_by_kind: Record<ClaimKind, number> | null;
   recall: { hit: number; total: number; pct: number | null };
+  recall_corrected: { hit: number; total: number; pct: number | null; excluded: number };
+  shown_recall: { hit: number; total: number; pct: number | null };
+  teasers: { zero_expected_mean: number | null; zero_expected_n: number; all_mean: number | null };
+  prompt_cache: { hits: number; of: number };
   latency_s: { median: number | null; min: number | null; max: number | null };
   metrics_not_in_context: number;
   strict_fallback: { pass: number; of: number };
@@ -121,6 +126,43 @@ export function computeRunMetrics(dir: string): RunMetrics {
     hit += record.expected.case_studies.filter(s => retrieved.has(s)).length;
   }
 
+  // Corrected recall (D-301): same rule, minus disputed label pairs
+  let cHit = 0;
+  let cTotal = 0;
+  let excluded = 0;
+  // Shown recall (D-302): expected study presented as a CaseStudyTeaser
+  let sHit = 0;
+  let sTotal = 0;
+  const teaserCounts: Array<{ n: number; zeroExpected: boolean }> = [];
+  let cacheHits = 0;
+  let cacheOf = 0;
+  for (const { record } of rows) {
+    const teaserSlugs = (record.response?.layoutPlan?.layout ?? [])
+      .filter(item => item.component === 'CaseStudyTeaser')
+      .map(item => (item.props as { slug?: string } | undefined)?.slug);
+    if (record.status === 'ok') {
+      teaserCounts.push({ n: teaserSlugs.length, zeroExpected: record.expected.case_studies.length === 0 });
+      if (record.usage) {
+        cacheOf += 1;
+        if ((record.usage.cache_read_input_tokens ?? 0) > 0) cacheHits += 1;
+      }
+    }
+    if (!record.retrieval || record.expected.case_studies.length === 0) continue;
+    const retrieved = new Set(record.retrieval.chunks.map(c => c.slug));
+    for (const slug of record.expected.case_studies) {
+      sTotal += 1;
+      if (teaserSlugs.includes(slug)) sHit += 1;
+      if (isDisputed(record.id, slug)) {
+        excluded += 1;
+        continue;
+      }
+      cTotal += 1;
+      if (retrieved.has(slug)) cHit += 1;
+    }
+  }
+  const zeroTeasers = teaserCounts.filter(t => t.zeroExpected);
+  const mean = (xs: number[]) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null);
+
   const latencies = rows
     .filter(r => r.record.status === 'ok' && r.record.latency_ms !== null)
     .map(r => r.record.latency_ms! / 1000);
@@ -164,6 +206,14 @@ export function computeRunMetrics(dir: string): RunMetrics {
     claims_by_kind: claimsByKind,
     responses_by_kind: responsesByKind,
     recall: { hit, total, pct: total ? (100 * hit) / total : null },
+    recall_corrected: { hit: cHit, total: cTotal, pct: cTotal ? (100 * cHit) / cTotal : null, excluded },
+    shown_recall: { hit: sHit, total: sTotal, pct: sTotal ? (100 * sHit) / sTotal : null },
+    teasers: {
+      zero_expected_mean: mean(zeroTeasers.map(t => t.n)),
+      zero_expected_n: zeroTeasers.length,
+      all_mean: mean(teaserCounts.map(t => t.n)),
+    },
+    prompt_cache: { hits: cacheHits, of: cacheOf },
     latency_s: {
       median: med === null ? null : round(med, 1),
       min: latencies.length ? round(Math.min(...latencies), 1) : null,
@@ -220,6 +270,22 @@ export const METRIC_DEFS: MetricDef[] = [
   },
   ...CLAIM_KINDS.map(kindDef),
   { key: 'recall_pct', label: 'recall_pct', better: 'higher', unit: 'pct', get: m => m.recall.pct },
+  { key: 'recall_pct_corrected', label: 'recall_pct_corrected', better: 'higher', unit: 'pct', get: m => m.recall_corrected.pct },
+  { key: 'shown_recall_pct', label: 'shown_recall_pct', better: 'higher', unit: 'pct', get: m => m.shown_recall.pct },
+  {
+    key: 'teasers_zero_expected_mean',
+    label: 'teasers_zero_expected_mean',
+    better: 'lower',
+    unit: 'score',
+    get: m => (m.teasers.zero_expected_n ? m.teasers.zero_expected_mean : null),
+  },
+  {
+    key: 'prompt_cache_hits',
+    label: 'prompt_cache_hits',
+    better: 'higher',
+    unit: 'count',
+    get: m => (m.prompt_cache.of ? m.prompt_cache.hits : null),
+  },
   { key: 'latency_median_s', label: 'latency_median_s', better: 'lower', unit: 'seconds', get: m => m.latency_s.median },
   {
     key: 'metrics_not_in_context',

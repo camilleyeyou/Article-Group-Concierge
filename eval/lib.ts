@@ -12,6 +12,7 @@ import * as dotenv from 'dotenv';
 import type {
   ComponentType,
   DocumentMetric,
+  GenerationUsage,
   HybridSearchResult,
   OrchestratorOutput,
   VisualAssetSearchResult,
@@ -108,6 +109,7 @@ export interface RetrievalSnapshot {
   chunks: HybridSearchResult[];
   visualAssets: VisualAssetSearchResult[];
   relatedMetrics: DocumentMetric[];
+  searchFunction?: string;
 }
 
 export const FROZEN_BASELINE_ID = '2026-11-20T15-12-31';
@@ -137,6 +139,10 @@ export interface RunRecord {
   raw_response: string | null;
   orchestrator_error: string | null;
   retrieval: RetrievalSnapshot | null;
+  catalogue?: string | null;
+  catalogue_version?: string | null;
+  usage?: GenerationUsage | null;
+  search_function?: string | null;
 }
 
 export interface RunFile {
@@ -439,7 +445,12 @@ export function runAutomatedChecks(record: RunRecord): AutomatedChecks {
       .filter(item => item.component === 'VideoPlayer' && typeof item.props?.url === 'string')
       .map(item => stripQuery(item.props.url as string)),
   );
+  // Under relevant_only, only studies the response presents (has a teaser for) need their video shown
+  const presented = new Set(
+    layout.filter(i => i.component === 'CaseStudyTeaser' && typeof i.props?.slug === 'string').map(i => i.props.slug as string),
+  );
   for (const chunk of chunks) {
+    if (CONCIERGE_CONFIG.teasers.policy === 'relevant_only' && !presented.has(chunk.slug)) continue;
     if (chunk.vimeo_url && !usedVideos.has(stripQuery(chunk.vimeo_url))) {
       checks.videos_available_not_used.push(chunk.slug);
     }

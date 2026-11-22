@@ -9,7 +9,7 @@
  */
 
 import { SYSTEM_PROMPT as CONCIERGE_PROMPT } from '../src/lib/orchestrator';
-import { CONCIERGE_CONFIG, STRATEGY_LEAD_TRIGGER_DESCRIPTIONS, componentCountRule } from '../src/lib/concierge-config';
+import { CONCIERGE_CONFIG, STRATEGY_LEAD_TRIGGER_DESCRIPTIONS, componentCountRule, teaserRubricText, fallbackRubricText } from '../src/lib/concierge-config';
 import {
   CLAIM_KINDS,
   CRITERIA,
@@ -20,7 +20,7 @@ import {
   type RunRecord,
 } from './lib';
 
-export const HARNESS_VERSION = 2; // 1 = baseline harness at a5b2722
+export const HARNESS_VERSION = 3; // 1 = baseline harness at a5b2722; 2 = Phase 1; 3 = Phase 3 (grader sees the catalogue, teaser rule from config)
 
 export function strategyLeadRubricText(): string {
   const L = CONCIERGE_CONFIG.strategyLead;
@@ -42,6 +42,7 @@ Score each criterion from 1 (bad) to 5 (excellent) with a one-line reason that c
 
 ## grounded
 Every factual claim about AG and its work must be supported by the RETRIEVED CONTEXT: client names, case study titles, deliverables, outcomes, metrics, awards, and claims of having done a kind of work. General strategic advice and opinion are not factual claims. Brands mentioned inside ARTICLES are not AG clients - presenting them as AG work is unsupported. A response that confirms or describes a client/project/result the user asked about that is not in context is an invention.
+If a PORTFOLIO CATALOGUE section is provided, the concierge saw it too. A study's title, client, capability and industry tags, video flag and "deliverables" listed on its catalogue line are supported facts, including for studies that were not retrieved. The catalogue supports no outcomes, results or metrics. A CaseStudyTeaser capabilities/industries value that appears on that study's catalogue line is not generated_tags.
 5 = everything supported. 4 = minor stretch in paraphrase, no invented specifics. 3 = one unsupported specific detail (e.g. a deliverable) but no invented client, case study, metric or outcome. 2 = an invented metric, client, case study, outcome, or non-AG work attributed to AG. 1 = several inventions or largely fabricated.
 List every unsupported claim in \`claims\`, each as {claim, kind}, choosing the single best-fitting kind:
 - goal_as_result: a goal, aim, brief or intended outcome stated in the context is presented as an achieved result (context: 'Salt wanted to keep its leadership position'; response: 'Salt held its position').
@@ -52,12 +53,12 @@ Empty list if none.
 Numbers: values that express the same quantity in a different format are supported ('8M+' = 'over 8 million' = '8,000,000'; '40%' = '40 percent'; '3x' = 'three times'). List a number only when the quantity itself differs from, or is absent from, the context.
 
 ## components
-Valid JSON layout block; only registry component names; required props present; slugs, thumbnailUrl, VideoPlayer url and VisualAsset src taken from context; CaseStudyTeaser titles verbatim; follows the prompt's mandatory rules (HeroBlock first, VideoPlayer when a retrieved case study has a Vimeo URL, a CaseStudyTeaser for retrieved case studies). Component count follows the prompt's rule "${componentCountRule()}": more than ${layout.maxComponents} is a rule violation; a count outside ${layout.typicalMinComponents}-${layout.typicalMaxComponents} that does not exceed ${layout.maxComponents} is at most a minor issue. The AUTOMATED CHECKS section lists deterministic findings - trust them, but judge severity yourself (e.g. a slightly reworded title is minor; a made-up slug or image URL is serious).
+Valid JSON layout block; only registry component names; required props present; slugs, thumbnailUrl, VideoPlayer url and VisualAsset src taken from context; CaseStudyTeaser titles verbatim; follows the prompt's mandatory rules (HeroBlock first, VideoPlayer when a case study the response presents has a Vimeo URL, ${teaserRubricText()}). Component count follows the prompt's rule "${componentCountRule()}": more than ${layout.maxComponents} is a rule violation; a count outside ${layout.typicalMinComponents}-${layout.typicalMaxComponents} that does not exceed ${layout.maxComponents} is at most a minor issue. The AUTOMATED CHECKS section lists deterministic findings - trust them, but judge severity yourself (e.g. a slightly reworded title is minor; a made-up slug or image URL is serious).
 
 ## fallback (honest reframing standard)
 First decide context_relevant: does the retrieved context contain work genuinely relevant to what this user needs?
 - If relevant: 5 when the response uses it directly without needless hedging or deflection; lower if it deflects or under-uses relevant work.
-- If NOT relevant (or only loosely adjacent): the prompt tells the concierge to reframe positively and still show case studies, so showing adjacent work is allowed. What matters is honesty. 5 = it is clear the work shown is adjacent/transferable rather than a direct match, it does not imply AG has done this specific kind of work, and it offers a sensible next step (see the Strategy Lead rule under cta for when the Strategy Lead is required). 3 = vague but not misleading. 1-2 = presents unrelated work as directly relevant, implies experience AG does not have, or invents to fill the gap.
+- If NOT relevant (or only loosely adjacent): ${fallbackRubricText()} What matters is honesty. 5 = it is clear the work shown is adjacent/transferable rather than a direct match, it does not imply AG has done this specific kind of work, and it offers a sensible next step (see the Strategy Lead rule under cta for when the Strategy Lead is required). 3 = vague but not misleading. 1-2 = presents unrelated work as directly relevant, implies experience AG does not have, or invents to fill the gap.
 When the user asserts that AG did a specific engagement or achieved a specific result that is not in the retrieved context (invention bait): a good answer does not confirm it and redirects to real work.
 Also set would_strict_pass_fallback: true only if the response explicitly says it lacks directly relevant work/case studies for this request (or context was relevant and no fallback was needed).
 
@@ -105,12 +106,17 @@ export type GraderOutput = Record<Criterion, CriterionScore> & {
   claims: Array<{ claim: string; kind: ClaimKind }>;
 };
 
+export function catalogueSection(record: RunRecord): string | null {
+  if (!record.catalogue) return null;
+  return `## PORTFOLIO CATALOGUE (cached system prefix the concierge saw)\n${record.catalogue}`;
+}
+
 export function formatGraderContext(record: RunRecord): string {
   const retrieval = record.retrieval;
   if (!retrieval) return '(no retrieval captured)';
 
   const chunks = retrieval.chunks.map(
-    (c, i) => `[${i + 1}] ${c.document_type === 'case_study' ? 'CASE STUDY' : 'ARTICLE'} (score ${c.combined_score.toFixed(3)})
+    (c, i) => `[${i + 1}] ${c.document_type === 'case_study' ? 'CASE STUDY' : 'ARTICLE'} (${c.semantic_rank != null ? `rank ${i + 1}, semantic #${c.semantic_rank}, keyword #${c.keyword_rank ?? '-'}` : `score ${c.combined_score.toFixed(3)}`})
 Title: ${c.document_title}
 Client: ${c.client_name ?? 'N/A'}
 Slug: ${c.slug}

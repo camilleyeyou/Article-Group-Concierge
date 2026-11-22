@@ -32,7 +32,7 @@ import {
   type RunRecord,
 } from './lib';
 import { runPreflight, PreflightError } from './preflight';
-import type { OrchestratorOutput } from '../src/types';
+import type { GenerationUsage, OrchestratorOutput } from '../src/types';
 
 const BASE_URL = (process.env.EVAL_BASE_URL || 'http://localhost:3000').replace(/\/$/, '');
 // The chat route allows 20 requests/minute; 4s keeps us well under it
@@ -47,6 +47,8 @@ type DebugResponse = OrchestratorOutput & {
     orchestratorError: string | null;
     retrieval: RetrievalSnapshot;
     models?: RunModels;
+    usage?: GenerationUsage | null;
+    catalogue?: { version: string; text: string } | null;
   };
 };
 
@@ -134,6 +136,10 @@ async function runQuery(q: EvalQuery): Promise<{ record: RunRecord; models: RunM
     record.raw_response = debug.rawResponse;
     record.orchestrator_error = debug.orchestratorError;
     record.retrieval = debug.retrieval;
+    record.catalogue = debug.catalogue?.text ?? null;
+    record.catalogue_version = debug.catalogue?.version ?? null;
+    record.usage = debug.usage ?? null;
+    record.search_function = debug.retrieval?.searchFunction ?? null;
     models = debug.models ?? null;
 
     // The orchestrator swallows model errors and returns a polite fallback with HTTP 200
@@ -201,6 +207,12 @@ export async function runEval(opts: { persona?: string; limit?: number } = {}): 
         ? `ok ${record.latency_ms}ms, ${chunks} chunks, ${record.response?.layoutPlan.layout.length ?? 0} components`
         : `ERROR ${record.error}`,
     );
+    if (record.status === 'ok') {
+      if (i === 0) console.log(`  search: ${record.search_function ?? 'unknown'}`);
+      if (record.search_function !== 'hybrid_search_v2') {
+        console.warn(`  Warning: ${record.id} used search function ${record.search_function ?? 'unknown'}, not hybrid_search_v2`);
+      }
+    }
 
     if (i < selected.length - 1) await sleep(DELAY_MS);
   }

@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to plan
-stopped_at: Completed 02-04-PLAN.md
-last_updated: "2026-11-21T21:48:40.883Z"
+status: Ready to execute
+stopped_at: Completed 03-09-PLAN.md
+last_updated: "2026-11-22T12:21:55.622Z"
 progress:
   total_phases: 6
   completed_phases: 2
-  total_plans: 13
-  completed_plans: 13
+  total_plans: 23
+  completed_plans: 22
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-11-20)
 
 **Core value:** Never misrepresent AG's work. A wrong claim about a client engagement is worse than a weak answer.
-**Current focus:** Phase 02 — content-and-data
+**Current focus:** Phase 03 — retrieval
 
 ## Current Position
 
-Phase: 3
-Plan: Not started
+Phase: 03 (retrieval) — EXECUTING
+Plan: 10 of 10
 
 ## Baseline Metrics (frozen)
 
@@ -69,6 +69,15 @@ Same responses as the frozen run, graded under harness v2. Like-for-like referen
 | Phase 01 P05 | 20min | 3 tasks | 8 files |
 | Phase 01 P06 | 25min | 3 tasks | 7 files |
 | Phase 02 P04 | 10min | 2 tasks | 4 files |
+| Phase 03 P01 | 30min | 3 tasks | 3 files |
+| Phase 03 P02 | 15min | 2 tasks | 7 files |
+| Phase 03 P03 | 15min | 2 tasks | 5 files |
+| Phase 03 P04 | 25min | 2 tasks | 3 files |
+| Phase 03 P05 | 30min | 2 tasks | 5 files |
+| Phase 03 P06 | 25min | 2 tasks | 8 files |
+| Phase 03 P07 | 10min | 2 tasks | 1 files |
+| Phase 03 P08 | 25min | 3 tasks | 6 files |
+| Phase 03 P09 | 35min | 3 tasks | 1 files |
 
 ### Decisions
 
@@ -89,6 +98,12 @@ Same responses as the frozen run, graded under harness v2. Like-for-like referen
 - [Phase 01]: Default N = 1; phase ends use N = 2-3
 - [Phase 01]: Median latency uses the standard median (20.1 s for the frozen run, previously quoted as 20.2 s)
 - [Phase 02]: Intent keyword maps use only DB slugs; technology expands to sub-sector slugs
+- [Phase 03]: hybrid_search_v2 live alongside old functions; held docs stay uninserted until Plan 03-10
+- [Phase 03]: OpenRouter credit is $25.67 (not ~$45); budget eval runs accordingly
+- [Phase 03]: retrieveContext on hybrid_search_v2: offline recall 43/52 (83%), D-303 gate (47/52) not yet met; decision deferred to 03-07/03-08
+- [Phase 03]: Catalogue cached as system block (explicit cache_control, ttl 1h); OpenRouter usage showed cache_read 10,542 tokens on repeat call; check cost $0.043
+- [Phase 03]: D-303 gate FAIL at 43/52 frozen (43/49 corrected); reranker plan 03-08 runs
+- [Phase 03]: User approved Cohere rerank-5-fast (data processor); rerank re-gate FAIL 44/52 (44/49 corrected), +1 vs 03-07, p50 892 ms, 0 fallbacks, ~$0.008
 
 ### Key Constraints
 
@@ -112,6 +127,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-11-21T13:10:25.101Z
-Stopped at: Completed 02-04-PLAN.md
+Last session: 2026-11-22T12:21:55.612Z
+Stopped at: Completed 03-09-PLAN.md
 Resume file: None
+
+- 2026-11-22 (03-08 follow-up): User chose to keep the Cohere reranker OFF (rerank.enabled=false). Net +1 recall (44/52) did not justify ~0.9 s p50 latency and a new data processor. Code and RRF fallback stay; re-enable via config or RERANK_ENABLED=true. Phase-end eval (03-09) approved by user despite gate FAIL; expected recall ≈ 43/52.

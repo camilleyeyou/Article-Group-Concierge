@@ -77,7 +77,19 @@ Plans:
   4. A query with fewer than 4 relevant case studies shows only what exists, with no padding or misrepresentation.
   5. Eval rerun after the phase; report lists every metric's delta vs baseline run 2026-11-20T15-12-31.
 **Constraints / gates**: New SQL goes in `hybrid_search_v2` alongside `hybrid_search`, never a replacement in place. Research: enable for this phase. Check current docs before choosing the prompt-caching approach and before adding any reranker or query rewriting (only if recall is still < 90% after RETR-01..05). Ask before any destructive DB change.
-**Plans**: TBD
+**Plans:** 10 plans (03-08 conditional on the offline recall gate)
+
+Plans:
+- [x] 03-01-PLAN.md — Migration 005 `hybrid_search_v2` (additive), RPC check script, guarded held-chunk insert script; user applies 005 (checkpoint)
+- [x] 03-02-PLAN.md — Contracts: retrieval/teaser config (cap 6, relevant-only), types, whole-word intent + isAboutAG, disputed labels (D-301)
+- [x] 03-03-PLAN.md — Eval harness: recall_pct_corrected, shown recall, teaser padding, prompt-cache hits, debug field capture
+- [x] 03-04-PLAN.md — retrieveContext on v2 (soft intent, no 0.15 cutoff, 6+2 caps, fallback) + free offline recall gate script
+- [x] 03-05-PLAN.md — Deterministic case-study catalogue as cached system block; usage capture; cache-hit check
+- [x] 03-06-PLAN.md — Teaser/video rules from one config in prompt + rubric + checks; RRF rank labels; grader sees catalogue (D-304), harness v3
+- [x] 03-07-PLAN.md — Combined free checks + D-303 offline gate (>= 47/52 frozen)
+- [x] 03-08-PLAN.md — CONDITIONAL: cohere/rerank-5-fast reranker via OpenRouter (Cohere processor checkpoint), RRF fallback, re-gate
+- [x] 03-09-PLAN.md — Smoke + single full eval run; 03-EVAL-DELTA.md vs frozen and re-graded baselines
+- [ ] 03-10-PLAN.md — Squash + push on user go-ahead; confirm production on v2; insert held docs (approval) and verify filters
 
 ### Phase 4: Generation
 **Goal**: Every answer is honest, in AG's voice, and supported by indexed content.

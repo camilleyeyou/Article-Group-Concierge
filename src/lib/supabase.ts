@@ -20,7 +20,9 @@ import type {
 import { RAGLogger } from './logger';
 import { cache, CACHE_PREFIXES, CACHE_TTL } from './cache';
 import { embeddingConfig } from './llm-config';
-import { detectQueryIntent } from './intent-keywords';
+import { detectQueryIntent, isAboutAG } from './intent-keywords';
+import { CONCIERGE_CONFIG, retrievalConfigKey, rerankEnabled } from './concierge-config';
+import { buildRerankPool, rerankDocuments, applyRerank } from './rerank';
 
 // Lazy-initialized Supabase client
 let _supabase: SupabaseClient | null = null;
@@ -162,6 +164,70 @@ export async function hybridSearch({
   }
   
   return data || [];
+}
+
+// ============================================
+// HYBRID SEARCH V2 (RRF, whole corpus)
+// ============================================
+
+export interface HybridSearchV2Params {
+  query: string;
+  matchCount?: number;
+  docTypes?: ('case_study' | 'article')[];
+  boostCapabilitySlugs?: string[];
+  boostIndustrySlugs?: string[];
+  includeCompanyInfo?: boolean;
+  rrfK?: number;
+  intentBoost?: number;
+}
+
+const nonEmpty = <T,>(a?: T[]): T[] | null => (a && a.length > 0 ? a : null);
+
+/**
+ * Call hybrid_search_v2 (migration 005). If the function is not deployed yet,
+ * fall back to the old hybrid_search_exact path so code can ship before the migration.
+ */
+export async function hybridSearchV2(p: HybridSearchV2Params): Promise<{
+  rows: HybridSearchResult[];
+  fn: 'hybrid_search_v2' | 'hybrid_search_exact' | 'hybrid_search';
+}> {
+  const R = CONCIERGE_CONFIG.retrieval;
+  const queryEmbedding = await generateEmbedding(p.query);
+
+  const { data, error } = await supabase.rpc('hybrid_search_v2', {
+    query_embedding: queryEmbedding,
+    query_text: p.query,
+    match_count: p.matchCount ?? R.matchCount,
+    doc_types: p.docTypes ?? null,
+    boost_capability_slugs: nonEmpty(p.boostCapabilitySlugs),
+    boost_industry_slugs: nonEmpty(p.boostIndustrySlugs),
+    include_company_info: p.includeCompanyInfo ?? false,
+    rrf_k: p.rrfK ?? R.rrfK,
+    intent_boost: p.intentBoost ?? R.intentBoost,
+  });
+
+  if (error) {
+    if (error.code === 'PGRST202' || error.code === '42883') {
+      RAGLogger.error('hybrid_search_v2 missing; falling back to hybrid_search_exact', error);
+      return { rows: await hybridSearch({ query: p.query, matchCount: 20 }), fn: 'hybrid_search_exact' };
+    }
+    RAGLogger.error('hybrid_search_v2 error', error);
+    throw error;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const rows: HybridSearchResult[] = ((data as any[]) || []).map((row) => ({
+    ...row,
+    similarity_score: row.semantic_score,
+    keyword_score: row.keyword_score ?? 0,
+    combined_score: row.combined_score,
+    semantic_rank: row.semantic_rank,
+    keyword_rank: row.keyword_rank,
+    intent_match: row.intent_match,
+    metadata: row.metadata ?? {},
+    author: row.author ?? null,
+  }));
+  return { rows, fn: 'hybrid_search_v2' };
 }
 
 // ============================================
@@ -308,18 +374,36 @@ interface RetrieveContextParams {
   query: string;
   capabilitySlugs?: string[];
   industrySlugs?: string[];
+  /** Ignored: caps come from CONCIERGE_CONFIG.retrieval. Kept so callers compile unchanged. */
   maxChunks?: number;
   maxAssets?: number;
-  minRelevanceScore?: number;
   skipCache?: boolean; // Eval runs need fresh results after reingestion
+}
+
+let caseStudyChunkCache: { n: number; at: number } | null = null;
+
+/** Number of retrievable case-study chunks (memoised 1 h); used to size the rerank pool call. */
+export async function getCaseStudyChunkCount(): Promise<number> {
+  const fallback = CONCIERGE_CONFIG.retrieval.rerank.matchCountFallback;
+  if (caseStudyChunkCache && Date.now() - caseStudyChunkCache.at < 3600_000) return caseStudyChunkCache.n;
+  const { count, error } = await supabase
+    .from('content_chunks')
+    .select('id, documents!inner(doc_type)', { count: 'exact', head: true })
+    .eq('documents.doc_type', 'case_study')
+    .not('embedding', 'is', null);
+  if (error || count == null) {
+    RAGLogger.error('case-study chunk count unavailable; using fallback', error);
+    return fallback;
+  }
+  caseStudyChunkCache = { n: count, at: Date.now() };
+  return count;
 }
 
 /**
  * Main retrieval function that gathers all context needed for the orchestrator.
- * This is called before sending the user query to Claude.
- *
- * Includes relevance filtering and deduplication to improve result quality.
- * IMPORTANT: Ensures a balanced mix of case studies and articles.
+ * One hybrid_search_v2 call (RRF, whole corpus), whole-word intent as a soft boost,
+ * best chunk per document, no relevance cutoff. Case studies first, then articles,
+ * each group in RRF order.
  *
  * CACHED: Results are cached for 1 hour to reduce database load and API costs
  */
@@ -327,22 +411,18 @@ export async function retrieveContext({
   query,
   capabilitySlugs,
   industrySlugs,
-  maxChunks = 10,
   maxAssets = 5,
-  minRelevanceScore = 0.15, // Lowered threshold - semantic scores are often 0.2-0.4
   skipCache = false,
 }: RetrieveContextParams): Promise<RetrievedContext> {
-  // Create cache key from query and filters
+  const R = CONCIERGE_CONFIG.retrieval;
   const cacheKey = {
     query,
-    capabilitySlugs: capabilitySlugs?.sort(),
-    industrySlugs: industrySlugs?.sort(),
-    maxChunks,
+    capabilitySlugs: capabilitySlugs ? [...capabilitySlugs].sort() : undefined,
+    industrySlugs: industrySlugs ? [...industrySlugs].sort() : undefined,
     maxAssets,
-    minRelevanceScore,
+    retrieval: retrievalConfigKey(),
   };
 
-  // Check cache first
   const cached = skipCache
     ? null
     : cache.get<RetrievedContext>(CACHE_PREFIXES.RAG_SEARCH, cacheKey);
@@ -351,17 +431,15 @@ export async function retrieveContext({
     return cached;
   }
 
-  // IMPROVEMENT: Auto-detect capabilities and industries from query
+  // Whole-word intent, used only as a soft boost (never a filter)
   const detectedIntent = detectQueryIntent(query);
-
-  // Merge detected intents with explicitly provided filters
-  const enhancedCapabilities = [
+  const boostCapabilities = [
     ...(capabilitySlugs || []),
-    ...detectedIntent.capabilities.filter(c => !capabilitySlugs?.includes(c))
+    ...detectedIntent.capabilities.filter(c => !capabilitySlugs?.includes(c)),
   ];
-  const enhancedIndustries = [
+  const boostIndustries = [
     ...(industrySlugs || []),
-    ...detectedIntent.industries.filter(i => !industrySlugs?.includes(i))
+    ...detectedIntent.industries.filter(i => !industrySlugs?.includes(i)),
   ];
 
   RAGLogger.debug('Detected intent from query', {
@@ -369,149 +447,79 @@ export async function retrieveContext({
     industries: detectedIntent.industries.join(', ') || 'none',
   });
 
-  // Run searches in parallel for performance
-  // First search: with detected filters for better case study matching
-  // Second search: without filters as fallback for broader results
-  const searchPromises: Promise<HybridSearchResult[]>[] = [
-    hybridSearch({
+  const useRerank = rerankEnabled();
+  const [search, visualAssets, capabilities, industries, topics, poolSearch] = await Promise.all([
+    hybridSearchV2({
       query,
-      capabilitySlugs: enhancedCapabilities.length > 0 ? enhancedCapabilities : undefined,
-      industrySlugs: enhancedIndustries.length > 0 ? enhancedIndustries : undefined,
-      matchCount: maxChunks * 2,
+      boostCapabilitySlugs: boostCapabilities,
+      boostIndustrySlugs: boostIndustries,
+      includeCompanyInfo: isAboutAG(query),
     }),
-  ];
-
-  // Add a fallback search without filters if we detected intent
-  // This ensures we still get results even if the filters are too restrictive
-  if (enhancedCapabilities.length > 0 || enhancedIndustries.length > 0) {
-    searchPromises.push(
-      hybridSearch({
-        query,
-        matchCount: maxChunks * 2,
-      })
-    );
-  }
-
-  const [primaryResults, fallbackResults, visualAssets, capabilities, industries, topics] = await Promise.all([
-    searchPromises[0],
-    searchPromises[1] || Promise.resolve([]),
-    searchVisualAssets({
-      query,
-      matchCount: maxAssets,
-    }),
+    searchVisualAssets({ query, matchCount: maxAssets }),
     getCapabilities(),
     getIndustries(),
     getTopics(),
+    useRerank
+      ? getCaseStudyChunkCount().then(n =>
+          hybridSearchV2({
+            query,
+            docTypes: ['case_study'],
+            matchCount: n,
+            boostCapabilitySlugs: boostCapabilities,
+            boostIndustrySlugs: boostIndustries,
+            includeCompanyInfo: false,
+          }).then(r => ({ ...r, asked: n })),
+        )
+      : Promise.resolve(null),
   ]);
+  const { rows: rawChunks, fn } = search;
 
-  // Merge results, preferring primary (filtered) results
-  const seenIds = new Set<string>();
-  const rawChunks: HybridSearchResult[] = [];
-
-  // Add primary results first (these matched our detected filters)
-  for (const chunk of primaryResults) {
-    if (!seenIds.has(chunk.chunk_id)) {
-      seenIds.add(chunk.chunk_id);
-      // Boost score slightly for chunks that matched our detected filters
-      rawChunks.push({
-        ...chunk,
-        combined_score: chunk.combined_score * 1.1, // 10% boost for filter matches
-      });
-    }
-  }
-
-  // Add fallback results that weren't in primary
-  for (const chunk of fallbackResults) {
-    if (!seenIds.has(chunk.chunk_id)) {
-      seenIds.add(chunk.chunk_id);
-      rawChunks.push(chunk);
-    }
-  }
-
-  // Sort by combined score
-  rawChunks.sort((a, b) => b.combined_score - a.combined_score);
-  
-  // Log raw results for debugging
-  RAGLogger.debug('Raw search results', {
-    query: query.slice(0, 50) + '...',
-    chunks_returned: rawChunks.length,
-    score_range: rawChunks.length > 0
-      ? `${rawChunks[rawChunks.length - 1]?.combined_score?.toFixed(3)} - ${rawChunks[0]?.combined_score?.toFixed(3)}`
-      : 'N/A',
-  });
-  
-  // IMPROVEMENT 1: Filter by minimum relevance score
-  let relevantChunks = rawChunks.filter(chunk => chunk.combined_score >= minRelevanceScore);
-  
-  // FALLBACK: If filtering removed everything, use top results anyway
-  if (relevantChunks.length === 0 && rawChunks.length > 0) {
-    RAGLogger.debug('All chunks below threshold, using top results as fallback');
-    relevantChunks = rawChunks.slice(0, 10);
-  }
-  
-  // IMPROVEMENT 2: Separate by document type for balanced results
-  const caseStudyChunks = relevantChunks.filter(c => c.document_type === 'case_study');
-  const articleChunks = relevantChunks.filter(c => c.document_type === 'article');
-
-  RAGLogger.debug('Document type breakdown', {
-    case_studies: caseStudyChunks.length,
-    articles: articleChunks.length,
-  });
-
-  // IMPROVEMENT 3: Deduplicate - keep best chunk per document
-  const getBestPerDocument = (chunks: typeof rawChunks) => {
-    const bestChunkPerDocument = new Map<string, typeof rawChunks[0]>();
+  // Best chunk per document (highest combined_score; ties keep input order), RRF order
+  const getBestPerDocument = (chunks: HybridSearchResult[]) => {
+    const best = new Map<string, HybridSearchResult>();
     for (const chunk of chunks) {
-      const existing = bestChunkPerDocument.get(chunk.document_id);
+      const existing = best.get(chunk.document_id);
       if (!existing || chunk.combined_score > existing.combined_score) {
-        bestChunkPerDocument.set(chunk.document_id, chunk);
+        best.set(chunk.document_id, chunk);
       }
     }
-    return [...bestChunkPerDocument.values()]
-      .sort((a, b) => b.combined_score - a.combined_score);
+    return [...best.values()]
+      .map((chunk, i) => ({ chunk, i }))
+      .sort((a, b) => b.chunk.combined_score - a.chunk.combined_score || a.i - b.i)
+      .map(x => x.chunk);
   };
 
-  const bestCaseStudies = getBestPerDocument(caseStudyChunks);
-  const bestArticles = getBestPerDocument(articleChunks);
+  const bestCaseStudies = getBestPerDocument(rawChunks.filter(c => c.document_type === 'case_study'));
+  const bestArticles = getBestPerDocument(rawChunks.filter(c => c.document_type === 'article'));
 
-  // FIX: If no case studies passed relevance filter but raw results had them,
-  // include top 2 case studies anyway (addresses "missing 50% of time" issue)
-  let fallbackCaseStudies: typeof rawChunks = [];
-  if (bestCaseStudies.length === 0) {
-    const allRawCaseStudies = rawChunks.filter(c => c.document_type === 'case_study');
-    if (allRawCaseStudies.length > 0) {
-      RAGLogger.debug('No case studies passed filter, including top 2 as fallback');
-      fallbackCaseStudies = getBestPerDocument(allRawCaseStudies).slice(0, 2);
+  // RETR-06 rerank hook: CONCIERGE_CONFIG.retrieval.rerank (Plan 03-08) replaces the case-study selection here.
+  let selectedCaseStudies = bestCaseStudies.slice(0, R.maxCaseStudies);
+  if (poolSearch && poolSearch.fn === 'hybrid_search_v2') {
+    if (poolSearch.rows.length >= poolSearch.asked && caseStudyChunkCache === null) {
+      RAGLogger.error('rerank pool may be truncated', { asked: poolSearch.asked, got: poolSearch.rows.length });
     }
+    const pool = buildRerankPool(poolSearch.rows, {
+      semanticPool: R.rerank.semanticPool,
+      keywordPool: R.rerank.keywordPool,
+    });
+    const out = await rerankDocuments(query, pool);
+    if (out) selectedCaseStudies = applyRerank(pool, out).slice(0, R.maxCaseStudies);
   }
+  const selectedArticles = bestArticles.slice(0, R.maxArticles);
 
-  // IMPROVEMENT 4: Prioritize case studies, but include relevant articles
-  // Take up to 4 case studies (or fallback if none passed filter) and up to 2 articles
-  const maxCaseStudies = 4;
-  const maxArticles = 2;
+  // Case studies first; RRF scores are per-type ranks, so cross-type order means nothing
+  const finalChunks = [...selectedCaseStudies, ...selectedArticles];
 
-  const selectedCaseStudies = bestCaseStudies.length > 0
-    ? bestCaseStudies.slice(0, maxCaseStudies)
-    : fallbackCaseStudies;
-  const selectedArticles = bestArticles.slice(0, maxArticles);
-  
-  // Combine and sort by score
-  const finalChunks = [...selectedCaseStudies, ...selectedArticles]
-    .sort((a, b) => b.combined_score - a.combined_score);
-  
-  // Log for debugging
   RAGLogger.debug('Final retrieval results', {
     query: query.slice(0, 50) + '...',
+    search_function: fn,
     raw_chunks: rawChunks.length,
-    after_filtering: relevantChunks.length,
-    final: finalChunks.length,
-    top_scores: finalChunks.slice(0, 3).map(c => c.combined_score.toFixed(3)).join(', '),
+    case_studies: selectedCaseStudies.length,
+    articles: selectedArticles.length,
+    top_ranks: rawChunks.slice(0, 3).map(c => `${c.semantic_rank ?? '-'}/${c.keyword_rank ?? '-'}`).join(', '),
   });
-  
-  // Get unique document IDs from final chunks
+
   const documentIds = [...new Set(finalChunks.map((c) => c.document_id))];
-  
-  // Fetch metrics for retrieved documents
   const relatedMetrics = documentIds.length > 0
     ? await getDocumentMetrics(documentIds)
     : [];
@@ -523,9 +531,9 @@ export async function retrieveContext({
     capabilities,
     industries,
     topics,
+    searchFunction: fn,
   };
 
-  // Cache the result
   cache.set(CACHE_PREFIXES.RAG_SEARCH, cacheKey, result, CACHE_TTL.RAG_SEARCH);
 
   return result;

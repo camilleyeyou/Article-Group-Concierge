@@ -132,6 +132,12 @@ export interface HybridSearchResult {
   similarity_score: number;
   keyword_score: number;
   combined_score: number;
+  semantic_rank?: number | null;
+  keyword_rank?: number | null;
+  intent_match?: boolean;
+  rerank_score?: number | null;
+  pdf_url?: string | null;
+  hero_video_url?: string | null;
 }
 
 export interface VisualAssetSearchResult {
@@ -239,6 +245,7 @@ export interface RetrievedContext {
   capabilities: Capability[];
   industries: Industry[];
   topics: Topic[];
+  searchFunction?: 'hybrid_search_v2' | 'hybrid_search_exact' | 'hybrid_search';
 }
 
 export interface OrchestratorInput {
@@ -258,6 +265,14 @@ export type OrchestratorErrorCode =
   | 'database_unavailable'
   | 'internal_error';
 
+export interface GenerationUsage {
+  input_tokens: number | null;
+  output_tokens: number | null;
+  cache_creation_input_tokens: number | null;
+  cache_read_input_tokens: number | null;
+  cost: number | null;
+}
+
 export interface OrchestratorOutput {
   layoutPlan: LayoutPlan;
   explanation: string;
@@ -268,6 +283,8 @@ export interface OrchestratorOutput {
   // Internal only - the chat route strips these unless eval debug mode is on
   rawResponse?: string; // Unparsed model text
   orchestratorError?: string; // Set when the model call failed and a fallback was returned
+  usage?: GenerationUsage | null;
+  catalogueVersion?: string | null;
 }
 
 // ============================================
