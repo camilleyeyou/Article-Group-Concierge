@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: Ready to execute
-stopped_at: Completed 03-12-PLAN.md
-last_updated: "2026-11-22T16:43:11.222Z"
+stopped_at: Completed 04-09-PLAN.md
+last_updated: "2026-11-23T01:47:30.102Z"
 progress:
   total_phases: 6
-  completed_phases: 2
-  total_plans: 26
-  completed_plans: 25
+  completed_phases: 3
+  total_plans: 35
+  completed_plans: 34
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-11-20)
 
 **Core value:** Never misrepresent AG's work. A wrong claim about a client engagement is worse than a weak answer.
-**Current focus:** Phase 03 — retrieval
+**Current focus:** Phase 04 — generation
 
 ## Current Position
 
-Phase: 03 (retrieval) — EXECUTING
-Plan: 3 of 13
+Phase: 05 (next) — Phase 04 closed with gaps (see 04-EVAL-DELTA.md)
+Plan: Phase 04 9 of 9 done
 
 ## Baseline Metrics (frozen)
 
@@ -80,6 +80,14 @@ Same responses as the frozen run, graded under harness v2. Like-for-like referen
 | Phase 03 P09 | 35min | 3 tasks | 1 files |
 | Phase 03 P11 | 90min | 2 tasks | 9 files |
 | Phase 03 P12 | ~1h | 3 tasks | 4 files |
+| Phase 04 P01 | 20min | 3 tasks | 11 files |
+| Phase 04 P02 | 15min | 2 tasks | 8 files |
+| Phase 04 P03 | 15min | 2 tasks | 2 files |
+| Phase 04 P04 | 25min | 3 tasks | 10 files |
+| Phase 04 P05 | 25min | 3 tasks | 3 files |
+| Phase 04 P06 | 40min | 3 tasks | 2 files |
+| Phase 04 P07 | 25min | 2 tasks | 9 files |
+| Phase 04 P08 | n/a | 4 tasks | 1 files |
 
 ### Decisions
 
@@ -109,7 +117,14 @@ Same responses as the frozen run, graded under harness v2. Like-for-like referen
 - [Phase 03]: Phase 3 shipped as 2 commits (853bbe4 + build fix 120ab9d); prod on v2; 20 held chunks inserted, filters verified 8/8, recall unchanged 43/52
 - [Phase 03]: 03-11 bake-off: winner cap8 (no rerank), 47/52 frozen on both passes; Cohere cap7 47, cap8 48; Haiku cap8 47; Haiku needs thinking disabled; production still cap 6
 - [Phase 03]: Shipped cap8 (maxCaseStudies 8, no reranker) as retrieval default; eval recall 47/52 frozen, RETR-05 guard pass
-- [Phase 03 gap] D-305 bake-off: winner cap8; eval 2026-11-22T13-42-12 recall 47/52 frozen, 47/49 corrected; D-307 guard PASS (zero-expected teasers 1.45, exactly-4 1/50); spend $4.83; production: pushed lever (user option "Squash and push"); deploy: DEPLOY_PENDING; live smoke: SMOKE_PENDING
+- [Phase 03 gap] D-305 bake-off: winner cap8; eval 2026-11-22T13-42-12 recall 47/52 frozen, 47/49 corrected; D-307 guard PASS (zero-expected teasers 1.45, exactly-4 1/50); spend $4.83; production: pushed lever (user option "Squash and push"); deploy: Vercel 7wqDymHReWw5ZM1ZKLgq1YJ6C2hH Ready (commit 2faba11); live smoke: layoutPlan returned, 20.1 s
+- [Phase 04]: 04-01: server-side teaser tags from DB links via postProcessOutput; Phase 4 config contract (triggers, keywords, narrative limits, verifier flag default OFF) centralised in concierge-config
+- [Phase 04]: 04-06: full eval 2026-11-22T22-48-20 claims 6/50, voice 4.36; GEN-07 GATE EVALUATE VERIFIER; user option run (Opus grader only); GEN-02, GEN-05 marked complete
+- [Phase 04]: 04-07: verifier built (fail-open, default off, debug-only report); eval:verify-saved ready for 04-08; GEN-07 stays open
+- [Phase 04]: GEN-07 verifier ships disabled (user: ship-disabled); revisit in Phase 5 off the first-content path
+- [Phase 04]: Prompt rewrite (honesty, 2-4 sentence "we" narrative, Strategy Lead on 5 triggers, Larkspur example); server-side teaser tags from DB links; eval 2026-11-22T22-48-20: unsupported-claim responses 6/50, goal_as_result 2, capability_not_shown 0, invention_bait_presupposed 0, voice 4.36, narrative_in_range 49/50; harness v4. 1 of 5 success criteria met, Phase 4 left unticked
+- [Phase 04]: GEN-07 gate EVALUATED; verifier SHIP DISABLED (6 -> 5 claims, +2.6 s median, 47/50 rewritten, voice -0.18, new claims introduced)
+- [Phase 04]: spend ~$10.6; credit $5.39; production: pushed (user option "push", Squash and push); deploy: DEPLOY_PENDING; live smoke: SMOKE_PENDING
 
 ### Key Constraints
 
@@ -118,7 +133,7 @@ Same responses as the frozen run, graded under harness v2. Like-for-like referen
 - Squash each phase to one commit before pushing.
 - Ask before any destructive DB change or full re-index; ask before taxonomy data changes and before ingesting missing work.
 - Check current docs before choosing external products/APIs (research enabled for Phases 3 and 5).
-- Budget: OpenRouter key capped at $50, about $16 credit left after the gap run; each eval run ~$3.50.
+- Budget: OpenRouter key capped at $50, $5.39 credit left after Phase 4; Phase 5 needs one full eval (~$3.50-4.14), Phase 6 ~$12 (top up needed).
 - `EVAL_DEBUG=true` must never be set in production.
 - Supabase free tier pauses on inactivity; restore it before eval runs.
 
@@ -134,8 +149,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-11-22T16:43:11.214Z
-Stopped at: Completed 03-13-PLAN.md
+Last session: 2026-11-23T01:47:30.094Z
+Stopped at: Completed 04-09-PLAN.md
 Resume file: None
 
 - 2026-11-22 (03-08 follow-up): User chose to keep the Cohere reranker OFF (rerank.enabled=false). Net +1 recall (44/52) did not justify ~0.9 s p50 latency and a new data processor. Code and RRF fallback stay; re-enable via config or RERANK_ENABLED=true. Phase-end eval (03-09) approved by user despite gate FAIL; expected recall ≈ 43/52.

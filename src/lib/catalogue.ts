@@ -20,6 +20,28 @@ export interface CatalogueRow {
   deliverables: string | null;
 }
 
+export interface CatalogueTags {
+  capabilities: string[];
+  industries: string[];
+}
+
+/** tagsBySlug feeds GEN-03 server-side teaser tags (DB links, D-07 strict tagging). */
+export interface Catalogue {
+  text: string;
+  version: string;
+  tagsBySlug: Map<string, CatalogueTags>;
+}
+
+const sortEn = (a: string, b: string) => a.localeCompare(b, 'en');
+
+export function tagsBySlug(rows: CatalogueRow[]): Map<string, CatalogueTags> {
+  const m = new Map<string, CatalogueTags>();
+  for (const r of rows) {
+    m.set(r.slug, { capabilities: [...r.capabilities].sort(sortEn), industries: [...r.industries].sort(sortEn) });
+  }
+  return m;
+}
+
 export const CATALOGUE_RULE = `## AG PORTFOLIO CATALOGUE
 Every case study in Article Group's indexed portfolio, sorted by slug. Use it to know what work exists: never say AG lacks a kind of work that a study listed here shows. It is NOT evidence of outcomes, results or metrics. Facts about a study, any outcome or metric, and every CaseStudyTeaser must come only from the RETRIEVED CONTEXT in the user message. If a catalogue study fits the request but was not retrieved, you may name it as related work, but don't describe its results or make a teaser for it.`;
 
@@ -45,7 +67,7 @@ export function catalogueVersion(text: string): string {
 }
 
 const TTL_MS = 60 * 60 * 1000;
-let memo: { value: { text: string; version: string }; loadedAt: number } | null = null;
+let memo: { value: Catalogue; loadedAt: number } | null = null;
 
 async function loadRows(): Promise<CatalogueRow[]> {
   const { data: docs, error } = await supabase
@@ -118,11 +140,12 @@ async function loadRows(): Promise<CatalogueRow[]> {
 }
 
 /** Memoised (1h). Never throws: returns the last good value or null. */
-export async function getCatalogue(): Promise<{ text: string; version: string } | null> {
+export async function getCatalogue(): Promise<Catalogue | null> {
   if (memo && Date.now() - memo.loadedAt < TTL_MS) return memo.value;
   try {
-    const text = formatCatalogue(await loadRows());
-    memo = { value: { text, version: catalogueVersion(text) }, loadedAt: Date.now() };
+    const rows = await loadRows();
+    const text = formatCatalogue(rows);
+    memo = { value: { text, version: catalogueVersion(text), tagsBySlug: tagsBySlug(rows) }, loadedAt: Date.now() };
     return memo.value;
   } catch (e) {
     RAGLogger.error('Catalogue load failed', e);

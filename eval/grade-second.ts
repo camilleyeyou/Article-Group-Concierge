@@ -82,6 +82,7 @@ async function gradeOne(client: OpenAI, record: RunRecord): Promise<GradeRecord>
     invented_claims: [],
     context_relevant: null,
     would_strict_pass_fallback: null,
+    presupposes_asserted_work: null,
     hallucination: false,
     automated_checks: null,
   };
@@ -102,6 +103,7 @@ async function gradeOne(client: OpenAI, record: RunRecord): Promise<GradeRecord>
         invented_claims: output.claims.map(c => c.claim),
         context_relevant: output.context_relevant,
         would_strict_pass_fallback: output.would_strict_pass_fallback,
+      presupposes_asserted_work: output.presupposes_asserted_work ?? null,
         hallucination: scores.grounded.score <= HALLUCINATION_THRESHOLD,
         automated_checks: checks,
       };

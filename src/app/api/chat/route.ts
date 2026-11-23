@@ -128,7 +128,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     });
 
     // Return the result
-    const { rawResponse, orchestratorError, usage, catalogueVersion, ...publicResult } = result;
+    const { rawResponse, modelRawResponse, orchestratorError, usage, catalogueVersion, verifier, ...publicResult } = result;
     if (!debug) {
       return NextResponse.json(publicResult);
     }
@@ -136,8 +136,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       ...publicResult,
       debug: {
         rawResponse: rawResponse ?? null,
+        modelRawResponse: modelRawResponse ?? null,
         orchestratorError: orchestratorError ?? null,
         usage: usage ?? null,
+        verifier: verifier ?? null,
         catalogue: await catalogueForDebug(catalogueVersion),
         models: { route: providerRoute(), generation: GENERATION_MODEL, embedding: embeddingConfig().model },
         retrieval: {

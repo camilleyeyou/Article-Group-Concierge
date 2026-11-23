@@ -4,7 +4,9 @@
  * Changing a value here changes what the live concierge is told to do.
  * Also holds the retrieval caps/RRF settings and the teaser policy (prompt and rubric text derive from it).
  */
-export type StrategyLeadTrigger = 'no_context' | 'fallback' | 'pricing' | 'timeline';
+export type StrategyLeadTrigger = 'no_context' | 'fallback' | 'pricing' | 'timeline' | 'invention_bait';
+
+export type KeywordTrigger = 'pricing' | 'timeline';
 
 export type TeaserPolicy = 'all_retrieved' | 'relevant_only';
 
@@ -32,20 +34,42 @@ export interface RerankConfig {
   maxDocChars: number;
 }
 
+export interface VerifierConfig {
+  enabled: boolean;
+  model: string;
+  timeoutMs: number;
+  maxTokens: number;
+  maxDocChars: number;
+}
+
 export interface ConciergeConfig {
   layout: { typicalMinComponents: number; typicalMaxComponents: number; maxComponents: number };
   followUps: { min: number; max: number };
-  strategyLead: { name: string; offerOn: readonly StrategyLeadTrigger[] };
+  strategyLead: {
+    name: string;
+    offerOn: readonly StrategyLeadTrigger[];
+    keywords: Record<KeywordTrigger, readonly string[]>;
+  };
   retrieval: RetrievalConfig;
   teasers: { policy: TeaserPolicy };
+  narrative: { minSentences: number; maxSentences: number };
+  honesty: { admitNoDirectWork: boolean };
+  video: { queryKeywords: readonly string[] };
+  verifier: VerifierConfig;
 }
 
 export const CONCIERGE_CONFIG: ConciergeConfig = {
   layout: { typicalMinComponents: 4, typicalMaxComponents: 8, maxComponents: 10 },
   followUps: { min: 2, max: 3 },
-  // Current app behaviour, kept in Phase 1: the Strategy Lead is offered only when retrieval returns nothing.
-  // Phase 4 (GEN-06) is expected to add 'fallback', 'pricing' and 'timeline'.
-  strategyLead: { name: 'Strategy Lead', offerOn: ['no_context'] },
+  // D-411 (Phase 4, GEN-06): offered on these triggers; prompt and rubric text derive from this list.
+  strategyLead: {
+    name: 'Strategy Lead',
+    offerOn: ['no_context', 'fallback', 'pricing', 'timeline', 'invention_bait'],
+    keywords: {
+      pricing: ['price', 'prices', 'pricing', 'cost', 'costs', 'charge', 'charges', 'fee', 'fees', 'budget', 'budgets', 'rate card', 'quote', 'quotes', 'how much', 'afford'],
+      timeline: ['timeline', 'timelines', 'timeframe', 'turnaround', 'how long', 'how fast', 'how soon', 'how quickly', 'weeks', 'lead time'],
+    },
+  },
   // intentBoost 0.003 is about +10 ranks at k=60; 0 disables the boost.
   retrieval: {
     // D-305 gap closure (2026-11-22): cap8 chosen by offline bake-off, 47/52 frozen offline; see 03-BAKEOFF.md.
@@ -73,7 +97,21 @@ export const CONCIERGE_CONFIG: ConciergeConfig = {
     },
   },
   teasers: { policy: 'relevant_only' },
+  // D-407
+  narrative: { minSentences: 2, maxSentences: 4 },
+  // GEN-01 config flag (STATE decision "assumed yes")
+  honesty: { admitNoDirectWork: true },
+  video: { queryKeywords: ['video', 'videos', 'film', 'films', 'filmed', 'documentary', 'animation', 'animated', 'motion'] },
+  // D-417/D-420 (GEN-07): Haiku 5.5 claim-check via OpenRouter. Default OFF; ships enabled only after user approval. VERIFIER_ENABLED env overrides.
+  verifier: { enabled: false, model: 'claude-haiku-5-5', timeoutMs: 6000, maxTokens: 2000, maxDocChars: 2000 },
 };
+
+// D-421: the prompt's worked example is fictional; the rubric treats these names as invention markers.
+export const FICTIONAL_EXAMPLE = {
+  client: 'Larkspur Bank',
+  slug: 'larkspur-bank-brand-platform',
+  title: 'Larkspur Bank: A Brand Platform for a Digital Lender',
+} as const;
 
 export const STRATEGY_LEAD_TRIGGER_DESCRIPTIONS: Record<StrategyLeadTrigger, string> = {
   no_context:
@@ -81,7 +119,52 @@ export const STRATEGY_LEAD_TRIGGER_DESCRIPTIONS: Record<StrategyLeadTrigger, str
   fallback: 'the retrieved work is not directly relevant to what the user asked for',
   pricing: 'the user asks about price, cost, fees or budget',
   timeline: 'the user asks about timelines, speed, or how soon AG can start',
+  invention_bait:
+    'the user asserts or presupposes that AG did a specific engagement, worked with a specific client, or achieved a specific result that the retrieved context does not show',
 };
+
+export function narrativeRule(): string {
+  const { minSentences, maxSentences } = CONCIERGE_CONFIG.narrative;
+  return `Write the narrative in ${minSentences}-${maxSentences} sentences, never more than ${maxSentences}. Count every sentence before the follow-up questions, including any honest gap line and the Strategy Lead offer.`;
+}
+
+export function strategyLeadPromptRule(): string {
+  const { name, offerOn } = CONCIERGE_CONFIG.strategyLead;
+  return `Offer a conversation with our ${name} in ONE closing sentence of the narrative, using the name "${name}" (for example: "Our ${name} can scope this with you."), when ${offerOn.map(t => STRATEGY_LEAD_TRIGGER_DESCRIPTIONS[t]).join('; or when ')}. On a good direct match where none of these applies, do not mention the ${name}: the follow-up questions are the next step.`;
+}
+
+export function pricingTimelineRule(): string {
+  const { name } = CONCIERGE_CONFIG.strategyLead;
+  return `When the user asks about price, cost, fees, budget, timelines or speed: never give figures (no amounts of money, no numbers of days, weeks or months, no dates). Say it depends on scope, name what drives it only if the retrieved content supports that, and offer our ${name}.`;
+}
+
+function escapeRe(w: string): string {
+  return w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function wordMatcher(words: readonly string[]): RegExp {
+  const alts = words.map(w => w.split(/\s+/).map(escapeRe).join('\\s+'));
+  return new RegExp('\\b(' + alts.join('|') + ')\\b', 'i');
+}
+
+export function keywordTriggers(query: string): KeywordTrigger[] {
+  const out: KeywordTrigger[] = [];
+  for (const t of ['pricing', 'timeline'] as const) {
+    if (wordMatcher(CONCIERGE_CONFIG.strategyLead.keywords[t]).test(query)) out.push(t);
+  }
+  return out;
+}
+
+export function isVideoQuery(query: string): boolean {
+  return wordMatcher(CONCIERGE_CONFIG.video.queryKeywords).test(query);
+}
+
+/** VERIFIER_ENABLED env overrides the config default. */
+export function verifierEnabled(): boolean {
+  return process.env.VERIFIER_ENABLED
+    ? process.env.VERIFIER_ENABLED === 'true'
+    : CONCIERGE_CONFIG.verifier.enabled;
+}
 
 export function componentCountRule(): string {
   const { typicalMinComponents, typicalMaxComponents, maxComponents } = CONCIERGE_CONFIG.layout;
@@ -118,12 +201,21 @@ export function teaserRubricText(policy: TeaserPolicy = CONCIERGE_CONFIG.teasers
   return `a CaseStudyTeaser for each retrieved case study that matches the query (omitting retrieved case studies that do not match is correct, not a violation; fewer than ${typicalMinComponents} components because few studies match is not a violation; showing a non-matching study as if it matched is a violation)`;
 }
 
-// Admitting AG hasn't done a kind of work is assumed YES (STATE decision); Phase 4 GEN-01 turns it into its own flag.
-export function noDirectMatchPrompt(policy: TeaserPolicy = CONCIERGE_CONFIG.teasers.policy): { intro: string; rule: string } {
+// GEN-01: admitting AG hasn't done a kind of work is the honesty.admitNoDirectWork flag (default true).
+export function noDirectMatchPrompt(
+  policy: TeaserPolicy = CONCIERGE_CONFIG.teasers.policy,
+  admit: boolean = CONCIERGE_CONFIG.honesty.admitNoDirectWork,
+): { intro: string; rule: string } {
   if (policy === 'all_retrieved') {
     return {
       intro: 'Instead of saying "We don\'t have TikTok-specific case studies", reframe positively:',
       rule: 'NEVER say: "We don\'t currently have X case studies"\nINSTEAD say: "Your challenge is really about [broader capability], and here\'s how we\'ve approached similar problems..."',
+    };
+  }
+  if (!admit) {
+    return {
+      intro: 'If no retrieved case study directly matches, be honest about it, then reframe positively:',
+      rule: 'If AG has no directly matching work, say: "Your challenge is really about [broader capability], and here\'s how we\'ve approached similar problems..." Showing adjacent work is allowed but not required; never present it as a direct match.',
     };
   }
   return {

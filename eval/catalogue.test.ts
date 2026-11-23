@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { formatCatalogue, extractDeliverables, catalogueVersion, CATALOGUE_RULE, CatalogueRow } from '../src/lib/catalogue';
+import { tagsBySlug, formatCatalogue, extractDeliverables, catalogueVersion, CATALOGUE_RULE, CatalogueRow } from '../src/lib/catalogue';
 
 const rows: CatalogueRow[] = [
   { slug: 'b-study', title: 'B', client: null, capabilities: ['Video', 'Brand'], industries: ['Tech'], hasVideo: true, deliverables: 'Solution included a film and a deck.' },
@@ -37,4 +37,10 @@ test('catalogueVersion', () => {
   assert.match(catalogueVersion('x'), /^[0-9a-f]{12}$/);
   assert.equal(catalogueVersion('x'), catalogueVersion('x'));
   assert.notEqual(catalogueVersion('x'), catalogueVersion('y'));
+});
+
+test('tagsBySlug maps sorted tags per slug', () => {
+  const m = tagsBySlug(rows);
+  assert.deepEqual(m.get('b-study'), { capabilities: ['Brand', 'Video'], industries: ['Tech'] });
+  assert.deepEqual(m.get('a-study'), { capabilities: [], industries: [] });
 });

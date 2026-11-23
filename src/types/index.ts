@@ -273,6 +273,9 @@ export interface GenerationUsage {
   cost: number | null;
 }
 
+export interface VerifierRewrite { id: string; text: string; reason: string }
+export interface VerifierReport { ok: boolean; latencyMs: number; cost: number | null; spans: number; rewrites: VerifierRewrite[]; error?: string }
+
 export interface OrchestratorOutput {
   layoutPlan: LayoutPlan;
   explanation: string;
@@ -281,10 +284,12 @@ export interface OrchestratorOutput {
   errorCode?: OrchestratorErrorCode; // Set when the response is a graceful failure
   retryable?: boolean; // True when the user should be invited to retry
   // Internal only - the chat route strips these unless eval debug mode is on
-  rawResponse?: string; // Unparsed model text
+  rawResponse?: string; // Model text with the layout block re-rendered after server post-processing
+  modelRawResponse?: string; // Model text before server post-processing (internal only)
   orchestratorError?: string; // Set when the model call failed and a fallback was returned
   usage?: GenerationUsage | null;
   catalogueVersion?: string | null;
+  verifier?: VerifierReport | null; // Internal only (debug)
 }
 
 // ============================================

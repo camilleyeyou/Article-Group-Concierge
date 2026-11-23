@@ -105,7 +105,20 @@ Plans:
   4. Video components appear for video queries when a verified video exists, and the Strategy Lead is offered on fallback, pricing and timeline queries per the shared config.
   5. Eval rerun after the phase; report lists every metric's delta vs baseline run 2026-11-20T15-12-31.
 **Constraints / gates**: Add a verifier pass only if unsupported claims are still >= 5/50 after GEN-01..06, and evaluate its latency cost first (user approval). Do not change Sonnet 5.5.
-**Plans**: TBD
+**Plans:** 9 plans (04-07 and 04-08 run only if the GEN-07 gate in 04-06 triggers)
+
+Plans:
+- [x] 04-01-PLAN.md — Shared config contract (triggers, keywords, sentence limits, example names, verifier flag) and server-side teaser tags from DB links (GEN-03)
+- [x] 04-02-PLAN.md — Eval subset runs (--subset phase4-smoke) and eval:compare against the gap run
+- [x] 04-03-PLAN.md — System prompt rewrite: honesty rules, invention bait, 2-4 sentence "we" narrative, Strategy Lead, video, Larkspur example
+- [x] 04-04-PLAN.md — Eval checks and rubric v4: sentence count, per-trigger Strategy Lead, tag source, video, presupposition flag
+- [x] 04-05-PLAN.md — Smoke runs on the 21-query subset (user-approved spend, <= $4) with like-for-like deltas
+- [x] 04-06-PLAN.md — Full eval, 04-EVAL-DELTA.md vs frozen/re-graded/gap runs, GEN-07 gate verdict
+- [x] 04-07-PLAN.md — (conditional) Haiku 5.5 claim-check verifier behind a default-off flag, saved-response script
+- [x] 04-08-PLAN.md — (conditional) Verifier evaluation on saved responses, latency vs 2 s budget, user ship decision
+- [x] 04-09-PLAN.md — Phase close: state updates, squash, push after approval, deploy check, live smoke
+
+Phase 4 NOT MET criteria (per 04-EVAL-DELTA.md): (1) goal_as_result 2 vs 0; (2) unsupported-claim responses 6/50 vs < 5; (3) voice 4.36 vs >= 4.5; (4) Strategy Lead on fallback 20/21 (p4-q03). Verifier ships disabled.
 
 ### Phase 5: Speed
 **Goal**: Prospects see real content almost immediately instead of waiting about 20 s.
@@ -138,6 +151,6 @@ Plans:
 | 1. Eval improvements | 7/7 | Complete (push pending) | 2026-11-21 |
 | 2. Content and data | 0/6 | Planned | - |
 | 3. Retrieval | 0/TBD | Not started | - |
-| 4. Generation | 0/TBD | Not started | - |
+| 4. Generation | 0/9 | Planned | - |
 | 5. Speed | 0/TBD | Not started | - |
 | 6. Proof | 0/TBD | Not started | - |

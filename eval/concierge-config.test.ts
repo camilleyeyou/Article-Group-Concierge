@@ -11,7 +11,14 @@ import {
   noDirectMatchPrompt,
   fallbackRubricText,
   retrievalConfigKey,
+  narrativeRule,
+  strategyLeadPromptRule,
+  keywordTriggers,
+  isVideoQuery,
+  verifierEnabled,
+  STRATEGY_LEAD_TRIGGER_DESCRIPTIONS,
 } from '../src/lib/concierge-config';
+import fs from 'node:fs';
 import { DISPUTED_LABELS, isDisputed } from './labels';
 import { SYSTEM_PROMPT } from '../src/lib/orchestrator';
 
@@ -40,8 +47,61 @@ test('isNoContext is true only when every list is empty', () => {
   assert.equal(isNoContext({ chunks: [], visualAssets: [], relatedMetrics: [1] }), false);
 });
 
-test('Strategy Lead is offered only on no_context (current app behaviour)', () => {
-  assert.deepEqual(CONCIERGE_CONFIG.strategyLead.offerOn, ['no_context']);
+test('Strategy Lead triggers (D-411)', () => {
+  assert.deepEqual(CONCIERGE_CONFIG.strategyLead.offerOn, ['no_context', 'fallback', 'pricing', 'timeline', 'invention_bait']);
+});
+
+test('keywordTriggers', () => {
+  assert.deepEqual(keywordTriggers('how much do u charge'), ['pricing']);
+  assert.deepEqual(keywordTriggers('how fast can you ramp?'), ['timeline']);
+  assert.deepEqual(
+    keywordTriggers('ok so 3 things. how much would social media plus a new website cost, how fast could you get it done'),
+    ['pricing', 'timeline']
+  );
+  assert.deepEqual(keywordTriggers('Our CEO is delivering an investor-day keynote in five months.'), []);
+  assert.deepEqual(keywordTriggers('accurate separate'), []);
+  assert.deepEqual(keywordTriggers('what was the conversion rate lift?'), []);
+});
+
+test('keywordTriggers over eval/queries.json', () => {
+  const raw = JSON.parse(fs.readFileSync('eval/queries.json', 'utf8'));
+  const qs: any[] = Array.isArray(raw) ? raw : raw.queries;
+  const ids = (k: string) => qs.filter(q => keywordTriggers(q.query ?? q.text).includes(k as any)).map(q => q.id);
+  assert.deepEqual(ids('pricing'), ['p5-q06', 'p5-q07', 'p5-q10']);
+  assert.deepEqual(ids('timeline'), ['p1-q10', 'p2-q10', 'p3-q07', 'p3-q10', 'p4-q10', 'p5-q10']);
+});
+
+test('narrative and Strategy Lead rules', () => {
+  assert.equal(
+    narrativeRule(),
+    'Write the narrative in 2-4 sentences, never more than 4. Count every sentence before the follow-up questions, including any honest gap line and the Strategy Lead offer.'
+  );
+  const r = strategyLeadPromptRule();
+  for (const t of CONCIERGE_CONFIG.strategyLead.offerOn) assert.ok(r.includes(STRATEGY_LEAD_TRIGGER_DESCRIPTIONS[t]));
+  assert.ok(r.includes('Our Strategy Lead can scope this with you.'));
+});
+
+test('isVideoQuery', () => {
+  assert.equal(isVideoQuery('we need someone to make instagram and tiktok videos'), true);
+  assert.equal(isVideoQuery('how much do u charge'), false);
+});
+
+test('verifierEnabled env override', () => {
+  const prev = process.env.VERIFIER_ENABLED;
+  try {
+    delete process.env.VERIFIER_ENABLED;
+    assert.equal(verifierEnabled(), false);
+    process.env.VERIFIER_ENABLED = 'true';
+    assert.equal(verifierEnabled(), true);
+  } finally {
+    if (prev === undefined) delete process.env.VERIFIER_ENABLED;
+    else process.env.VERIFIER_ENABLED = prev;
+  }
+});
+
+test('admitNoDirectWork flag changes the rule', () => {
+  assert.match(noDirectMatchPrompt('relevant_only', true).rule, /say so plainly/);
+  assert.doesNotMatch(noDirectMatchPrompt('relevant_only', false).rule, /say so plainly/);
 });
 
 test('retrieval and teaser config', () => {

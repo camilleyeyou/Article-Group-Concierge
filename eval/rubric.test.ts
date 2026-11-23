@@ -8,6 +8,7 @@ import {
   componentCountRule,
   teaserPromptRule,
   noDirectMatchPrompt,
+  FICTIONAL_EXAMPLE,
   fallbackRubricText,
   teaserRubricText,
 } from '../src/lib/concierge-config';
@@ -55,7 +56,8 @@ const personas = JSON.parse(fs.readFileSync(PERSONAS_PATH, 'utf-8')).personas as
 
 test('grader prompt has no persona, expected block or query type', () => {
   const prompt = buildGraderPrompt(record, runAutomatedChecks(record));
-  for (const banned of ['## PERSONA', '## EXPECTED', 'SENTINEL-EXPECTED-NOTES', 'invention_bait', 'type:']) {
+  // The deterministic trigger label 'invention_bait' in strategy_lead_triggers is shown on purpose (D-415)
+  for (const banned of ['## PERSONA', '## EXPECTED', 'SENTINEL-EXPECTED-NOTES', 'type:']) {
     assert.ok(!prompt.includes(banned), `prompt leaks ${banned}`);
   }
   for (const p of personas) {
@@ -82,10 +84,10 @@ test('rubric renders the component-count rule from shared config', () => {
   assert.ok(!RUBRIC.includes('4-10 components'));
 });
 
-test('rubric renders only the enabled Strategy Lead triggers', () => {
-  assert.ok(RUBRIC.includes(STRATEGY_LEAD_TRIGGER_DESCRIPTIONS.no_context));
-  assert.ok(!CONCIERGE_CONFIG.strategyLead.offerOn.includes('pricing'));
-  assert.ok(!RUBRIC.includes(STRATEGY_LEAD_TRIGGER_DESCRIPTIONS.pricing));
+test('rubric renders every enabled Strategy Lead trigger', () => {
+  for (const t of CONCIERGE_CONFIG.strategyLead.offerOn) {
+    assert.ok(RUBRIC.includes(STRATEGY_LEAD_TRIGGER_DESCRIPTIONS[t]), t);
+  }
   assert.ok(strategyLeadRubricText().includes('Strategy Lead'));
 });
 
@@ -169,5 +171,77 @@ test('catalogueSection and harness version', () => {
   assert.ok(s!.includes('CAT-LINES'));
   assert.ok(RUBRIC.includes('PORTFOLIO CATALOGUE'));
   assert.match(RUBRIC, /no outcomes, results or metrics/);
-  assert.equal(HARNESS_VERSION, 3);
+  assert.equal(HARNESS_VERSION, 4);
+});
+
+test('rubric uses the fictional example and has no NeoBank outside the prompt', () => {
+  assert.ok(RUBRIC.includes(FICTIONAL_EXAMPLE.client));
+  assert.ok(RUBRIC.includes(FICTIONAL_EXAMPLE.slug));
+  assert.ok(!RUBRIC.replace(SYSTEM_PROMPT, '').includes('NeoBank'));
+});
+
+test('schema requires presupposes_asserted_work', () => {
+  assert.ok((GRADER_SCHEMA as any).required.includes('presupposes_asserted_work'));
+});
+
+test('strategy lead triggers are deterministic per trigger', () => {
+  const noFallback = { ...record.expected, fallback_expected: false };
+  const empty = { ...record, type: 'standard', query: 'hello', expected: noFallback, retrieval: { chunks: [], visualAssets: [], relatedMetrics: [] } } as unknown as RunRecord;
+  const c = runAutomatedChecks(empty);
+  assert.deepEqual(c.strategy_lead_triggers, ['no_context']);
+  assert.equal(c.strategy_lead_expected, true);
+  assert.equal(c.strategy_lead_offered, false);
+  const bait = runAutomatedChecks(record);
+  assert.ok(bait.strategy_lead_triggers!.includes('invention_bait'));
+  assert.ok(bait.strategy_lead_triggers!.includes('fallback'));
+  const priced = runAutomatedChecks({ ...record, type: 'standard', query: 'how much do u charge', expected: noFallback } as unknown as RunRecord);
+  assert.deepEqual(priced.strategy_lead_triggers, ['pricing']);
+});
+
+test('strategy lead offer is read from the narrative, not follow-ups', () => {
+  const r = { ...record, response: { explanation: 'We did this. Our Strategy Lead can scope it.', layoutPlan: null }, raw_response: 'x' } as unknown as RunRecord;
+  assert.equal(runAutomatedChecks(r).strategy_lead_offered, true);
+  const r2 = { ...r, response: { explanation: 'We did this.', layoutPlan: null }, raw_response: 'Strategy Lead follow-up?' } as unknown as RunRecord;
+  assert.equal(runAutomatedChecks(r2).strategy_lead_offered, false);
+});
+
+test('narrative sentence count and range', () => {
+  const mk = (e: string) => ({ ...record, response: { explanation: e, layoutPlan: null } }) as unknown as RunRecord;
+  const ok = runAutomatedChecks(mk('One thing. Two things. Three things.'));
+  assert.equal(ok.narrative_sentences, 3);
+  assert.equal(ok.narrative_in_range, true);
+  assert.equal(runAutomatedChecks(mk('A one. B two. C three. D four. E five.')).narrative_in_range, false);
+  assert.equal(runAutomatedChecks(mk('Just one.')).narrative_in_range, false);
+});
+
+test('teaser tags not from the catalogue are reported', () => {
+  const cat = '- Salt | client: Salt | slug: salt | capabilities: Brand Strategy, Video | industries: n/a | video: no';
+  const teaser = (caps: string[], inds: string[]) => ({ component: 'CaseStudyTeaser', props: { slug: 'salt', title: 'T', summary: 's', capabilities: caps, industries: inds } });
+  const bad = { ...withChunks([chunk({ slug: 'salt' })], [teaser(['Brand Strategy', 'Podcasts'], ['Cyber'])]), catalogue: cat } as RunRecord;
+  assert.deepEqual(runAutomatedChecks(bad).teaser_tags_not_from_db, ['salt: Podcasts', 'salt: Cyber']);
+  const good = { ...withChunks([chunk({ slug: 'salt' })], [teaser(['Brand Strategy'], [])]), catalogue: cat } as RunRecord;
+  assert.deepEqual(runAutomatedChecks(good).teaser_tags_not_from_db, []);
+  assert.deepEqual(runAutomatedChecks(withChunks([chunk({ slug: 'salt' })], [teaser(['X'], [])])).teaser_tags_not_from_db, []);
+});
+
+test('video query without a VideoPlayer is flagged', () => {
+  const q = 'we need instagram and tiktok videos';
+  const ch = chunk({ slug: 'a', vimeo_url: 'https://vimeo.com/1' });
+  const base = { ...withChunks([ch], [{ component: 'HeroBlock', props: { title: 'x' } }]), query: q } as RunRecord;
+  const c = runAutomatedChecks(base);
+  assert.equal(c.video_query, true);
+  assert.equal(c.video_query_missing_video, true);
+  const withVideo = { ...withChunks([ch], [{ component: 'VideoPlayer', props: { url: 'https://vimeo.com/1' } }]), query: q } as RunRecord;
+  assert.equal(runAutomatedChecks(withVideo).video_query_missing_video, false);
+});
+
+test('pricing/timeline figures are listed only when a trigger fired', () => {
+  const mk = (query: string) => ({
+    ...record, type: 'standard', query, expected: { ...record.expected, fallback_expected: false },
+    response: { explanation: 'Typically $5k and 6 weeks, maybe two months.', layoutPlan: null },
+    raw_response: '```json\n{"layout":[{"component":"HeroBlock","props":{"title":"Hi"}}]}\n```',
+  }) as unknown as RunRecord;
+  const f = runAutomatedChecks(mk('how much and how long')).pricing_timeline_figures;
+  assert.ok(f.some(x => x.includes('$5k')) && f.some(x => /6 weeks/.test(x)) && f.some(x => /two months/.test(x)), JSON.stringify(f));
+  assert.deepEqual(runAutomatedChecks(mk('tell me about salt')).pricing_timeline_figures, []);
 });

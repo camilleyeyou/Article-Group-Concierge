@@ -37,6 +37,7 @@ import {
 import type { AgreementResult } from './agreement';
 import { DISPUTED_LABELS } from './labels';
 import { METRIC_DEFS, computeRunMetrics, findRegradeDir, formatDelta, formatValue, type RunMetrics } from './metrics';
+import { CONCIERGE_CONFIG } from '../src/lib/concierge-config';
 
 interface Row {
   record: RunRecord;
@@ -371,6 +372,18 @@ export function writeReport(dir: string): void {
     ),
   );
 
+  // Strategy Lead by trigger (D-415)
+  out.push(`## Strategy Lead by trigger`);
+  out.push(
+    table(
+      ['Trigger', 'Expected', 'Offered'],
+      Object.entries(m.strategy_lead_by_trigger).map(([t, v]) => [t, String(v.expected), String(v.offered)]),
+    ),
+  );
+  out.push(
+    `Offered is read from the narrative from harness v4 on (earlier runs read the raw response). Offered without any trigger: ${m.strategy_lead.unprompted}. Narrative within ${CONCIERGE_CONFIG.narrative.minSentences}-${CONCIERGE_CONFIG.narrative.maxSentences} sentences: ${m.narrative.in_range}/${m.narrative.of} (median ${m.narrative.median ?? 'n/a'}). Video queries: ${m.video.queries}, missing VideoPlayer despite an available video: ${m.video.missing}.`,
+  );
+
   // Automated checks
   out.push(`## Automated check failures`);
   const checkKeys: Array<keyof AutomatedChecks> = [
@@ -381,6 +394,8 @@ export function writeReport(dir: string): void {
     'non_verbatim_titles',
     'metrics_not_in_context',
     'videos_available_not_used',
+    'teaser_tags_not_from_db',
+    'pricing_timeline_figures',
   ];
   const checkRows: string[][] = [];
   for (const r of rows) {
@@ -448,7 +463,7 @@ export function writeReport(dir: string): void {
     'id', 'persona', 'type', 'query', 'status', 'latency_ms',
     ...CRITERIA.flatMap(c => [c, `${c}_reason`]),
     'average', 'hallucination', 'context_relevant', 'would_strict_pass_fallback',
-    'invented_claims', 'claim_kinds', 'strategy_lead_expected_offered', 'retrieved_case_studies', 'expected_case_studies', 'error',
+    'invented_claims', 'claim_kinds', 'narrative_sentences', 'strategy_lead_expected_offered', 'retrieved_case_studies', 'expected_case_studies', 'error',
   ];
   const csvRows = rows.map(({ record, grade }) => {
     const scores = grade?.scores;
@@ -460,6 +475,7 @@ export function writeReport(dir: string): void {
       grade?.hallucination ?? '', grade?.context_relevant ?? '', grade?.would_strict_pass_fallback ?? '',
       (grade?.invented_claims ?? []).join('; '),
       (grade?.claims ?? []).map(c => c.kind).join('; '),
+      grade?.automated_checks?.narrative_sentences ?? '',
       grade?.automated_checks && grade.automated_checks.strategy_lead_expected !== undefined
         ? `${grade.automated_checks.strategy_lead_expected}/${grade.automated_checks.strategy_lead_offered}`
         : '',

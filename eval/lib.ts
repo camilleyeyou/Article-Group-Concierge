@@ -18,7 +18,14 @@ import type {
   VisualAssetSearchResult,
 } from '../src/types';
 import { anthropicClientOptions, claudeModelId, usingOpenRouter } from '../src/lib/llm-config';
-import { CONCIERGE_CONFIG, isNoContext } from '../src/lib/concierge-config';
+import {
+  CONCIERGE_CONFIG,
+  isNoContext,
+  isVideoQuery,
+  keywordTriggers,
+  type StrategyLeadTrigger,
+} from '../src/lib/concierge-config';
+import { countSentences } from '../src/lib/sentences';
 import { metricValueInContext } from './numbers';
 
 dotenv.config({ path: path.join(__dirname, '..', '.env') });
@@ -137,12 +144,14 @@ export interface RunRecord {
   error: string | null;
   response: OrchestratorOutput | null;
   raw_response: string | null;
+  model_raw_response?: string | null;
   orchestrator_error: string | null;
   retrieval: RetrievalSnapshot | null;
   catalogue?: string | null;
   catalogue_version?: string | null;
   usage?: GenerationUsage | null;
   search_function?: string | null;
+  verifier?: import('../src/types').VerifierReport | null;
 }
 
 export interface RunFile {
@@ -155,6 +164,7 @@ export interface RunFile {
   models?: RunModels | null;
   regrade_of?: string;
   regraded_at?: string;
+  verified_of?: string;
 }
 
 export interface CriterionScore {
@@ -174,8 +184,15 @@ export interface AutomatedChecks {
   non_verbatim_titles: string[];
   metrics_not_in_context: string[];
   videos_available_not_used: string[];
+  strategy_lead_triggers?: StrategyLeadTrigger[];
   strategy_lead_expected?: boolean;
   strategy_lead_offered?: boolean;
+  narrative_sentences?: number | null;
+  narrative_in_range?: boolean | null;
+  teaser_tags_not_from_db: string[];
+  video_query?: boolean;
+  video_query_missing_video?: boolean;
+  pricing_timeline_figures: string[];
 }
 
 export interface GradeRecord {
@@ -190,6 +207,7 @@ export interface GradeRecord {
   harness_version?: number;
   context_relevant: boolean | null;
   would_strict_pass_fallback: boolean | null;
+  presupposes_asserted_work?: boolean | null;
   hallucination: boolean;
   automated_checks: AutomatedChecks | null;
 }
@@ -355,6 +373,33 @@ export function parseLayout(raw: string | null): LooseLayoutItem[] | null {
   }
 }
 
+function catalogueLine(catalogue: string, slug: string): string | null {
+  return catalogue.split('\n').find(l => l.includes(`| slug: ${slug} |`) || l.trimEnd().endsWith(`| slug: ${slug}`)) ?? null;
+}
+
+function catalogueField(line: string, field: 'capabilities' | 'industries'): string[] {
+  const m = line.match(new RegExp(`\\| ${field}: ([^|]*)`));
+  if (!m) return [];
+  return m[1]
+    .split(', ')
+    .map(t => t.trim())
+    .filter(t => t && t.toLowerCase() !== 'n/a');
+}
+
+const NUMBER_WORD = 'one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|couple|few|several';
+const FIGURE_RES = [
+  /(?:\$|USD\s?)\s?\d[\d,.]*\s?(?:k|m|million|thousand)?\b/gi,
+  /(?<![$\d,.])\b\d[\d,.]*\s?k\b(?!\w)/gi,
+  new RegExp(`\\b(?:\\d+(?:[-\u2013]\\d+)?|${NUMBER_WORD})\\s+(?:business\\s+)?(?:day|days|week|weeks|month|months)\\b`, 'gi'),
+];
+
+/** Money and duration figures in a piece of text (D-415 pricing/timeline rule: never give figures). */
+export function findFigures(text: string): string[] {
+  const found = new Set<string>();
+  for (const re of FIGURE_RES) for (const m of text.matchAll(re)) found.add(m[0].trim());
+  return [...found];
+}
+
 /**
  * Deterministic checks that don't need a model: tag validity, required props,
  * and whether slugs / media URLs / metrics actually came from retrieval.
@@ -377,15 +422,43 @@ export function runAutomatedChecks(record: RunRecord): AutomatedChecks {
     non_verbatim_titles: [],
     metrics_not_in_context: [],
     videos_available_not_used: [],
-    // Only the no_context trigger is deterministic; other triggers are left to the grader
-    strategy_lead_expected:
-      CONCIERGE_CONFIG.strategyLead.offerOn.includes('no_context') &&
-      isNoContext(record.retrieval ?? { chunks: [], visualAssets: [], relatedMetrics: [] }),
-    strategy_lead_offered: new RegExp(CONCIERGE_CONFIG.strategyLead.name, 'i').test(
-      record.raw_response ?? record.response?.explanation ?? '',
-    ),
+    teaser_tags_not_from_db: [],
+    video_query: isVideoQuery(record.query),
+    video_query_missing_video: false,
+    pricing_timeline_figures: [],
   };
+
+  // D-415: expected is deterministic per trigger; the grader judges only the soft "not directly relevant" case.
+  const offerOn = CONCIERGE_CONFIG.strategyLead.offerOn;
+  const triggers: StrategyLeadTrigger[] = [];
+  const addTrigger = (t: StrategyLeadTrigger) => {
+    if (offerOn.includes(t) && !triggers.includes(t)) triggers.push(t);
+  };
+  if (isNoContext(record.retrieval ?? { chunks: [], visualAssets: [], relatedMetrics: [] })) addTrigger('no_context');
+  if (record.expected?.fallback_expected) addTrigger('fallback');
+  if (record.type === 'invention_bait') addTrigger('invention_bait');
+  for (const t of keywordTriggers(record.query)) addTrigger(t);
+  checks.strategy_lead_triggers = triggers;
+  checks.strategy_lead_expected = triggers.length > 0;
+  const narrative = record.response?.explanation ?? record.raw_response ?? '';
+  checks.strategy_lead_offered = new RegExp(CONCIERGE_CONFIG.strategyLead.name, 'i').test(narrative);
+
+  const explanation = record.response?.explanation;
+  checks.narrative_sentences = explanation != null ? countSentences(explanation) : null;
+  checks.narrative_in_range =
+    checks.narrative_sentences == null
+      ? null
+      : checks.narrative_sentences >= CONCIERGE_CONFIG.narrative.minSentences &&
+        checks.narrative_sentences <= CONCIERGE_CONFIG.narrative.maxSentences;
   if (!layout) return checks;
+
+  if (triggers.includes('pricing') || triggers.includes('timeline')) {
+    const layoutText = layout
+      .flatMap(i => Object.values(i.props ?? {}))
+      .filter((v): v is string => typeof v === 'string')
+      .join(' ');
+    checks.pricing_timeline_figures = findFigures(`${explanation ?? ''} ${layoutText}`);
+  }
 
   const slugs = new Set(chunks.map(c => c.slug));
   const titles = new Set(chunks.map(c => normalize(c.document_title)));
@@ -429,6 +502,20 @@ export function runAutomatedChecks(record: RunRecord): AutomatedChecks {
       if (typeof props.title === 'string' && !titles.has(normalize(props.title))) {
         checks.non_verbatim_titles.push(props.title);
       }
+      if (typeof props.slug === 'string' && record.catalogue) {
+        const line = catalogueLine(record.catalogue, props.slug);
+        if (line) {
+          for (const field of ['capabilities', 'industries'] as const) {
+            const allowed = new Set(catalogueField(line, field).map(normalize));
+            const tags = Array.isArray(props[field]) ? (props[field] as unknown[]) : [];
+            for (const tag of tags) {
+              if (typeof tag === 'string' && !allowed.has(normalize(tag))) {
+                checks.teaser_tags_not_from_db.push(`${props.slug}: ${tag}`);
+              }
+            }
+          }
+        }
+      }
     }
     if (component === 'MetricGrid' && Array.isArray(props.stats)) {
       for (const stat of props.stats as Array<{ value?: unknown }>) {
@@ -454,6 +541,10 @@ export function runAutomatedChecks(record: RunRecord): AutomatedChecks {
     if (chunk.vimeo_url && !usedVideos.has(stripQuery(chunk.vimeo_url))) {
       checks.videos_available_not_used.push(chunk.slug);
     }
+  }
+
+  if (checks.video_query && chunks.some(c => c.document_type === 'case_study' && c.vimeo_url) && usedVideos.size === 0) {
+    checks.video_query_missing_video = true;
   }
 
   return checks;

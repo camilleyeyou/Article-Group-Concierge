@@ -47,6 +47,8 @@ Commands:
 | `npm run eval:preflight` | Checks Supabase is reachable (the free tier pauses), the OpenRouter key has enough credit, and the dev server is up. Exits 2 with a clear message instead of recording errors. Spends nothing. |
 | `npm run eval:generate` | Builds `eval/queries.json` from `personas.json` and the live document index. Skips if the file exists; `-- --force` regenerates. |
 | `npm run eval:run` | Posts every query to the chat API, one at a time with a 4s gap. `-- --persona p5` or `-- --limit 3` for a smoke test. |
+| `npm run eval:run -- --subset phase4-smoke` | Runs only the named subset (21 queries, ~$1.80) or `-- --ids p1-q01,p2-q01`. Works the same on `eval:batch`; the credit preflight scales with the subset size. |
+| `npm run eval:compare -- --dir <runA> --against <runB>` | Metrics for the ids in runA, computed for both runs on those ids only, written to `<runA>/compare.md`. Use it to compare a smoke subset with the gap run. Spends nothing. |
 | `npm run eval:grade` | Grades the latest run with Opus. Resumes if interrupted; `-- --force` re-grades everything; `-- --dir eval/results/<ts>` targets another run. |
 | `npm run eval:grade2` | Optional second grader on a 15-response sample (see below). Needs Opus grades on the same run first. `-- --dir`, `-- --sample N`, `-- --force`. |
 | `npm run eval:report` | Writes `report.md` and `grades.csv` for the latest (or `--dir`) run. |

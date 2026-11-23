@@ -18,6 +18,7 @@ import {
   type GradesFile,
   type RunFile,
 } from './lib';
+import { CONCIERGE_CONFIG, type StrategyLeadTrigger } from '../src/lib/concierge-config';
 import { isDisputed } from './labels';
 
 export interface Summary {
@@ -81,8 +82,16 @@ export interface RunMetrics {
   latency_s: { median: number | null; min: number | null; max: number | null };
   metrics_not_in_context: number;
   strict_fallback: { pass: number; of: number };
-  strategy_lead: { expected: number; offered_when_expected: number };
+  strategy_lead: { expected: number; offered_when_expected: number; unprompted: number };
+  strategy_lead_by_trigger: Record<StrategyLeadTrigger, { expected: number; offered: number }>;
+  narrative: { in_range: number; of: number; median: number | null };
+  teaser_tags_not_from_db: number;
+  video: { queries: number; with_video_available: number; missing: number };
+  pricing_timeline_figures: number;
+  invention_bait_presupposed: number | null;
 }
+
+const TRIGGERS: StrategyLeadTrigger[] = ['no_context', 'fallback', 'pricing', 'timeline', 'invention_bait'];
 
 const zeroKinds = () => Object.fromEntries(CLAIM_KINDS.map(k => [k, 0])) as Record<ClaimKind, number>;
 
@@ -172,14 +181,48 @@ export function computeRunMetrics(dir: string): RunMetrics {
   let metricsNotInContext = 0;
   let slExpected = 0;
   let slOffered = 0;
+  let slUnprompted = 0;
+  const byTrigger = Object.fromEntries(TRIGGERS.map(t => [t, { expected: 0, offered: 0 }])) as Record<
+    StrategyLeadTrigger,
+    { expected: number; offered: number }
+  >;
+  const sentenceCounts: number[] = [];
+  let narrativeInRange = 0;
+  let tagsNotFromDb = 0;
+  let figures = 0;
+  const video = { queries: 0, with_video_available: 0, missing: 0 };
   for (const { record } of rows) {
+    if (record.status !== 'ok') continue;
     const checks = runAutomatedChecks(record);
     metricsNotInContext += checks.metrics_not_in_context.length;
     if (checks.strategy_lead_expected) {
       slExpected += 1;
       if (checks.strategy_lead_offered) slOffered += 1;
+    } else if (checks.strategy_lead_offered) {
+      slUnprompted += 1;
+    }
+    for (const t of checks.strategy_lead_triggers ?? []) {
+      byTrigger[t].expected += 1;
+      if (checks.strategy_lead_offered) byTrigger[t].offered += 1;
+    }
+    if (checks.narrative_sentences != null) {
+      sentenceCounts.push(checks.narrative_sentences);
+      if (checks.narrative_in_range) narrativeInRange += 1;
+    }
+    tagsNotFromDb += checks.teaser_tags_not_from_db.length;
+    figures += checks.pricing_timeline_figures.length;
+    if (checks.video_query) {
+      video.queries += 1;
+      if ((record.retrieval?.chunks ?? []).some(c => c.document_type === 'case_study' && c.vimeo_url)) {
+        video.with_video_available += 1;
+      }
+      if (checks.video_query_missing_video) video.missing += 1;
     }
   }
+  const baitGrades = graded.filter(r => r.record.type === 'invention_bait');
+  const baitPresupposed = baitGrades.some(r => r.grade!.presupposes_asserted_work == null)
+    ? null
+    : baitGrades.filter(r => r.grade!.presupposes_asserted_work === true).length;
 
   const fallbackRows = graded.filter(
     r => r.record.expected.fallback_expected || r.grade!.context_relevant === false || r.record.type === 'invention_bait',
@@ -221,7 +264,17 @@ export function computeRunMetrics(dir: string): RunMetrics {
     },
     metrics_not_in_context: metricsNotInContext,
     strict_fallback: { pass: fallbackRows.filter(r => r.grade!.would_strict_pass_fallback).length, of: fallbackRows.length },
-    strategy_lead: { expected: slExpected, offered_when_expected: slOffered },
+    strategy_lead: { expected: slExpected, offered_when_expected: slOffered, unprompted: slUnprompted },
+    strategy_lead_by_trigger: byTrigger,
+    narrative: {
+      in_range: narrativeInRange,
+      of: sentenceCounts.length,
+      median: sentenceCounts.length ? median(sentenceCounts) : null,
+    },
+    teaser_tags_not_from_db: tagsNotFromDb,
+    video,
+    pricing_timeline_figures: figures,
+    invention_bait_presupposed: baitPresupposed,
   };
 }
 
@@ -301,6 +354,33 @@ export const METRIC_DEFS: MetricDef[] = [
     better: 'higher',
     unit: 'count',
     get: m => m.strategy_lead.offered_when_expected,
+  },
+  { key: 'strategy_lead_expected', label: 'strategy_lead_expected', better: 'none', unit: 'count', get: m => m.strategy_lead.expected },
+  {
+    key: 'strategy_lead_offered_unprompted',
+    label: 'strategy_lead_offered_unprompted',
+    better: 'lower',
+    unit: 'count',
+    get: m => m.strategy_lead.unprompted,
+  },
+  {
+    key: 'narrative_in_range',
+    label: `narrative_in_range (${CONCIERGE_CONFIG.narrative.minSentences}-${CONCIERGE_CONFIG.narrative.maxSentences} sentences)`,
+    better: 'higher',
+    unit: 'count',
+    get: m => (m.narrative.of ? m.narrative.in_range : null),
+  },
+  { key: 'narrative_sentences_median', label: 'narrative_sentences_median', better: 'none', unit: 'score', get: m => m.narrative.median },
+  { key: 'teaser_tags_not_from_db', label: 'teaser_tags_not_from_db', better: 'lower', unit: 'count', get: m => m.teaser_tags_not_from_db },
+  { key: 'video_queries_missing_video', label: 'video_queries_missing_video', better: 'lower', unit: 'count', get: m => m.video.missing },
+  { key: 'pricing_timeline_figures', label: 'pricing_timeline_figures', better: 'lower', unit: 'count', get: m => m.pricing_timeline_figures },
+  {
+    key: 'invention_bait_presupposed',
+    label: 'invention_bait_presupposed',
+    better: 'lower',
+    unit: 'count',
+    newHarnessOnly: true,
+    get: m => m.invention_bait_presupposed,
   },
 ];
 

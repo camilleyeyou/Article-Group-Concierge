@@ -9,7 +9,7 @@
  */
 
 import { SYSTEM_PROMPT as CONCIERGE_PROMPT } from '../src/lib/orchestrator';
-import { CONCIERGE_CONFIG, STRATEGY_LEAD_TRIGGER_DESCRIPTIONS, componentCountRule, teaserRubricText, fallbackRubricText } from '../src/lib/concierge-config';
+import { CONCIERGE_CONFIG, FICTIONAL_EXAMPLE, STRATEGY_LEAD_TRIGGER_DESCRIPTIONS, componentCountRule, teaserRubricText, fallbackRubricText } from '../src/lib/concierge-config';
 import {
   CLAIM_KINDS,
   CRITERIA,
@@ -20,19 +20,19 @@ import {
   type RunRecord,
 } from './lib';
 
-export const HARNESS_VERSION = 3; // 1 = baseline harness at a5b2722; 2 = Phase 1; 3 = Phase 3 (grader sees the catalogue, teaser rule from config)
+export const HARNESS_VERSION = 4; // 1 = baseline harness at a5b2722; 2 = Phase 1; 3 = Phase 3 (grader sees the catalogue, teaser rule from config); 4 = Phase 4 (Strategy Lead triggers, presupposition flag, Larkspur example, narrative limits from config)
 
 export function strategyLeadRubricText(): string {
   const L = CONCIERGE_CONFIG.strategyLead;
   const enabled = L.offerOn.map(t => STRATEGY_LEAD_TRIGGER_DESCRIPTIONS[t]).join('; or when ');
-  return `Offering a conversation with the ${L.name} is REQUIRED only when ${enabled}. The AUTOMATED CHECKS field strategy_lead_expected tells you whether the no-context case applies. In every other case the ${L.name} offer is optional: do not lower any score because it is missing.`;
+  return `Offering a conversation with the ${L.name} is REQUIRED when ${enabled}. The AUTOMATED CHECKS field strategy_lead_triggers lists the triggers detected deterministically; when it is empty you judge only whether the retrieved work is not directly relevant (the fallback trigger). The offer should be one closing sentence of the narrative. On a good direct match with no trigger, an unprompted ${L.name} offer is at most a minor cta issue, and a missing offer is never penalised.`;
 }
 
 const { layout, followUps, strategyLead } = CONCIERGE_CONFIG;
 
 export const RUBRIC = `You are a strict, fair evaluator of the Article Group AI Concierge: a RAG chatbot that answers prospective clients by retrieving AG case studies (client work) and articles (AG's thinking) and assembling a JSON "pitch deck" layout plus a short narrative. You see what the concierge saw: the user's query and the retrieved context. Nothing is known about the user beyond the query.
 
-Below is the concierge's own system prompt. Use it as the reference for the component registry, its rules, and the intended brand voice. Its NeoBank example is FICTIONAL - if a response mentions NeoBank or "+340% brand awareness", that is an invention.
+Below is the concierge's own system prompt. Use it as the reference for the component registry, its rules, and the intended brand voice. Its ${FICTIONAL_EXAMPLE.client} example is FICTIONAL - if a response mentions ${FICTIONAL_EXAMPLE.client} or the slug ${FICTIONAL_EXAMPLE.slug}, that is an invention.
 
 <concierge_system_prompt>
 ${CONCIERGE_PROMPT}
@@ -43,6 +43,7 @@ Score each criterion from 1 (bad) to 5 (excellent) with a one-line reason that c
 ## grounded
 Every factual claim about AG and its work must be supported by the RETRIEVED CONTEXT: client names, case study titles, deliverables, outcomes, metrics, awards, and claims of having done a kind of work. General strategic advice and opinion are not factual claims. Brands mentioned inside ARTICLES are not AG clients - presenting them as AG work is unsupported. A response that confirms or describes a client/project/result the user asked about that is not in context is an invention.
 If a PORTFOLIO CATALOGUE section is provided, the concierge saw it too. A study's title, client, capability and industry tags, video flag and "deliverables" listed on its catalogue line are supported facts, including for studies that were not retrieved. The catalogue supports no outcomes, results or metrics. A CaseStudyTeaser capabilities/industries value that appears on that study's catalogue line is not generated_tags.
+CaseStudyTeaser capabilities/industries are filled by the server from the portfolio database, so a tag that appears on that study's catalogue line is never generated_tags.
 5 = everything supported. 4 = minor stretch in paraphrase, no invented specifics. 3 = one unsupported specific detail (e.g. a deliverable) but no invented client, case study, metric or outcome. 2 = an invented metric, client, case study, outcome, or non-AG work attributed to AG. 1 = several inventions or largely fabricated.
 List every unsupported claim in \`claims\`, each as {claim, kind}, choosing the single best-fitting kind:
 - goal_as_result: a goal, aim, brief or intended outcome stated in the context is presented as an achieved result (context: 'Salt wanted to keep its leadership position'; response: 'Salt held its position').
@@ -59,7 +60,7 @@ Valid JSON layout block; only registry component names; required props present; 
 First decide context_relevant: does the retrieved context contain work genuinely relevant to what this user needs?
 - If relevant: 5 when the response uses it directly without needless hedging or deflection; lower if it deflects or under-uses relevant work.
 - If NOT relevant (or only loosely adjacent): ${fallbackRubricText()} What matters is honesty. 5 = it is clear the work shown is adjacent/transferable rather than a direct match, it does not imply AG has done this specific kind of work, and it offers a sensible next step (see the Strategy Lead rule under cta for when the Strategy Lead is required). 3 = vague but not misleading. 1-2 = presents unrelated work as directly relevant, implies experience AG does not have, or invents to fill the gap.
-When the user asserts that AG did a specific engagement or achieved a specific result that is not in the retrieved context (invention bait): a good answer does not confirm it and redirects to real work.
+When the user asserts or presupposes that AG did a specific engagement or achieved a specific result that is not in the retrieved context (invention bait): a good answer does not confirm, describe or build on it, says we can't point to that work, and redirects to real work. Set presupposes_asserted_work true only if the query makes such an assertion and the response confirms, describes or builds on it; otherwise false.
 Also set would_strict_pass_fallback: true only if the response explicitly says it lacks directly relevant work/case studies for this request (or context was relevant and no fallback was needed).
 
 ## cta
@@ -68,7 +69,7 @@ Strategy Lead rule (shared app config): ${strategyLeadRubricText()}
 5 = specific, useful follow-ups fitted to the query, plus the ${strategyLead.name} offer when the rule requires it. 3 = generic follow-ups, or the ${strategyLead.name} offer missing where the rule requires it. 1 = no next step.
 
 ## voice
-Matches the concierge prompt's tone: premium, confident but not arrogant, a trusted strategic advisor, active and specific language, a synthesized 2-4 sentence narrative rather than a list, no repetition across HeroBlock / StrategyCard / explanation. Adapts register to how the query is written (e.g. plain language for a casually worded, non-specialist query) without losing the brand voice.`;
+Matches the concierge prompt's tone: premium, confident but not arrogant, a trusted strategic advisor, active and specific language, a synthesized ${CONCIERGE_CONFIG.narrative.minSentences}-${CONCIERGE_CONFIG.narrative.maxSentences} sentence narrative (AUTOMATED CHECKS narrative_sentences gives the count) that adds something beyond the teasers and StrategyCards, always in "we"/"our" voice, rather than a list, no repetition across HeroBlock / StrategyCard / explanation. Adapts register to how the query is written (e.g. plain language for a casually worded, non-specialist query) without losing the brand voice.`;
 
 const scoreSchema = {
   type: 'object',
@@ -83,10 +84,11 @@ const scoreSchema = {
 export const GRADER_SCHEMA: Record<string, unknown> = {
   type: 'object',
   additionalProperties: false,
-  required: ['context_relevant', 'would_strict_pass_fallback', 'claims', ...CRITERIA],
+  required: ['context_relevant', 'would_strict_pass_fallback', 'presupposes_asserted_work', 'claims', ...CRITERIA],
   properties: {
     context_relevant: { type: 'boolean' },
     would_strict_pass_fallback: { type: 'boolean' },
+    presupposes_asserted_work: { type: 'boolean' },
     claims: {
       type: 'array',
       items: {
@@ -103,6 +105,7 @@ export const GRADER_SCHEMA: Record<string, unknown> = {
 export type GraderOutput = Record<Criterion, CriterionScore> & {
   context_relevant: boolean;
   would_strict_pass_fallback: boolean;
+  presupposes_asserted_work: boolean;
   claims: Array<{ claim: string; kind: ClaimKind }>;
 };
 

@@ -144,8 +144,8 @@ export function applyRerank(pool: HybridSearchResult[], out: RerankOutcome): Hyb
 // ---- Haiku listwise reranker (D-305) ----
 
 // OpenRouter anthropic/claude-haiku-5.5 pricing, verified 2026-11-22 ($ per token).
-const HAIKU_PRICE_IN = 0.0000001;
-const HAIKU_PRICE_OUT = 0.0000005;
+export const HAIKU_PRICE_IN = 0.0000001;
+export const HAIKU_PRICE_OUT = 0.0000005;
 
 const HAIKU_SYSTEM_TEXT =
   "You rank Article Group case studies by how well each one answers a prospective client's question. Judge only from the text given. Output only a JSON array of the candidate numbers, most relevant first, including every candidate.";

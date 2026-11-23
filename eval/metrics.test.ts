@@ -192,3 +192,38 @@ test('prompt_cache_hits is null when no usage was recorded', () => {
   assert.equal(METRIC_DEFS.find(d => d.key === 'teasers_zero_expected_mean')!.get(m), 0);
   assert.equal(m.recall.pct, 50);
 });
+
+test('Phase 4 metrics: triggers, narrative, video, figures, presupposition', () => {
+  const rec = (id: string, type: string, query: string, explanation: string, extra: Record<string, unknown> = {}) => ({
+    ...record(id, [], ['a']),
+    type,
+    query,
+    response: { explanation, layoutPlan: { layout: [] } },
+    ...extra,
+  });
+  const recs = [
+    { ...rec('n1', 'invention_bait', 'did you build the Acme rebrand?', 'One. Two. Our Strategy Lead can help.'), expected: { components: [], fallback_expected: true, case_studies: [], site_only_work: [], notes: '' } },
+    rec('n2', 'well_formed', 'how much do you charge?', 'It is $5k. A. B. C. D.'),
+    rec('n3', 'well_formed', 'how long does it take?', 'About 6 weeks. Our Strategy Lead can scope it.'),
+    {
+      ...rec('n4', 'well_formed', 'we need videos', 'Fine. Good.'),
+      retrieval: { chunks: [{ slug: 'a', document_title: 'a', document_type: 'case_study', vimeo_url: 'https://vimeo.com/1', content: 'x' }], visualAssets: [], relatedMetrics: [] },
+    },
+  ];
+  const dir = phase3Fixture(recs);
+  const grades = recs.map(r => grade(r.id, 5, { presupposes_asserted_work: r.id === 'n1' ? true : false }));
+  fs.writeFileSync(path.join(dir, 'grades.json'), JSON.stringify({ grader_model: 'x', harness_version: 4, grades }));
+  const m = computeRunMetrics(dir);
+  assert.deepEqual(m.strategy_lead_by_trigger.invention_bait, { expected: 1, offered: 1 });
+  assert.deepEqual(m.strategy_lead_by_trigger.fallback, { expected: 1, offered: 1 });
+  assert.deepEqual(m.strategy_lead_by_trigger.pricing, { expected: 1, offered: 0 });
+  assert.deepEqual(m.strategy_lead_by_trigger.timeline, { expected: 1, offered: 1 });
+  assert.equal(m.strategy_lead.unprompted, 0);
+  assert.deepEqual(m.narrative, { in_range: 3, of: 4, median: 2.5 });
+  assert.equal(m.pricing_timeline_figures, 2);
+  assert.deepEqual(m.video, { queries: 1, with_video_available: 1, missing: 1 });
+  assert.equal(m.invention_bait_presupposed, 1);
+  for (const key of ['narrative_in_range', 'video_queries_missing_video', 'invention_bait_presupposed', 'teaser_tags_not_from_db']) {
+    assert.ok(METRIC_DEFS.some(d => d.key === key), key);
+  }
+});
