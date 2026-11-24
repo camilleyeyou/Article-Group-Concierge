@@ -24,6 +24,7 @@ const calls: Call[] = [];
 const delays: Record<string, number> = {};
 let tables: Record<string, Row[]> = {};
 let rpcRows: Row[] = [];
+let v2TopDeployed = true;
 let visualCount = 0;
 let embeddingCounter = 0;
 
@@ -37,6 +38,7 @@ function resetFake(): void {
   embeddingCounter = 0;
   visualCount = 0;
   rpcRows = [];
+  v2TopDeployed = true;
   tables = { capabilities: [], industries: [], topics: [], document_metrics: [] };
   __resetRetrievalMemos();
 }
@@ -75,6 +77,11 @@ globalThis.fetch = (async (input: any, init?: any) => {
       return json({ data: [{ embedding: [0.1, 0.2, 0.3] }] });
     }
     if (key === 'rpc:hybrid_search_v2') return json(rpcRows);
+    if (key === 'rpc:hybrid_search_v2_top') {
+      // Selection happens in SQL in production; the app re-applies it, so raw rows are a valid stand-in
+      if (v2TopDeployed) return json(rpcRows);
+      return new Response(JSON.stringify({ code: 'PGRST202', message: 'not found' }), { status: 404, headers: { 'content-type': 'application/json' } });
+    }
     if (key === 'rpc:search_visual_assets') return json([]);
     if (key === 'table:visual_assets:head') return new Response(null, { status: 200, headers: { 'content-range': `*/${visualCount}` } });
     const table = key.replace('table:', '');
@@ -131,10 +138,10 @@ test('no retrieved documents: metrics result is empty', async () => {
 test('metrics fetch starts concurrently with the search RPC', async () => {
   resetFake();
   rpcRows = [chunk('d1', 'case_study', 0.9)];
-  delays['rpc:hybrid_search_v2'] = 150;
+  delays['rpc:hybrid_search_v2_top'] = 150;
   delays['table:document_metrics'] = 100;
   await retrieveContext(ctxArgs('concurrent metrics query'));
-  const rpc = calls.find(c => c.key === 'rpc:hybrid_search_v2')!;
+  const rpc = calls.find(c => c.key === 'rpc:hybrid_search_v2_top')!;
   const met = calls.find(c => c.key === 'table:document_metrics')!;
   assert.ok(met.start < rpc.end, `metrics started ${met.start}, rpc ended ${rpc.end}`);
 });
@@ -282,4 +289,17 @@ test('getCatalogue: concurrent loading yields the same text and version as the s
   assert.equal(cat?.text, text);
   assert.equal(cat?.version, catalogueVersion(text));
   assert.ok(elapsed < 300, `4 reads at 100 ms each took ${elapsed} ms (sequential would be >=400)`);
+});
+
+test('hybrid_search_v2_top missing: falls back to hybrid_search_v2 once, same chunks', async () => {
+  resetFake();
+  v2TopDeployed = false;
+  rpcRows = [chunk('cs1', 'case_study', 0.9), chunk('a1', 'article', 0.8), chunk('cs1', 'case_study', 0.5, { chunk_id: 'dup' })];
+  const first = await retrieveContext(ctxArgs('fallback query one'));
+  assert.deepEqual(first.chunks.map(c => c.chunk_id), ['c-cs1-0.9', 'c-a1-0.8']);
+  assert.equal(first.searchFunction, 'hybrid_search_v2');
+  assert.deepEqual(calls.filter(c => c.key.startsWith('rpc:hybrid')).map(c => c.key), ['rpc:hybrid_search_v2_top', 'rpc:hybrid_search_v2']);
+  calls.length = 0;
+  await retrieveContext(ctxArgs('fallback query two'));
+  assert.deepEqual(calls.filter(c => c.key.startsWith('rpc:hybrid')).map(c => c.key), ['rpc:hybrid_search_v2'], 'missing function is remembered');
 });

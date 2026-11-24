@@ -19,6 +19,7 @@ export interface ChatRequest {
     content: string;
   }>;
   debug?: boolean; // Honoured only when the server runs with EVAL_DEBUG=true
+  teasersOnly?: boolean; // Timing probe: stop after the teaser event. Honoured only with EVAL_DEBUG=true
 }
 
 export function validateChatBody(
@@ -40,6 +41,11 @@ export function validateChatBody(
  */
 export function debugEnabled(body: Pick<ChatRequest, 'debug'> | null | undefined): boolean {
   return body?.debug === true && process.env.EVAL_DEBUG === 'true';
+}
+
+/** Teasers-only timing mode (no generation spend). Same env gate as debug, but does not skip caches. */
+export function teasersOnlyEnabled(body: Pick<ChatRequest, 'teasersOnly'> | null | undefined): boolean {
+  return body?.teasersOnly === true && process.env.EVAL_DEBUG === 'true';
 }
 
 export function toPublicOutput(o: OrchestratorOutput): PublicOrchestratorOutput {

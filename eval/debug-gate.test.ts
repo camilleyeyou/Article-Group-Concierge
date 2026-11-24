@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { debugEnabled, validateChatBody, toPublicOutput } from '../src/lib/chat-request';
+import { debugEnabled, teasersOnlyEnabled, validateChatBody, toPublicOutput } from '../src/lib/chat-request';
 import { classifyError } from '../src/lib/chat-errors';
 
 function withEnv(v: string | undefined, fn: () => void) {
@@ -47,4 +47,11 @@ test('classifyError', () => {
   assert.equal(b.httpStatus, 500);
   assert.equal(b.errorCode, 'internal_error');
   assert.equal(b.retryable, true);
+});
+
+test('teasersOnlyEnabled gate', () => {
+  withEnv(undefined, () => assert.equal(teasersOnlyEnabled({ teasersOnly: true }), false));
+  withEnv('false', () => assert.equal(teasersOnlyEnabled({ teasersOnly: true }), false));
+  withEnv('true', () => assert.equal(teasersOnlyEnabled({}), false));
+  withEnv('true', () => assert.equal(teasersOnlyEnabled({ teasersOnly: true }), true));
 });

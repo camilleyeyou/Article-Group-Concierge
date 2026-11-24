@@ -39,6 +39,8 @@ export type StreamEvent =
   | { type: 'final'; output: PublicOrchestratorOutput }
   // only when debugEnabled(); sent after final
   | { type: 'debug'; debug: Record<string, unknown> }
+  // only in teasers-only timing mode (EVAL_DEBUG); never sent otherwise
+  | { type: 'timing'; marks: Record<string, number>; chunkKeys: string[]; teaserSlugs: string[]; suppressed: string | null }
   | { type: 'error'; explanation: string; errorCode: OrchestratorErrorCode; retryable: boolean; contactCTA: boolean };
 
 export const STREAM_EVENT_TYPES: ReadonlySet<StreamEvent['type']> = new Set<StreamEvent['type']>([
@@ -50,6 +52,7 @@ export const STREAM_EVENT_TYPES: ReadonlySet<StreamEvent['type']> = new Set<Stre
   'narrative',
   'final',
   'debug',
+  'timing',
   'error',
 ]);
 

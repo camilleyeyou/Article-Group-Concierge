@@ -75,7 +75,13 @@ export function catalogueVersion(text: string): string {
 const TTL_MS = 60 * 60 * 1000;
 let memo: { value: Catalogue; loadedAt: number } | null = null;
 
+/** Timings of the last cold load (PERF-01 measurement only). */
+export const lastCatalogueLoad: { docs?: number; chunks?: number; chunkPages?: number; caps?: number; inds?: number; total?: number } = {};
+export const catalogueIsCold = () => !(memo && Date.now() - memo.loadedAt < TTL_MS);
+
 async function loadRows(): Promise<CatalogueRow[]> {
+  const tStart = performance.now();
+  const since = () => Math.round(performance.now() - tStart);
   // The four reads are independent: run them concurrently (the chunk pages stay sequential
   // within their own chain because each page's size decides whether another follows).
   const docsQ = async () => {
@@ -85,13 +91,16 @@ async function loadRows(): Promise<CatalogueRow[]> {
       .eq('doc_type', 'case_study')
       .order('slug');
     if (error) throw error;
+    lastCatalogueLoad.docs = since();
     return data;
   };
 
   // Only embedded (retrievable) chunks; page past the 1000-row API default
   const chunksQ = async () => {
     const out: any[] = [];
+    let pages = 0;
     for (let from = 0; ; from += 1000) {
+      pages++;
       const { data, error: cErr } = await supabase
         .from('content_chunks')
         .select('document_id, chunk_index, content')
@@ -103,6 +112,8 @@ async function loadRows(): Promise<CatalogueRow[]> {
       out.push(...(data ?? []));
       if (!data || data.length < 1000) break;
     }
+    lastCatalogueLoad.chunks = since();
+    lastCatalogueLoad.chunkPages = pages;
     return out;
   };
 
@@ -112,6 +123,7 @@ async function loadRows(): Promise<CatalogueRow[]> {
       .select('document_id, capabilities(name)')
       .order('document_id');
     if (error) throw error;
+    lastCatalogueLoad.caps = since();
     return data;
   };
 
@@ -121,11 +133,13 @@ async function loadRows(): Promise<CatalogueRow[]> {
       .select('document_id, industries(name)')
       .order('document_id');
     if (error) throw error;
+    lastCatalogueLoad.inds = since();
     return data;
   };
 
   const [docs, chunks, dcs, dis] = await Promise.all([docsQ(), chunksQ(), dcsQ(), disQ()]);
 
+  lastCatalogueLoad.total = since();
   const byDoc = new Map<string, string[]>();
   const embedded = new Set<string>();
   for (const c of chunks) {

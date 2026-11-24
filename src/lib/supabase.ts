@@ -18,6 +18,7 @@ import type {
   RetrievedContext,
 } from '../types';
 import { RAGLogger } from './logger';
+import type { PerfMarks } from './perf-marks';
 import { cache, CACHE_PREFIXES, CACHE_TTL } from './cache';
 import { embeddingConfig } from './llm-config';
 import { detectQueryIntent, isAboutAG } from './intent-keywords';
@@ -191,22 +192,33 @@ export interface HybridSearchV2Params {
   includeCompanyInfo?: boolean;
   rrfK?: number;
   intentBoost?: number;
+  /**
+   * Return only the rows retrieveContext keeps (best chunk per document, top N per type),
+   * selected in the database by hybrid_search_v2_top (migration 006). Same v2 ranking,
+   * ~10 rows instead of matchCount, which cuts response transfer on the teaser path.
+   */
+  top?: { maxCaseStudies: number; maxArticles: number };
 }
 
 const nonEmpty = <T,>(a?: T[]): T[] | null => (a && a.length > 0 ? a : null);
+let v2TopMissing = false;
 
 /**
  * Call hybrid_search_v2 (migration 005). If the function is not deployed yet,
  * fall back to the old hybrid_search_exact path so code can ship before the migration.
  */
-export async function hybridSearchV2(p: HybridSearchV2Params): Promise<{
+export async function hybridSearchV2(p: HybridSearchV2Params, marks?: PerfMarks): Promise<{
   rows: HybridSearchResult[];
   fn: 'hybrid_search_v2' | 'hybrid_search_exact' | 'hybrid_search';
 }> {
   const R = CONCIERGE_CONFIG.retrieval;
+  marks?.mark('embed_start');
+  marks?.mark('embed_cache_hit', cache.get<number[]>(CACHE_PREFIXES.EMBEDDING, p.query) ? 1 : 0);
   const queryEmbedding = await generateEmbedding(p.query);
+  marks?.mark('embed_end');
 
-  const { data, error } = await supabase.rpc('hybrid_search_v2', {
+  marks?.mark('rpc_start');
+  const args = {
     query_embedding: queryEmbedding,
     query_text: p.query,
     match_count: p.matchCount ?? R.matchCount,
@@ -216,7 +228,28 @@ export async function hybridSearchV2(p: HybridSearchV2Params): Promise<{
     include_company_info: p.includeCompanyInfo ?? false,
     rrf_k: p.rrfK ?? R.rrfK,
     intent_boost: p.intentBoost ?? R.intentBoost,
-  });
+  };
+  let data: unknown = null;
+  let error: { code?: string } | null = null;
+  if (p.top && !v2TopMissing) {
+    ({ data, error } = await supabase.rpc('hybrid_search_v2_top', {
+      ...args,
+      max_case_studies: p.top.maxCaseStudies,
+      max_articles: p.top.maxArticles,
+    }));
+    if (error && (error.code === 'PGRST202' || error.code === '42883')) {
+      // Migration 006 not applied yet: use plain v2 (same ranking, more rows) from now on
+      RAGLogger.error('hybrid_search_v2_top missing; using hybrid_search_v2', error);
+      v2TopMissing = true;
+      data = null;
+      error = null;
+    }
+  }
+  if (data === null && error === null) {
+    ({ data, error } = await supabase.rpc('hybrid_search_v2', args));
+  }
+  marks?.mark('rpc_end');
+  marks?.mark('rows', (data as any[] | null)?.length ?? 0);
 
   if (error) {
     if (error.code === 'PGRST202' || error.code === '42883') {
@@ -470,6 +503,7 @@ export function __resetRetrievalMemos(): void {
   visualCountMemo = null;
   visualCountInflight = null;
   caseStudyChunkCache = null;
+  v2TopMissing = false;
 }
 
 interface RetrieveContextParams {
@@ -485,6 +519,7 @@ interface RetrieveContextParams {
    * visual-asset, taxonomy and metrics fetches finish. Also called on a cache hit.
    */
   onChunks?: (chunks: HybridSearchResult[]) => void;
+  marks?: PerfMarks; // PERF-01 timing marks (optional)
 }
 
 let caseStudyChunkCache: { n: number; at: number } | null = null;
@@ -521,6 +556,7 @@ export async function retrieveContext({
   maxAssets = 5,
   skipCache = false,
   onChunks,
+  marks,
 }: RetrieveContextParams): Promise<RetrievedContext> {
   const R = CONCIERGE_CONFIG.retrieval;
   const cacheKey = {
@@ -564,7 +600,8 @@ export async function retrieveContext({
     boostCapabilitySlugs: boostCapabilities,
     boostIndustrySlugs: boostIndustries,
     includeCompanyInfo: isAboutAG(query),
-  });
+    top: { maxCaseStudies: R.maxCaseStudies, maxArticles: R.maxArticles },
+  }, marks);
   const poolP = useRerank
     ? getCaseStudyChunkCount().then(n =>
         hybridSearchV2({
@@ -584,6 +621,7 @@ export async function retrieveContext({
   metricsP.catch(() => {});
   const [search, poolSearch] = await Promise.all([searchP, poolP]);
   const { rows: rawChunks, fn } = search;
+  marks?.mark('search_done');
 
   // Best chunk per document (highest combined_score; ties keep input order), RRF order
   const getBestPerDocument = (chunks: HybridSearchResult[]) => {
@@ -630,6 +668,7 @@ export async function retrieveContext({
     top_ranks: rawChunks.slice(0, 3).map(c => `${c.semantic_rank ?? '-'}/${c.keyword_rank ?? '-'}`).join(', '),
   });
 
+  marks?.mark('chunks_ready');
   onChunks?.(finalChunks);
 
   const documentIds = [...new Set(finalChunks.map((c) => c.document_id))];
