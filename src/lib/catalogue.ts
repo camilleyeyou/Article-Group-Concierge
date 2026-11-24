@@ -30,6 +30,8 @@ export interface Catalogue {
   text: string;
   version: string;
   tagsBySlug: Map<string, CatalogueTags>;
+  /** Raw DB deliverables line per slug (PERF-01 instant teasers apply the digit filter themselves). */
+  deliverablesBySlug: Map<string, string | null>;
 }
 
 const sortEn = (a: string, b: string) => a.localeCompare(b, 'en');
@@ -40,6 +42,10 @@ export function tagsBySlug(rows: CatalogueRow[]): Map<string, CatalogueTags> {
     m.set(r.slug, { capabilities: [...r.capabilities].sort(sortEn), industries: [...r.industries].sort(sortEn) });
   }
   return m;
+}
+
+export function deliverablesBySlug(rows: CatalogueRow[]): Map<string, string | null> {
+  return new Map(rows.map(r => [r.slug, r.deliverables] as [string, string | null]));
 }
 
 export const CATALOGUE_RULE = `## AG PORTFOLIO CATALOGUE
@@ -70,39 +76,55 @@ const TTL_MS = 60 * 60 * 1000;
 let memo: { value: Catalogue; loadedAt: number } | null = null;
 
 async function loadRows(): Promise<CatalogueRow[]> {
-  const { data: docs, error } = await supabase
-    .from('documents')
-    .select('id, title, slug, client_name, vimeo_url')
-    .eq('doc_type', 'case_study')
-    .order('slug');
-  if (error) throw error;
+  // The four reads are independent: run them concurrently (the chunk pages stay sequential
+  // within their own chain because each page's size decides whether another follows).
+  const docsQ = async () => {
+    const { data, error } = await supabase
+      .from('documents')
+      .select('id, title, slug, client_name, vimeo_url')
+      .eq('doc_type', 'case_study')
+      .order('slug');
+    if (error) throw error;
+    return data;
+  };
 
   // Only embedded (retrievable) chunks; page past the 1000-row API default
-  const chunks: any[] = [];
-  for (let from = 0; ; from += 1000) {
-    const { data, error: cErr } = await supabase
-      .from('content_chunks')
-      .select('document_id, chunk_index, content')
-      .not('embedding', 'is', null)
-      .order('document_id')
-      .order('chunk_index')
-      .range(from, from + 999);
-    if (cErr) throw cErr;
-    chunks.push(...(data ?? []));
-    if (!data || data.length < 1000) break;
-  }
+  const chunksQ = async () => {
+    const out: any[] = [];
+    for (let from = 0; ; from += 1000) {
+      const { data, error: cErr } = await supabase
+        .from('content_chunks')
+        .select('document_id, chunk_index, content')
+        .not('embedding', 'is', null)
+        .order('document_id')
+        .order('chunk_index')
+        .range(from, from + 999);
+      if (cErr) throw cErr;
+      out.push(...(data ?? []));
+      if (!data || data.length < 1000) break;
+    }
+    return out;
+  };
 
-  const { data: dcs, error: dcErr } = await supabase
-    .from('document_capabilities')
-    .select('document_id, capabilities(name)')
-    .order('document_id');
-  if (dcErr) throw dcErr;
+  const dcsQ = async () => {
+    const { data, error } = await supabase
+      .from('document_capabilities')
+      .select('document_id, capabilities(name)')
+      .order('document_id');
+    if (error) throw error;
+    return data;
+  };
 
-  const { data: dis, error: diErr } = await supabase
-    .from('document_industries')
-    .select('document_id, industries(name)')
-    .order('document_id');
-  if (diErr) throw diErr;
+  const disQ = async () => {
+    const { data, error } = await supabase
+      .from('document_industries')
+      .select('document_id, industries(name)')
+      .order('document_id');
+    if (error) throw error;
+    return data;
+  };
+
+  const [docs, chunks, dcs, dis] = await Promise.all([docsQ(), chunksQ(), dcsQ(), disQ()]);
 
   const byDoc = new Map<string, string[]>();
   const embedded = new Set<string>();
@@ -145,7 +167,7 @@ export async function getCatalogue(): Promise<Catalogue | null> {
   try {
     const rows = await loadRows();
     const text = formatCatalogue(rows);
-    memo = { value: { text, version: catalogueVersion(text), tagsBySlug: tagsBySlug(rows) }, loadedAt: Date.now() };
+    memo = { value: { text, version: catalogueVersion(text), tagsBySlug: tagsBySlug(rows), deliverablesBySlug: deliverablesBySlug(rows) }, loadedAt: Date.now() };
     return memo.value;
   } catch (e) {
     RAGLogger.error('Catalogue load failed', e);

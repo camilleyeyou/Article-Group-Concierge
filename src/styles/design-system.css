@@ -545,4 +545,8 @@ body {
     opacity: 1;
     transform: none;
   }
+
+  .animate-pulse, .animate-spin {
+    animation: none;
+  }
 }

@@ -130,8 +130,20 @@ Phase 4 NOT MET criteria (per 04-EVAL-DELTA.md): (1) goal_as_result 2 vs 0; (2) 
   3. A startup/health check confirms the provider route is OpenRouter and reports remaining credit, and fails with a clear message when either is wrong.
   4. Eval rerun after the phase; report lists every metric's delta vs baseline run 2026-11-20T15-12-31, including latency, and shows quality metrics did not regress.
 **Constraints / gates**: Research: enable for this phase. Check current OpenRouter streaming and caching docs before implementing. `EVAL_DEBUG` must stay unset in production.
-**Plans**: TBD
+**Plans**: 10 plans
 **UI hint**: yes
+
+Plans:
+- [x] 05-01-PLAN.md — Shared contracts: config knobs (instant teasers, D-504 floor/pattern, thinking mode, health thresholds), SSE event protocol, chat helpers extracted from the JSON route
+- [x] 05-02-PLAN.md — PERF-03 provider health check: shared checkProviderHealth(), /api/health (admin), startup log, eval preflight reuse
+- [x] 05-03-PLAN.md — Instant teasers (DB-only, digit-filtered deliverables) and calibrated D-504 suppression with committed fixture
+- [x] 05-04-PLAN.md — TDD incremental layout parser (streamed hero text, complete components, narrative without follow-ups)
+- [x] 05-05-PLAN.md — orchestrateStream typed events + POST /api/chat/stream (SSE) alongside the unchanged JSON route
+- [x] 05-06-PLAN.md — Streaming UI per 05-UI-SPEC: hero skeleton, instant teasers, typing hero, reconcile, partial-deck errors, JSON rollback by env
+- [x] 05-07-PLAN.md — Eval on the stream route: t_* timings, speed/flash/suppression metrics, phase5Gates, timing and smoke scripts
+- [x] 05-08-PLAN.md — Cents-priced thinking-mode timing run + route smoke; set the generation mode knob
+- [x] 05-09-PLAN.md — UI check + go/no-go, the single full eval, 05-EVAL-DELTA.md (revert mode on D-513 regression)
+- [ ] 05-10-PLAN.md — Record outcome, squash, push on approval, deploy and live stream/JSON/health smokes
 
 ### Phase 6: Proof
 **Goal**: The owner can be shown, with evidence, that every ready-bar check holds.
@@ -152,5 +164,5 @@ Phase 4 NOT MET criteria (per 04-EVAL-DELTA.md): (1) goal_as_result 2 vs 0; (2) 
 | 2. Content and data | 0/6 | Planned | - |
 | 3. Retrieval | 0/TBD | Not started | - |
 | 4. Generation | 0/9 | Planned | - |
-| 5. Speed | 0/TBD | Not started | - |
+| 5. Speed | 0/10 | Planned | - |
 | 6. Proof | 0/TBD | Not started | - |

@@ -10,11 +10,30 @@
  * - Accent colors: coral (#fc5d4c), teal (#47ddb2), blue (#0d72d1)
  */
 
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useRef, useEffect, useReducer, useMemo } from 'react';
 import Link from 'next/link';
 import { LayoutRenderer } from '@/components/LayoutRenderer';
 import { UILogger } from '@/lib/logger';
-import type { OrchestratorOutput } from '@/types';
+import type { LayoutComponent, OrchestratorOutput } from '@/types';
+import { SseDecoder, type StreamEvent } from '@/lib/stream-events';
+import {
+  deriveLayout,
+  initialStreamView,
+  streamViewReducer,
+  NETWORK_ERROR_MESSAGE,
+  type StreamViewAction,
+  type StreamViewState,
+} from '@/lib/stream-view';
+
+// Rollback switch (D-509): NEXT_PUBLIC_CHAT_STREAM=false returns to the JSON /api/chat path.
+const USE_STREAM = process.env.NEXT_PUBLIC_CHAT_STREAM !== 'false';
+
+type PageViewAction = StreamViewAction | { type: '__reset' };
+function pageViewReducer(s: StreamViewState, a: PageViewAction): StreamViewState {
+  return a.type === '__reset' ? initialStreamView : streamViewReducer(s, a);
+}
+
+const sleep = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms));
 
 // Conversation message type
 interface Message {
@@ -24,6 +43,149 @@ interface Message {
   layoutPlan?: OrchestratorOutput['layoutPlan'];
   suggestedFollowUps?: string[];
   timestamp: Date;
+  /** Arrived through the stream: reserve narrative space so the deck does not shift. */
+  streamed?: boolean;
+  /** Kept after a mid-stream error; dropped again on retry. */
+  partial?: boolean;
+}
+
+interface LiveInfo {
+  pendingHero: boolean;
+  exitingSlugs: ReadonlySet<string>;
+  exiting: LayoutComponent[];
+  streaming: boolean;
+  writingLine: boolean;
+}
+
+function PulseDots() {
+  return (
+    <div className="flex items-center gap-2" aria-hidden="true">
+      <div className="w-2 h-2 bg-[#fc5d4c] rounded-full animate-pulse" />
+      <div className="w-2 h-2 bg-[#47ddb2] rounded-full animate-pulse" style={{ animationDelay: '150ms' }} />
+      <div className="w-2 h-2 bg-[#0d72d1] rounded-full animate-pulse" style={{ animationDelay: '300ms' }} />
+    </div>
+  );
+}
+
+function LoadingCard({ text }: { text: string }) {
+  return (
+    <div className="bg-white p-8 border border-[#eee]">
+      <div className="flex gap-5">
+        <div className="flex-shrink-0 w-10 h-10 bg-black rounded flex items-center justify-center">
+          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+        </div>
+        <div className="flex-1">
+          <p className="text-[#6B6B6B] mb-3">{text}</p>
+          <PulseDots />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * One assistant turn. The live (streaming) message and the stored message render through this
+ * same component under the same key, so nothing remounts when the stream finalises.
+ */
+function AssistantMessage({
+  message,
+  isLast,
+  live,
+  onFollowUp,
+  disabled,
+}: {
+  message: Message;
+  isLast: boolean;
+  live?: LiveInfo;
+  onFollowUp: (q: string) => void;
+  disabled: boolean;
+}) {
+  const hasDeck =
+    (!!message.layoutPlan && message.layoutPlan.layout.length > 0) ||
+    !!live?.pendingHero ||
+    (live?.exiting.length ?? 0) > 0;
+  const reserveNarrative = !!live || (!!message.streamed && !!message.content);
+
+  return (
+    <div className="space-y-8" aria-live="polite" aria-busy={live?.streaming ? 'true' : 'false'}>
+      {/* Response text */}
+      {hasDeck && (
+        <div className="mb-6">
+          <div
+            className={`max-w-3xl ${reserveNarrative ? 'min-h-[7rem] md:min-h-[8.75rem]' : ''}`}
+          >
+            {message.content ? (
+              <p className="text-[#313131] text-lg md:text-xl leading-relaxed">{message.content}</p>
+            ) : live ? (
+              <div className="space-y-3" aria-hidden="true">
+                <div className="h-5 bg-[#eee] rounded animate-pulse w-full" />
+                <div className="h-5 bg-[#eee] rounded animate-pulse w-11/12" />
+                <div className="h-5 bg-[#eee] rounded animate-pulse w-2/3" />
+              </div>
+            ) : null}
+          </div>
+        </div>
+      )}
+
+      {/* Layout/Visual Content */}
+      {hasDeck && (
+        <div className="bg-white p-8 md:p-10 border border-[#eee]">
+          <LayoutRenderer
+            layoutPlan={message.layoutPlan ?? { layout: [] }}
+            pendingHero={live?.pendingHero}
+            exitingSlugs={live?.exitingSlugs}
+            exiting={live?.exiting}
+          />
+        </div>
+      )}
+
+      {/* Response without layout */}
+      {!hasDeck && (
+        <div className="bg-white p-8 border border-[#eee]">
+          <div className="flex gap-5">
+            <div className="flex-shrink-0 w-10 h-10 bg-black rounded flex items-center justify-center">
+              <span className="text-white font-semibold text-sm">AG</span>
+            </div>
+            <div className="flex-1">
+              <p className="text-[#313131] text-lg leading-relaxed">{message.content}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Streaming status line (one line below the deck) */}
+      {live?.writingLine && (
+        <div className="flex items-center gap-3">
+          <p className="text-[#6B6B6B]">Writing your answer...</p>
+          <PulseDots />
+        </div>
+      )}
+
+      {/* Follow-up suggestions */}
+      {message.suggestedFollowUps && message.suggestedFollowUps.length > 0 && isLast && (
+        <div className="bg-white p-8 border border-[#eee]">
+          <p className="text-xs font-medium text-[#6B6B6B] uppercase tracking-wider mb-4">
+            Continue exploring
+          </p>
+          <div className="flex flex-wrap gap-3">
+            {message.suggestedFollowUps.map((followUp, i) => (
+              <button
+                key={i}
+                onClick={() => onFollowUp(followUp)}
+                disabled={disabled}
+                className="group px-5 py-3 text-sm text-black bg-[#F5F5F5] border border-transparent hover:border-black transition-all duration-200 flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span>{followUp}</span>
+                <svg className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function ConciergePage() {
@@ -32,6 +194,9 @@ export default function ConciergePage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [error, setError] = useState<{ message: string; retryable: boolean; failedQuery: string } | null>(null);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [view, dispatch] = useReducer(pageViewReducer, initialStreamView);
+  const [liveId, setLiveId] = useState<string | null>(null);
+  const [scrollRequest, setScrollRequest] = useState(0);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -72,42 +237,25 @@ export default function ConciergePage() {
     }
   }, [query]);
 
-  // Scroll to latest response
+  // Scroll to the latest response: once on submit and once at the first stream event,
+  // never on final or token events so the reader is not yanked while streaming.
   useEffect(() => {
-    if (messages.length > 0 && latestResponseRef.current) {
+    if (scrollRequest > 0 && latestResponseRef.current) {
       latestResponseRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  }, [messages]);
+  }, [scrollRequest]);
 
-  // Handle query submission
-  const handleSubmit = useCallback(async (e?: React.FormEvent, customQuery?: string) => {
-    e?.preventDefault();
-
-    const trimmedQuery = (customQuery || query).trim();
-    if (!trimmedQuery || isLoading) return;
-
-    setIsLoading(true);
-    setError(null);
-
-    const userMessage: Message = {
-      id: `user-${Date.now()}`,
-      role: 'user',
-      content: trimmedQuery,
-      timestamp: new Date(),
-    };
-    setMessages(prev => [...prev, userMessage]);
-    setQuery('');
-
+  const submitJson = useCallback(async (
+    trimmedQuery: string,
+    history: Array<{ role: 'user' | 'assistant'; content: string }>,
+  ) => {
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query: trimmedQuery,
-          conversationHistory: messages.map(m => ({
-            role: m.role,
-            content: m.content,
-          })),
+          conversationHistory: history,
         }),
       });
 
@@ -138,19 +286,192 @@ export default function ConciergePage() {
         timestamp: new Date(),
       };
       setMessages(prev => [...prev, assistantMessage]);
+      setScrollRequest(n => n + 1);
 
     } catch (err) {
       // Network-level failure (offline, DNS, etc.)
       setError({
-        message: "We couldn't reach the concierge. Check your connection and try again.",
+        message: NETWORK_ERROR_MESSAGE,
         retryable: true,
         failedQuery: trimmedQuery,
       });
       UILogger.error('Submit error', err);
+    }
+  }, []);
+
+  const submitStream = useCallback(async (
+    trimmedQuery: string,
+    history: Array<{ role: 'user' | 'assistant'; content: string }>,
+  ) => {
+    const id = `assistant-${Date.now()}`;
+    // Local mirror of the view state so the loop can read the latest state synchronously.
+    let local: StreamViewState = initialStreamView;
+    let finished = false;
+    let scrolled = false;
+
+    dispatch({ type: '__reset' });
+    setLiveId(id);
+
+    const clearLive = () => {
+      setLiveId(null);
+      dispatch({ type: '__reset' });
+    };
+
+    const commitFinal = (st: StreamViewState) => {
+      const out = st.final;
+      if (!out) return;
+      setMessages(prev => [
+        ...prev,
+        {
+          id,
+          role: 'assistant',
+          content: out.explanation,
+          layoutPlan: out.layoutPlan,
+          suggestedFollowUps: out.suggestedFollowUps,
+          timestamp: new Date(),
+          streamed: true,
+        },
+      ]);
+      clearLive();
+    };
+
+    // Error after (possibly) some content: keep the rendered deck, show the banner below it.
+    const commitError = (st: StreamViewState) => {
+      const { layout } = deriveLayout(st);
+      if (layout.length > 0 || st.narrative.trim()) {
+        setMessages(prev => [
+          ...prev,
+          {
+            id,
+            role: 'assistant',
+            content: st.narrative,
+            layoutPlan: { layout },
+            timestamp: new Date(),
+            streamed: true,
+            partial: true,
+          },
+        ]);
+      }
+      clearLive();
+      setError({
+        message: st.error?.message ?? NETWORK_ERROR_MESSAGE,
+        retryable: st.error?.retryable ?? true,
+        failedQuery: trimmedQuery,
+      });
+      UILogger.error('Stream error', { message: st.error?.message });
+    };
+
+    const handle = async (events: StreamEvent[]) => {
+      for (const ev of events) {
+        if (finished) return;
+        local = streamViewReducer(local, ev);
+        dispatch(ev);
+        if (!scrolled && (ev.type === 'teasers' || ev.type === 'suppressed')) {
+          scrolled = true;
+          setScrollRequest(n => n + 1);
+        }
+        if (ev.type === 'final') {
+          finished = true;
+          // Let unchosen teasers fade (150 ms) before the stored message replaces the live one.
+          if (local.exitingSlugs.length > 0) await sleep(150);
+          commitFinal(local);
+        } else if (ev.type === 'error') {
+          finished = true;
+          commitError(local);
+        }
+      }
+    };
+
+    try {
+      const response = await fetch('/api/chat/stream', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: trimmedQuery,
+          conversationHistory: history,
+        }),
+      });
+
+      const contentType = response.headers.get('content-type') ?? '';
+      if (!response.ok || !contentType.includes('text/event-stream') || !response.body) {
+        const data: OrchestratorOutput = await response.json().catch(() => ({
+          layoutPlan: { layout: [] },
+          explanation: 'We had trouble reaching the concierge. Please try again.',
+          retryable: true,
+        }));
+        clearLive();
+        setError({
+          message: data.explanation,
+          retryable: data.retryable ?? true,
+          failedQuery: trimmedQuery,
+        });
+        UILogger.error('Submit error', { status: response.status, errorCode: data.errorCode });
+        return;
+      }
+
+      const reader = response.body.getReader();
+      const textDecoder = new TextDecoder();
+      const decoder = new SseDecoder();
+
+      while (!finished) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        await handle(decoder.push(textDecoder.decode(value, { stream: true })));
+      }
+      if (!finished) await handle(decoder.flush());
+      if (finished) {
+        reader.cancel().catch(() => undefined);
+      } else {
+        // Body ended with neither final nor error.
+        local = streamViewReducer(local, { type: 'closed' });
+        finished = true;
+        commitError(local);
+      }
+    } catch (err) {
+      if (!finished) {
+        finished = true;
+        local = streamViewReducer(local, { type: 'closed' });
+        commitError(local);
+      }
+      UILogger.error('Submit error', err);
+    }
+  }, []);
+
+  // Handle query submission
+  const handleSubmit = useCallback(async (e?: React.FormEvent, customQuery?: string) => {
+    e?.preventDefault();
+
+    const trimmedQuery = (customQuery || query).trim();
+    if (!trimmedQuery || isLoading) return;
+
+    setIsLoading(true);
+    setError(null);
+
+    const userMessage: Message = {
+      id: `user-${Date.now()}`,
+      role: 'user',
+      content: trimmedQuery,
+      timestamp: new Date(),
+    };
+    setMessages(prev => [...prev, userMessage]);
+    setQuery('');
+    setScrollRequest(n => n + 1);
+
+    // Kept-after-error turns with no text would be empty history entries; skip those.
+    const history = messages
+      .filter(m => m.content.trim().length > 0)
+      .map(m => ({ role: m.role, content: m.content }));
+
+    try {
+      if (USE_STREAM) {
+        await submitStream(trimmedQuery, history);
+      } else {
+        await submitJson(trimmedQuery, history);
+      }
     } finally {
       setIsLoading(false);
     }
-  }, [query, isLoading, messages]);
+  }, [query, isLoading, messages, submitStream, submitJson]);
 
   const handleRetry = useCallback(() => {
     if (!error) return;
@@ -159,11 +480,17 @@ export default function ConciergePage() {
     // Drop the trailing user message we added for the failed attempt — handleSubmit
     // will re-add it. This keeps the conversation clean.
     setMessages(prev => {
-      const last = prev[prev.length - 1];
-      if (last && last.role === 'user' && last.content === queryToRetry) {
-        return prev.slice(0, -1);
+      let next = prev;
+      // A deck kept after a mid-stream error is replaced by the retry.
+      const tail = next[next.length - 1];
+      if (tail && tail.role === 'assistant' && tail.partial) {
+        next = next.slice(0, -1);
       }
-      return prev;
+      const last = next[next.length - 1];
+      if (last && last.role === 'user' && last.content === queryToRetry) {
+        return next.slice(0, -1);
+      }
+      return next;
     });
     handleSubmit(undefined, queryToRetry);
   }, [error, handleSubmit]);
@@ -184,6 +511,35 @@ export default function ConciergePage() {
     setError(null);
     sessionStorage.removeItem('ag-concierge-messages');
   }, []);
+
+  // Streaming view: the live message is rendered through the same component and key as the stored one.
+  const derived = useMemo(() => deriveLayout(view), [view]);
+  const exitingSet = useMemo(() => new Set(derived.exitingSlugs), [derived]);
+  const liveVisible = liveId !== null && view.phase !== 'waiting' && view.phase !== 'error';
+  const suppressedPreHero = view.suppressed !== null && !view.hero && view.phase !== 'done';
+  const streamingNow = isLoading && view.phase !== 'done' && view.phase !== 'error';
+  const live: LiveInfo = {
+    pendingHero: derived.pendingHero,
+    exitingSlugs: exitingSet,
+    exiting: derived.exiting,
+    streaming: streamingNow,
+    writingLine: streamingNow && !suppressedPreHero,
+  };
+  const conversation: Message[] =
+    liveVisible && liveId && !messages.some(m => m.id === liveId)
+      ? [
+          ...messages,
+          {
+            id: liveId,
+            role: 'assistant',
+            content: view.final?.explanation ?? view.narrative,
+            layoutPlan: { layout: derived.layout },
+            timestamp: new Date(0),
+            streamed: true,
+          },
+        ]
+      : messages;
+  const showLoadingCard = isLoading && (!liveVisible || suppressedPreHero);
 
   // Example prompts matching AG's tone
   const examplePrompts = [
@@ -499,9 +855,10 @@ export default function ConciergePage() {
         {isHydrated && messages.length > 0 && (
           <div className="flex-1 overflow-y-auto bg-[#F5F5F5]">
             <div className="max-w-[1000px] mx-auto px-6 lg:px-8 py-12">
-              {messages.map((message, index) => {
+              {conversation.map((message, index) => {
                 const isLatestUserMessage = message.role === 'user' &&
-                  (index === messages.length - 1 || index === messages.length - 2);
+                  (index === conversation.length - 1 || index === conversation.length - 2);
+                const isLiveMessage = liveVisible && message.id === liveId;
 
                 return (
                   <div key={message.id} className="mb-12">
@@ -524,86 +881,20 @@ export default function ConciergePage() {
 
                     {/* Assistant Message */}
                     {message.role === 'assistant' && (
-                      <div className="space-y-8">
-                        {/* Response text */}
-                        {message.layoutPlan && message.layoutPlan.layout.length > 0 && (
-                          <div className="mb-6">
-                            <p className="text-[#313131] text-lg md:text-xl leading-relaxed max-w-3xl">
-                              {message.content}
-                            </p>
-                          </div>
-                        )}
-
-                        {/* Layout/Visual Content */}
-                        {message.layoutPlan && message.layoutPlan.layout.length > 0 && (
-                          <div className="bg-white p-8 md:p-10 border border-[#eee]">
-                            <LayoutRenderer layoutPlan={message.layoutPlan} />
-                          </div>
-                        )}
-
-                        {/* Response without layout */}
-                        {(!message.layoutPlan || message.layoutPlan.layout.length === 0) && (
-                          <div className="bg-white p-8 border border-[#eee]">
-                            <div className="flex gap-5">
-                              <div className="flex-shrink-0 w-10 h-10 bg-black rounded flex items-center justify-center">
-                                <span className="text-white font-semibold text-sm">AG</span>
-                              </div>
-                              <div className="flex-1">
-                                <p className="text-[#313131] text-lg leading-relaxed">
-                                  {message.content}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Follow-up suggestions */}
-                        {message.suggestedFollowUps && message.suggestedFollowUps.length > 0 && index === messages.length - 1 && (
-                          <div className="bg-white p-8 border border-[#eee]">
-                            <p className="text-xs font-medium text-[#6B6B6B] uppercase tracking-wider mb-4">
-                              Continue exploring
-                            </p>
-                            <div className="flex flex-wrap gap-3">
-                              {message.suggestedFollowUps.map((followUp, i) => (
-                                <button
-                                  key={i}
-                                  onClick={() => handleFollowUp(followUp)}
-                                  disabled={isLoading}
-                                  className="group px-5 py-3 text-sm text-black bg-[#F5F5F5] border border-transparent hover:border-black transition-all duration-200 flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                  <span>{followUp}</span>
-                                  <svg className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                  </svg>
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
+                      <AssistantMessage
+                        message={message}
+                        isLast={index === conversation.length - 1}
+                        live={isLiveMessage ? live : undefined}
+                        onFollowUp={handleFollowUp}
+                        disabled={isLoading}
+                      />
                     )}
                   </div>
                 );
               })}
 
-              {/* Loading indicator */}
-              {isLoading && (
-                <div className="bg-white p-8 border border-[#eee]">
-                  <div className="flex gap-5">
-                    <div className="flex-shrink-0 w-10 h-10 bg-black rounded flex items-center justify-center">
-                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-[#6B6B6B] mb-3">Finding relevant case studies...</p>
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-[#fc5d4c] rounded-full animate-pulse" />
-                        <div className="w-2 h-2 bg-[#47ddb2] rounded-full animate-pulse" style={{ animationDelay: '150ms' }} />
-                        <div className="w-2 h-2 bg-[#0d72d1] rounded-full animate-pulse" style={{ animationDelay: '300ms' }} />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
+              {/* Loading indicator (stage 0, and suppressed queries until the hero arrives) */}
+              {showLoadingCard && <LoadingCard text="Looking through Article Group's work..." />}
 
               <div ref={messagesEndRef} />
             </div>

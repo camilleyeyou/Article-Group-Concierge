@@ -8,6 +8,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { performance } from '@/lib/performance';
 import { requireAdminAuth } from '@/lib/admin-auth';
+import { checkProviderHealth } from '@/lib/provider-health';
+import { CONCIERGE_CONFIG } from '@/lib/concierge-config';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,6 +23,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       ...health,
+      provider: await checkProviderHealth({ timeoutMs: CONCIERGE_CONFIG.health.requestTimeoutMs }),
       alerts,
       timestamp: new Date().toISOString(),
     });

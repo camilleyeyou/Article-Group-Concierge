@@ -17,7 +17,7 @@ import * as fs from 'fs';
 import { aggregateRuns } from './aggregate';
 import { gradeDir } from './grade';
 import { gradeSecond } from './grade-second';
-import { PreflightError, runPreflight } from './preflight';
+import { FULL_EVAL_MIN_CREDIT_USD, PreflightError, runPreflight } from './preflight';
 import { writeReport } from './report';
 import { runEval } from './run';
 import { resolveIds } from './subsets';
@@ -41,7 +41,9 @@ async function main() {
     supabase: true,
     openrouter: true,
     devServer: BASE_URL,
-    minCreditUsd: runs * (ids ? Math.max(0.5, 0.09 * ids.length) : 3.5) + 1 + (secondGrader ? 1 : 0),
+    minCreditUsd: ids
+      ? runs * Math.max(0.5, 0.09 * ids.length) + 1 + (secondGrader ? 1 : 0)
+      : FULL_EVAL_MIN_CREDIT_USD + (runs - 1) * 3.5 + (secondGrader ? 1 : 0),
   });
 
   const startedAt = new Date().toISOString();

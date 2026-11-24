@@ -10,6 +10,7 @@ import './lib';
  */
 
 import * as dns from 'dns';
+import { checkProviderHealth } from '../src/lib/provider-health';
 
 export interface PreflightOptions {
   supabase?: boolean;
@@ -24,6 +25,9 @@ export interface PreflightResult {
 }
 
 export class PreflightError extends Error {}
+
+/** Minimum OpenRouter credit for one full eval run via batch preflight. */
+export const FULL_EVAL_MIN_CREDIT_USD = 4.5; // batch preflight minimum for one full run (3.5 per run + 1 margin)
 
 const TIMEOUT_MS = 10_000;
 
@@ -67,23 +71,21 @@ async function checkSupabase(): Promise<void> {
   console.log(`preflight: supabase ok (${hostname})`);
 }
 
+// The shared health check warns below CONCIERGE_CONFIG.health.warnBelowUsd; this
+// preflight minimum is per run (Pitfall 10), so the two thresholds differ on purpose.
 async function checkOpenRouter(minCreditUsd: number): Promise<PreflightResult> {
-  const key = process.env.OPENROUTER_API_KEY;
-  if (!key) {
+  const h = await checkProviderHealth({ timeoutMs: TIMEOUT_MS });
+  if (!h.key.present) {
     throw new PreflightError('OPENROUTER_API_KEY is not set: the eval must use the same OpenRouter route as production.');
   }
-  let res: Response;
-  try {
-    res = await timedFetch('https://openrouter.ai/api/v1/key', { headers: { Authorization: `Bearer ${key}` } });
-  } catch (e) {
-    throw new PreflightError(`Could not reach OpenRouter to check credit (${errText(e)}).`);
+  if (h.httpStatus !== null && h.key.valid !== true) {
+    throw new PreflightError(`OpenRouter key check failed with HTTP ${h.httpStatus}.`);
   }
-  if (!res.ok) throw new PreflightError(`OpenRouter key check failed with HTTP ${res.status}.`);
-
-  const body = (await res.json()) as { data?: { limit?: number | null; limit_remaining?: number | null; usage?: number | null } };
-  const remaining = typeof body.data?.limit_remaining === 'number' ? body.data.limit_remaining : null;
-  const limit = typeof body.data?.limit === 'number' ? body.data.limit : null;
-  const usage = typeof body.data?.usage === 'number' ? body.data.usage : null;
+  if (h.httpStatus === null && h.key.valid === null) {
+    throw new PreflightError(`Could not reach OpenRouter to check credit (${h.reason}).`);
+  }
+  const remaining = h.credit.remaining;
+  const limit = h.credit.limit;
 
   if (remaining !== null && remaining < minCreditUsd) {
     throw new PreflightError(
@@ -95,7 +97,7 @@ async function checkOpenRouter(minCreditUsd: number): Promise<PreflightResult> {
       ? 'preflight: openrouter ok, no credit limit on key'
       : `preflight: openrouter ok, $${remaining.toFixed(2)} of $${(limit ?? remaining).toFixed(2)} left`,
   );
-  return { creditRemainingUsd: remaining, creditUsageUsd: usage };
+  return { creditRemainingUsd: remaining, creditUsageUsd: h.credit.usage };
 }
 
 async function checkDevServer(base: string): Promise<void> {

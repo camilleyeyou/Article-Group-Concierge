@@ -58,3 +58,8 @@ export function claudeModelId(id: string): string {
   if (!usingOpenRouter() || id.includes('/')) return id;
   return `anthropic/${id.replace(/-(\d+)-(\d+)$/, '-$1.$2')}`;
 }
+
+/** The generation model id as the provider sees it (same expression the orchestrator uses). */
+export function generationModelId(): string {
+  return claudeModelId(process.env.ANTHROPIC_MODEL || 'claude-sonnet-5-5');
+}

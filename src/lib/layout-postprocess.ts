@@ -1,7 +1,7 @@
 /**
  * GEN-03 post-processing: overwrite teaser capabilities/industries from DB links so the model can
  * never invent tags, and re-render the raw response so the eval grader sees what the user sees.
- * Pure module (no I/O). The unused orchestrateStream must apply the same in Phase 5.
+ * Pure module (no I/O).
  * The 04-07 verifier hooks in after this.
  */
 import type { LayoutPlan, OrchestratorOutput, CaseStudyTeaserProps } from '../types';

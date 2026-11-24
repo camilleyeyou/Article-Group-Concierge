@@ -12,7 +12,8 @@
  *   npm run eval:run -- --limit 3         # smoke test
  *   npm run eval:run -- --subset phase4-smoke   # or --ids p1-q01,p2-q01
  *
- * Env: EVAL_BASE_URL (default http://localhost:3000), EVAL_DELAY_MS (default 4000)
+ * Env: EVAL_BASE_URL (default http://localhost:3000), EVAL_DELAY_MS (default 4000),
+ *      EVAL_ROUTE=stream|json (default stream: /api/chat/stream; json: legacy /api/chat)
  */
 
 import * as path from 'path';
@@ -33,6 +34,7 @@ import {
   type RunRecord,
 } from './lib';
 import { runPreflight, PreflightError } from './preflight';
+import { consumeChatStream, type StreamCapture } from './stream-client';
 import { resolveIds } from './subsets';
 import type { GenerationUsage, OrchestratorOutput } from '../src/types';
 
@@ -41,6 +43,8 @@ const BASE_URL = (process.env.EVAL_BASE_URL || 'http://localhost:3000').replace(
 const DELAY_MS = Number(process.env.EVAL_DELAY_MS || 4000);
 const REQUEST_TIMEOUT_MS = 120_000;
 const RATE_LIMIT_WAIT_MS = 60_000;
+// 'stream' (default) exercises /api/chat/stream like production; EVAL_ROUTE=json keeps the old /api/chat path
+const ROUTE = (process.env.EVAL_ROUTE || 'stream') as 'stream' | 'json';
 
 type DebugResponse = OrchestratorOutput & {
   error?: string;
@@ -92,6 +96,103 @@ async function postQuery(query: string): Promise<{ status: number; body: DebugRe
   }
 }
 
+type StreamPost =
+  | { kind: 'stream'; status: number; capture: StreamCapture; elapsedMs: number }
+  | { kind: 'json'; status: number; body: DebugResponse | null; text: string };
+
+async function postStream(query: string): Promise<StreamPost> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  try {
+    const t0 = performance.now();
+    const res = await fetch(`${BASE_URL}/api/chat/stream`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query, debug: true }),
+      signal: controller.signal,
+    });
+    if (!(res.headers.get('content-type') ?? '').includes('text/event-stream')) {
+      const text = await res.text();
+      let body: DebugResponse | null = null;
+      try {
+        body = JSON.parse(text);
+      } catch {
+        // kept as text for the error message
+      }
+      return { kind: 'json', status: res.status, body, text };
+    }
+    const capture = await consumeChatStream(res, t0);
+    return { kind: 'stream', status: res.status, capture, elapsedMs: performance.now() - t0 };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function applyDebug(record: RunRecord, debug: NonNullable<DebugResponse['debug']>): RunModels | null {
+  record.raw_response = debug.rawResponse;
+  record.model_raw_response = debug.modelRawResponse ?? null;
+  record.orchestrator_error = debug.orchestratorError;
+  record.retrieval = debug.retrieval;
+  record.catalogue = debug.catalogue?.text ?? null;
+  record.catalogue_version = debug.catalogue?.version ?? null;
+  record.usage = debug.usage ?? null;
+  record.search_function = debug.retrieval?.searchFunction ?? null;
+  return debug.models ?? null;
+}
+
+async function runQueryStream(q: EvalQuery, record: RunRecord): Promise<RunModels | null> {
+  let models: RunModels | null = null;
+  const started = Date.now();
+  record.route = 'stream';
+  try {
+    let result = await postStream(q.text);
+    if (result.status === 429) {
+      console.warn(`  rate limited - waiting ${RATE_LIMIT_WAIT_MS / 1000}s and retrying once`);
+      await sleep(RATE_LIMIT_WAIT_MS);
+      result = await postStream(q.text);
+    }
+    record.http_status = result.status;
+
+    if (result.kind === 'json') {
+      record.latency_ms = Date.now() - started;
+      if (!result.body) {
+        record.error = `Non-JSON response (HTTP ${result.status}): ${result.text.slice(0, 200)}`;
+      } else {
+        record.error = `HTTP ${result.status}: ${result.body.errorCode ?? result.body.error ?? 'unknown error'}`;
+      }
+      return models;
+    }
+
+    const capture = result.capture;
+    record.latency_ms = capture.t_complete_ms ?? Math.round(result.elapsedMs);
+    record.t_teasers_ms = capture.t_teasers_ms;
+    record.t_suppressed_ms = capture.t_suppressed_ms;
+    record.t_hero_first_ms = capture.t_hero_first_ms;
+    record.t_hero_done_ms = capture.t_hero_done_ms;
+    record.t_complete_ms = capture.t_complete_ms;
+    record.instant_teaser_slugs = capture.instant_teaser_slugs;
+    record.suppressed = capture.suppressed_reason;
+    record.response = (capture.final as unknown as OrchestratorOutput | null) ?? null;
+
+    if (capture.error) {
+      record.error = `Stream error: ${capture.error.errorCode}: ${capture.error.explanation}`;
+      return models;
+    }
+    if (!capture.debug) throw new DebugDisabledError();
+    models = applyDebug(record, capture.debug as unknown as NonNullable<DebugResponse['debug']>);
+    if (record.orchestrator_error) {
+      record.error = `Orchestrator error: ${record.orchestrator_error}`;
+      return models;
+    }
+    record.status = 'ok';
+  } catch (error) {
+    if (error instanceof DebugDisabledError) throw error;
+    record.latency_ms = Date.now() - started;
+    record.error = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
+  }
+  return models;
+}
+
 async function runQuery(q: EvalQuery): Promise<{ record: RunRecord; models: RunModels | null }> {
   let models: RunModels | null = null;
   const record: RunRecord = {
@@ -109,6 +210,12 @@ async function runQuery(q: EvalQuery): Promise<{ record: RunRecord; models: RunM
     orchestrator_error: null,
     retrieval: null,
   };
+
+  if (ROUTE === 'stream') {
+    models = await runQueryStream(q, record);
+    return { record, models };
+  }
+  record.route = 'json';
 
   const started = Date.now();
   try {
@@ -136,15 +243,7 @@ async function runQuery(q: EvalQuery): Promise<{ record: RunRecord; models: RunM
     }
     if (!debug) throw new DebugDisabledError();
 
-    record.raw_response = debug.rawResponse;
-    record.model_raw_response = debug.modelRawResponse ?? null;
-    record.orchestrator_error = debug.orchestratorError;
-    record.retrieval = debug.retrieval;
-    record.catalogue = debug.catalogue?.text ?? null;
-    record.catalogue_version = debug.catalogue?.version ?? null;
-    record.usage = debug.usage ?? null;
-    record.search_function = debug.retrieval?.searchFunction ?? null;
-    models = debug.models ?? null;
+    models = applyDebug(record, debug);
 
     // The orchestrator swallows model errors and returns a polite fallback with HTTP 200
     if (debug.orchestratorError) {
@@ -216,7 +315,10 @@ export async function runEval(opts: { persona?: string; limit?: number; ids?: re
     const chunks = record.retrieval?.chunks.length ?? 0;
     console.log(
       record.status === 'ok'
-        ? `ok ${record.latency_ms}ms, ${chunks} chunks, ${record.response?.layoutPlan.layout.length ?? 0} components`
+        ? `ok ${record.latency_ms}ms, ${chunks} chunks, ${record.response?.layoutPlan.layout.length ?? 0} components` +
+          (record.route === 'stream'
+            ? `, teasers ${record.t_teasers_ms != null ? `${Math.round(record.t_teasers_ms)}ms` : `suppressed:${record.suppressed ?? 'none'}`}, hero ${record.t_hero_first_ms != null ? `${Math.round(record.t_hero_first_ms)}ms` : 'n/a'}`
+            : '')
         : `ERROR ${record.error}`,
     );
     if (record.status === 'ok') {

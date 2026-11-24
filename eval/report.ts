@@ -36,7 +36,7 @@ import {
 } from './lib';
 import type { AgreementResult } from './agreement';
 import { DISPUTED_LABELS } from './labels';
-import { METRIC_DEFS, computeRunMetrics, findRegradeDir, formatDelta, formatValue, type RunMetrics } from './metrics';
+import { METRIC_DEFS, computeRunMetrics, findRegradeDir, formatDelta, formatValue, phase5Gates, type RunMetrics } from './metrics';
 import { CONCIERGE_CONFIG } from '../src/lib/concierge-config';
 
 interface Row {
@@ -125,6 +125,69 @@ function comparisonSection(dir: string, m: RunMetrics): string[] {
   return out;
 }
 
+function speedSection(m: RunMetrics): string[] {
+  if (!m.speed) return [];
+  const ms = (v: number | null) => (v === null ? 'n/a' : `${Math.round(v)} ms`);
+  const t = (label: string, st: NonNullable<RunMetrics['speed']>['teasers']) => [
+    label,
+    ms(st.median),
+    ms(st.p90),
+    ms(st.max),
+    String(st.n),
+  ];
+  const out: string[] = [`## Speed and instant teasers (Phase 5)`];
+  out.push(
+    table(
+      ['Timing', 'Median', 'p90', 'Max', 'n'],
+      [
+        t('t_teasers_ms (non-suppressed)', m.speed.teasers),
+        t('t_hero_first_ms', m.speed.hero_first),
+        t('t_hero_done_ms', m.speed.hero_done),
+        t('t_complete_ms', m.speed.complete),
+      ],
+    ),
+  );
+  out.push(`Suppressed instant teasers (ok records): **${m.speed.suppressed_n}**.`);
+  if (m.instant) {
+    const f = m.instant.flash;
+    out.push(
+      `Flash rate (instant teasers absent from the final layout): **${f.flashed}/${f.shown}**${f.flash_rate === null ? '' : ` (${(100 * f.flash_rate).toFixed(1)}%)`}.`,
+    );
+    out.push(
+      table(
+        ['Floor', 'Fallback suppressed', 'Bait suppressed', 'Direct falsely suppressed', 'Missed fallback ids', 'False-direct ids'],
+        m.instant.suppression.map(s => [
+          s.floor.toFixed(2),
+          `${s.fallback.suppressed}/${s.fallback.of}`,
+          `${s.bait.suppressed}/${s.bait.of}`,
+          `${s.direct_false.suppressed}/${s.direct_false.of}`,
+          s.missed_fallback_ids.join(', ') || 'none',
+          s.false_direct_ids.join(', ') || 'none',
+        ]),
+      ),
+    );
+    out.push(
+      `Recorded suppression vs recomputation at the configured floor: **${m.instant.actual_vs_recomputed_mismatches}** mismatches.`,
+    );
+  }
+  out.push(
+    `Eval runs send \`debug: true\`, which bypasses the retrieval and orchestrator caches, so these timings are conservative (cold) compared with production repeat queries.`,
+  );
+  out.push(`### Phase 5 gates (D-511, D-513)`);
+  out.push(
+    table(
+      ['Gate', 'Value', 'Limit', 'Result'],
+      phase5Gates(m).map(g => [
+        g.gate,
+        g.value === null ? 'n/a' : String(Math.round(g.value * 100) / 100),
+        g.limit,
+        g.pass === null ? 'n/a' : g.pass ? 'PASS' : 'FAIL',
+      ]),
+    ),
+  );
+  return out;
+}
+
 export function writeReport(dir: string): void {
   assertWritableRunDir(dir);
   const m = computeRunMetrics(dir);
@@ -164,6 +227,8 @@ export function writeReport(dir: string): void {
       `- **Hallucination rule:** grounded score ≤ 2`,
     ].join('\n'),
   );
+
+  out.push(...speedSection(m));
 
   // Summary
   out.push(`## Summary`);

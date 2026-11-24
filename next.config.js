@@ -29,6 +29,8 @@ const nextConfig = {
 
   // Experimental features
   experimental: {
+    // Next 14 needs this for instrumentation.ts register() to run
+    instrumentationHook: true,
     // Enable server actions
     serverActions: {
       bodySizeLimit: '2mb',

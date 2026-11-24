@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { tagsBySlug, formatCatalogue, extractDeliverables, catalogueVersion, CATALOGUE_RULE, CatalogueRow } from '../src/lib/catalogue';
+import { tagsBySlug, deliverablesBySlug, formatCatalogue, extractDeliverables, catalogueVersion, CATALOGUE_RULE, CatalogueRow } from '../src/lib/catalogue';
 
 const rows: CatalogueRow[] = [
   { slug: 'b-study', title: 'B', client: null, capabilities: ['Video', 'Brand'], industries: ['Tech'], hasVideo: true, deliverables: 'Solution included a film and a deck.' },
@@ -43,4 +43,21 @@ test('tagsBySlug maps sorted tags per slug', () => {
   const m = tagsBySlug(rows);
   assert.deepEqual(m.get('b-study'), { capabilities: ['Brand', 'Video'], industries: ['Tech'] });
   assert.deepEqual(m.get('a-study'), { capabilities: [], industries: [] });
+});
+
+test('deliverablesBySlug maps slug to deliverables, null kept', () => {
+  const withNull: CatalogueRow[] = [...rows, { slug: 'c-study', title: 'C', client: null, capabilities: [], industries: [], hasVideo: false, deliverables: null }];
+  const m = deliverablesBySlug(withNull);
+  assert.equal(m.get('b-study'), 'Solution included a film and a deck.');
+  assert.equal(m.get('a-study'), 'Solution included 3 films.');
+  assert.equal(m.get('c-study'), null);
+  assert.equal(m.size, 3);
+});
+
+test('formatCatalogue output is stable for the fixture rows (prompt cache)', () => {
+  const t = formatCatalogue(rows);
+  assert.equal(
+    t,
+    `${CATALOGUE_RULE}\n\n2 case studies:\n- A | client: Acme | slug: a-study | capabilities: n/a | industries: n/a | video: no\n- B | client: n/a | slug: b-study | capabilities: Brand, Video | industries: Tech | video: yes | deliverables: Solution included a film and a deck.\n`
+  );
 });

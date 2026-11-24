@@ -61,6 +61,8 @@ export const supabase = new Proxy({} as SupabaseClient, {
  *
  * CACHED: Embeddings are cached for 24 hours to reduce API costs
  */
+const embeddingInflight = new Map<string, Promise<number[]>>();
+
 export async function generateEmbedding(text: string): Promise<number[]> {
   // Check cache first
   const cached = cache.get<number[]>(CACHE_PREFIXES.EMBEDDING, text);
@@ -68,6 +70,16 @@ export async function generateEmbedding(text: string): Promise<number[]> {
     return cached;
   }
 
+  // The cache is only filled after the fetch resolves, so concurrent callers for the same text
+  // (hybrid search + visual asset search) share one in-flight request instead of paying twice.
+  const pending = embeddingInflight.get(text);
+  if (pending) return pending;
+  const p = fetchEmbedding(text).finally(() => embeddingInflight.delete(text));
+  embeddingInflight.set(text, p);
+  return p;
+}
+
+async function fetchEmbedding(text: string): Promise<number[]> {
   const { baseURL, apiKey, model } = embeddingConfig();
   const response = await fetch(`${baseURL}/embeddings`, {
     method: 'POST',
@@ -240,6 +252,39 @@ interface VisualAssetSearchParams {
   matchCount?: number;
 }
 
+const VISUAL_COUNT_TTL_EMPTY_MS = 5 * 60 * 1000;
+const VISUAL_COUNT_TTL_MS = 60 * 60 * 1000;
+let visualCountMemo: { n: number; at: number } | null = null;
+let visualCountInflight: Promise<boolean> | null = null;
+
+/**
+ * True when at least one visual asset has an embedded description (the rows search_visual_assets
+ * can return). The count is memoised; an empty table is rechecked every 5 minutes so assets added
+ * later are picked up, a non-empty one every hour. On any error we return true (do the real search).
+ */
+export async function visualAssetsIndexed(): Promise<boolean> {
+  if (visualCountMemo) {
+    const ttl = visualCountMemo.n === 0 ? VISUAL_COUNT_TTL_EMPTY_MS : VISUAL_COUNT_TTL_MS;
+    if (Date.now() - visualCountMemo.at < ttl) return visualCountMemo.n > 0;
+  }
+  if (visualCountInflight) return visualCountInflight;
+  visualCountInflight = (async () => {
+    const { count, error } = await supabase
+      .from('visual_assets')
+      .select('id', { count: 'exact', head: true })
+      .not('description_embedding', 'is', null);
+    if (error || count == null) {
+      RAGLogger.error('visual asset count unavailable; searching anyway', error);
+      return true;
+    }
+    visualCountMemo = { n: count, at: Date.now() };
+    return count > 0;
+  })().finally(() => {
+    visualCountInflight = null;
+  });
+  return visualCountInflight;
+}
+
 /**
  * Search for relevant visual assets based on their descriptions.
  * Returns results with signed URLs for secure access.
@@ -250,6 +295,9 @@ export async function searchVisualAssets({
   assetTypes,
   matchCount = 5,
 }: VisualAssetSearchParams): Promise<VisualAssetSearchResult[]> {
+  // Nothing indexed: skip the embedding and the RPC (self-heals, see visualAssetsIndexed)
+  if (!(await visualAssetsIndexed())) return [];
+
   // Generate embedding for the query
   const queryEmbedding = await generateEmbedding(query);
   
@@ -304,6 +352,28 @@ export async function getDocumentMetrics(
     throw error;
   }
   
+  return data || [];
+}
+
+const METRICS_API_ROW_LIMIT = 1000;
+
+/**
+ * Metrics for every document, in the same display_order ordering as getDocumentMetrics. Lets
+ * retrieveContext start the fetch before the search result (and so the document ids) is known.
+ * Returns null if the API row cap may have truncated the result; the caller then falls back to
+ * the per-document query.
+ */
+async function getAllDocumentMetrics(): Promise<DocumentMetric[] | null> {
+  const { data, error } = await supabase
+    .from('document_metrics')
+    .select('*')
+    .order('display_order', { ascending: true });
+
+  if (error) {
+    RAGLogger.error('Metrics fetch error', error);
+    throw error;
+  }
+  if ((data?.length ?? 0) >= METRICS_API_ROW_LIMIT) return null;
   return data || [];
 }
 
@@ -369,6 +439,39 @@ export async function getTopics(): Promise<Topic[]> {
 // FULL CONTEXT RETRIEVAL
 // ============================================
 
+const TAXONOMY_TTL_MS = 60 * 60 * 1000;
+interface Taxonomy {
+  capabilities: Capability[];
+  industries: Industry[];
+  topics: Topic[];
+}
+let taxonomyMemo: { value: Taxonomy; at: number } | null = null;
+let taxonomyInflight: Promise<Taxonomy> | null = null;
+
+/** Static taxonomy tables, memoised 1 h (same pattern as the catalogue). Failures are not memoised. */
+async function getTaxonomy(): Promise<Taxonomy> {
+  if (taxonomyMemo && Date.now() - taxonomyMemo.at < TAXONOMY_TTL_MS) return taxonomyMemo.value;
+  if (taxonomyInflight) return taxonomyInflight;
+  taxonomyInflight = (async () => {
+    const [capabilities, industries, topics] = await Promise.all([getCapabilities(), getIndustries(), getTopics()]);
+    const value: Taxonomy = { capabilities, industries, topics };
+    taxonomyMemo = { value, at: Date.now() };
+    return value;
+  })().finally(() => {
+    taxonomyInflight = null;
+  });
+  return taxonomyInflight;
+}
+
+/** Test hook: clear the retrieval memos. */
+export function __resetRetrievalMemos(): void {
+  taxonomyMemo = null;
+  taxonomyInflight = null;
+  visualCountMemo = null;
+  visualCountInflight = null;
+  caseStudyChunkCache = null;
+}
+
 interface RetrieveContextParams {
   query: string;
   capabilitySlugs?: string[];
@@ -377,6 +480,11 @@ interface RetrieveContextParams {
   maxChunks?: number;
   maxAssets?: number;
   skipCache?: boolean; // Eval runs need fresh results after reingestion
+  /**
+   * Called with the final chunks as soon as the search (and rerank, if on) is done, before the
+   * visual-asset, taxonomy and metrics fetches finish. Also called on a cache hit.
+   */
+  onChunks?: (chunks: HybridSearchResult[]) => void;
 }
 
 let caseStudyChunkCache: { n: number; at: number } | null = null;
@@ -412,6 +520,7 @@ export async function retrieveContext({
   industrySlugs,
   maxAssets = 5,
   skipCache = false,
+  onChunks,
 }: RetrieveContextParams): Promise<RetrievedContext> {
   const R = CONCIERGE_CONFIG.retrieval;
   const cacheKey = {
@@ -427,6 +536,7 @@ export async function retrieveContext({
     : cache.get<RetrievedContext>(CACHE_PREFIXES.RAG_SEARCH, cacheKey);
   if (cached) {
     RAGLogger.debug('Using cached RAG results', { query: query.slice(0, 50) });
+    onChunks?.(cached.chunks);
     return cached;
   }
 
@@ -447,30 +557,32 @@ export async function retrieveContext({
   });
 
   const useRerank = rerankEnabled();
-  const [search, visualAssets, capabilities, industries, topics, poolSearch] = await Promise.all([
-    hybridSearchV2({
-      query,
-      boostCapabilitySlugs: boostCapabilities,
-      boostIndustrySlugs: boostIndustries,
-      includeCompanyInfo: isAboutAG(query),
-    }),
-    searchVisualAssets({ query, matchCount: maxAssets }),
-    getCapabilities(),
-    getIndustries(),
-    getTopics(),
-    useRerank
-      ? getCaseStudyChunkCount().then(n =>
-          hybridSearchV2({
-            query,
-            docTypes: ['case_study'],
-            matchCount: n,
-            boostCapabilitySlugs: boostCapabilities,
-            boostIndustrySlugs: boostIndustries,
-            includeCompanyInfo: false,
-          }).then(r => ({ ...r, asked: n })),
-        )
-      : Promise.resolve(null),
-  ]);
+  // Everything starts now. Only the search (and rerank pool) gate the chunk selection; the visual
+  // assets, taxonomy and metrics fetches run alongside it and are awaited afterwards.
+  const searchP = hybridSearchV2({
+    query,
+    boostCapabilitySlugs: boostCapabilities,
+    boostIndustrySlugs: boostIndustries,
+    includeCompanyInfo: isAboutAG(query),
+  });
+  const poolP = useRerank
+    ? getCaseStudyChunkCount().then(n =>
+        hybridSearchV2({
+          query,
+          docTypes: ['case_study'],
+          matchCount: n,
+          boostCapabilitySlugs: boostCapabilities,
+          boostIndustrySlugs: boostIndustries,
+          includeCompanyInfo: false,
+        }).then(r => ({ ...r, asked: n })),
+      )
+    : Promise.resolve(null);
+  const sideP = Promise.all([searchVisualAssets({ query, matchCount: maxAssets }), getTaxonomy()]);
+  const metricsP = getAllDocumentMetrics();
+  // If the search throws we never await these; keep their rejections from going unhandled.
+  sideP.catch(() => {});
+  metricsP.catch(() => {});
+  const [search, poolSearch] = await Promise.all([searchP, poolP]);
   const { rows: rawChunks, fn } = search;
 
   // Best chunk per document (highest combined_score; ties keep input order), RRF order
@@ -518,10 +630,20 @@ export async function retrieveContext({
     top_ranks: rawChunks.slice(0, 3).map(c => `${c.semantic_rank ?? '-'}/${c.keyword_rank ?? '-'}`).join(', '),
   });
 
+  onChunks?.(finalChunks);
+
   const documentIds = [...new Set(finalChunks.map((c) => c.document_id))];
-  const relatedMetrics = documentIds.length > 0
-    ? await getDocumentMetrics(documentIds)
-    : [];
+  let relatedMetrics: DocumentMetric[] = [];
+  if (documentIds.length > 0) {
+    const all = await metricsP;
+    if (all) {
+      const wanted = new Set(documentIds);
+      relatedMetrics = all.filter(m => wanted.has(m.document_id));
+    } else {
+      relatedMetrics = await getDocumentMetrics(documentIds);
+    }
+  }
+  const [visualAssets, { capabilities, industries, topics }] = await sideP;
 
   const result: RetrievedContext = {
     chunks: finalChunks,

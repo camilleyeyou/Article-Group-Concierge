@@ -152,6 +152,15 @@ export interface RunRecord {
   usage?: GenerationUsage | null;
   search_function?: string | null;
   verifier?: import('../src/types').VerifierReport | null;
+  // Phase 5 (D-510): arrival times in ms since the request started; absent on JSON-route and older runs
+  t_teasers_ms?: number | null;
+  t_suppressed_ms?: number | null;
+  t_hero_first_ms?: number | null;
+  t_hero_done_ms?: number | null;
+  t_complete_ms?: number | null;
+  instant_teaser_slugs?: string[] | null;
+  suppressed?: import('../src/lib/stream-events').SuppressReason | null;
+  route?: 'stream' | 'json';
 }
 
 export interface RunFile {

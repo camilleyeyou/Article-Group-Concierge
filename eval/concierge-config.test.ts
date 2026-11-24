@@ -17,6 +17,8 @@ import {
   isVideoQuery,
   verifierEnabled,
   STRATEGY_LEAD_TRIGGER_DESCRIPTIONS,
+  generationParams,
+  generationConfig,
 } from '../src/lib/concierge-config';
 import fs from 'node:fs';
 import { DISPUTED_LABELS, isDisputed } from './labels';
@@ -174,4 +176,44 @@ test('no-match prompt and fallback rubric text follow the policy', () => {
   assert.doesNotMatch(fallbackRubricText('relevant_only'), /still show case studies/);
   assert.match(fallbackRubricText('all_retrieved'), /still show case studies, so showing adjacent work is allowed\./);
   assert.match(teaserPromptRule('relevant_only'), /none with an honest note/);
+});
+
+test('generationParams maps each mode', () => {
+  assert.deepEqual(generationParams({ mode: 'default', effort: null }), {});
+  assert.deepEqual(generationParams({ mode: 'between_tools', effort: null }), { thinking: { type: 'between_tools' } });
+  assert.deepEqual(generationParams({ mode: 'between_tools', effort: 'low' }), {
+    thinking: { type: 'between_tools' },
+    output_config: { effort: 'low' },
+  });
+  assert.deepEqual(generationParams({ mode: 'adaptive_effort', effort: null }), { output_config: { effort: 'medium' } });
+  assert.deepEqual(generationParams({ mode: 'adaptive_effort', effort: 'low' }), { output_config: { effort: 'low' } });
+});
+
+test('generationConfig reads env and ignores invalid values', () => {
+  const saved = { m: process.env.GENERATION_MODE, e: process.env.GENERATION_EFFORT };
+  try {
+    process.env.GENERATION_MODE = 'between_tools';
+    process.env.GENERATION_EFFORT = 'low';
+    assert.deepEqual(generationConfig(), { mode: 'between_tools', effort: 'low' });
+    process.env.GENERATION_MODE = 'nonsense';
+    delete process.env.GENERATION_EFFORT;
+    assert.deepEqual(generationConfig(), CONCIERGE_CONFIG.generation);
+  } finally {
+    if (saved.m === undefined) delete process.env.GENERATION_MODE; else process.env.GENERATION_MODE = saved.m;
+    if (saved.e === undefined) delete process.env.GENERATION_EFFORT; else process.env.GENERATION_EFFORT = saved.e;
+  }
+});
+
+test('instantTeasers claim pattern and knobs', () => {
+  const { claimPattern, count, semanticFloor } = CONCIERGE_CONFIG.instantTeasers;
+  assert.equal(count, 3);
+  assert.equal(semanticFloor, 0.4);
+  for (const q of [
+    'I heard you did the category launch for Wiz',
+    'my friend said you did the marketing for Shake Shack',
+    'A colleague told me you did the public engagement campaign',
+  ]) assert.ok(claimPattern.test(q), q);
+  for (const q of ['What cybersecurity clients have you worked with?', 'Have you built a brand for a fintech?'])
+    assert.ok(!claimPattern.test(q), q);
+  assert.equal(CONCIERGE_CONFIG.health.warnBelowUsd, 5);
 });

@@ -42,6 +42,25 @@ export interface VerifierConfig {
   maxDocChars: number;
 }
 
+export interface InstantTeaserConfig {
+  count: number;
+  semanticFloor: number;
+  claimPattern: RegExp;
+}
+
+export type GenerationMode = 'default' | 'between_tools' | 'adaptive_effort';
+export type GenerationEffort = 'low' | 'medium' | 'high';
+export interface GenerationConfig {
+  mode: GenerationMode;
+  effort: GenerationEffort | null;
+}
+
+export interface HealthConfig {
+  warnBelowUsd: number;
+  startupTimeoutMs: number;
+  requestTimeoutMs: number;
+}
+
 export interface ConciergeConfig {
   layout: { typicalMinComponents: number; typicalMaxComponents: number; maxComponents: number };
   followUps: { min: number; max: number };
@@ -56,6 +75,9 @@ export interface ConciergeConfig {
   honesty: { admitNoDirectWork: boolean };
   video: { queryKeywords: readonly string[] };
   verifier: VerifierConfig;
+  instantTeasers: InstantTeaserConfig;
+  generation: GenerationConfig;
+  health: HealthConfig;
 }
 
 export const CONCIERGE_CONFIG: ConciergeConfig = {
@@ -104,6 +126,18 @@ export const CONCIERGE_CONFIG: ConciergeConfig = {
   video: { queryKeywords: ['video', 'videos', 'film', 'films', 'filmed', 'documentary', 'animation', 'animated', 'motion'] },
   // D-417/D-420 (GEN-07): Haiku 5.5 claim-check via OpenRouter. Default OFF; ships enabled only after user approval. VERIFIER_ENABLED env overrides.
   verifier: { enabled: false, model: 'claude-haiku-5-5', timeoutMs: 6000, maxTokens: 2000, maxDocChars: 2000 },
+  // D-501/D-504 (Phase 5): floor 0.40 + claim pattern + isAboutAG + zero case studies (user answer 3). Phase 4 calibration: 0.40 suppresses 19/21 fallback, 5/5 bait, 4/29 direct; 0.45: 20/21, 5/5, 8/29.
+  instantTeasers: {
+    count: 3,
+    semanticFloor: 0.40,
+    claimPattern:
+      /\b(?:I heard|I understand|I was told|told me|said)\b[\s\S]{0,60}?\b(?:you did|ran|handled|built|made|worked|launched|created|designed|led|produced|delivered)\b/i,
+  },
+  // PERF-02 (user answer 1): thinking mode knob shared by orchestrate() and orchestrateStream(); 'default' sends no params (Phase 4 behaviour). Chosen by eval/stream-timing.ts, gated by the D-513 eval; revert to 'default' on regression. Model stays Sonnet 5.5. 05-08: adaptive_effort:low won in eval/results/stream-timing-2026-11-23T18-20-20 (median t_hero_first 1438 ms vs 12299 ms default).
+  // 05-09: REVERTED to default. adaptive_effort:low failed 4 D-513 gates in run 2026-11-23T19-00-37 (unsupported-claim responses 16 vs <= 6, voice 4.02 vs >= 4.28, capability_not_shown 1 vs 0, teasers_zero_expected_mean 1.80 vs <= 1.7). The revert is unmeasured: no eval was re-run (budget).
+  generation: { mode: 'default', effort: null },
+  // D-517: warn below $5 (about one eval run); fail at <= $0, bad/missing key or non-OpenRouter route. eval/preflight's EVAL_MIN_CREDIT_USD is a per-run minimum and stays separate.
+  health: { warnBelowUsd: 5, startupTimeoutMs: 3000, requestTimeoutMs: 5000 },
 };
 
 // D-421: the prompt's worked example is fictional; the rubric treats these names as invention markers.
@@ -248,4 +282,35 @@ export function retrievalConfigKey(r: RetrievalConfig = CONCIERGE_CONFIG.retriev
     intentBoost: r.intentBoost,
     rerank: rerankEnabled() ? r.rerank : false,
   });
+}
+
+const GENERATION_MODES: readonly GenerationMode[] = ['default', 'between_tools', 'adaptive_effort'];
+const GENERATION_EFFORTS: readonly GenerationEffort[] = ['low', 'medium', 'high'];
+
+/** GENERATION_MODE / GENERATION_EFFORT env override the config; invalid values are ignored. */
+export function generationConfig(): GenerationConfig {
+  const base = CONCIERGE_CONFIG.generation;
+  const m = process.env.GENERATION_MODE as GenerationMode | undefined;
+  const e = process.env.GENERATION_EFFORT as GenerationEffort | undefined;
+  return {
+    mode: m && GENERATION_MODES.includes(m) ? m : base.mode,
+    effort: e && GENERATION_EFFORTS.includes(e) ? e : base.effort,
+  };
+}
+
+/** Extra model-request params for the thinking mode. 'default' sends nothing (byte-identical to Phase 4). */
+export function generationParams(g: GenerationConfig = generationConfig()): Record<string, unknown> {
+  if (g.mode === 'between_tools') {
+    const out: Record<string, unknown> = { thinking: { type: 'between_tools' } };
+    if (g.effort) out.output_config = { effort: g.effort };
+    return out;
+  }
+  if (g.mode === 'adaptive_effort') {
+    return { output_config: { effort: g.effort ?? 'medium' } };
+  }
+  return {};
+}
+
+export function generationConfigKey(g: GenerationConfig = generationConfig()): string {
+  return JSON.stringify({ mode: g.mode, effort: g.effort });
 }

@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: Ready to execute
-stopped_at: Completed 04-09-PLAN.md
-last_updated: "2026-11-23T01:47:30.102Z"
+stopped_at: Completed 05-09-PLAN.md
+last_updated: "2026-11-23T19:19:02.227Z"
 progress:
   total_phases: 6
-  completed_phases: 3
-  total_plans: 35
-  completed_plans: 34
+  completed_phases: 4
+  total_plans: 45
+  completed_plans: 44
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-11-20)
 
 **Core value:** Never misrepresent AG's work. A wrong claim about a client engagement is worse than a weak answer.
-**Current focus:** Phase 04 — generation
+**Current focus:** Phase 05 — speed
 
 ## Current Position
 
-Phase: 05 (next) — Phase 04 closed with gaps (see 04-EVAL-DELTA.md)
-Plan: Phase 04 9 of 9 done
+Phase: 05 (speed) — EXECUTING
+Plan: 10 of 10
 
 ## Baseline Metrics (frozen)
 
@@ -88,6 +88,15 @@ Same responses as the frozen run, graded under harness v2. Like-for-like referen
 | Phase 04 P06 | 40min | 3 tasks | 2 files |
 | Phase 04 P07 | 25min | 2 tasks | 9 files |
 | Phase 04 P08 | n/a | 4 tasks | 1 files |
+| Phase 05 P01 | 20min | 3 tasks | 8 files |
+| Phase 05-speed P02 | 25min | 2 tasks | 7 files |
+| Phase 05 P03 | 15min | 2 tasks | 7 files |
+| Phase 05 P04 | 25min | 2 tasks | 3 files |
+| Phase 05-speed P05 | 35min | 2 tasks | 4 files |
+| Phase 05 P06 | 25min | 3 tasks | 6 files |
+| Phase 05-speed P07 | 35min | 3 tasks | 11 files |
+| Phase 05 P08 | 20min | 2 tasks | 2 files |
+| Phase 05 P09 | 20min | 3 tasks | 2 files |
 
 ### Decisions
 
@@ -124,7 +133,13 @@ Same responses as the frozen run, graded under harness v2. Like-for-like referen
 - [Phase 04]: GEN-07 verifier ships disabled (user: ship-disabled); revisit in Phase 5 off the first-content path
 - [Phase 04]: Prompt rewrite (honesty, 2-4 sentence "we" narrative, Strategy Lead on 5 triggers, Larkspur example); server-side teaser tags from DB links; eval 2026-11-22T22-48-20: unsupported-claim responses 6/50, goal_as_result 2, capability_not_shown 0, invention_bait_presupposed 0, voice 4.36, narrative_in_range 49/50; harness v4. 1 of 5 success criteria met, Phase 4 left unticked
 - [Phase 04]: GEN-07 gate EVALUATED; verifier SHIP DISABLED (6 -> 5 claims, +2.6 s median, 47/50 rewritten, voice -0.18, new claims introduced)
-- [Phase 04]: spend ~$10.6; credit $5.39; production: pushed (user option "push", Squash and push); deploy: DEPLOY_PENDING; live smoke: SMOKE_PENDING
+- [Phase 04]: spend ~$10.6; credit $5.39; production: pushed (user option "push", Squash and push); deploy: Ready (4db5d2d, Vercel production 2026-11-23T01:52Z); live smoke: OK 26.3 s, layoutPlan 5 components (Hero, Video, StrategyCard, 2 teasers), no internal keys, teaser tags match DB catalogue
+- [Phase 05]: 05-01: generation.mode default 'default' => generationParams() {} (Phase 4 request body unchanged); SSE contracts and chat helpers shared via stream-events/chat-errors/chat-request
+- [Phase 05-speed]: Provider health: spendable credit = min(limit_remaining, effective_budget); outages only warn, never block chat
+- [Phase 05]: 05-04: parser ignores leading prose as narrative; final whole-response parse stays authoritative
+- [Phase 05]: 05-08: generation mode adaptive_effort:low (median hero-first 1438 ms vs 12299 default); D-513 eval in 05-09 decides if it ships
+- [Phase 05]: Retrieval fixes 1–3 applied; PERF-01/02 judged by production smoke after deploy (05-10), local eval speed is distance-inflated (Douala→Supabase)
+- [Phase 05]: 05-09: D-513 regressed (4 gates) under adaptive_effort:low; generation mode reverted to default (unmeasured). PERF-01/02 local FAIL provisional until 05-10 production smoke.
 
 ### Key Constraints
 
@@ -147,10 +162,16 @@ None yet.
 - Phase 1 changes metric definitions, so baseline comparisons need a re-grade under the new harness.
 - ROLLBACK PRECONDITION: before rolling production back past the Phase 3 commit, or if hybrid_search_v2 is ever dropped or bypassed, first remove or relabel the 20 held chunks (5 company_info + 15 excluded LinkedIn; needs user approval, it is a destructive DB change). hybrid_search_exact and hybrid_search cannot filter metadata.article_class, so the old code path would surface LinkedIn and company-info text. Details and document_ids in 03-10-SUMMARY.md.
 
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 261123-f81 | Fix PERF-03 stale OpenRouter credit (cache: 'no-store') | 2026-11-23 | 0b7e2a0 | [261123-f81-fix-perf-03-stale-provider-credit-next-f](./quick/261123-f81-fix-perf-03-stale-provider-credit-next-f/) |
+
 ## Session Continuity
 
-Last session: 2026-11-23T01:47:30.094Z
-Stopped at: Completed 04-09-PLAN.md
+Last session: 2026-11-23T19:19:02.222Z
+Stopped at: Completed 05-09-PLAN.md
 Resume file: None
 
 - 2026-11-22 (03-08 follow-up): User chose to keep the Cohere reranker OFF (rerank.enabled=false). Net +1 recall (44/52) did not justify ~0.9 s p50 latency and a new data processor. Code and RRF fallback stay; re-enable via config or RERANK_ENABLED=true. Phase-end eval (03-09) approved by user despite gate FAIL; expected recall ≈ 43/52.

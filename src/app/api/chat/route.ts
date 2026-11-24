@@ -11,9 +11,9 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { retrieveContext } from '@/lib/supabase';
-import { orchestrate, GENERATION_MODEL } from '@/lib/orchestrator';
-import { getCatalogue } from '@/lib/catalogue';
-import { embeddingConfig, providerRoute } from '@/lib/llm-config';
+import { orchestrate } from '@/lib/orchestrator';
+import { classifyError } from '@/lib/chat-errors';
+import { validateChatBody, debugEnabled, toPublicOutput, buildDebugPayload } from '@/lib/chat-request';
 import type { OrchestratorOutput } from '@/types';
 import { APILogger } from '@/lib/logger';
 import { rateLimiter, RATE_LIMITS } from '@/lib/rate-limit';
@@ -21,28 +21,6 @@ import { analytics } from '@/lib/analytics';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60; // Allow up to 60s for complex queries
-
-interface ChatRequest {
-  query: string;
-  filters?: {
-    capabilities?: string[];
-    industries?: string[];
-  };
-  conversationHistory?: Array<{
-    role: 'user' | 'assistant';
-    content: string;
-  }>;
-  debug?: boolean; // Honoured only when the server runs with EVAL_DEBUG=true
-}
-
-// Debug payload only (EVAL_DEBUG): the catalogue text the model saw, if still the same version
-async function catalogueForDebug(version: string | null | undefined) {
-  if (!version) return null;
-  const cat = await getCatalogue();
-  if (cat && cat.version === version) return { version, text: cat.text };
-  APILogger.warn('Catalogue changed between generation and debug payload', { version });
-  return { version, text: null };
-}
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   // Check rate limit
@@ -55,34 +33,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   const requestTimer = analytics.startTimer('chat_request');
 
   try {
-    const body: ChatRequest = await request.json();
-
-    // Validate request
-    if (!body.query || typeof body.query !== 'string') {
-      return NextResponse.json(
-        { error: 'Missing or invalid query' },
-        { status: 400 }
-      );
+    const parsed = validateChatBody(await request.json());
+    if (!parsed.ok) {
+      return NextResponse.json({ error: parsed.error }, { status: parsed.status });
     }
+    const { body, query } = parsed;
 
-    const query = body.query.trim();
-    if (query.length < 3) {
-      return NextResponse.json(
-        { error: 'Query too short' },
-        { status: 400 }
-      );
-    }
-
-    if (query.length > 2000) {
-      return NextResponse.json(
-        { error: 'Query too long (max 2000 characters)' },
-        { status: 400 }
-      );
-    }
-    
     // Eval debug mode: bypass caches and return retrieval alongside the response.
-    // Never set EVAL_DEBUG in production - it exposes retrieved content and raw model output.
-    const debug = body.debug === true && process.env.EVAL_DEBUG === 'true';
+    // Debug gate lives in debugEnabled() only.
+    const debug = debugEnabled(body);
 
     // Step 1: Retrieve relevant context
     APILogger.info('Processing query', { query: query.slice(0, 50) + '...' });
@@ -128,29 +87,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     });
 
     // Return the result
-    const { rawResponse, modelRawResponse, orchestratorError, usage, catalogueVersion, verifier, ...publicResult } = result;
+    const publicResult = toPublicOutput(result);
     if (!debug) {
       return NextResponse.json(publicResult);
     }
     return NextResponse.json({
       ...publicResult,
-      debug: {
-        rawResponse: rawResponse ?? null,
-        modelRawResponse: modelRawResponse ?? null,
-        orchestratorError: orchestratorError ?? null,
-        usage: usage ?? null,
-        verifier: verifier ?? null,
-        catalogue: await catalogueForDebug(catalogueVersion),
-        models: { route: providerRoute(), generation: GENERATION_MODEL, embedding: embeddingConfig().model },
-        retrieval: {
-          chunks: context.chunks,
-          visualAssets: context.visualAssets,
-          relatedMetrics: context.relatedMetrics,
-          searchFunction: context.searchFunction ?? null,
-        },
-      },
+      debug: await buildDebugPayload(result, context),
     });
-    
+
   } catch (error) {
     APILogger.error('Chat API error', error);
 
@@ -173,75 +118,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       { status: classified.httpStatus }
     );
   }
-}
-
-interface ClassifiedError {
-  httpStatus: number;
-  errorCode: NonNullable<OrchestratorOutput['errorCode']>;
-  explanation: string;
-  retryable: boolean;
-  contactCTA: boolean;
-}
-
-function classifyError(error: unknown): ClassifiedError {
-  const err = error as { code?: string; status?: number; message?: string } | undefined;
-  const code = err?.code;
-  const message = err?.message || '';
-
-  if (code === 'embeddings_quota_exceeded') {
-    return {
-      httpStatus: 503,
-      errorCode: 'embeddings_unavailable',
-      explanation:
-        "Our search service is temporarily unavailable due to a billing issue on our embeddings provider. We've been notified — please try again shortly, or contact our Strategy Lead if it's urgent.",
-      retryable: false,
-      contactCTA: true,
-    };
-  }
-  if (code === 'embeddings_rate_limited') {
-    return {
-      httpStatus: 503,
-      errorCode: 'upstream_rate_limit',
-      explanation:
-        "We're getting a high volume of requests right now. Please wait a moment and try again.",
-      retryable: true,
-      contactCTA: false,
-    };
-  }
-  if (code === 'embeddings_failed') {
-    return {
-      httpStatus: 503,
-      errorCode: 'embeddings_unavailable',
-      explanation:
-        "Our search service hit a temporary snag. Please try again in a moment.",
-      retryable: true,
-      contactCTA: false,
-    };
-  }
-
-  // Supabase / Postgres errors typically have a `code` field like 'PGRST...' or a `details` field
-  if (
-    message.toLowerCase().includes('supabase') ||
-    /pgrst|postgrest|database/i.test(message)
-  ) {
-    return {
-      httpStatus: 503,
-      errorCode: 'database_unavailable',
-      explanation:
-        "We couldn't reach our portfolio database just now. Please try again — if the issue persists, our Strategy Lead can help.",
-      retryable: true,
-      contactCTA: true,
-    };
-  }
-
-  return {
-    httpStatus: 500,
-    errorCode: 'internal_error',
-    explanation:
-      "I apologize, but I encountered an unexpected issue. Please try again, or contact our Strategy Lead if it persists.",
-    retryable: true,
-    contactCTA: true,
-  };
 }
 
 // Health check endpoint

@@ -20,6 +20,7 @@ import {
 } from './lib';
 import { CONCIERGE_CONFIG, type StrategyLeadTrigger } from '../src/lib/concierge-config';
 import { isDisputed } from './labels';
+import { suppressionReason } from '../src/lib/instant-teasers';
 
 export interface Summary {
   n: number;
@@ -54,6 +55,98 @@ export function median(values: number[]): number | null {
   return s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
 }
 
+/** Nearest-rank percentile (p in 0-100); null for an empty list. */
+export function percentile(values: number[], p: number): number | null {
+  if (values.length === 0) return null;
+  const s = [...values].sort((a, b) => a - b);
+  const rank = Math.max(1, Math.ceil((p / 100) * s.length));
+  return s[Math.min(rank, s.length) - 1];
+}
+
+export interface TimingStats {
+  n: number;
+  median: number | null;
+  p90: number | null;
+  max: number | null;
+}
+
+export interface SpeedMetrics {
+  teasers: TimingStats; // non-suppressed ok records only
+  hero_first: TimingStats;
+  hero_done: TimingStats;
+  complete: TimingStats;
+  suppressed_n: number;
+}
+
+export interface SuppressionStats {
+  floor: number;
+  fallback: { suppressed: number; of: number };
+  bait: { suppressed: number; of: number };
+  direct_false: { suppressed: number; of: number };
+  missed_fallback_ids: string[];
+  false_direct_ids: string[];
+}
+
+export interface InstantMetrics {
+  flash: { shown: number; flashed: number; flash_rate: number | null };
+  suppression: SuppressionStats[];
+  actual_vs_recomputed_mismatches: number;
+}
+
+/** D-304 / D-513 no-regression limits. Phase 4 run values plus two noise SDs (STATE.md). */
+export const PHASE5_NO_REGRESSION = {
+  // D-513: Phase 4 run 2026-11-22T22-48-20; D-307 caps responses with exactly 4 teasers; grounded/voice are Phase 4 means minus 2 SD (0.16, 0.04)
+  run: '2026-11-22T22-48-20',
+  goalAsResultMax: 2,
+  inventionBaitMax: 0,
+  capabilityNotShownMax: 0,
+  unsupportedResponsesMax: 6,
+  recallHitMin: 47,
+  zeroExpectedTeasersMax: 1.70,
+  exactlyFourMax: 3,
+  groundedMin: 4.46,
+  voiceMin: 4.28,
+} as const;
+
+/** D-511 speed gates. */
+export const PHASE5_SPEED = { teasersMedianMaxMs: 1500, heroFirstMedianMaxMs: 4000 } as const;
+
+export interface GateRow {
+  gate: string;
+  value: number | null;
+  limit: string;
+  pass: boolean | null;
+}
+
+export function phase5Gates(m: RunMetrics): GateRow[] {
+  const R = PHASE5_NO_REGRESSION;
+  const le = (gate: string, value: number | null, max: number): GateRow => ({
+    gate,
+    value,
+    limit: `<= ${max}`,
+    pass: value === null ? null : value <= max,
+  });
+  const ge = (gate: string, value: number | null, min: number): GateRow => ({
+    gate,
+    value,
+    limit: `>= ${min}`,
+    pass: value === null ? null : value >= min,
+  });
+  return [
+    le('PERF-01 median t_teasers_ms (non-suppressed)', m.speed?.teasers.median ?? null, PHASE5_SPEED.teasersMedianMaxMs),
+    le('PERF-02 median t_hero_first_ms', m.speed?.hero_first.median ?? null, PHASE5_SPEED.heroFirstMedianMaxMs),
+    le('D-513 goal_as_result claims', m.claims_by_kind ? m.claims_by_kind.goal_as_result : null, R.goalAsResultMax),
+    le('D-513 invention_bait_presupposed', m.invention_bait_presupposed, R.inventionBaitMax),
+    le('D-513 capability_not_shown claims', m.claims_by_kind ? m.claims_by_kind.capability_not_shown : null, R.capabilityNotShownMax),
+    le('D-513 responses_with_unsupported_claims', m.graded ? m.responses_with_unsupported_claims : null, R.unsupportedResponsesMax),
+    ge('D-513 recall hit (frozen set)', m.recall.total ? m.recall.hit : null, R.recallHitMin),
+    le('D-513 teasers_zero_expected_mean', m.teasers.zero_expected_n ? m.teasers.zero_expected_mean : null, R.zeroExpectedTeasersMax),
+    le('D-307 responses with exactly 4 CaseStudyTeasers', m.teasers.exactly_four, R.exactlyFourMax),
+    ge('D-513 grounded', m.criteria.grounded, R.groundedMin),
+    ge('D-513 voice', m.criteria.voice, R.voiceMin),
+  ];
+}
+
 export interface RunMetrics {
   dir: string;
   run_id: string;
@@ -77,7 +170,9 @@ export interface RunMetrics {
   recall: { hit: number; total: number; pct: number | null };
   recall_corrected: { hit: number; total: number; pct: number | null; excluded: number };
   shown_recall: { hit: number; total: number; pct: number | null };
-  teasers: { zero_expected_mean: number | null; zero_expected_n: number; all_mean: number | null };
+  teasers: { zero_expected_mean: number | null; zero_expected_n: number; all_mean: number | null; exactly_four: number };
+  speed: SpeedMetrics | null;
+  instant: InstantMetrics | null;
   prompt_cache: { hits: number; of: number };
   latency_s: { median: number | null; min: number | null; max: number | null };
   metrics_not_in_context: number;
@@ -94,6 +189,71 @@ export interface RunMetrics {
 const TRIGGERS: StrategyLeadTrigger[] = ['no_context', 'fallback', 'pricing', 'timeline', 'invention_bait'];
 
 const zeroKinds = () => Object.fromEntries(CLAIM_KINDS.map(k => [k, 0])) as Record<ClaimKind, number>;
+
+function timingStats(values: number[]): TimingStats {
+  return { n: values.length, median: median(values), p90: percentile(values, 90), max: values.length ? Math.max(...values) : null };
+}
+
+/** Per-query arrival times (D-510). Null for runs without any t_complete_ms (old or JSON-route runs). */
+function computeSpeed(run: RunFile): SpeedMetrics | null {
+  const ok = run.records.filter(r => r.status === 'ok');
+  if (!ok.some(r => r.t_complete_ms != null)) return null;
+  const num = (xs: Array<number | null | undefined>) => xs.filter((x): x is number => typeof x === 'number');
+  return {
+    teasers: timingStats(num(ok.filter(r => !r.suppressed).map(r => r.t_teasers_ms))),
+    hero_first: timingStats(num(ok.map(r => r.t_hero_first_ms))),
+    hero_done: timingStats(num(ok.map(r => r.t_hero_done_ms))),
+    complete: timingStats(num(ok.map(r => r.t_complete_ms))),
+    suppressed_n: ok.filter(r => r.suppressed).length,
+  };
+}
+
+/** Flash rate and D-504 suppression decisions recomputed from stored retrieval. Null without stream records. */
+function computeInstant(run: RunFile): InstantMetrics | null {
+  const stream = run.records.filter(r => r.status === 'ok' && r.route === 'stream');
+  if (stream.length === 0) return null;
+
+  let shown = 0;
+  let flashed = 0;
+  for (const r of stream) {
+    const slugs = r.instant_teaser_slugs ?? [];
+    if (slugs.length === 0) continue;
+    const final = new Set(
+      (r.response?.layoutPlan?.layout ?? [])
+        .filter(i => i.component === 'CaseStudyTeaser')
+        .map(i => (i.props as { slug?: string } | undefined)?.slug),
+    );
+    shown += slugs.length;
+    flashed += slugs.filter(s => !final.has(s)).length;
+  }
+
+  const withRetrieval = stream.filter(r => r.retrieval);
+  const decide = (r: RunFile['records'][number], floor: number) =>
+    suppressionReason(r.query, r.retrieval!.chunks, { floor }) !== null;
+  const floors = [CONCIERGE_CONFIG.instantTeasers.semanticFloor, 0.45];
+  const suppression = floors.map<SuppressionStats>(floor => {
+    const fallback = withRetrieval.filter(r => r.expected.fallback_expected);
+    const bait = withRetrieval.filter(r => r.type === 'invention_bait');
+    const direct = withRetrieval.filter(r => !r.expected.fallback_expected);
+    const missed = fallback.filter(r => !decide(r, floor));
+    const falseDirect = direct.filter(r => decide(r, floor));
+    return {
+      floor,
+      fallback: { suppressed: fallback.length - missed.length, of: fallback.length },
+      bait: { suppressed: bait.filter(r => decide(r, floor)).length, of: bait.length },
+      direct_false: { suppressed: falseDirect.length, of: direct.length },
+      missed_fallback_ids: missed.map(r => r.id).sort(),
+      false_direct_ids: falseDirect.map(r => r.id).sort(),
+    };
+  });
+
+  const mismatches = withRetrieval.filter(r => (r.suppressed != null) !== decide(r, floors[0])).length;
+  return {
+    flash: { shown, flashed, flash_rate: shown ? flashed / shown : null },
+    suppression,
+    actual_vs_recomputed_mismatches: mismatches,
+  };
+}
 
 export function computeRunMetrics(dir: string): RunMetrics {
   const run = readJson<RunFile>(path.join(dir, 'responses.json'));
@@ -145,11 +305,13 @@ export function computeRunMetrics(dir: string): RunMetrics {
   const teaserCounts: Array<{ n: number; zeroExpected: boolean }> = [];
   let cacheHits = 0;
   let cacheOf = 0;
+  let exactlyFour = 0;
   for (const { record } of rows) {
     const teaserSlugs = (record.response?.layoutPlan?.layout ?? [])
       .filter(item => item.component === 'CaseStudyTeaser')
       .map(item => (item.props as { slug?: string } | undefined)?.slug);
     if (record.status === 'ok') {
+      if (teaserSlugs.length === 4) exactlyFour += 1;
       teaserCounts.push({ n: teaserSlugs.length, zeroExpected: record.expected.case_studies.length === 0 });
       if (record.usage) {
         cacheOf += 1;
@@ -255,7 +417,10 @@ export function computeRunMetrics(dir: string): RunMetrics {
       zero_expected_mean: mean(zeroTeasers.map(t => t.n)),
       zero_expected_n: zeroTeasers.length,
       all_mean: mean(teaserCounts.map(t => t.n)),
+      exactly_four: exactlyFour,
     },
+    speed: computeSpeed(run),
+    instant: computeInstant(run),
     prompt_cache: { hits: cacheHits, of: cacheOf },
     latency_s: {
       median: med === null ? null : round(med, 1),
@@ -304,6 +469,17 @@ const kindDef = (kind: ClaimKind): MetricDef => ({
   get: m => (m.claims_by_kind ? m.claims_by_kind[kind] : null),
 });
 
+const speedDef = (key: string, field: 'teasers' | 'hero_first' | 'hero_done'): MetricDef => ({
+  key,
+  label: key,
+  better: 'lower',
+  unit: 'seconds',
+  get: m => {
+    const v = m.speed?.[field].median;
+    return v == null ? null : round(v / 1000, 1);
+  },
+});
+
 export const METRIC_DEFS: MetricDef[] = [
   ...CRITERIA.map(criterionDef),
   { key: 'hallucinations', label: 'hallucinations', better: 'lower', unit: 'count', get: m => m.hallucinations },
@@ -332,6 +508,9 @@ export const METRIC_DEFS: MetricDef[] = [
     unit: 'score',
     get: m => (m.teasers.zero_expected_n ? m.teasers.zero_expected_mean : null),
   },
+  speedDef('t_teasers_median_s', 'teasers'),
+  speedDef('t_hero_first_median_s', 'hero_first'),
+  speedDef('t_hero_done_median_s', 'hero_done'),
   {
     key: 'prompt_cache_hits',
     label: 'prompt_cache_hits',

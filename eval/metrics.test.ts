@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import { computeRunMetrics, median, summarize, METRIC_DEFS } from './metrics';
+import { computeRunMetrics, median, summarize, METRIC_DEFS, percentile, phase5Gates, formatDelta, type RunMetrics } from './metrics';
 
 function record(id: string, expectedSlugs: string[], retrievedSlugs: string[], latency = 10000) {
   return {
@@ -226,4 +226,134 @@ test('Phase 4 metrics: triggers, narrative, video, figures, presupposition', () 
   for (const key of ['narrative_in_range', 'video_queries_missing_video', 'invention_bait_presupposed', 'teaser_tags_not_from_db']) {
     assert.ok(METRIC_DEFS.some(d => d.key === key), key);
   }
+});
+
+// ---- Phase 5 speed / instant / gates ----
+
+function streamRecord(id: string, over: Record<string, unknown>, chunkScores: number[] = [0.6]) {
+  const base = record(id, [], []);
+  return {
+    ...base,
+    route: 'stream',
+    retrieval: {
+      chunks: chunkScores.map((sim, i) => ({ slug: `s${i}`, document_type: 'case_study', similarity_score: sim, document_title: 't', content: 'x' })),
+      visualAssets: [],
+      relatedMetrics: [],
+    },
+    ...over,
+  };
+}
+
+function runDir(records: unknown[]): string {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'eval-speed-'));
+  fs.writeFileSync(
+    path.join(dir, 'responses.json'),
+    JSON.stringify({ started_at: 'a', finished_at: 'b', base_url: 'x', git_commit: null, query_count: records.length, records }),
+  );
+  return dir;
+}
+
+const teaserLayout = (slugs: string[]) => ({
+  layoutPlan: { layout: slugs.map(slug => ({ component: 'CaseStudyTeaser', props: { slug } })) },
+});
+
+test('percentile is nearest-rank', () => {
+  assert.equal(percentile([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 90), 9);
+  assert.equal(percentile([5], 90), 5);
+  assert.equal(percentile([], 90), null);
+});
+
+test('speed excludes suppressed and failed records; instant flash and exactly_four', () => {
+  const dir = runDir([
+    streamRecord('A', { t_teasers_ms: 1000, t_hero_first_ms: 3000, t_hero_done_ms: 3500, t_complete_ms: 9000, instant_teaser_slugs: ['x', 'y'], suppressed: null, response: teaserLayout(['x', 'z', 'a', 'b']) }),
+    streamRecord('B', { t_teasers_ms: 2000, t_hero_first_ms: 5000, t_hero_done_ms: 5500, t_complete_ms: 11000, instant_teaser_slugs: ['x'], suppressed: null, response: teaserLayout(['x']) }),
+    streamRecord('C', { t_suppressed_ms: 800, t_hero_first_ms: 4000, t_hero_done_ms: 4500, t_complete_ms: 10000, suppressed: 'score_floor', response: teaserLayout([]) }),
+    streamRecord('D', { status: 'error', t_teasers_ms: 99999, t_complete_ms: 99999 }),
+  ]);
+  const m = computeRunMetrics(dir);
+  assert.deepEqual(m.speed!.teasers, { n: 2, median: 1500, p90: 2000, max: 2000 });
+  assert.equal(m.speed!.suppressed_n, 1);
+  assert.equal(m.speed!.hero_first.median, 4000);
+  assert.equal(m.speed!.hero_first.n, 3);
+  assert.equal(m.speed!.complete.max, 11000);
+  assert.deepEqual(m.instant!.flash, { shown: 3, flashed: 1, flash_rate: 1 / 3 });
+  assert.equal(m.teasers.exactly_four, 1);
+});
+
+test('old runs have null speed and n/a rows', () => {
+  const dir = runDir([record('A', [], []), record('B', [], [])]);
+  const m = computeRunMetrics(dir);
+  assert.equal(m.speed, null);
+  assert.equal(m.instant, null);
+  for (const key of ['t_teasers_median_s', 't_hero_first_median_s', 't_hero_done_median_s']) {
+    const def = METRIC_DEFS.find(d => d.key === key)!;
+    assert.equal(def.get(m), null);
+    assert.equal(formatDelta(def, def.get(m), 1.2), 'n/a');
+  }
+});
+
+test('suppression recomputed at both floors with misses and mismatch count', () => {
+  const dir = runDir([
+    // fallback, top score 0.42: suppressed at 0.45 only
+    streamRecord('F1', { expected: { components: [], fallback_expected: true, case_studies: [], site_only_work: [], notes: '' }, suppressed: null, t_complete_ms: 1 }, [0.42]),
+    // fallback, top score 0.30: suppressed at both floors
+    streamRecord('F2', { expected: { components: [], fallback_expected: true, case_studies: [], site_only_work: [], notes: '' }, suppressed: 'score_floor', t_complete_ms: 1 }, [0.3]),
+    // direct, top score 0.43: false-suppressed at 0.45 only
+    streamRecord('D1', { suppressed: null, t_complete_ms: 1 }, [0.43]),
+  ]);
+  const m = computeRunMetrics(dir);
+  const [lo, hi] = m.instant!.suppression;
+  assert.equal(lo.floor, 0.4);
+  assert.equal(hi.floor, 0.45);
+  assert.deepEqual(lo.fallback, { suppressed: 1, of: 2 });
+  assert.deepEqual(lo.missed_fallback_ids, ['F1']);
+  assert.deepEqual(lo.direct_false, { suppressed: 0, of: 1 });
+  assert.deepEqual(hi.fallback, { suppressed: 2, of: 2 });
+  assert.deepEqual(hi.false_direct_ids, ['D1']);
+  assert.equal(m.instant!.actual_vs_recomputed_mismatches, 0);
+
+  const dir2 = runDir([streamRecord('D1', { suppressed: 'score_floor', t_complete_ms: 1 }, [0.9])]);
+  assert.equal(computeRunMetrics(dir2).instant!.actual_vs_recomputed_mismatches, 1);
+});
+
+function phase4Metrics(): RunMetrics {
+  return {
+    speed: {
+      teasers: { n: 1, median: 1400, p90: 1400, max: 1400 },
+      hero_first: { n: 1, median: 3900, p90: 3900, max: 3900 },
+      hero_done: { n: 1, median: 4000, p90: 4000, max: 4000 },
+      complete: { n: 1, median: 9000, p90: 9000, max: 9000 },
+      suppressed_n: 0,
+    },
+    claims_by_kind: { goal_as_result: 2, capability_not_shown: 0, generated_tags: 0, other: 1 },
+    invention_bait_presupposed: 0,
+    graded: 50,
+    responses_with_unsupported_claims: 6,
+    recall: { hit: 47, total: 52, pct: 90 },
+    teasers: { zero_expected_mean: 1.7, zero_expected_n: 10, all_mean: 2, exactly_four: 3 },
+    criteria: { grounded: 4.5, components: 5, fallback: 5, cta: 5, voice: 4.3 },
+  } as unknown as RunMetrics;
+}
+
+test('phase5Gates passes at Phase 4 values and fails on each regression', () => {
+  const base = phase4Metrics();
+  assert.ok(phase5Gates(base).every(g => g.pass === true));
+  assert.equal(phase5Gates(base).length, 11);
+
+  const fail = (patch: (m: RunMetrics) => void, gate: string) => {
+    const m = phase4Metrics();
+    patch(m);
+    const row = phase5Gates(m).find(g => g.gate.includes(gate))!;
+    assert.equal(row.pass, false, gate);
+  };
+  fail(m => (m.claims_by_kind!.goal_as_result = 3), 'goal_as_result');
+  fail(m => (m.criteria.voice = 4.27), 'voice');
+  fail(m => (m.teasers.exactly_four = 4), 'exactly 4');
+  fail(m => (m.speed!.teasers.median = 1501), 'PERF-01');
+  fail(m => (m.speed!.hero_first.median = 4001), 'PERF-02');
+  fail(m => (m.recall.hit = 46), 'recall');
+
+  const m = phase4Metrics();
+  m.speed = null;
+  assert.equal(phase5Gates(m)[0].pass, null);
 });

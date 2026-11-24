@@ -13,7 +13,7 @@
  * pre-built components like Lego blocks.
  */
 
-import { postProcessOutput } from './layout-postprocess';
+import { postProcessOutput, applyServerTeaserTags } from './layout-postprocess';
 import { verifyOutput } from './verifier';
 import Anthropic from '@anthropic-ai/sdk';
 import type {
@@ -26,7 +26,10 @@ import type {
 import { OrchLogger } from './logger';
 import { getCatalogue } from './catalogue';
 import { cache, CACHE_PREFIXES, CACHE_TTL } from './cache';
-import { anthropicClientOptions, claudeModelId } from './llm-config';
+import { anthropicClientOptions, generationModelId } from './llm-config';
+import { StreamLayoutParser } from './stream-layout-parser';
+import type { Catalogue } from './catalogue';
+import type { ComponentType, HeroBlockProps } from '../types';
 import {
   CONCIERGE_CONFIG,
   FICTIONAL_EXAMPLE,
@@ -39,13 +42,17 @@ import {
   teaserPromptRule,
   noDirectMatchPrompt,
   verifierEnabled,
+  generationConfig,
+  generationParams,
+  generationConfigKey,
+  type GenerationConfig,
 } from './concierge-config';
 
 // Initialize Anthropic client (direct, or via OpenRouter when OPENROUTER_API_KEY is set)
 const anthropic = new Anthropic(anthropicClientOptions());
 
 // Overridable so a future model retirement is an env change, not a deploy
-const MODEL = claudeModelId(process.env.ANTHROPIC_MODEL || 'claude-sonnet-5-5');
+const MODEL = generationModelId();
 export const GENERATION_MODEL = MODEL;
 // Sonnet 5.5 thinks by default and thinking counts toward max_tokens
 const MAX_TOKENS = 16000;
@@ -359,7 +366,7 @@ Please assemble a pitch deck layout using the Component Registry: the JSON layou
 /**
  * Parses Claude's response to extract the JSON layout plan and explanation.
  */
-function parseOrchestratorResponse(response: string): OrchestratorOutput {
+export function parseOrchestratorResponse(response: string): OrchestratorOutput {
   // Extract JSON from code block
   const jsonMatch = response.match(/```json\s*([\s\S]*?)\s*```/);
   
@@ -419,6 +426,32 @@ export function buildSystemBlocks(catalogueText: string | null) {
   return blocks;
 }
 
+/** Orchestrator cache key; shared by orchestrate() and orchestrateStream(). */
+export function orchestratorCacheKey(input: OrchestratorInput, catalogueVersion: string | null) {
+  const { userQuery, context, conversationHistory } = input;
+  return {
+    userQuery,
+    documentIds: context.chunks.map(c => c.document_id).sort(),
+    conversationLength: conversationHistory?.length || 0,
+    // Include last message to differentiate follow-ups
+    lastMessage: conversationHistory?.slice(-1)[0]?.content?.slice(0, 100),
+    catalogueVersion,
+    generation: generationConfigKey(),
+  };
+}
+
+function buildMessages(input: OrchestratorInput): Anthropic.MessageParam[] {
+  const { userQuery, context, conversationHistory } = input;
+  const messages: Anthropic.MessageParam[] = [];
+  if (conversationHistory && conversationHistory.length > 0) {
+    for (const msg of conversationHistory) {
+      messages.push({ role: msg.role, content: msg.content });
+    }
+  }
+  messages.push({ role: 'user', content: userTurn(userQuery, formatContext(context)) });
+  return messages;
+}
+
 function extractUsage(response: unknown) {
   const u = ((response as { usage?: unknown }).usage ?? {}) as Record<string, number | undefined>;
   return {
@@ -443,16 +476,7 @@ export async function orchestrate(input: OrchestratorInput): Promise<Orchestrato
   // Phase 5: getCatalogue runs before the cache lookup; cold-start DB cost on cache hits
   const catalogue = await getCatalogue();
 
-  // Create cache key from query, context, and conversation history
-  // Include document IDs and metrics to ensure cache freshness
-  const cacheKey = {
-    userQuery,
-    documentIds: context.chunks.map(c => c.document_id).sort(),
-    conversationLength: conversationHistory?.length || 0,
-    // Include last message to differentiate follow-ups
-    lastMessage: conversationHistory?.slice(-1)[0]?.content?.slice(0, 100),
-    catalogueVersion: catalogue?.version ?? null,
-  };
+  const cacheKey = orchestratorCacheKey(input, catalogue?.version ?? null);
 
   // Check cache first (skip cache if there's conversation history for now)
   // TODO: Improve caching strategy for multi-turn conversations
@@ -466,28 +490,8 @@ export async function orchestrate(input: OrchestratorInput): Promise<Orchestrato
     }
   }
 
-  // Format the context for the prompt
-  const formattedContext = formatContext(context);
-  
-  // Build the messages array
-  const messages: Anthropic.MessageParam[] = [];
-  
-  // Add conversation history if present (for multi-turn)
-  if (conversationHistory && conversationHistory.length > 0) {
-    for (const msg of conversationHistory) {
-      messages.push({
-        role: msg.role,
-        content: msg.content,
-      });
-    }
-  }
-  
-  // Add the current user message with context
-  messages.push({
-    role: 'user',
-    content: userTurn(userQuery, formattedContext),
-  });
-  
+  const messages = buildMessages(input);
+
   try {
     // Call Claude
     const response = await anthropic.messages.create({
@@ -496,6 +500,8 @@ export async function orchestrate(input: OrchestratorInput): Promise<Orchestrato
       // SDK 0.30.1 types lack cache_control; the body passes through unchanged (RETR-04)
       system: buildSystemBlocks(catalogue?.text ?? null) as any,
       messages,
+      // '{}' in default mode: request identical to Phase 4
+      ...(generationParams() as any),
     });
     
     // Extract text content from response
@@ -540,49 +546,143 @@ export async function orchestrate(input: OrchestratorInput): Promise<Orchestrato
 }
 
 // ============================================
-// STREAMING VARIANT (Optional)
+// STREAMING VARIANT
 // ============================================
 
+export type RawModelEvent = { type: string; [k: string]: any };
+export type OrchestratorStreamEvent =
+  | { type: 'hero'; title?: string; subtitle?: string; challengeSummary?: string; backgroundVariant?: HeroBlockProps['backgroundVariant'] }
+  | { type: 'hero_done'; props: HeroBlockProps }
+  | { type: 'component'; index: number; component: ComponentType; props: Record<string, unknown> }
+  | { type: 'narrative'; text: string }
+  | { type: 'final'; output: OrchestratorOutput; cached: boolean };
+
+export interface OrchestrateStreamOptions {
+  signal?: AbortSignal;
+  catalogue?: Catalogue | null; // undefined -> await getCatalogue()
+  generation?: GenerationConfig;
+  createEvents?: (body: Record<string, unknown>, signal?: AbortSignal) => Promise<AsyncIterable<RawModelEvent>>;
+  onRawEvent?: (ev: RawModelEvent, tMs: number) => void;
+}
+
 /**
- * Streaming version of the orchestrator for real-time UI updates.
- * Yields partial responses as they're generated.
+ * Streaming orchestrator: typed preview events while the model writes, then an authoritative
+ * `final` identical to what orchestrate() returns for the same model text. Errors propagate
+ * (the route classifies them); unlike orchestrate() nothing is swallowed into a fallback.
  */
-// Phase 5: apply postProcessOutput (GEN-03 tags, and the verifier if enabled) on this path too.
-export async function* orchestrateStream(input: OrchestratorInput): AsyncGenerator<string> {
-  const { userQuery, context, conversationHistory } = input;
-  
-  const formattedContext = formatContext(context);
-  
-  const messages: Anthropic.MessageParam[] = [];
-  
-  if (conversationHistory && conversationHistory.length > 0) {
-    for (const msg of conversationHistory) {
-      messages.push({
-        role: msg.role,
-        content: msg.content,
-      });
+export async function* orchestrateStream(
+  input: OrchestratorInput,
+  opts: OrchestrateStreamOptions = {}
+): AsyncGenerator<OrchestratorStreamEvent> {
+  const { userQuery, context, conversationHistory, skipCache } = input;
+  const catalogue = opts.catalogue !== undefined ? opts.catalogue : await getCatalogue();
+  const cacheKey = orchestratorCacheKey(input, catalogue?.version ?? null);
+  const noHistory = !conversationHistory || conversationHistory.length === 0;
+
+  if (!skipCache && noHistory) {
+    const cached = cache.get<OrchestratorOutput>(CACHE_PREFIXES.ORCHESTRATOR, cacheKey);
+    if (cached) {
+      const items = cached.layoutPlan.layout;
+      const first = items[0];
+      if (first && first.component === 'HeroBlock') {
+        const p = first.props as HeroBlockProps;
+        yield { type: 'hero', title: p.title, subtitle: p.subtitle, challengeSummary: p.challengeSummary, backgroundVariant: p.backgroundVariant };
+        yield { type: 'hero_done', props: p };
+      }
+      for (let index = 0; index < items.length; index++) {
+        const item = items[index];
+        if (index === 0 && item.component === 'HeroBlock') continue;
+        yield { type: 'component', index, component: item.component, props: item.props as unknown as Record<string, unknown> };
+      }
+      yield { type: 'narrative', text: cached.explanation };
+      yield { type: 'final', output: cached, cached: true };
+      return;
     }
   }
-  
-  messages.push({
-    role: 'user',
-    content: userTurn(userQuery, formattedContext),
-  });
-  
-  const catalogue = await getCatalogue();
-  const stream = await anthropic.messages.stream({
+
+  const body: Record<string, unknown> = {
     model: MODEL,
     max_tokens: MAX_TOKENS,
     // SDK 0.30.1 types lack cache_control; the body passes through unchanged (RETR-04)
-    system: buildSystemBlocks(catalogue?.text ?? null) as any,
-    messages,
-  });
-  
-  for await (const event of stream) {
-    if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
-      yield event.delta.text;
+    system: buildSystemBlocks(catalogue?.text ?? null),
+    messages: buildMessages(input),
+    ...generationParams(opts.generation ?? generationConfig()),
+  };
+  const createEvents =
+    opts.createEvents ??
+    (async (b: Record<string, unknown>, signal?: AbortSignal) =>
+      (await anthropic.messages.create({ ...b, stream: true } as any, { signal })) as unknown as AsyncIterable<RawModelEvent>);
+
+  const tags = catalogue?.tagsBySlug ?? null;
+  const parser = new StreamLayoutParser();
+  const usage: Record<string, number | undefined> = {};
+  let stopReason: string | null = null;
+  const t0 = Date.now();
+
+  const mapParserEvents = (evs: ReturnType<StreamLayoutParser['push']>): OrchestratorStreamEvent[] => {
+    const out: OrchestratorStreamEvent[] = [];
+    for (const e of evs) {
+      if (e.type === 'hero') {
+        out.push({ type: 'hero', title: e.title, subtitle: e.subtitle, challengeSummary: e.challengeSummary, backgroundVariant: e.backgroundVariant });
+      } else if (e.type === 'hero_done') {
+        out.push({ type: 'hero_done', props: e.props as unknown as HeroBlockProps });
+      } else if (e.type === 'component') {
+        let props = e.props;
+        if (e.component === 'CaseStudyTeaser') {
+          const tagged = applyServerTeaserTags(
+            { layout: [{ component: 'CaseStudyTeaser', props } as any] },
+            tags
+          );
+          props = tagged.layout.layout[0].props as unknown as Record<string, unknown>;
+        }
+        out.push({ type: 'component', index: e.index, component: e.component as ComponentType, props });
+      } else if (e.type === 'narrative') {
+        out.push({ type: 'narrative', text: e.text });
+      } else if (e.type === 'abandoned') {
+        OrchLogger.warn('Stream parser abandoned previews', { reason: e.reason });
+      }
+    }
+    return out;
+  };
+
+  const events = await createEvents(body, opts.signal);
+  for await (const ev of events) {
+    opts.onRawEvent?.(ev, Date.now() - t0);
+    if (ev.type === 'message_start') {
+      Object.assign(usage, ev.message?.usage ?? {});
+    } else if (ev.type === 'content_block_delta' && ev.delta?.type === 'text_delta') {
+      for (const out of mapParserEvents(parser.push(ev.delta.text as string))) yield out;
+    } else if (ev.type === 'message_delta') {
+      Object.assign(usage, ev.usage ?? {});
+      if (ev.delta?.stop_reason) stopReason = ev.delta.stop_reason as string;
+    } else if (ev.type === 'error') {
+      throw new Error(ev.error?.message ?? 'Model stream error');
     }
   }
+  for (const out of mapParserEvents(parser.end())) yield out;
+
+  const text = parser.fullText;
+  if (!text) {
+    throw new Error(
+      stopReason === 'max_tokens'
+        ? 'No text content in response (stop_reason max_tokens)'
+        : 'No text content in response'
+    );
+  }
+
+  let result = postProcessOutput(parseOrchestratorResponse(text), text, tags);
+  result.usage = extractUsage({ usage });
+  result.catalogueVersion = catalogue?.version ?? null;
+
+  // D-508: verifier (default off) runs only after all preview events
+  if (verifierEnabled()) {
+    const v = await verifyOutput({ query: userQuery, context, output: result });
+    result = { ...v.output, verifier: v.report };
+  }
+  if (noHistory) {
+    cache.set(CACHE_PREFIXES.ORCHESTRATOR, cacheKey, result, CACHE_TTL.ORCHESTRATOR);
+  }
+  yield { type: 'final', output: result, cached: false };
 }
 
 export default orchestrate;

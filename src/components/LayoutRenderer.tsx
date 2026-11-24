@@ -3,6 +3,7 @@ import { ComponentRegistry, isValidComponent } from './index';
 import type { LayoutPlan, LayoutComponent, ComponentType } from '../types';
 import { UILogger } from '../lib/logger';
 import { LayoutErrorBoundary } from './ErrorBoundary';
+import { HeroSkeleton } from './HeroSkeleton';
 
 /**
  * LayoutRenderer Component
@@ -15,6 +16,12 @@ interface LayoutRendererProps {
   layoutPlan: LayoutPlan;
   className?: string;
   onError?: (error: Error, component: LayoutComponent) => void;
+  /** Streaming: show the reserved hero skeleton above the deck until the hero arrives. */
+  pendingHero?: boolean;
+  /** Streaming: slugs of instant teasers the final layout dropped; they fade out (150 ms) then leave. */
+  exitingSlugs?: ReadonlySet<string>;
+  /** Streaming: the dropped teaser items, rendered faded at the end of the last teaser group. */
+  exiting?: LayoutComponent[];
 }
 
 // Error boundary wrapper for individual components
@@ -94,26 +101,45 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({
   layoutPlan,
   className = '',
   onError,
+  pendingHero = false,
+  exitingSlugs,
+  exiting,
 }) => {
   // Memoize the rendered layout for performance
   const renderedLayout = useMemo(() => {
-    if (!layoutPlan?.layout || layoutPlan.layout.length === 0) {
-      return (
-        <div className="py-8 text-center text-gray-500">
-          <p className="text-sm">No content to display</p>
+    const layout = layoutPlan?.layout ?? [];
+    const exitingItems = exiting ?? [];
+    const showSkeleton = pendingHero && layout[0]?.component !== 'HeroBlock';
+    const nodes: React.ReactNode[] = [];
+
+    if (showSkeleton) {
+      nodes.push(
+        <div key="hero" className="mb-6">
+          <HeroSkeleton />
         </div>
       );
     }
-    
+
+    if (layout.length === 0 && exitingItems.length === 0) {
+      if (!showSkeleton) {
+        return (
+          <div className="py-8 text-center text-gray-500">
+            <p className="text-sm">No content to display</p>
+          </div>
+        );
+      }
+      return nodes;
+    }
+
     // Group case study teasers together for grid layout
     const groupedLayout: Array<LayoutComponent | LayoutComponent[]> = [];
     let currentTeaserGroup: LayoutComponent[] = [];
-    
-    layoutPlan.layout.forEach((item, index) => {
+
+    layout.forEach((item, index) => {
       if (item.component === 'CaseStudyTeaser') {
         currentTeaserGroup.push(item);
         // Check if next is not a teaser or we're at the end
-        const nextItem = layoutPlan.layout[index + 1];
+        const nextItem = layout[index + 1];
         if (!nextItem || nextItem.component !== 'CaseStudyTeaser') {
           groupedLayout.push([...currentTeaserGroup]);
           currentTeaserGroup = [];
@@ -122,55 +148,88 @@ export const LayoutRenderer: React.FC<LayoutRendererProps> = ({
         groupedLayout.push(item);
       }
     });
-    
-    return groupedLayout.map((item, index) => {
+
+    // Exiting teasers stay mounted (same keys) at the end of the last teaser group while they fade out
+    if (exitingItems.length > 0) {
+      let lastGroup = -1;
+      groupedLayout.forEach((g, i) => {
+        if (Array.isArray(g)) lastGroup = i;
+      });
+      if (lastGroup >= 0) {
+        groupedLayout[lastGroup] = [...(groupedLayout[lastGroup] as LayoutComponent[]), ...exitingItems];
+      } else {
+        groupedLayout.push([...exitingItems]);
+      }
+    }
+
+    let teaserGroups = 0;
+    const typeCounts: Record<string, number> = {};
+
+    groupedLayout.forEach((item, index) => {
       // Handle teaser groups - use AG-style grid
       if (Array.isArray(item)) {
+        const groupKey = `teaser-group-${teaserGroups++}`;
         // Determine grid layout based on number of items
-        const gridClass = item.length === 1 
-          ? 'grid grid-cols-1' 
-          : item.length === 2 
-            ? 'grid grid-cols-1 md:grid-cols-2 gap-6' 
+        const gridClass = item.length === 1
+          ? 'grid grid-cols-1'
+          : item.length === 2
+            ? 'grid grid-cols-1 md:grid-cols-2 gap-6'
             : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
-        
-        return (
-          <div 
-            key={`teaser-group-${index}`}
+
+        return nodes.push(
+          <div
+            key={groupKey}
             className={`${gridClass} mb-8`}
           >
-            {item.map((teaser, i) => (
-              <ComponentWrapper 
-                key={`teaser-${i}`}
-                item={teaser} 
-                index={i}
-                onError={onError}
-              />
-            ))}
+            {item.map((teaser, i) => {
+              const slug = (teaser.props as { slug?: string }).slug ?? `i${i}`;
+              const isExiting = !!exitingSlugs?.has(slug) && exitingItems.includes(teaser);
+              return (
+                <div
+                  key={`teaser-${slug}`}
+                  className={isExiting ? 'transition-opacity duration-150 opacity-0' : undefined}
+                  aria-hidden={isExiting ? 'true' : undefined}
+                >
+                  <ComponentWrapper
+                    item={teaser}
+                    index={i}
+                    onError={onError}
+                  />
+                </div>
+              );
+            })}
           </div>
         );
       }
-      
+
       // Handle single components
       const nextItem = groupedLayout[index + 1];
       const nextComponent = Array.isArray(nextItem) ? 'CaseStudyTeaser' : nextItem?.component;
       const spacingClass = getSpacingClass(item.component, nextComponent as ComponentType);
       const isLast = index === groupedLayout.length - 1;
-      
-      return (
+      const isHero = item.component === 'HeroBlock';
+      const k = typeCounts[item.component] ?? 0;
+      typeCounts[item.component] = k + 1;
+      const wrapperKey = isHero && k === 0 ? 'hero' : `${item.component}-${k}`;
+      const classes = [!isLast ? spacingClass : '', isHero ? '' : 'animate-fade-in'].filter(Boolean).join(' ');
+
+      nodes.push(
         <div
-          key={`${item.component}-${index}`}
-          className={!isLast ? spacingClass : ''}
+          key={wrapperKey}
+          className={classes || undefined}
         >
-          <ComponentWrapper 
-            item={item} 
+          <ComponentWrapper
+            item={item}
             index={index}
             onError={onError}
           />
         </div>
       );
     });
-  }, [layoutPlan, onError]);
-  
+
+    return nodes;
+  }, [layoutPlan, onError, pendingHero, exitingSlugs, exiting]);
+
   return (
     <div
       className={`pitch-deck-layout ${className}`}

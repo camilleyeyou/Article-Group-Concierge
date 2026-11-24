@@ -1,0 +1,2006 @@
+{
+ "source_run": "2026-11-22T22-48-20",
+ "generated_at": "2026-11-23T17:51:47.553Z",
+ "records": [
+  {
+   "id": "p1-q01",
+   "type": "well_formed",
+   "query": "We're launching a second product that carves out a new sub-category next to our core API security platform, and analysts keep missing the platform story. Have you built a marketecture for a security company that sales actually adopted in the field, and how did you get from positioning to the visual?",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "salt-security-defending-market-territory",
+     "similarity_score": 0.5281
+    },
+    {
+     "slug": "crowdstrike-applying-the-power-of-a-great-marketecture",
+     "similarity_score": 0.5524
+    },
+    {
+     "slug": "omnicell-making-marketing-and-sales-talk",
+     "similarity_score": 0.4851
+    },
+    {
+     "slug": "aws-creating-a-new-kind-of-product-demo",
+     "similarity_score": 0.4193
+    },
+    {
+     "slug": "google-crafting-a-cross-product-narrative",
+     "similarity_score": 0.4484
+    },
+    {
+     "slug": "android-telling-a-more-human-story",
+     "similarity_score": 0.514
+    },
+    {
+     "slug": "android-crafting-a-brand-new-virtual-event",
+     "similarity_score": 0.4546
+    },
+    {
+     "slug": "renew-home-elevating-a-new-brand-to-own-the-market-conversation",
+     "similarity_score": 0.4423
+    }
+   ]
+  },
+  {
+   "id": "p1-q02",
+   "type": "well_formed",
+   "query": "A much larger competitor owns the category language in cloud security and every analyst briefing gets framed on their terms. Show me work where you helped a challenger defend or reclaim its market territory against a bigger incumbent.",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "salt-security-defending-market-territory",
+     "similarity_score": 0.4734
+    },
+    {
+     "slug": "chrome-enterprise-turning-a-security-upgrade-into-a-compelling-video",
+     "similarity_score": 0.4271
+    },
+    {
+     "slug": "chrome-enterprise-reclaiming-the-browser-conversation",
+     "similarity_score": 0.4583
+    },
+    {
+     "slug": "google-cloud-illuminating-a-new-brand-identity",
+     "similarity_score": 0.334
+    },
+    {
+     "slug": "omnicell-making-marketing-and-sales-talk",
+     "similarity_score": 0.3748
+    },
+    {
+     "slug": "chromeos-cohesive-small-business-campaign",
+     "similarity_score": 0.4034
+    },
+    {
+     "slug": "android-enterprise-hyper-targeted-consideration-campaign",
+     "similarity_score": 0.396
+    },
+    {
+     "slug": "aws-transforming-digital-audits",
+     "similarity_score": 0.3386
+    }
+   ]
+  },
+  {
+   "id": "p1-q03",
+   "type": "well_formed",
+   "query": "How do you approach naming and branding a net-new security sub-category so it doesn't just read as a feature of the existing platform? Any examples where you built a brand for a new asset visibility or security concept from zero?",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "chorus-alphabet-x-creating-an-eye-opening-asset-visibility-brand",
+     "similarity_score": 0.437
+    },
+    {
+     "slug": "salt-security-defending-market-territory",
+     "similarity_score": 0.5137
+    },
+    {
+     "slug": "simons-foundation-illuminating-a-new-brand-identity",
+     "similarity_score": 0.4109
+    },
+    {
+     "slug": "google-cloud-illuminating-a-new-brand-identity",
+     "similarity_score": 0.4124
+    },
+    {
+     "slug": "chrome-enterprise-turning-a-security-upgrade-into-a-compelling-video",
+     "similarity_score": 0.4293
+    },
+    {
+     "slug": "amazon-building-a-flagship-thought-leadership-brand",
+     "similarity_score": 0.4085
+    },
+    {
+     "slug": "renew-home-elevating-a-new-brand-to-own-the-market-conversation",
+     "similarity_score": 0.4136
+    },
+    {
+     "slug": "google-workspace-positioning-a-new-brand-for-launch",
+     "similarity_score": 0.4048
+    }
+   ]
+  },
+  {
+   "id": "p1-q04",
+   "type": "well_formed",
+   "query": "Our sales decks are all over the place: every AE has their own version of the pitch and the messaging house isn't making it into the field. What does your sales enablement work look like, and how do you get marketing and sales aligned on one narrative?",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "omnicell-making-marketing-and-sales-talk",
+     "similarity_score": 0.5948
+    },
+    {
+     "slug": "salesforce-slack-strategic-sales-enablement",
+     "similarity_score": 0.5104
+    },
+    {
+     "slug": "google-crafting-a-cross-product-narrative",
+     "similarity_score": 0.4731
+    },
+    {
+     "slug": "meta-informed-messaging-and-a-unified-story",
+     "similarity_score": 0.4558
+    },
+    {
+     "slug": "salesforce-supporting-the-largest-partner-ecosystem-in-the-tech-industry",
+     "similarity_score": 0.4594
+    },
+    {
+     "slug": "renew-home-elevating-a-new-brand-to-own-the-market-conversation",
+     "similarity_score": 0.4464
+    },
+    {
+     "slug": "salt-security-defending-market-territory",
+     "similarity_score": 0.3911
+    },
+    {
+     "slug": "upshow-chromeos-purposeful-partner-marketing",
+     "similarity_score": 0.4088
+    }
+   ]
+  },
+  {
+   "id": "p1-q05",
+   "type": "well_formed",
+   "query": "For RSA we want a short explainer video that makes a fairly technical security capability legible to CISOs without dumbing it down. Have you done security product videos for enterprise audiences?",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "chrome-enterprise-turning-a-security-upgrade-into-a-compelling-video",
+     "similarity_score": 0.5421
+    },
+    {
+     "slug": "chrome-enterprise-reclaiming-the-browser-conversation",
+     "similarity_score": 0.3841
+    },
+    {
+     "slug": "aws-nvidia-co-branded-video-for-a-visionary-collaboration",
+     "similarity_score": 0.3847
+    },
+    {
+     "slug": "salt-security-defending-market-territory",
+     "similarity_score": 0.3987
+    },
+    {
+     "slug": "chrome-enterprise-a-vibrant-virtual-event",
+     "similarity_score": 0.346
+    },
+    {
+     "slug": "adp-customer-story-videos",
+     "similarity_score": 0.36
+    },
+    {
+     "slug": "aws-transforming-digital-audits",
+     "similarity_score": 0.429
+    },
+    {
+     "slug": "amazon-building-a-flagship-thought-leadership-brand",
+     "similarity_score": 0.3389
+    }
+   ]
+  },
+  {
+   "id": "p1-q06",
+   "type": "vague",
+   "query": "messaging house + marketecture?",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "meta-informed-messaging-and-a-unified-story",
+     "similarity_score": 0.4587
+    },
+    {
+     "slug": "crowdstrike-applying-the-power-of-a-great-marketecture",
+     "similarity_score": 0.3727
+    },
+    {
+     "slug": "omnicell-making-marketing-and-sales-talk",
+     "similarity_score": 0.3766
+    },
+    {
+     "slug": "salt-security-defending-market-territory",
+     "similarity_score": 0.3614
+    },
+    {
+     "slug": "android-telling-a-more-human-story",
+     "similarity_score": 0.3516
+    },
+    {
+     "slug": "google-messages-human-centered-product-ads",
+     "similarity_score": 0.4348
+    },
+    {
+     "slug": "renew-home-elevating-a-new-brand-to-own-the-market-conversation",
+     "similarity_score": 0.3629
+    },
+    {
+     "slug": "android-crafting-a-brand-new-virtual-event",
+     "similarity_score": 0.3495
+    }
+   ]
+  },
+  {
+   "id": "p1-q07",
+   "type": "vague",
+   "query": "cybersecurity clients?",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "chrome-enterprise-turning-a-security-upgrade-into-a-compelling-video",
+     "similarity_score": 0.4126
+    },
+    {
+     "slug": "salt-security-defending-market-territory",
+     "similarity_score": 0.3285
+    },
+    {
+     "slug": "j-p-morgan-naming-the-future-of-retail-payments-hardware",
+     "similarity_score": 0.2879
+    },
+    {
+     "slug": "slalom-celebrating-customer-success",
+     "similarity_score": 0.2345
+    },
+    {
+     "slug": "aws-bringing-powerful-gen-ai-models-to-life",
+     "similarity_score": 0.2285
+    },
+    {
+     "slug": "chrome-earning-smb-consideration",
+     "similarity_score": 0.3946
+    },
+    {
+     "slug": "chromeos-cohesive-small-business-campaign",
+     "similarity_score": 0.3875
+    },
+    {
+     "slug": "crowdstrike-applying-the-power-of-a-great-marketecture",
+     "similarity_score": 0.3707
+    }
+   ]
+  },
+  {
+   "id": "p1-q08",
+   "type": "off_topic",
+   "query": "Can you run a pen test on our API gateway and help us get SOC 2 Type II evidence together before RSA?",
+   "fallback_expected": true,
+   "case_studies": [
+    {
+     "slug": "salt-security-defending-market-territory",
+     "similarity_score": 0.2888
+    },
+    {
+     "slug": "chromeos-cohesive-small-business-campaign",
+     "similarity_score": 0.2511
+    },
+    {
+     "slug": "chrome-earning-smb-consideration",
+     "similarity_score": 0.2429
+    },
+    {
+     "slug": "aws-transforming-digital-audits",
+     "similarity_score": 0.3688
+    },
+    {
+     "slug": "salesforce-supporting-the-largest-partner-ecosystem-in-the-tech-industry",
+     "similarity_score": 0.2201
+    },
+    {
+     "slug": "box-establishing-thought-leadership-by-publishing-share-worthy-content",
+     "similarity_score": 0.2143
+    },
+    {
+     "slug": "android-telling-a-more-human-story",
+     "similarity_score": 0.2104
+    },
+    {
+     "slug": "android-enterprise-hyper-targeted-consideration-campaign",
+     "similarity_score": 0.2321
+    }
+   ]
+  },
+  {
+   "id": "p1-q09",
+   "type": "invention_bait",
+   "query": "I heard you did the category launch for Wiz around their CNAPP positioning. Can you show me that work and what pipeline lift they saw after the launch?",
+   "fallback_expected": true,
+   "case_studies": [
+    {
+     "slug": "google-workspace-positioning-a-new-brand-for-launch",
+     "similarity_score": 0.4269
+    },
+    {
+     "slug": "omnicell-making-marketing-and-sales-talk",
+     "similarity_score": 0.424
+    },
+    {
+     "slug": "chromeos-cameyo-maintaining-momentum-through-launch",
+     "similarity_score": 0.421
+    },
+    {
+     "slug": "chrome-enterprise-reclaiming-the-browser-conversation",
+     "similarity_score": 0.384
+    },
+    {
+     "slug": "renew-home-elevating-a-new-brand-to-own-the-market-conversation",
+     "similarity_score": 0.3781
+    },
+    {
+     "slug": "android-gen-z-workplace-research-and-creative-strategy",
+     "similarity_score": 0.3698
+    },
+    {
+     "slug": "google-crafting-a-cross-product-narrative",
+     "similarity_score": 0.3644
+    },
+    {
+     "slug": "crowdstrike-applying-the-power-of-a-great-marketecture",
+     "similarity_score": 0.347
+    }
+   ]
+  },
+  {
+   "id": "p1-q10",
+   "type": "multi_part",
+   "query": "Three things: can you deliver a positioning framework plus a marketecture visual in about 8 weeks ahead of RSA, do you also produce launch content for the conference itself, and what's your closest security example?",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "salt-security-defending-market-territory",
+     "similarity_score": 0.4684
+    },
+    {
+     "slug": "crowdstrike-applying-the-power-of-a-great-marketecture",
+     "similarity_score": 0.5039
+    },
+    {
+     "slug": "google-workspace-positioning-a-new-brand-for-launch",
+     "similarity_score": 0.4059
+    },
+    {
+     "slug": "chrome-enterprise-turning-a-security-upgrade-into-a-compelling-video",
+     "similarity_score": 0.4151
+    },
+    {
+     "slug": "box-establishing-thought-leadership-by-publishing-share-worthy-content",
+     "similarity_score": 0.3936
+    },
+    {
+     "slug": "android-crafting-a-brand-new-virtual-event",
+     "similarity_score": 0.454
+    },
+    {
+     "slug": "renew-home-elevating-a-new-brand-to-own-the-market-conversation",
+     "similarity_score": 0.4137
+    },
+    {
+     "slug": "android-telling-a-more-human-story",
+     "similarity_score": 0.4403
+    }
+   ]
+  },
+  {
+   "id": "p2-q01",
+   "type": "well_formed",
+   "query": "Following a significant restructuring, we need to re-introduce the company to institutional clients and brokers. Have you led a corporate repositioning for a large financial-services or insurance firm, and how did you approach the narrative?",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "aig-when-stakes-are-high-reintroducing-aig-to-the-market",
+     "similarity_score": 0.5362
+    },
+    {
+     "slug": "renew-home-elevating-a-new-brand-to-own-the-market-conversation",
+     "similarity_score": 0.4998
+    },
+    {
+     "slug": "google-crafting-a-cross-product-narrative",
+     "similarity_score": 0.3747
+    },
+    {
+     "slug": "omnicell-making-marketing-and-sales-talk",
+     "similarity_score": 0.4676
+    },
+    {
+     "slug": "chrome-enterprise-reclaiming-the-browser-conversation",
+     "similarity_score": 0.3859
+    },
+    {
+     "slug": "meta-informed-messaging-and-a-unified-story",
+     "similarity_score": 0.4177
+    },
+    {
+     "slug": "crowdstrike-applying-the-power-of-a-great-marketecture",
+     "similarity_score": 0.4553
+    },
+    {
+     "slug": "android-enterprise-hyper-targeted-consideration-campaign",
+     "similarity_score": 0.3496
+    }
+   ]
+  },
+  {
+   "id": "p2-q02",
+   "type": "well_formed",
+   "query": "Our CEO is delivering an investor-day keynote in five months. What experience do you have shaping executive keynotes so they land with a sophisticated, skeptical audience?",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "aws-keynotes-that-reshape-perspectives",
+     "similarity_score": 0.5507
+    },
+    {
+     "slug": "aig-when-stakes-are-high-reintroducing-aig-to-the-market",
+     "similarity_score": 0.4582
+    },
+    {
+     "slug": "amazon-building-a-flagship-thought-leadership-brand",
+     "similarity_score": 0.4082
+    },
+    {
+     "slug": "adp-creating-keynotes-that-connect",
+     "similarity_score": 0.399
+    },
+    {
+     "slug": "renew-home-elevating-a-new-brand-to-own-the-market-conversation",
+     "similarity_score": 0.4045
+    },
+    {
+     "slug": "crowdstrike-applying-the-power-of-a-great-marketecture",
+     "similarity_score": 0.4289
+    },
+    {
+     "slug": "chrome-enterprise-a-vibrant-virtual-event",
+     "similarity_score": 0.3938
+    },
+    {
+     "slug": "android-crafting-a-brand-new-virtual-event",
+     "similarity_score": 0.3711
+    }
+   ]
+  },
+  {
+   "id": "p2-q03",
+   "type": "well_formed",
+   "query": "In our organization, legal review and multiple layers of internal stakeholders tend to slow everything down. How do you manage approvals and alignment on engagements with that kind of governance?",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "salesforce-supporting-the-largest-partner-ecosystem-in-the-tech-industry",
+     "similarity_score": 0.2845
+    },
+    {
+     "slug": "box-establishing-thought-leadership-by-publishing-share-worthy-content",
+     "similarity_score": 0.2499
+    },
+    {
+     "slug": "adp-creating-keynotes-that-connect",
+     "similarity_score": 0.3082
+    },
+    {
+     "slug": "slalom-celebrating-customer-success",
+     "similarity_score": 0.3049
+    },
+    {
+     "slug": "google-workspace-planning-and-delivering-demand-generation",
+     "similarity_score": 0.2393
+    },
+    {
+     "slug": "task-mate-google-elevated-long-form-content",
+     "similarity_score": 0.23
+    },
+    {
+     "slug": "aws-keynotes-that-reshape-perspectives",
+     "similarity_score": 0.2771
+    },
+    {
+     "slug": "google-crafting-a-cross-product-narrative",
+     "similarity_score": 0.2289
+    }
+   ]
+  },
+  {
+   "id": "p2-q04",
+   "type": "well_formed",
+   "query": "Do you have experience with naming work for major financial institutions? We may need to rename part of our business as part of the reorganization.",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "j-p-morgan-naming-the-future-of-retail-payments-hardware",
+     "similarity_score": 0.4491
+    },
+    {
+     "slug": "chorus-alphabet-x-creating-an-eye-opening-asset-visibility-brand",
+     "similarity_score": 0.3191
+    },
+    {
+     "slug": "aig-when-stakes-are-high-reintroducing-aig-to-the-market",
+     "similarity_score": 0.3704
+    },
+    {
+     "slug": "renew-home-elevating-a-new-brand-to-own-the-market-conversation",
+     "similarity_score": 0.3495
+    },
+    {
+     "slug": "amazon-building-a-flagship-thought-leadership-brand",
+     "similarity_score": 0.2921
+    },
+    {
+     "slug": "android-enterprise-hyper-targeted-consideration-campaign",
+     "similarity_score": 0.2618
+    },
+    {
+     "slug": "crowdstrike-applying-the-power-of-a-great-marketecture",
+     "similarity_score": 0.2851
+    },
+    {
+     "slug": "android-crafting-a-brand-new-virtual-event",
+     "similarity_score": 0.2726
+    }
+   ]
+  },
+  {
+   "id": "p2-q05",
+   "type": "well_formed",
+   "query": "I'd like a sense of your senior-level experience with Fortune 100 clients in regulated industries. Which engagements would be most comparable to a global insurer?",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "aig-when-stakes-are-high-reintroducing-aig-to-the-market",
+     "similarity_score": 0.3565
+    },
+    {
+     "slug": "salesforce-supporting-the-largest-partner-ecosystem-in-the-tech-industry",
+     "similarity_score": 0.2748
+    },
+    {
+     "slug": "android-enterprise-hyper-targeted-consideration-campaign",
+     "similarity_score": 0.3174
+    },
+    {
+     "slug": "crowdstrike-applying-the-power-of-a-great-marketecture",
+     "similarity_score": 0.2619
+    },
+    {
+     "slug": "box-establishing-thought-leadership-by-publishing-share-worthy-content",
+     "similarity_score": 0.2677
+    },
+    {
+     "slug": "android-crafting-a-brand-new-virtual-event",
+     "similarity_score": 0.2186
+    },
+    {
+     "slug": "adp-creating-keynotes-that-connect",
+     "similarity_score": 0.2367
+    },
+    {
+     "slug": "omnicell-making-marketing-and-sales-talk",
+     "similarity_score": 0.2664
+    }
+   ]
+  },
+  {
+   "id": "p2-q06",
+   "type": "vague",
+   "query": "insurance experience?",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "aig-when-stakes-are-high-reintroducing-aig-to-the-market",
+     "similarity_score": 0.2812
+    },
+    {
+     "slug": "android-enterprise-hyper-targeted-consideration-campaign",
+     "similarity_score": 0.1959
+    },
+    {
+     "slug": "salesforce-whatsapp-hyping-up-a-holiday-virtual-event",
+     "similarity_score": 0.1464
+    },
+    {
+     "slug": "aws-creating-a-new-kind-of-product-demo",
+     "similarity_score": 0.1449
+    },
+    {
+     "slug": "amazon-building-a-flagship-thought-leadership-brand",
+     "similarity_score": 0.1028
+    },
+    {
+     "slug": "salesforce-supporting-the-largest-partner-ecosystem-in-the-tech-industry",
+     "similarity_score": 0.1368
+    },
+    {
+     "slug": "amazon-re-mars-bold-inspirational-branded-docuseries",
+     "similarity_score": 0.086
+    },
+    {
+     "slug": "simons-foundation-launching-a-first-ever-education-division-to-unlock-scientific",
+     "similarity_score": 0.065
+    }
+   ]
+  },
+  {
+   "id": "p2-q07",
+   "type": "vague",
+   "query": "CEO keynote support",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "aws-keynotes-that-reshape-perspectives",
+     "similarity_score": 0.4791
+    },
+    {
+     "slug": "adp-creating-keynotes-that-connect",
+     "similarity_score": 0.4162
+    },
+    {
+     "slug": "chrome-enterprise-a-vibrant-virtual-event",
+     "similarity_score": 0.4196
+    },
+    {
+     "slug": "crowdstrike-applying-the-power-of-a-great-marketecture",
+     "similarity_score": 0.4086
+    },
+    {
+     "slug": "amazon-building-a-flagship-thought-leadership-brand",
+     "similarity_score": 0.401
+    },
+    {
+     "slug": "android-crafting-a-brand-new-virtual-event",
+     "similarity_score": 0.4033
+    },
+    {
+     "slug": "aig-when-stakes-are-high-reintroducing-aig-to-the-market",
+     "similarity_score": 0.3831
+    },
+    {
+     "slug": "chrome-enterprise-timely-compelling-thought-leadership",
+     "similarity_score": 0.4653
+    }
+   ]
+  },
+  {
+   "id": "p2-q08",
+   "type": "off_topic",
+   "query": "Could you review our investor-day remarks and confirm they're compliant with Regulation FD and SEC disclosure rules?",
+   "fallback_expected": true,
+   "case_studies": [
+    {
+     "slug": "aig-when-stakes-are-high-reintroducing-aig-to-the-market",
+     "similarity_score": 0.2866
+    },
+    {
+     "slug": "aws-transforming-digital-audits",
+     "similarity_score": 0.2268
+    },
+    {
+     "slug": "box-establishing-thought-leadership-by-publishing-share-worthy-content",
+     "similarity_score": 0.2229
+    },
+    {
+     "slug": "nar-houselogic",
+     "similarity_score": 0.1885
+    },
+    {
+     "slug": "adp-customer-story-videos",
+     "similarity_score": 0.2266
+    },
+    {
+     "slug": "amazon-building-a-flagship-thought-leadership-brand",
+     "similarity_score": 0.1778
+    },
+    {
+     "slug": "chrome-enterprise-a-vibrant-virtual-event",
+     "similarity_score": 0.1861
+    },
+    {
+     "slug": "simons-foundation-launching-a-first-ever-education-division-to-unlock-scientific",
+     "similarity_score": 0.188
+    }
+   ]
+  },
+  {
+   "id": "p2-q09",
+   "type": "invention_bait",
+   "query": "I understand you handled MetLife's brand repositioning a few years ago. Could you walk me through how analysts and brokers responded to it?",
+   "fallback_expected": true,
+   "case_studies": [
+    {
+     "slug": "mylink-google-insight-driven-brand-development",
+     "similarity_score": 0.3664
+    },
+    {
+     "slug": "simons-foundation-illuminating-a-new-brand-identity",
+     "similarity_score": 0.3571
+    },
+    {
+     "slug": "amazon-building-a-flagship-thought-leadership-brand",
+     "similarity_score": 0.3409
+    },
+    {
+     "slug": "salt-security-defending-market-territory",
+     "similarity_score": 0.3869
+    },
+    {
+     "slug": "chorus-alphabet-x-creating-an-eye-opening-asset-visibility-brand",
+     "similarity_score": 0.2999
+    },
+    {
+     "slug": "renew-home-elevating-a-new-brand-to-own-the-market-conversation",
+     "similarity_score": 0.3913
+    },
+    {
+     "slug": "google-workspace-positioning-a-new-brand-for-launch",
+     "similarity_score": 0.3591
+    },
+    {
+     "slug": "omnicell-making-marketing-and-sales-talk",
+     "similarity_score": 0.4338
+    }
+   ]
+  },
+  {
+   "id": "p2-q10",
+   "type": "multi_part",
+   "query": "Three questions: could you take on both the repositioning narrative and the CEO keynote in parallel, is five months a realistic timeline for that, and can you show me a comparable engagement?",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "renew-home-elevating-a-new-brand-to-own-the-market-conversation",
+     "similarity_score": 0.4296
+    },
+    {
+     "slug": "aig-when-stakes-are-high-reintroducing-aig-to-the-market",
+     "similarity_score": 0.427
+    },
+    {
+     "slug": "crowdstrike-applying-the-power-of-a-great-marketecture",
+     "similarity_score": 0.4037
+    },
+    {
+     "slug": "aws-keynotes-that-reshape-perspectives",
+     "similarity_score": 0.3845
+    },
+    {
+     "slug": "adp-creating-keynotes-that-connect",
+     "similarity_score": 0.3604
+    },
+    {
+     "slug": "google-crafting-a-cross-product-narrative",
+     "similarity_score": 0.3524
+    },
+    {
+     "slug": "chrome-enterprise-reclaiming-the-browser-conversation",
+     "similarity_score": 0.395
+    },
+    {
+     "slug": "chrome-enterprise-a-vibrant-virtual-event",
+     "similarity_score": 0.3641
+    }
+   ]
+  },
+  {
+   "id": "p3-q01",
+   "type": "well_formed",
+   "query": "We need to scale co-marketing across a few hundred partners. Have you built partner enablement kits or repeatable templates that partners actually picked up and used? Looking for examples.",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "salesforce-supporting-the-largest-partner-ecosystem-in-the-tech-industry",
+     "similarity_score": 0.5436
+    },
+    {
+     "slug": "upshow-chromeos-purposeful-partner-marketing",
+     "similarity_score": 0.4539
+    },
+    {
+     "slug": "salesforce-slack-strategic-sales-enablement",
+     "similarity_score": 0.499
+    },
+    {
+     "slug": "omnicell-making-marketing-and-sales-talk",
+     "similarity_score": 0.4399
+    },
+    {
+     "slug": "chromeos-cohesive-small-business-campaign",
+     "similarity_score": 0.4455
+    },
+    {
+     "slug": "google-workspace-planning-and-delivering-demand-generation",
+     "similarity_score": 0.4069
+    },
+    {
+     "slug": "chrome-earning-smb-consideration",
+     "similarity_score": 0.4012
+    },
+    {
+     "slug": "salesforce-whatsapp-hyping-up-a-holiday-virtual-event",
+     "similarity_score": 0.3677
+    }
+   ]
+  },
+  {
+   "id": "p3-q02",
+   "type": "well_formed",
+   "query": "What does your co-branded video work look like? Specifically joint pieces where two big brands share the spotlight without it turning into a logo soup.",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "aws-nvidia-co-branded-video-for-a-visionary-collaboration",
+     "similarity_score": 0.5121
+    },
+    {
+     "slug": "amazon-building-a-flagship-thought-leadership-brand",
+     "similarity_score": 0.4396
+    },
+    {
+     "slug": "chrome-enterprise-turning-a-security-upgrade-into-a-compelling-video",
+     "similarity_score": 0.4226
+    },
+    {
+     "slug": "simons-foundation-illuminating-a-new-brand-identity",
+     "similarity_score": 0.4336
+    },
+    {
+     "slug": "google-workspace-positioning-a-new-brand-for-launch",
+     "similarity_score": 0.4207
+    },
+    {
+     "slug": "mylink-google-insight-driven-brand-development",
+     "similarity_score": 0.4244
+    },
+    {
+     "slug": "chorus-alphabet-x-creating-an-eye-opening-asset-visibility-brand",
+     "similarity_score": 0.4217
+    },
+    {
+     "slug": "google-for-education-a-world-of-perspectives-on-the-future-of-learning",
+     "similarity_score": 0.4656
+    }
+   ]
+  },
+  {
+   "id": "p3-q03",
+   "type": "well_formed",
+   "query": "We're planning a virtual partner summit for next year. Have you designed and produced virtual events for enterprise tech companies, and how did you keep attendees engaged?",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "chrome-enterprise-a-vibrant-virtual-event",
+     "similarity_score": 0.5277
+    },
+    {
+     "slug": "android-crafting-a-brand-new-virtual-event",
+     "similarity_score": 0.5132
+    },
+    {
+     "slug": "salesforce-whatsapp-hyping-up-a-holiday-virtual-event",
+     "similarity_score": 0.4518
+    },
+    {
+     "slug": "salesforce-supporting-the-largest-partner-ecosystem-in-the-tech-industry",
+     "similarity_score": 0.4136
+    },
+    {
+     "slug": "chrome-enterprise-timely-compelling-thought-leadership",
+     "similarity_score": 0.4684
+    },
+    {
+     "slug": "amazon-building-a-flagship-thought-leadership-brand",
+     "similarity_score": 0.4241
+    },
+    {
+     "slug": "aws-keynotes-that-reshape-perspectives",
+     "similarity_score": 0.456
+    },
+    {
+     "slug": "chromeos-cameyo-maintaining-momentum-through-launch",
+     "similarity_score": 0.4506
+    }
+   ]
+  },
+  {
+   "id": "p3-q04",
+   "type": "well_formed",
+   "query": "Our partners keep asking for customer stories they can reuse. Can you show work where you produced customer success stories at volume, ideally video?",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "adp-customer-story-videos",
+     "similarity_score": 0.552
+    },
+    {
+     "slug": "slalom-celebrating-customer-success",
+     "similarity_score": 0.6045
+    },
+    {
+     "slug": "upshow-chromeos-purposeful-partner-marketing",
+     "similarity_score": 0.4402
+    },
+    {
+     "slug": "aws-nvidia-co-branded-video-for-a-visionary-collaboration",
+     "similarity_score": 0.4446
+    },
+    {
+     "slug": "salesforce-supporting-the-largest-partner-ecosystem-in-the-tech-industry",
+     "similarity_score": 0.4832
+    },
+    {
+     "slug": "adp-creating-keynotes-that-connect",
+     "similarity_score": 0.4368
+    },
+    {
+     "slug": "meta-informed-messaging-and-a-unified-story",
+     "similarity_score": 0.4044
+    },
+    {
+     "slug": "google-for-education-a-world-of-perspectives-on-the-future-of-learning",
+     "similarity_score": 0.4469
+    }
+   ]
+  },
+  {
+   "id": "p3-q05",
+   "type": "well_formed",
+   "query": "Biggest gap for us is getting sales and partners to actually use what marketing makes. Any examples where you aligned marketing and sales assets so reps used them in deals?",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "upshow-chromeos-purposeful-partner-marketing",
+     "similarity_score": 0.4139
+    },
+    {
+     "slug": "omnicell-making-marketing-and-sales-talk",
+     "similarity_score": 0.506
+    },
+    {
+     "slug": "salesforce-supporting-the-largest-partner-ecosystem-in-the-tech-industry",
+     "similarity_score": 0.5182
+    },
+    {
+     "slug": "salesforce-whatsapp-hyping-up-a-holiday-virtual-event",
+     "similarity_score": 0.3881
+    },
+    {
+     "slug": "salesforce-slack-strategic-sales-enablement",
+     "similarity_score": 0.4732
+    },
+    {
+     "slug": "google-workspace-planning-and-delivering-demand-generation",
+     "similarity_score": 0.3717
+    },
+    {
+     "slug": "chromeos-cohesive-small-business-campaign",
+     "similarity_score": 0.3786
+    },
+    {
+     "slug": "salt-security-defending-market-territory",
+     "similarity_score": 0.3894
+    }
+   ]
+  },
+  {
+   "id": "p3-q06",
+   "type": "vague",
+   "query": "partner marketing examples?",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "upshow-chromeos-purposeful-partner-marketing",
+     "similarity_score": 0.4368
+    },
+    {
+     "slug": "salesforce-supporting-the-largest-partner-ecosystem-in-the-tech-industry",
+     "similarity_score": 0.4794
+    },
+    {
+     "slug": "omnicell-making-marketing-and-sales-talk",
+     "similarity_score": 0.4181
+    },
+    {
+     "slug": "salesforce-slack-strategic-sales-enablement",
+     "similarity_score": 0.3778
+    },
+    {
+     "slug": "chromeos-cohesive-small-business-campaign",
+     "similarity_score": 0.3857
+    },
+    {
+     "slug": "salesforce-whatsapp-hyping-up-a-holiday-virtual-event",
+     "similarity_score": 0.3972
+    },
+    {
+     "slug": "chrome-earning-smb-consideration",
+     "similarity_score": 0.3643
+    },
+    {
+     "slug": "task-mate-google-driving-growth-with-inclusive-messaging",
+     "similarity_score": 0.3618
+    }
+   ]
+  },
+  {
+   "id": "p3-q07",
+   "type": "vague",
+   "query": "how fast can you ramp?",
+   "fallback_expected": true,
+   "case_studies": [
+    {
+     "slug": "slalom-celebrating-customer-success",
+     "similarity_score": 0.1969
+    },
+    {
+     "slug": "chromeos-cameyo-maintaining-momentum-through-launch",
+     "similarity_score": 0.2103
+    },
+    {
+     "slug": "renew-home-elevating-a-new-brand-to-own-the-market-conversation",
+     "similarity_score": 0.2074
+    },
+    {
+     "slug": "aws-creating-a-new-kind-of-product-demo",
+     "similarity_score": 0.2033
+    },
+    {
+     "slug": "omnicell-making-marketing-and-sales-talk",
+     "similarity_score": 0.1962
+    },
+    {
+     "slug": "salesforce-slack-strategic-sales-enablement",
+     "similarity_score": 0.1812
+    },
+    {
+     "slug": "chrome-enterprise-turning-a-security-upgrade-into-a-compelling-video",
+     "similarity_score": 0.1736
+    },
+    {
+     "slug": "aws-keynotes-that-reshape-perspectives",
+     "similarity_score": 0.1695
+    }
+   ]
+  },
+  {
+   "id": "p3-q08",
+   "type": "off_topic",
+   "query": "Can you configure our PRM platform and set up partner onboarding workflows and deal registration in it?",
+   "fallback_expected": true,
+   "case_studies": [
+    {
+     "slug": "salesforce-supporting-the-largest-partner-ecosystem-in-the-tech-industry",
+     "similarity_score": 0.3777
+    },
+    {
+     "slug": "upshow-chromeos-purposeful-partner-marketing",
+     "similarity_score": 0.2939
+    },
+    {
+     "slug": "salesforce-slack-strategic-sales-enablement",
+     "similarity_score": 0.3278
+    },
+    {
+     "slug": "adp-customer-story-videos",
+     "similarity_score": 0.3217
+    },
+    {
+     "slug": "aws-creating-a-new-kind-of-product-demo",
+     "similarity_score": 0.2823
+    },
+    {
+     "slug": "chromeos-cameyo-maintaining-momentum-through-launch",
+     "similarity_score": 0.292
+    },
+    {
+     "slug": "adp-creating-keynotes-that-connect",
+     "similarity_score": 0.3129
+    },
+    {
+     "slug": "modern-computing-alliance-delightfully-useful-design",
+     "similarity_score": 0.2696
+    }
+   ]
+  },
+  {
+   "id": "p3-q09",
+   "type": "invention_bait",
+   "query": "I heard you ran the Microsoft Azure Marketplace partner program refresh. What pipeline lift did that drive?",
+   "fallback_expected": true,
+   "case_studies": [
+    {
+     "slug": "salesforce-supporting-the-largest-partner-ecosystem-in-the-tech-industry",
+     "similarity_score": 0.4214
+    },
+    {
+     "slug": "chrome-enterprise-reclaiming-the-browser-conversation",
+     "similarity_score": 0.3826
+    },
+    {
+     "slug": "salesforce-slack-strategic-sales-enablement",
+     "similarity_score": 0.3742
+    },
+    {
+     "slug": "salesforce-whatsapp-hyping-up-a-holiday-virtual-event",
+     "similarity_score": 0.3515
+    },
+    {
+     "slug": "google-cloud-illuminating-a-new-brand-identity",
+     "similarity_score": 0.3341
+    },
+    {
+     "slug": "upshow-chromeos-purposeful-partner-marketing",
+     "similarity_score": 0.316
+    },
+    {
+     "slug": "google-workspace-building-an-editorial-program",
+     "similarity_score": 0.3052
+    },
+    {
+     "slug": "twitch-expanding-a-vibrant-visual-universe",
+     "similarity_score": 0.3283
+    }
+   ]
+  },
+  {
+   "id": "p3-q10",
+   "type": "multi_part",
+   "query": "Three things: can you build a co-branded video template partners can localize, roughly how long for a first batch of ~20, and do you have a partner event example?",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "upshow-chromeos-purposeful-partner-marketing",
+     "similarity_score": 0.4362
+    },
+    {
+     "slug": "chrome-enterprise-a-vibrant-virtual-event",
+     "similarity_score": 0.4159
+    },
+    {
+     "slug": "google-cloud-illuminating-a-new-brand-identity",
+     "similarity_score": 0.3852
+    },
+    {
+     "slug": "aws-nvidia-co-branded-video-for-a-visionary-collaboration",
+     "similarity_score": 0.3678
+    },
+    {
+     "slug": "amazon-building-a-flagship-thought-leadership-brand",
+     "similarity_score": 0.3701
+    },
+    {
+     "slug": "adp-customer-story-videos",
+     "similarity_score": 0.4062
+    },
+    {
+     "slug": "android-crafting-a-brand-new-virtual-event",
+     "similarity_score": 0.3717
+    },
+    {
+     "slug": "mylink-google-insight-driven-brand-development",
+     "similarity_score": 0.3975
+    }
+   ]
+  },
+  {
+   "id": "p4-q01",
+   "type": "well_formed",
+   "query": "We're a private research foundation with about a dozen programs and institutes, and over the years each one has developed its own look and voice. The result is a brand that feels dated and, frankly, incoherent. Have you helped a scientific or mission-driven organization pull a fragmented identity back together without flattening what makes each program distinct?",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "simons-foundation-illuminating-a-new-brand-identity",
+     "similarity_score": 0.6529
+    },
+    {
+     "slug": "simons-foundation-launching-a-first-ever-education-division-to-unlock-scientific",
+     "similarity_score": 0.5445
+    },
+    {
+     "slug": "mylink-google-insight-driven-brand-development",
+     "similarity_score": 0.4174
+    },
+    {
+     "slug": "amazon-building-a-flagship-thought-leadership-brand",
+     "similarity_score": 0.4759
+    },
+    {
+     "slug": "google-cloud-illuminating-a-new-brand-identity",
+     "similarity_score": 0.4266
+    },
+    {
+     "slug": "chorus-alphabet-x-creating-an-eye-opening-asset-visibility-brand",
+     "similarity_score": 0.4382
+    },
+    {
+     "slug": "android-gen-z-workplace-research-and-creative-strategy",
+     "similarity_score": 0.3673
+    },
+    {
+     "slug": "salt-security-defending-market-territory",
+     "similarity_score": 0.365
+    }
+   ]
+  },
+  {
+   "id": "p4-q02",
+   "type": "well_formed",
+   "query": "Our core challenge is explaining basic research, work with no obvious application yet, to a general audience. I'm wary of anything that oversimplifies or turns discovery into hype. How do you approach making fundamental science approachable while keeping it accurate?",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "simons-foundation-illuminating-a-new-brand-identity",
+     "similarity_score": 0.4105
+    },
+    {
+     "slug": "android-gen-z-workplace-research-and-creative-strategy",
+     "similarity_score": 0.2896
+    },
+    {
+     "slug": "nar-houselogic",
+     "similarity_score": 0.3151
+    },
+    {
+     "slug": "simons-foundation-launching-a-first-ever-education-division-to-unlock-scientific",
+     "similarity_score": 0.495
+    },
+    {
+     "slug": "salt-security-defending-market-territory",
+     "similarity_score": 0.2862
+    },
+    {
+     "slug": "omnicell-making-marketing-and-sales-talk",
+     "similarity_score": 0.3269
+    },
+    {
+     "slug": "aws-inspirational-global-advertising-campaign",
+     "similarity_score": 0.2855
+    },
+    {
+     "slug": "meta-informed-messaging-and-a-unified-story",
+     "similarity_score": 0.2802
+    }
+   ]
+  },
+  {
+   "id": "p4-q03",
+   "type": "well_formed",
+   "query": "We're launching a new education initiative aimed at students and early-career scientists. It's a new division for us, so it needs its own identity that still sits clearly under the foundation. Have you done work standing up an education program like this?",
+   "fallback_expected": true,
+   "case_studies": [
+    {
+     "slug": "simons-foundation-launching-a-first-ever-education-division-to-unlock-scientific",
+     "similarity_score": 0.6391
+    },
+    {
+     "slug": "simons-foundation-illuminating-a-new-brand-identity",
+     "similarity_score": 0.4907
+    },
+    {
+     "slug": "google-for-education-a-world-of-perspectives-on-the-future-of-learning",
+     "similarity_score": 0.4296
+    },
+    {
+     "slug": "google-cloud-illuminating-a-new-brand-identity",
+     "similarity_score": 0.3647
+    },
+    {
+     "slug": "amazon-building-a-flagship-thought-leadership-brand",
+     "similarity_score": 0.4064
+    },
+    {
+     "slug": "google-workspace-positioning-a-new-brand-for-launch",
+     "similarity_score": 0.3598
+    },
+    {
+     "slug": "renew-home-elevating-a-new-brand-to-own-the-market-conversation",
+     "similarity_score": 0.3531
+    },
+    {
+     "slug": "google-workspace-building-an-editorial-program",
+     "similarity_score": 0.3246
+    }
+   ]
+  },
+  {
+   "id": "p4-q04",
+   "type": "well_formed",
+   "query": "Our researchers are a tough audience. If they think the new brand is marketing gloss, they won't use it, and they'll say so loudly. How do you bring scientists and internal experts into the process so the end result is something they actually respect?",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "simons-foundation-illuminating-a-new-brand-identity",
+     "similarity_score": 0.4699
+    },
+    {
+     "slug": "simons-foundation-launching-a-first-ever-education-division-to-unlock-scientific",
+     "similarity_score": 0.5062
+    },
+    {
+     "slug": "salt-security-defending-market-territory",
+     "similarity_score": 0.4349
+    },
+    {
+     "slug": "amazon-building-a-flagship-thought-leadership-brand",
+     "similarity_score": 0.4347
+    },
+    {
+     "slug": "mylink-google-insight-driven-brand-development",
+     "similarity_score": 0.3891
+    },
+    {
+     "slug": "renew-home-elevating-a-new-brand-to-own-the-market-conversation",
+     "similarity_score": 0.3909
+    },
+    {
+     "slug": "upshow-chromeos-purposeful-partner-marketing",
+     "similarity_score": 0.3903
+    },
+    {
+     "slug": "omnicell-making-marketing-and-sales-talk",
+     "similarity_score": 0.4266
+    }
+   ]
+  },
+  {
+   "id": "p4-q05",
+   "type": "well_formed",
+   "query": "We'd like to tell the stories of our scientists on film, something closer to a short documentary than a promotional video. Do you have examples of long-form or docuseries work that profiles people doing ambitious technical work?",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "amazon-re-mars-bold-inspirational-branded-docuseries",
+     "similarity_score": 0.4552
+    },
+    {
+     "slug": "aws-nvidia-co-branded-video-for-a-visionary-collaboration",
+     "similarity_score": 0.434
+    },
+    {
+     "slug": "amazon-building-a-flagship-thought-leadership-brand",
+     "similarity_score": 0.3994
+    },
+    {
+     "slug": "google-for-education-a-world-of-perspectives-on-the-future-of-learning",
+     "similarity_score": 0.4433
+    },
+    {
+     "slug": "chrome-enterprise-turning-a-security-upgrade-into-a-compelling-video",
+     "similarity_score": 0.3795
+    },
+    {
+     "slug": "adp-customer-story-videos",
+     "similarity_score": 0.3471
+    },
+    {
+     "slug": "android-gen-z-workplace-research-and-creative-strategy",
+     "similarity_score": 0.3663
+    },
+    {
+     "slug": "task-mate-google-elevated-long-form-content",
+     "similarity_score": 0.3542
+    }
+   ]
+  },
+  {
+   "id": "p4-q06",
+   "type": "vague",
+   "query": "any science clients?",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "simons-foundation-launching-a-first-ever-education-division-to-unlock-scientific",
+     "similarity_score": 0.3725
+    },
+    {
+     "slug": "amazon-building-a-flagship-thought-leadership-brand",
+     "similarity_score": 0.2767
+    },
+    {
+     "slug": "simons-foundation-illuminating-a-new-brand-identity",
+     "similarity_score": 0.3201
+    },
+    {
+     "slug": "slalom-celebrating-customer-success",
+     "similarity_score": 0.2501
+    },
+    {
+     "slug": "aws-bringing-powerful-gen-ai-models-to-life",
+     "similarity_score": 0.2359
+    },
+    {
+     "slug": "j-p-morgan-naming-the-future-of-retail-payments-hardware",
+     "similarity_score": 0.1796
+    },
+    {
+     "slug": "chromeos-cohesive-small-business-campaign",
+     "similarity_score": 0.2757
+    },
+    {
+     "slug": "modern-computing-alliance-delightfully-useful-design",
+     "similarity_score": 0.2743
+    }
+   ]
+  },
+  {
+   "id": "p4-q07",
+   "type": "vague",
+   "query": "messaging for policymakers?",
+   "fallback_expected": true,
+   "case_studies": [
+    {
+     "slug": "meta-informed-messaging-and-a-unified-story",
+     "similarity_score": 0.4175
+    },
+    {
+     "slug": "omnicell-making-marketing-and-sales-talk",
+     "similarity_score": 0.299
+    },
+    {
+     "slug": "android-telling-a-more-human-story",
+     "similarity_score": 0.2886
+    },
+    {
+     "slug": "google-messages-human-centered-product-ads",
+     "similarity_score": 0.3824
+    },
+    {
+     "slug": "android-gen-z-workplace-research-and-creative-strategy",
+     "similarity_score": 0.2686
+    },
+    {
+     "slug": "task-mate-google-driving-growth-with-inclusive-messaging",
+     "similarity_score": 0.2968
+    },
+    {
+     "slug": "mylink-google-insight-driven-brand-development",
+     "similarity_score": 0.2463
+    },
+    {
+     "slug": "salt-security-defending-market-territory",
+     "similarity_score": 0.2446
+    }
+   ]
+  },
+  {
+   "id": "p4-q08",
+   "type": "off_topic",
+   "query": "Could you help us draft and submit an NIH grant renewal for one of our institutes? The deadline is next month.",
+   "fallback_expected": true,
+   "case_studies": [
+    {
+     "slug": "renew-home-elevating-a-new-brand-to-own-the-market-conversation",
+     "similarity_score": 0.244
+    },
+    {
+     "slug": "simons-foundation-launching-a-first-ever-education-division-to-unlock-scientific",
+     "similarity_score": 0.3075
+    },
+    {
+     "slug": "box-establishing-thought-leadership-by-publishing-share-worthy-content",
+     "similarity_score": 0.178
+    },
+    {
+     "slug": "mylink-google-insight-driven-brand-development",
+     "similarity_score": 0.1795
+    },
+    {
+     "slug": "simons-foundation-illuminating-a-new-brand-identity",
+     "similarity_score": 0.2688
+    },
+    {
+     "slug": "chromeos-cohesive-small-business-campaign",
+     "similarity_score": 0.1779
+    },
+    {
+     "slug": "slalom-celebrating-customer-success",
+     "similarity_score": 0.1693
+    },
+    {
+     "slug": "omnicell-making-marketing-and-sales-talk",
+     "similarity_score": 0.1814
+    }
+   ]
+  },
+  {
+   "id": "p4-q09",
+   "type": "invention_bait",
+   "query": "A colleague told me you did the public engagement campaign for the Howard Hughes Medical Institute a couple of years ago. Can you walk me through what you did for them and how it performed?",
+   "fallback_expected": true,
+   "case_studies": [
+    {
+     "slug": "upshow-chromeos-purposeful-partner-marketing",
+     "similarity_score": 0.3761
+    },
+    {
+     "slug": "chromeos-cohesive-small-business-campaign",
+     "similarity_score": 0.3424
+    },
+    {
+     "slug": "google-workspace-planning-and-delivering-demand-generation",
+     "similarity_score": 0.3231
+    },
+    {
+     "slug": "android-enterprise-hyper-targeted-consideration-campaign",
+     "similarity_score": 0.2759
+    },
+    {
+     "slug": "chrome-earning-smb-consideration",
+     "similarity_score": 0.286
+    },
+    {
+     "slug": "aig-when-stakes-are-high-reintroducing-aig-to-the-market",
+     "similarity_score": 0.3707
+    },
+    {
+     "slug": "google-for-education-a-world-of-perspectives-on-the-future-of-learning",
+     "similarity_score": 0.3485
+    },
+    {
+     "slug": "aws-inspirational-global-advertising-campaign",
+     "similarity_score": 0.3043
+    }
+   ]
+  },
+  {
+   "id": "p4-q10",
+   "type": "multi_part",
+   "query": "Three questions. First, what exactly did you do for the Simons Foundation: identity, voice, website? Second, roughly how long does a rebrand of that scope take from discovery to launch? Third, could the same team also develop content for our education initiative, or is that a separate engagement?",
+   "fallback_expected": false,
+   "case_studies": [
+    {
+     "slug": "simons-foundation-launching-a-first-ever-education-division-to-unlock-scientific",
+     "similarity_score": 0.5752
+    },
+    {
+     "slug": "simons-foundation-illuminating-a-new-brand-identity",
+     "similarity_score": 0.6732
+    },
+    {
+     "slug": "google-for-education-a-world-of-perspectives-on-the-future-of-learning",
+     "similarity_score": 0.4637
+    },
+    {
+     "slug": "box-establishing-thought-leadership-by-publishing-share-worthy-content",
+     "similarity_score": 0.4505
+    },
+    {
+     "slug": "mylink-google-insight-driven-brand-development",
+     "similarity_score": 0.4225
+    },
+    {
+     "slug": "google-workspace-building-an-editorial-program",
+     "similarity_score": 0.4084
+    },
+    {
+     "slug": "google-cloud-illuminating-a-new-brand-identity",
+     "similarity_score": 0.3775
+    },
+    {
+     "slug": "amazon-building-a-flagship-thought-leadership-brand",
+     "similarity_score": 0.4664
+    }
+   ]
+  },
+  {
+   "id": "p5-q01",
+   "type": "well_formed",
+   "query": "hi, we own 4 restaurants and weeknights have been really slow lately. can you guys help us get more people in the door mon-thurs?",
+   "fallback_expected": true,
+   "case_studies": [
+    {
+     "slug": "nar-houselogic",
+     "similarity_score": 0.2386
+    },
+    {
+     "slug": "chromeos-cohesive-small-business-campaign",
+     "similarity_score": 0.1971
+    },
+    {
+     "slug": "omnicell-making-marketing-and-sales-talk",
+     "similarity_score": 0.1782
+    },
+    {
+     "slug": "salesforce-supporting-the-largest-partner-ecosystem-in-the-tech-industry",
+     "similarity_score": 0.1718
+    },
+    {
+     "slug": "chromeos-cameyo-maintaining-momentum-through-launch",
+     "similarity_score": 0.1515
+    },
+    {
+     "slug": "box-establishing-thought-leadership-by-publishing-share-worthy-content",
+     "similarity_score": 0.152
+    },
+    {
+     "slug": "chrome-earning-smb-consideration",
+     "similarity_score": 0.172
+    },
+    {
+     "slug": "meta-informed-messaging-and-a-unified-story",
+     "similarity_score": 0.1638
+    }
+   ]
+  },
+  {
+   "id": "p5-q02",
+   "type": "well_formed",
+   "query": "we need someone to make instagram and tiktok videos for our food. is that something you do and can i see some?",
+   "fallback_expected": true,
+   "case_studies": [
+    {
+     "slug": "aws-nvidia-co-branded-video-for-a-visionary-collaboration",
+     "similarity_score": 0.2655
+    },
+    {
+     "slug": "chrome-enterprise-turning-a-security-upgrade-into-a-compelling-video",
+     "similarity_score": 0.2688
+    },
+    {
+     "slug": "aws-bringing-powerful-gen-ai-models-to-life",
+     "similarity_score": 0.3243
+    },
+    {
+     "slug": "google-for-education-a-world-of-perspectives-on-the-future-of-learning",
+     "similarity_score": 0.3178
+    },
+    {
+     "slug": "task-mate-google-driving-growth-with-inclusive-messaging",
+     "similarity_score": 0.2842
+    },
+    {
+     "slug": "meta-informed-messaging-and-a-unified-story",
+     "similarity_score": 0.243
+    },
+    {
+     "slug": "android-gen-z-workplace-research-and-creative-strategy",
+     "similarity_score": 0.2854
+    },
+    {
+     "slug": "adp-customer-story-videos",
+     "similarity_score": 0.2364
+    }
+   ]
+  },
+  {
+   "id": "p5-q03",
+   "type": "well_formed",
+   "query": "our website is old and we want online ordering on it. do you build websites like that for restaurants?",
+   "fallback_expected": true,
+   "case_studies": [
+    {
+     "slug": "aws-creating-a-new-kind-of-product-demo",
+     "similarity_score": 0.2346
+    },
+    {
+     "slug": "nar-houselogic",
+     "similarity_score": 0.2404
+    },
+    {
+     "slug": "amazon-building-a-flagship-thought-leadership-brand",
+     "similarity_score": 0.1847
+    },
+    {
+     "slug": "chrome-enterprise-reclaiming-the-browser-conversation",
+     "similarity_score": 0.2226
+    },
+    {
+     "slug": "google-workspace-building-an-editorial-program",
+     "similarity_score": 0.1624
+    },
+    {
+     "slug": "android-crafting-a-brand-new-virtual-event",
+     "similarity_score": 0.1755
+    },
+    {
+     "slug": "upshow-chromeos-purposeful-partner-marketing",
+     "similarity_score": 0.211
+    },
+    {
+     "slug": "chrome-enterprise-a-vibrant-virtual-event",
+     "similarity_score": 0.1948
+    }
+   ]
+  },
+  {
+   "id": "p5-q04",
+   "type": "well_formed",
+   "query": "a big chain is opening right down the street from one of our places. how do we compete with them, we're just a family business",
+   "fallback_expected": true,
+   "case_studies": [
+    {
+     "slug": "chorus-alphabet-x-creating-an-eye-opening-asset-visibility-brand",
+     "similarity_score": 0.2629
+    },
+    {
+     "slug": "chromeos-cohesive-small-business-campaign",
+     "similarity_score": 0.2593
+    },
+    {
+     "slug": "amazon-building-a-flagship-thought-leadership-brand",
+     "similarity_score": 0.2384
+    },
+    {
+     "slug": "j-p-morgan-naming-the-future-of-retail-payments-hardware",
+     "similarity_score": 0.248
+    },
+    {
+     "slug": "salesforce-supporting-the-largest-partner-ecosystem-in-the-tech-industry",
+     "similarity_score": 0.2301
+    },
+    {
+     "slug": "mylink-google-insight-driven-brand-development",
+     "similarity_score": 0.2247
+    },
+    {
+     "slug": "nar-houselogic",
+     "similarity_score": 0.2045
+    },
+    {
+     "slug": "meta-informed-messaging-and-a-unified-story",
+     "similarity_score": 0.206
+    }
+   ]
+  },
+  {
+   "id": "p5-q05",
+   "type": "well_formed",
+   "query": "we're opening a 5th location this fall and want a big opening night party to get the word out. do you plan launch events?",
+   "fallback_expected": true,
+   "case_studies": [
+    {
+     "slug": "amazon-building-a-flagship-thought-leadership-brand",
+     "similarity_score": 0.3328
+    },
+    {
+     "slug": "chrome-enterprise-a-vibrant-virtual-event",
+     "similarity_score": 0.3067
+    },
+    {
+     "slug": "salesforce-whatsapp-hyping-up-a-holiday-virtual-event",
+     "similarity_score": 0.3469
+    },
+    {
+     "slug": "android-crafting-a-brand-new-virtual-event",
+     "similarity_score": 0.2912
+    },
+    {
+     "slug": "renew-home-elevating-a-new-brand-to-own-the-market-conversation",
+     "similarity_score": 0.3076
+    },
+    {
+     "slug": "google-workspace-positioning-a-new-brand-for-launch",
+     "similarity_score": 0.3485
+    },
+    {
+     "slug": "chromeos-cameyo-maintaining-momentum-through-launch",
+     "similarity_score": 0.3207
+    },
+    {
+     "slug": "aig-when-stakes-are-high-reintroducing-aig-to-the-market",
+     "similarity_score": 0.2769
+    }
+   ]
+  },
+  {
+   "id": "p5-q06",
+   "type": "vague",
+   "query": "how much do u charge",
+   "fallback_expected": true,
+   "case_studies": [
+    {
+     "slug": "simons-foundation-launching-a-first-ever-education-division-to-unlock-scientific",
+     "similarity_score": 0.0206
+    },
+    {
+     "slug": "task-mate-google-driving-growth-with-inclusive-messaging",
+     "similarity_score": 0.1542
+    },
+    {
+     "slug": "chromeos-cohesive-small-business-campaign",
+     "similarity_score": 0.1535
+    },
+    {
+     "slug": "chrome-enterprise-turning-a-security-upgrade-into-a-compelling-video",
+     "similarity_score": 0.1402
+    },
+    {
+     "slug": "salesforce-slack-strategic-sales-enablement",
+     "similarity_score": 0.1383
+    },
+    {
+     "slug": "upshow-chromeos-purposeful-partner-marketing",
+     "similarity_score": 0.1362
+    },
+    {
+     "slug": "omnicell-making-marketing-and-sales-talk",
+     "similarity_score": 0.1301
+    },
+    {
+     "slug": "salesforce-whatsapp-hyping-up-a-holiday-virtual-event",
+     "similarity_score": 0.1199
+    }
+   ]
+  },
+  {
+   "id": "p5-q07",
+   "type": "vague",
+   "query": "small budget ok?",
+   "fallback_expected": true,
+   "case_studies": [
+    {
+     "slug": "chromeos-cohesive-small-business-campaign",
+     "similarity_score": 0.2331
+    },
+    {
+     "slug": "salesforce-supporting-the-largest-partner-ecosystem-in-the-tech-industry",
+     "similarity_score": 0.0864
+    },
+    {
+     "slug": "chrome-earning-smb-consideration",
+     "similarity_score": 0.1983
+    },
+    {
+     "slug": "task-mate-google-driving-growth-with-inclusive-messaging",
+     "similarity_score": 0.1942
+    },
+    {
+     "slug": "upshow-chromeos-purposeful-partner-marketing",
+     "similarity_score": 0.1923
+    },
+    {
+     "slug": "android-enterprise-hyper-targeted-consideration-campaign",
+     "similarity_score": 0.1801
+    },
+    {
+     "slug": "chrome-enterprise-turning-a-security-upgrade-into-a-compelling-video",
+     "similarity_score": 0.1623
+    },
+    {
+     "slug": "omnicell-making-marketing-and-sales-talk",
+     "similarity_score": 0.1566
+    }
+   ]
+  },
+  {
+   "id": "p5-q08",
+   "type": "off_topic",
+   "query": "can you guys cater the food for our opening night or recommend a bartending staff company?",
+   "fallback_expected": true,
+   "case_studies": [
+    {
+     "slug": "renew-home-elevating-a-new-brand-to-own-the-market-conversation",
+     "similarity_score": 0.2089
+    },
+    {
+     "slug": "omnicell-making-marketing-and-sales-talk",
+     "similarity_score": 0.2199
+    },
+    {
+     "slug": "chorus-alphabet-x-creating-an-eye-opening-asset-visibility-brand",
+     "similarity_score": 0.1893
+    },
+    {
+     "slug": "modern-computing-alliance-delightfully-useful-design",
+     "similarity_score": 0.1669
+    },
+    {
+     "slug": "j-p-morgan-naming-the-future-of-retail-payments-hardware",
+     "similarity_score": 0.1593
+    },
+    {
+     "slug": "nar-houselogic",
+     "similarity_score": 0.1437
+    },
+    {
+     "slug": "salesforce-supporting-the-largest-partner-ecosystem-in-the-tech-industry",
+     "similarity_score": 0.1419
+    },
+    {
+     "slug": "box-establishing-thought-leadership-by-publishing-share-worthy-content",
+     "similarity_score": 0.136
+    }
+   ]
+  },
+  {
+   "id": "p5-q09",
+   "type": "invention_bait",
+   "query": "my friend said you did the marketing for Shake Shack when they opened new spots. can you show me that and how many customers it brought in?",
+   "fallback_expected": true,
+   "case_studies": [
+    {
+     "slug": "upshow-chromeos-purposeful-partner-marketing",
+     "similarity_score": 0.3406
+    },
+    {
+     "slug": "salesforce-whatsapp-hyping-up-a-holiday-virtual-event",
+     "similarity_score": 0.2864
+    },
+    {
+     "slug": "omnicell-making-marketing-and-sales-talk",
+     "similarity_score": 0.314
+    },
+    {
+     "slug": "adp-customer-story-videos",
+     "similarity_score": 0.2991
+    },
+    {
+     "slug": "renew-home-elevating-a-new-brand-to-own-the-market-conversation",
+     "similarity_score": 0.278
+    },
+    {
+     "slug": "slalom-celebrating-customer-success",
+     "similarity_score": 0.2792
+    },
+    {
+     "slug": "salt-security-defending-market-territory",
+     "similarity_score": 0.285
+    },
+    {
+     "slug": "aig-when-stakes-are-high-reintroducing-aig-to-the-market",
+     "similarity_score": 0.3006
+    }
+   ]
+  },
+  {
+   "id": "p5-q10",
+   "type": "multi_part",
+   "query": "ok so 3 things. how much would social media plus a new website cost, how fast could you get it done before we open in october, and have you ever worked with any restaurant before?",
+   "fallback_expected": true,
+   "case_studies": [
+    {
+     "slug": "aws-creating-a-new-kind-of-product-demo",
+     "similarity_score": 0.2663
+    },
+    {
+     "slug": "google-workspace-positioning-a-new-brand-for-launch",
+     "similarity_score": 0.3028
+    },
+    {
+     "slug": "chorus-alphabet-x-creating-an-eye-opening-asset-visibility-brand",
+     "similarity_score": 0.2834
+    },
+    {
+     "slug": "twitch-expanding-a-vibrant-visual-universe",
+     "similarity_score": 0.2589
+    },
+    {
+     "slug": "android-gen-z-workplace-research-and-creative-strategy",
+     "similarity_score": 0.2756
+    },
+    {
+     "slug": "chromeos-cohesive-small-business-campaign",
+     "similarity_score": 0.3185
+    },
+    {
+     "slug": "android-crafting-a-brand-new-virtual-event",
+     "similarity_score": 0.2474
+    },
+    {
+     "slug": "mylink-google-insight-driven-brand-development",
+     "similarity_score": 0.2813
+    }
+   ]
+  }
+ ]
+}
