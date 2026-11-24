@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to execute
-stopped_at: Completed 05-09-PLAN.md
+status: Phase 5 complete
+stopped_at: Completed 05-10-PLAN.md
 last_updated: "2026-11-23T19:19:02.227Z"
 progress:
   total_phases: 6
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 45
-  completed_plans: 44
+  completed_plans: 45
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-11-20)
 
 **Core value:** Never misrepresent AG's work. A wrong claim about a client engagement is worse than a weak answer.
-**Current focus:** Phase 05 — speed
+**Current focus:** Phase 06 — proof
 
 ## Current Position
 
-Phase: 05 (speed) — EXECUTING
-Plan: 10 of 10
+Phase: 06 (proof) — NOT STARTED (Phase 05 pushed as d9d5ccf)
+Plan: -
 
 ## Baseline Metrics (frozen)
 
@@ -140,6 +140,10 @@ Same responses as the frozen run, graded under harness v2. Like-for-like referen
 - [Phase 05]: 05-08: generation mode adaptive_effort:low (median hero-first 1438 ms vs 12299 default); D-513 eval in 05-09 decides if it ships
 - [Phase 05]: Retrieval fixes 1–3 applied; PERF-01/02 judged by production smoke after deploy (05-10), local eval speed is distance-inflated (Douala→Supabase)
 - [Phase 05]: 05-09: D-513 regressed (4 gates) under adaptive_effort:low; generation mode reverted to default (unmeasured). PERF-01/02 local FAIL provisional until 05-10 production smoke.
+- [Phase 05]: Streaming route /api/chat/stream (SSE) alongside JSON /api/chat; instant teasers (top 3, DB-only, digit-filtered deliverables); D-504 suppression floor 0.40 + claim pattern + isAboutAG + zero case studies; eval 2026-11-23T19-49-22: median t_teasers 2260 ms, t_hero_first 12.6 s, t_complete 17.8 s; production (uncached, measured from Douala): teasers 1.81-1.90 s, hero 11.1-13.9 s, complete 18.0-19.0 s; PERF-01 FAIL (1.8-1.9 s vs 1.5 s), PERF-02 MISSED (deferred to Phase 6), D-513 PASS (unsupported 6/50, grounded 4.80, voice 4.44)
+- [Phase 05]: generation mode default (timing run 05-08 chose adaptive_effort:low; reverted: yes, D-513 regression 16 unsupported / voice 4.02)
+- [Phase 05]: provider health check (PERF-03) in /api/health (admin), startup log, eval preflight; credit fetch uses cache: 'no-store'. Production /api/health returns 503 "Admin endpoint not configured" because ADMIN_API_TOKEN is not set in Vercel (by design, not changed)
+- [Phase 05]: spend ~$58 incl. top-up evals (credit ~$17 of $75 limit); production: pushed (user option "push", Squash and push); deploy: live (d9d5ccf, stream route serving 2026-11-23); live smoke: stream OK on 4 uncached queries (incremental, not buffered), Wiz bait query suppressed teasers and declined to confirm, JSON route 200 in 15.1 s, debug flag ignored
 
 ### Key Constraints
 
@@ -148,7 +152,8 @@ Same responses as the frozen run, graded under harness v2. Like-for-like referen
 - Squash each phase to one commit before pushing.
 - Ask before any destructive DB change or full re-index; ask before taxonomy data changes and before ingesting missing work.
 - Check current docs before choosing external products/APIs (research enabled for Phases 3 and 5).
-- Budget: OpenRouter key capped at $50, $5.39 credit left after Phase 4; Phase 5 needs one full eval (~$3.50-4.14), Phase 6 ~$12 (top up needed).
+- Budget: OpenRouter key limit raised to $75; ~$17 credit left after Phase 5; Phase 6 ~$12.
+- Rollback: NEXT_PUBLIC_CHAT_STREAM=false returns the client to JSON /api/chat; GENERATION_MODE=default reverts thinking.
 - `EVAL_DEBUG=true` must never be set in production.
 - Supabase free tier pauses on inactivity; restore it before eval runs.
 
@@ -170,8 +175,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-11-23T19:19:02.222Z
-Stopped at: Completed 05-09-PLAN.md
+Last session: 2026-11-23
+Stopped at: Completed 05-10-PLAN.md (Phase 5 pushed as d9d5ccf; next: Phase 6 discuss/plan)
 Resume file: None
 
 - 2026-11-22 (03-08 follow-up): User chose to keep the Cohere reranker OFF (rerank.enabled=false). Net +1 recall (44/52) did not justify ~0.9 s p50 latency and a new data processor. Code and RRF fallback stay; re-enable via config or RERANK_ENABLED=true. Phase-end eval (03-09) approved by user despite gate FAIL; expected recall ≈ 43/52.

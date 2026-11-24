@@ -18,7 +18,7 @@ Make the AG Concierge ready to show AG's owner, who is very detail-oriented. Cor
 - [ ] **Phase 2: Content and data** - Complete, accurate index: articles embedded, missing work ingested, taxonomy and videos correct
 - [x] **Phase 3: Retrieval** - Find the expected case studies at 90% recall via `hybrid_search_v2`
 - [ ] **Phase 4: Generation** - Honest, on-voice answers with no invented claims
-- [ ] **Phase 5: Speed** - Teasers in about 1.5 s, streamed hero in about 3-4 s
+- [ ] **Phase 5: Speed** - Teasers in about 1.5 s, streamed hero in about 3-4 s (shipped; NOT MET: teasers 1.8-1.9 s in production, hero 11-14 s; PERF-02 deferred to Phase 6)
 - [ ] **Phase 6: Proof** - Ready bar cleared on three consecutive runs, with before/after and demo queries
 
 ## Phase Details
@@ -143,7 +143,7 @@ Plans:
 - [x] 05-07-PLAN.md — Eval on the stream route: t_* timings, speed/flash/suppression metrics, phase5Gates, timing and smoke scripts
 - [x] 05-08-PLAN.md — Cents-priced thinking-mode timing run + route smoke; set the generation mode knob
 - [x] 05-09-PLAN.md — UI check + go/no-go, the single full eval, 05-EVAL-DELTA.md (revert mode on D-513 regression)
-- [ ] 05-10-PLAN.md — Record outcome, squash, push on approval, deploy and live stream/JSON/health smokes
+- [x] 05-10-PLAN.md — Record outcome, squash, push on approval, deploy and live stream/JSON/health smokes
 
 ### Phase 6: Proof
 **Goal**: The owner can be shown, with evidence, that every ready-bar check holds.
@@ -164,5 +164,5 @@ Plans:
 | 2. Content and data | 0/6 | Planned | - |
 | 3. Retrieval | 0/TBD | Not started | - |
 | 4. Generation | 0/9 | Planned | - |
-| 5. Speed | 0/10 | Planned | - |
+| 5. Speed | 10/10 | Complete (criteria 1-2 not met) | 2026-11-23 |
 | 6. Proof | 0/TBD | Not started | - |

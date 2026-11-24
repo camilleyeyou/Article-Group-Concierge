@@ -46,7 +46,7 @@
 
 - [ ] **PERF-01**: Retrieved teasers are on screen in about 1.5 s
 - [ ] **PERF-02**: The generated hero streams in and starts showing within about 3–4 s, using the streaming path
-- [ ] **PERF-03**: A startup/health check confirms the provider route (OpenRouter) and the remaining credit, and fails clearly when either is wrong
+- [x] **PERF-03**: A startup/health check confirms the provider route (OpenRouter) and the remaining credit, and fails clearly when either is wrong
 
 ### Proof
 
@@ -98,9 +98,9 @@
 | GEN-05 | Phase 4 | Complete |
 | GEN-06 | Phase 4 | Partial (fallback 20/21) |
 | GEN-07 | Phase 4 | Complete |
-| PERF-01 | Phase 5 | Pending |
-| PERF-02 | Phase 5 | Pending |
-| PERF-03 | Phase 5 | Pending |
+| PERF-01 | Phase 5 | Partial (teasers 1.8-1.9 s in production vs 1.5 s) |
+| PERF-02 | Phase 5 | Partial (hero 11-14 s; deferred to Phase 6) |
+| PERF-03 | Phase 5 | Complete |
 | PROOF-01 | Phase 6 | Pending |
 | PROOF-02 | Phase 6 | Pending |
 | PROOF-03 | Phase 6 | Pending |
