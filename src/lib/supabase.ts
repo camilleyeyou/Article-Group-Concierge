@@ -245,10 +245,13 @@ export async function hybridSearchV2(p: HybridSearchV2Params, marks?: PerfMarks)
       error = null;
     }
   }
+  let usedTop = p.top != null && !v2TopMissing;
   if (data === null && error === null) {
+    usedTop = false;
     ({ data, error } = await supabase.rpc('hybrid_search_v2', args));
   }
   marks?.mark('rpc_end');
+  marks?.mark('rpc_top', usedTop ? 1 : 0);
   marks?.mark('rows', (data as any[] | null)?.length ?? 0);
 
   if (error) {
@@ -570,6 +573,7 @@ export async function retrieveContext({
   const cached = skipCache
     ? null
     : cache.get<RetrievedContext>(CACHE_PREFIXES.RAG_SEARCH, cacheKey);
+  marks?.mark('rag_cache_hit', cached ? 1 : 0);
   if (cached) {
     RAGLogger.debug('Using cached RAG results', { query: query.slice(0, 50) });
     onChunks?.(cached.chunks);

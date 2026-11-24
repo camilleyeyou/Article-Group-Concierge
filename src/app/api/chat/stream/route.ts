@@ -26,9 +26,17 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
+// Per-instance counters for the PERF_TIMING log: the first request on an instance is a cold start.
+const instanceStartedAt = Date.now();
+let instanceRequests = 0;
+
 export async function POST(request: NextRequest): Promise<Response> {
   const teasersOnlyProbe = process.env.EVAL_DEBUG === 'true';
-  const marks = createPerfMarks(teasersOnlyProbe || process.env.PERF_TIMING === 'true');
+  const perfTiming = process.env.PERF_TIMING === 'true';
+  const marks = createPerfMarks(teasersOnlyProbe || perfTiming);
+  instanceRequests += 1;
+  marks.mark('instance_req', instanceRequests);
+  marks.mark('instance_age_s', Math.round((Date.now() - instanceStartedAt) / 1000));
   const rateLimitResponse = rateLimiter.check(request, RATE_LIMITS.CHAT);
   if (rateLimitResponse) return rateLimitResponse;
 
@@ -116,9 +124,11 @@ export async function POST(request: NextRequest): Promise<Response> {
         if (!teasersSent) emitTeasers(context.chunks);
         const decision: Decision = await teasersSent!;
 
+        if (teasersOnly || perfTiming) {
+          for (const [k, v] of Object.entries(lastCatalogueLoad)) if (v != null) marks.mark(`cat_${k}`, v);
+        }
         if (teasersOnly) {
           // Timing probe (EVAL_DEBUG only): report marks and stop before any generation spend.
-          for (const [k, v] of Object.entries(lastCatalogueLoad)) if (v != null) marks.mark(`cat_${k}`, v);
           send({
             type: 'timing',
             marks: marks.snapshot(),
@@ -128,7 +138,9 @@ export async function POST(request: NextRequest): Promise<Response> {
           });
           return;
         }
-        if (process.env.PERF_TIMING === 'true') APILogger.info('teaser marks', marks.snapshot());
+        // PERF_TIMING=true (off by default, independent of EVAL_DEBUG): one JSON line per request in the
+        // Vercel logs. console.info directly, because APILogger drops info in production.
+        if (perfTiming) console.info(JSON.stringify({ tag: 'perf_teaser', ...marks.snapshot() }));
 
         for await (const ev of orchestrateStream(
           {
