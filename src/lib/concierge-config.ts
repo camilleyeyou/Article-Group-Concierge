@@ -74,6 +74,7 @@ export interface ConciergeConfig {
   narrative: { minSentences: number; maxSentences: number };
   honesty: { admitNoDirectWork: boolean };
   video: { queryKeywords: readonly string[] };
+  videos: { unplayableUrls: readonly string[] };
   verifier: VerifierConfig;
   instantTeasers: InstantTeaserConfig;
   generation: GenerationConfig;
@@ -124,6 +125,8 @@ export const CONCIERGE_CONFIG: ConciergeConfig = {
   // GEN-01 config flag (STATE decision "assumed yes")
   honesty: { admitNoDirectWork: true },
   video: { queryKeywords: ['video', 'videos', 'film', 'films', 'filmed', 'documentary', 'animation', 'animated', 'motion'] },
+  // Private/deleted on Vimeo: player.vimeo.com 403, oEmbed 404 as of 2026-11-24. Hidden in code; DB rows unchanged.
+  videos: { unplayableUrls: ['https://vimeo.com/1030871091', 'https://vimeo.com/877614456'] },
   // D-417/D-420 (GEN-07): Haiku 5.5 claim-check via OpenRouter. Default OFF; ships enabled only after user approval. VERIFIER_ENABLED env overrides.
   verifier: { enabled: false, model: 'claude-haiku-5-5', timeoutMs: 6000, maxTokens: 2000, maxDocChars: 2000 },
   // D-501/D-504 (Phase 5): floor 0.40 + claim pattern + isAboutAG + zero case studies (user answer 3). Phase 4 calibration: 0.40 suppresses 19/21 fallback, 5/5 bait, 4/29 direct; 0.45: 20/21, 5/5, 8/29.
@@ -313,4 +316,31 @@ export function generationParams(g: GenerationConfig = generationConfig()): Reco
 
 export function generationConfigKey(g: GenerationConfig = generationConfig()): string {
   return JSON.stringify({ mode: g.mode, effort: g.effort });
+}
+
+const VIMEO_ID_PATTERNS = [
+  /vimeo\.com\/(\d+)/,
+  /player\.vimeo\.com\/video\/(\d+)/,
+  /vimeo\.com\/channels\/[\w-]+\/(\d+)/,
+  /vimeo\.com\/groups\/[\w-]+\/videos\/(\d+)/,
+];
+
+export function vimeoIdOf(url: string): string | null {
+  for (const p of VIMEO_ID_PATTERNS) {
+    const m = url.match(p);
+    if (m) return m[1];
+  }
+  return null;
+}
+
+const normalizeVideoUrl = (url: string): string =>
+  url.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').split(/[?#]/)[0].replace(/\/+$/, '');
+
+export function isPlayableVideoUrl(url: string | null | undefined): boolean {
+  if (!url || !url.trim()) return false;
+  const bad = CONCIERGE_CONFIG.videos.unplayableUrls;
+  const id = vimeoIdOf(url);
+  if (id) return !bad.some(b => vimeoIdOf(b) === id);
+  const n = normalizeVideoUrl(url);
+  return !bad.some(b => normalizeVideoUrl(b) === n);
 }

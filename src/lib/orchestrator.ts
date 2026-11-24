@@ -45,6 +45,7 @@ import {
   generationConfig,
   generationParams,
   generationConfigKey,
+  isPlayableVideoUrl,
   type GenerationConfig,
 } from './concierge-config';
 
@@ -289,11 +290,12 @@ export function formatContext(context: RetrievedContext): string {
   // Format case studies (AG's work - higher priority)
   if (caseStudies.length > 0) {
     const caseStudySection = caseStudies.map((chunk, i) => {
+      const video = chunk.vimeo_url && isPlayableVideoUrl(chunk.vimeo_url) ? chunk.vimeo_url : null;
       return `[Case Study ${i + 1}] - Retrieval rank ${i + 1} of ${caseStudies.length}${rankSignals(chunk) ? ` (${rankSignals(chunk)})` : ''}
 Title: ${chunk.document_title}
 Client: ${chunk.client_name || 'N/A'}
 Slug: ${chunk.slug || 'N/A'}
-Vimeo URL: ${chunk.vimeo_url || 'None'} ${chunk.vimeo_url ? '(use a VideoPlayer if you present this study)' : ''}
+Vimeo URL: ${video || 'None'} ${video ? '(use a VideoPlayer if you present this study)' : ''}
 Thumbnail URL: ${chunk.thumbnail_url || 'None'}
 Content (use only facts stated here): ${chunk.content}`;
     }).join('\n\n');
@@ -627,6 +629,7 @@ export async function* orchestrateStream(
       } else if (e.type === 'hero_done') {
         out.push({ type: 'hero_done', props: e.props as unknown as HeroBlockProps });
       } else if (e.type === 'component') {
+        if (e.component === 'VideoPlayer' && !isPlayableVideoUrl((e.props as { url?: string } | undefined)?.url)) continue;
         let props = e.props;
         if (e.component === 'CaseStudyTeaser') {
           const tagged = applyServerTeaserTags(

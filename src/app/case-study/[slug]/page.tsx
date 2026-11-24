@@ -9,6 +9,7 @@
  * 3. Knowledge Base - Related articles and support videos
  */
 
+import { isPlayableVideoUrl } from '@/lib/concierge-config';
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -161,8 +162,9 @@ export default function CaseStudyDetailPage() {
   const projectTitle = titleParts.length > 1 ? titleParts.slice(1).join(':').trim() : caseStudy.title;
 
   // Check for hero video
-  const heroVideoUrl = caseStudy.hero_video_url || 
+  const heroVideoCandidate = caseStudy.hero_video_url || 
     (caseStudy.vimeo_url?.includes('.mp4') ? caseStudy.vimeo_url : null);
+  const heroVideoUrl = heroVideoCandidate && isPlayableVideoUrl(heroVideoCandidate) ? heroVideoCandidate : null;
 
   return (
     <div className="min-h-screen bg-white">

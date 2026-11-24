@@ -1,10 +1,11 @@
 /**
  * GEN-03 post-processing: overwrite teaser capabilities/industries from DB links so the model can
- * never invent tags, and re-render the raw response so the eval grader sees what the user sees.
+ * never invent tags, drop VideoPlayers whose video is unplayable, and re-render the raw response so the eval grader sees what the user sees.
  * Pure module (no I/O).
  * The 04-07 verifier hooks in after this.
  */
-import type { LayoutPlan, OrchestratorOutput, CaseStudyTeaserProps } from '../types';
+import type { LayoutPlan, OrchestratorOutput, CaseStudyTeaserProps, VideoPlayerProps } from '../types';
+import { isPlayableVideoUrl } from './concierge-config';
 import type { CatalogueTags } from './catalogue';
 
 export function applyServerTeaserTags(
@@ -28,6 +29,15 @@ export function applyServerTeaserTags(
   return { layout: out, overwritten };
 }
 
+export function dropUnplayableVideos(layout: LayoutPlan): { layout: LayoutPlan; dropped: number } {
+  const out = structuredClone(layout);
+  const before = out.layout.length;
+  out.layout = out.layout.filter(
+    item => !(item.component === 'VideoPlayer' && !isPlayableVideoUrl((item.props as VideoPlayerProps).url))
+  );
+  return { layout: out, dropped: before - out.layout.length };
+}
+
 export function renderRawResponse(
   raw: string,
   layout: LayoutPlan,
@@ -45,10 +55,11 @@ export function postProcessOutput(
   tags: ReadonlyMap<string, CatalogueTags> | null
 ): OrchestratorOutput {
   const tagged = applyServerTeaserTags(output.layoutPlan, tags);
+  const filtered = dropUnplayableVideos(tagged.layout);
   return {
     ...output,
-    layoutPlan: tagged.layout,
-    rawResponse: renderRawResponse(modelRaw, tagged.layout),
+    layoutPlan: filtered.layout,
+    rawResponse: renderRawResponse(modelRaw, filtered.layout),
     modelRawResponse: modelRaw,
   };
 }

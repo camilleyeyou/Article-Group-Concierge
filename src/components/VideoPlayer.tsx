@@ -1,6 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import Image from 'next/image';
 import type { VideoPlayerProps } from '../types';
+import { isDirectVideoUrl, posterUrlFor } from '@/lib/video-poster';
+import { supabaseLoader } from '@/lib/supabase-image-loader';
+import { isPlayableVideoUrl } from '@/lib/concierge-config';
 
 /**
  * VideoPlayer Component
@@ -31,9 +34,6 @@ const extractVimeoId = (url: string): string | null => {
   return null;
 };
 
-const isDirectVideoUrl = (url: string): boolean =>
-  /\.(mp4|webm|mov|m4v)(\?|$)/i.test(url);
-
 const aspectRatioClasses = {
   '16:9': 'aspect-video',
   '4:3': 'aspect-[4/3]',
@@ -48,6 +48,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(autoplay);
+  const [thumbFailed, setThumbFailed] = useState(false);
 
   const vimeoId = extractVimeoId(url);
   const isDirect = !vimeoId && isDirectVideoUrl(url);
@@ -59,6 +60,8 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const handleIframeLoad = useCallback(() => {
     setIsLoaded(true);
   }, []);
+
+  if (!isPlayableVideoUrl(url)) return null;
 
   if (!vimeoId && !isDirect) {
     return (
@@ -82,10 +85,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
       }).toString()}`
     : '';
 
-  // Vimeo gives us a free thumbnail via vumbnail.com. For direct MP4 URLs
-  // we don't have a still — fall back to a dark placeholder behind the
-  // play button. The browser will fetch the first frame once <video> mounts.
+  // Vimeo gives us a free thumbnail via vumbnail.com. Direct videos use a
+  // sibling `<name>.poster.jpg` object in Storage (see posterUrlFor). If the
+  // image fails to load we fall back to the dark gradient behind the play button.
   const vimeoThumbnail = vimeoId ? `https://vumbnail.com/${vimeoId}.jpg` : null;
+  const posterUrl = isDirect ? posterUrlFor(url) : null;
+  const thumbnail = vimeoThumbnail ?? posterUrl;
 
   return (
     <figure className="group">
@@ -115,10 +120,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             "
             aria-label="Play video"
           >
-            {/* Thumbnail image (Vimeo only — direct videos use a dark bg) */}
-            {vimeoThumbnail ? (
+            {/* Thumbnail image (Vimeo thumbnail or Storage poster; gradient on failure) */}
+            {thumbnail && !thumbFailed ? (
               <Image
-                src={vimeoThumbnail}
+                src={thumbnail}
+                {...(posterUrl ? { loader: supabaseLoader } : {})}
+                onError={() => setThumbFailed(true)}
                 alt=""
                 fill
                 sizes="(max-width: 768px) 100vw, 800px"
@@ -190,6 +197,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
               transition-opacity duration-500
               ${isLoaded ? 'opacity-100' : 'opacity-0'}
             `}
+            poster={posterUrl && !thumbFailed ? posterUrl : undefined}
             controls
             autoPlay
             playsInline
