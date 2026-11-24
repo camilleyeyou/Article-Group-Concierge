@@ -55,6 +55,12 @@ export interface GenerationConfig {
   effort: GenerationEffort | null;
 }
 
+export interface HeroPassConfig {
+  enabled: boolean;
+  effort: GenerationEffort;
+  maxTokens: number;
+}
+
 export interface HealthConfig {
   warnBelowUsd: number;
   startupTimeoutMs: number;
@@ -78,6 +84,7 @@ export interface ConciergeConfig {
   verifier: VerifierConfig;
   instantTeasers: InstantTeaserConfig;
   generation: GenerationConfig;
+  heroPass: HeroPassConfig;
   health: HealthConfig;
 }
 
@@ -139,6 +146,11 @@ export const CONCIERGE_CONFIG: ConciergeConfig = {
   // PERF-02 (user answer 1): thinking mode knob shared by orchestrate() and orchestrateStream(); 'default' sends no params (Phase 4 behaviour). Chosen by eval/stream-timing.ts, gated by the D-513 eval; revert to 'default' on regression. Model stays Sonnet 5.5. 05-08: adaptive_effort:low won in eval/results/stream-timing-2026-11-23T18-20-20 (median t_hero_first 1438 ms vs 12299 ms default).
   // 05-09: REVERTED to default. adaptive_effort:low failed 4 D-513 gates in run 2026-11-23T19-00-37 (unsupported-claim responses 16 vs <= 6, voice 4.02 vs >= 4.28, capability_not_shown 1 vs 0, teasers_zero_expected_mean 1.80 vs <= 1.7). The revert is unmeasured: no eval was re-run (budget).
   generation: { mode: 'default', effort: null },
+  // PERF-02 hero pass (perf-02-hero-speed debug): a second, low-effort Sonnet 5.5 call writes ONLY the HeroBlock (aborted after hero_done)
+  // while the default-thinking call writes the rest. The fast hero is what the user sees and what `final` carries, so no flash and no mismatch.
+  // Sonnet 5 has adaptive-only thinking (budget_tokens and reasoning.max_tokens ignored, OpenRouter docs), so a capped budget does not exist;
+  // low effort emits no thinking (05-TIMING.md). HERO_PASS_ENABLED=false turns it off.
+  heroPass: { enabled: true, effort: 'low', maxTokens: 700 },
   // D-517: warn below $5 (about one eval run); fail at <= $0, bad/missing key or non-OpenRouter route. eval/preflight's EVAL_MIN_CREDIT_USD is a per-run minimum and stays separate.
   health: { warnBelowUsd: 5, startupTimeoutMs: 3000, requestTimeoutMs: 5000 },
 };
@@ -312,6 +324,24 @@ export function generationParams(g: GenerationConfig = generationConfig()): Reco
     return { output_config: { effort: g.effort ?? 'medium' } };
   }
   return {};
+}
+
+/** HERO_PASS_ENABLED env overrides the config default. */
+export function heroPassEnabled(): boolean {
+  return process.env.HERO_PASS_ENABLED
+    ? process.env.HERO_PASS_ENABLED === 'true'
+    : CONCIERGE_CONFIG.heroPass.enabled;
+}
+
+/** Appended to the user turn of the hero pass only. The honesty clauses mirror the HONESTY RULES for the one block this pass writes. */
+export function heroPassInstruction(): string {
+  return `
+
+FAST OPENING PASS: output ONLY the opening \`\`\`json block with a layout array that holds just the HeroBlock, then stop. Do not write any other component, the narrative or the follow-up questions; another pass writes them.
+The HeroBlock states the user's challenge or opportunity in their own terms, as a headline about THEM. It must hold under the HONESTY RULES, and it is written before the rest of the answer, so it makes no claim about us at all:
+- Title and subtitle name the topic or the user's situation. They never describe our experience, clients, industries, seniority, scale or results (no "X work", "X experience", "our work with", "senior-level partnership", "Fortune 100"). Bad: "Senior-level work for global retailers". Good: "Choosing comparable work for a global retailer".
+- Anything the user says or assumes about us ("X experience", "the campaign you did") is their question, not a fact. Keep it out of the title and subtitle, and never put a client, brand or project name the user attributes to us there. In the challengeSummary it may appear only as what they are asking about ("You're asking about...").
+- Do not add facts the user did not give (company size or status, deadlines, audience traits, budget).`;
 }
 
 export function generationConfigKey(g: GenerationConfig = generationConfig()): string {

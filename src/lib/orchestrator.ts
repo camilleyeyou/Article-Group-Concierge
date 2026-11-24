@@ -45,6 +45,8 @@ import {
   generationConfig,
   generationParams,
   generationConfigKey,
+  heroPassEnabled,
+  heroPassInstruction,
   isPlayableVideoUrl,
   type GenerationConfig,
 } from './concierge-config';
@@ -439,6 +441,7 @@ export function orchestratorCacheKey(input: OrchestratorInput, catalogueVersion:
     lastMessage: conversationHistory?.slice(-1)[0]?.content?.slice(0, 100),
     catalogueVersion,
     generation: generationConfigKey(),
+    heroPass: heroPassEnabled(),
   };
 }
 
@@ -564,6 +567,9 @@ export interface OrchestrateStreamOptions {
   catalogue?: Catalogue | null; // undefined -> await getCatalogue()
   generation?: GenerationConfig;
   createEvents?: (body: Record<string, unknown>, signal?: AbortSignal) => Promise<AsyncIterable<RawModelEvent>>;
+  /** Hero pass: undefined -> heroPassEnabled(). With an injected createEvents it runs only if createHeroEvents is also injected. */
+  heroPass?: boolean;
+  createHeroEvents?: (body: Record<string, unknown>, signal?: AbortSignal) => Promise<AsyncIterable<RawModelEvent>>;
   onRawEvent?: (ev: RawModelEvent, tMs: number) => void;
 }
 
@@ -621,13 +627,87 @@ export async function* orchestrateStream(
   let stopReason: string | null = null;
   const t0 = Date.now();
 
-  const mapParserEvents = (evs: ReturnType<StreamLayoutParser['push']>): OrchestratorStreamEvent[] => {
+  // Hero pass (PERF-02): a low-effort call writes only the HeroBlock while the main call thinks.
+  const heroOn =
+    (opts.heroPass ?? heroPassEnabled()) && (opts.createHeroEvents !== undefined || opts.createEvents === undefined);
+  const createHeroEvents = opts.createHeroEvents ?? createEvents;
+  type Msg =
+    | { k: 'raw'; ev: RawModelEvent }
+    | { k: 'main_done' }
+    | { k: 'main_err'; err: unknown }
+    | { k: 'hero'; ev: OrchestratorStreamEvent };
+  const q: Msg[] = [];
+  let wake: (() => void) | null = null;
+  const push = (m: Msg) => {
+    q.push(m);
+    wake?.();
+    wake = null;
+  };
+  // Who supplies the hero the user sees: the first source to emit a hero event wins. A fast hero that dies before
+  // hero_done hands over to the main call's hero.
+  let heroSource: 'fast' | 'main' | null = null;
+  let fastHeroProps: HeroBlockProps | null = null;
+  let fastHeroTMs: number | null = null;
+  const heroAbort = new AbortController();
+  opts.signal?.addEventListener('abort', () => heroAbort.abort());
+
+  const runHeroPass = async () => {
+    const hp = CONCIERGE_CONFIG.heroPass;
+    const msgs = buildMessages(input);
+    const last = msgs[msgs.length - 1];
+    msgs[msgs.length - 1] = { ...last, content: `${last.content as string}${heroPassInstruction()}` };
+    const heroBody: Record<string, unknown> = {
+      model: MODEL,
+      max_tokens: hp.maxTokens,
+      system: body.system,
+      messages: msgs,
+      ...generationParams({ mode: 'adaptive_effort', effort: hp.effort }),
+    };
+    const hp_parser = new StreamLayoutParser();
+    try {
+      const evs = await createHeroEvents(heroBody, heroAbort.signal);
+      for await (const ev of evs) {
+        if (ev.type === 'content_block_delta' && ev.delta?.type === 'text_delta') {
+          for (const out of mapParserEvents(hp_parser.push(ev.delta.text as string), true)) {
+            if (out.type !== 'hero' && out.type !== 'hero_done') continue;
+            push({ k: 'hero', ev: out });
+            if (out.type === 'hero_done') {
+              fastHeroProps = out.props;
+              fastHeroTMs = Date.now() - t0;
+              heroAbort.abort(); // stop paying for tokens after the hero
+              return;
+            }
+          }
+        }
+      }
+    } catch (e) {
+      if (!heroAbort.signal.aborted) OrchLogger.warn('Hero pass failed; the main call supplies the hero', { error: e instanceof Error ? e.message : String(e) });
+    }
+    // Died before hero_done: hand the hero to the main call.
+    if (!fastHeroProps && heroSource === 'fast') heroSource = 'main';
+  };
+
+  const runMain = async () => {
+    try {
+      const events = await createEvents(body, opts.signal);
+      for await (const ev of events) push({ k: 'raw', ev });
+      push({ k: 'main_done' });
+    } catch (err) {
+      push({ k: 'main_err', err });
+    }
+  };
+
+  // heroOnly=true: hero-pass parser (only hero events are used). Otherwise the main parser: its hero events are
+  // dropped while the fast hero owns the hero.
+  function mapParserEvents(evs: ReturnType<StreamLayoutParser['push']>, heroOnly = false): OrchestratorStreamEvent[] {
     const out: OrchestratorStreamEvent[] = [];
     for (const e of evs) {
       if (e.type === 'hero') {
         out.push({ type: 'hero', title: e.title, subtitle: e.subtitle, challengeSummary: e.challengeSummary, backgroundVariant: e.backgroundVariant });
       } else if (e.type === 'hero_done') {
         out.push({ type: 'hero_done', props: e.props as unknown as HeroBlockProps });
+      } else if (heroOnly) {
+        continue;
       } else if (e.type === 'component') {
         if (e.component === 'VideoPlayer' && !isPlayableVideoUrl((e.props as { url?: string } | undefined)?.url)) continue;
         let props = e.props;
@@ -646,23 +726,55 @@ export async function* orchestrateStream(
       }
     }
     return out;
+  }
+
+  // Gate hero events from either source through heroSource.
+  const gateHero = (src: 'fast' | 'main', ev: OrchestratorStreamEvent): boolean => {
+    if (heroSource === null) heroSource = src;
+    return heroSource === src;
   };
 
-  const events = await createEvents(body, opts.signal);
-  for await (const ev of events) {
-    opts.onRawEvent?.(ev, Date.now() - t0);
-    if (ev.type === 'message_start') {
-      Object.assign(usage, ev.message?.usage ?? {});
-    } else if (ev.type === 'content_block_delta' && ev.delta?.type === 'text_delta') {
-      for (const out of mapParserEvents(parser.push(ev.delta.text as string))) yield out;
-    } else if (ev.type === 'message_delta') {
-      Object.assign(usage, ev.usage ?? {});
-      if (ev.delta?.stop_reason) stopReason = ev.delta.stop_reason as string;
-    } else if (ev.type === 'error') {
-      throw new Error(ev.error?.message ?? 'Model stream error');
+  if (heroOn) void runHeroPass();
+  void runMain();
+
+  let mainEnded = false;
+  while (!mainEnded) {
+    if (q.length === 0) await new Promise<void>(r => (wake = r));
+    while (q.length > 0) {
+      const m = q.shift()!;
+      if (m.k === 'hero') {
+        if (gateHero('fast', m.ev)) yield m.ev;
+      } else if (m.k === 'raw') {
+        const ev = m.ev;
+        opts.onRawEvent?.(ev, Date.now() - t0);
+        if (ev.type === 'message_start') {
+          Object.assign(usage, ev.message?.usage ?? {});
+        } else if (ev.type === 'content_block_delta' && ev.delta?.type === 'text_delta') {
+          for (const out of mapParserEvents(parser.push(ev.delta.text as string))) {
+            if ((out.type === 'hero' || out.type === 'hero_done') && !gateHero('main', out)) continue;
+            yield out;
+          }
+        } else if (ev.type === 'message_delta') {
+          Object.assign(usage, ev.usage ?? {});
+          if (ev.delta?.stop_reason) stopReason = ev.delta.stop_reason as string;
+        } else if (ev.type === 'error') {
+          heroAbort.abort();
+          throw new Error(ev.error?.message ?? 'Model stream error');
+        }
+      } else if (m.k === 'main_err') {
+        heroAbort.abort();
+        throw m.err;
+      } else {
+        mainEnded = true;
+      }
     }
   }
-  for (const out of mapParserEvents(parser.end())) yield out;
+  for (const out of mapParserEvents(parser.end())) {
+    if ((out.type === 'hero' || out.type === 'hero_done') && !gateHero('main', out)) continue;
+    yield out;
+  }
+  heroAbort.abort();
+  OrchLogger.debug('Hero pass', { source: heroSource, fastHeroTMs });
 
   const text = parser.fullText;
   if (!text) {
@@ -676,6 +788,11 @@ export async function* orchestrateStream(
   let result = postProcessOutput(parseOrchestratorResponse(text), text, tags);
   result.usage = extractUsage({ usage });
   result.catalogueVersion = catalogue?.version ?? null;
+  // The user saw the fast hero, so the authoritative layout carries it too (no swap, no mismatch).
+  const shownHero = heroSource === 'fast' ? fastHeroProps : null;
+  if (shownHero && result.layoutPlan.layout[0]?.component === 'HeroBlock') {
+    result.layoutPlan.layout[0] = { component: 'HeroBlock', props: shownHero } as (typeof result.layoutPlan.layout)[number];
+  }
 
   // D-508: verifier (default off) runs only after all preview events
   if (verifierEnabled()) {
