@@ -172,10 +172,12 @@ None yet.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 261123-f81 | Fix PERF-03 stale OpenRouter credit (cache: 'no-store') | 2026-11-23 | 0b7e2a0 | [261123-f81-fix-perf-03-stale-provider-credit-next-f](./quick/261123-f81-fix-perf-03-stale-provider-credit-next-f/) |
+| 261124-0q7 | Video poster previews (8 MP4 posters in Storage) and hide 2 dead Vimeo videos | 2026-11-24 | 1ac69f8 | [261124-0q7-video-poster-previews-and-hide-unplayabl](./quick/261124-0q7-video-poster-previews-and-hide-unplayabl/) |
 
 ## Session Continuity
 
-Last session: 2026-11-23
+Last session: 2026-11-24
+Last activity: 2026-11-24 - Completed quick task 261124-0q7: video poster previews and hide unplayable Vimeo videos
 Stopped at: Completed 05-10-PLAN.md (Phase 5 pushed as d9d5ccf; next: Phase 6 discuss/plan)
 Resume file: None
 
