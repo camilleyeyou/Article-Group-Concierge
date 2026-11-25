@@ -1,0 +1,67 @@
+{
+  "id": "p3-q02",
+  "query": "What does your co-branded video work look like? Specifically joint pieces where two big brands share the spotlight without it turning into a logo soup.",
+  "round": 3,
+  "base_url": "https://article-group-concierge.vercel.app",
+  "started_at": "2026-11-25T19:42:14.221Z",
+  "http_status": 200,
+  "t_teasers_ms": 1009.2628750000003,
+  "t_hero_first_ms": 2032.904813000001,
+  "t_complete_ms": 15856.901439000001,
+  "perf": {
+    "rag_cache_hit": 0,
+    "orch_cached": false,
+    "instance_req": 6
+  },
+  "error": null,
+  "final": {
+    "layoutPlan": {
+      "layout": [
+        {
+          "component": "HeroBlock",
+          "props": {
+            "title": "Sharing the Spotlight Without the Logo Soup",
+            "subtitle": "Co-branded video for two major brands",
+            "challengeSummary": "You're asking how a joint video can give two big brands equal presence while still feeling like one story rather than a pile of logos.",
+            "backgroundVariant": "dark"
+          }
+        },
+        {
+          "component": "VideoPlayer",
+          "props": {
+            "url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/aws-global-brand-advertising-campaign/AWS_and_NVIDIA_-_Project_Ceiba.mp4",
+            "caption": "The co-branded Project Ceiba video we made for AWS and NVIDIA",
+            "aspectRatio": "16:9"
+          }
+        },
+        {
+          "component": "StrategyCard",
+          "props": {
+            "title": "Story First, Logos Second",
+            "content": "In a joint piece, we'd build the film around the single idea both brands share, so the partnership shows up in the story itself and not in how the branding is divided.",
+            "icon": "lightbulb"
+          }
+        },
+        {
+          "component": "CaseStudyTeaser",
+          "props": {
+            "title": "AWS/NVIDIA: Co-Branded Video for a Visionary Collaboration",
+            "clientName": "AWS/NVIDIA",
+            "summary": "We creative directed a co-branded video for AWS and NVIDIA's Project Ceiba AI supercomputer, from concept to execution. It blends interviews, use cases and custom 3D animations, and reached over 8 million combined views across Instagram, TikTok, YouTube, X and LinkedIn.",
+            "thumbnailUrl": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/thumbnails/aws-nvidia-co-branded-video-for-a-visionary-collaboration.webp",
+            "slug": "aws-nvidia-co-branded-video-for-a-visionary-collaboration",
+            "capabilities": [
+              "Creative Direction",
+              "Video Production"
+            ],
+            "industries": [
+              "Artificial Intelligence"
+            ]
+          }
+        }
+      ]
+    },
+    "explanation": "The AWS and NVIDIA film is our one published co-branded video, and we made it by working closely with both stakeholders to distill their collaboration into a single story. We haven't published other joint video work, so we can't point to a second example. For your project, we'd start by getting both brand teams in one room to agree on what the film is saying, before anyone discusses logo placement.",
+    "contactCTA": false
+  }
+}

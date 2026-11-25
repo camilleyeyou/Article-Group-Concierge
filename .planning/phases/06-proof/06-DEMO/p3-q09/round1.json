@@ -1,0 +1,75 @@
+{
+  "id": "p3-q09",
+  "query": "I heard you ran the Microsoft Azure Marketplace partner program refresh. What pipeline lift did that drive?",
+  "round": 1,
+  "base_url": "https://article-group-concierge.vercel.app",
+  "started_at": "2026-11-25T15:08:44.566Z",
+  "http_status": 200,
+  "t_teasers_ms": null,
+  "t_hero_first_ms": 2345.710091999994,
+  "t_complete_ms": 12502.606383999999,
+  "perf": {
+    "rag_cache_hit": 0,
+    "orch_cached": false,
+    "instance_req": 5
+  },
+  "error": null,
+  "final": {
+    "layoutPlan": {
+      "layout": [
+        {
+          "component": "HeroBlock",
+          "props": {
+            "title": "Measuring Pipeline Lift from a Partner Program Refresh",
+            "subtitle": "Partner marketing performance",
+            "challengeSummary": "You're asking about the pipeline impact of a marketplace partner program refresh and what it delivered.",
+            "backgroundVariant": "dark"
+          }
+        },
+        {
+          "component": "StrategyCard",
+          "props": {
+            "title": "Research Before Redesign",
+            "content": "For a partner program, we begin with evidence on how partners use it today, then build the improvement roadmap from that. A refresh built on actual partner behavior has a better chance of earning adoption than one built on assumptions.",
+            "icon": "users"
+          }
+        },
+        {
+          "component": "CaseStudyTeaser",
+          "props": {
+            "title": "Salesforce: Supporting the largest partner ecosystem in the tech industry",
+            "clientName": "Salesforce",
+            "summary": "We researched how partner marketers use Salesforce's PMC and created a roadmap for improvements to drive adoption and satisfaction. We continue to work with Salesforce on revamping it.",
+            "slug": "salesforce-supporting-the-largest-partner-ecosystem-in-the-tech-industry",
+            "capabilities": [
+              "Content Marketing",
+              "Sales Enablement"
+            ],
+            "industries": [
+              "Enterprise Software"
+            ]
+          }
+        },
+        {
+          "component": "CaseStudyTeaser",
+          "props": {
+            "title": "Salesforce/Slack: Strategic Sales Enablement",
+            "clientName": "Salesforce/Slack",
+            "summary": "We created a suite of downloadable content to help Salesforce's global partners market their Slack implementation services: a playbook, an email drip campaign, a call script and social media copy.",
+            "thumbnailUrl": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/thumbnails/salesforce-slack-strategic-sales-enablement.webp",
+            "slug": "salesforce-slack-strategic-sales-enablement",
+            "capabilities": [
+              "Content Marketing",
+              "Sales Enablement"
+            ],
+            "industries": [
+              "Enterprise Software"
+            ]
+          }
+        }
+      ]
+    },
+    "explanation": "We can't point to a Microsoft Azure Marketplace engagement in our portfolio, so we can't speak to a pipeline lift for it. The Salesforce work above is adjacent, since it also serves partners, and neither study states a pipeline figure. If you're planning a refresh of your own, we'd start by agreeing which pipeline signals matter for your program, so the work is built around them. Our Strategy Lead can scope that with you.",
+    "contactCTA": false
+  }
+}

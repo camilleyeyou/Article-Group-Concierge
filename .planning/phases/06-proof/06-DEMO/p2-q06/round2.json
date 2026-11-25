@@ -1,0 +1,77 @@
+{
+  "id": "p2-q06",
+  "query": "insurance experience?",
+  "round": 2,
+  "base_url": "https://article-group-concierge.vercel.app",
+  "started_at": "2026-11-25T18:35:54.873Z",
+  "http_status": 200,
+  "t_teasers_ms": null,
+  "t_hero_first_ms": 4348.9830070000025,
+  "t_complete_ms": 16766.078663000004,
+  "perf": {
+    "rag_cache_hit": 0,
+    "orch_cached": false,
+    "instance_req": 2
+  },
+  "error": null,
+  "final": {
+    "layoutPlan": {
+      "layout": [
+        {
+          "component": "HeroBlock",
+          "props": {
+            "title": "Insurance: Finding the Right Partner for the Story",
+            "subtitle": "Insurance marketing and communications",
+            "challengeSummary": "You're asking about insurance experience. Here is what we can point to in our portfolio.",
+            "backgroundVariant": "dark"
+          }
+        },
+        {
+          "component": "StrategyCard",
+          "props": {
+            "title": "Find the Story Inside the Data",
+            "content": "In financial services, we'd start by deciding the one thing the numbers need to say, then design every visual to carry that message instead of just displaying data.",
+            "icon": "target"
+          }
+        },
+        {
+          "component": "CaseStudyTeaser",
+          "props": {
+            "title": "AIG: When Stakes Are High: Reintroducing AIG to the Market",
+            "clientName": "AIG",
+            "summary": "We worked with AIG's C-suite over a two-month sprint on the keynote visual design system, hundreds of slides, and event branding for their first Investor Day in over a decade.",
+            "thumbnailUrl": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/thumbnails/aig-when-stakes-are-high-reintroducing-aig-to-the-market.webp",
+            "slug": "aig-when-stakes-are-high-reintroducing-aig-to-the-market",
+            "capabilities": [
+              "Creative Direction",
+              "Events & Keynotes"
+            ],
+            "industries": [
+              "Finance"
+            ]
+          }
+        },
+        {
+          "component": "CaseStudyTeaser",
+          "props": {
+            "title": "Android Enterprise: Hyper-Targeted Consideration Campaign",
+            "clientName": "Android Enterprise",
+            "summary": "We built a consideration campaign for Android Enterprise aimed at financial services, with content for sub-sectors including insurance: a 16-page eBook, a research-driven blog post, and promotional social posts.",
+            "thumbnailUrl": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/thumbnails/android-enterprise-hyper-targeted-consideration-campaign.webp",
+            "slug": "android-enterprise-hyper-targeted-consideration-campaign",
+            "capabilities": [
+              "Content Marketing",
+              "Growth Marketing"
+            ],
+            "industries": [
+              "Enterprise Software",
+              "Finance"
+            ]
+          }
+        }
+      ]
+    },
+    "explanation": "AIG is our direct insurance work, built around turning complex financials into a clear story. The Android Enterprise campaign is adjacent: it targeted financial services broadly, with insurance as one of its sub-sectors. For you, we'd start by pinning down who needs persuading, whether investors, customers or partners, because that decides what the story has to do.",
+    "contactCTA": false
+  }
+}

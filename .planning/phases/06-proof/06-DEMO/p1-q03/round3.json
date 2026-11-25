@@ -1,0 +1,86 @@
+{
+  "id": "p1-q03",
+  "query": "How do you approach naming and branding a net-new security sub-category so it doesn't just read as a feature of the existing platform? Any examples where you built a brand for a new asset visibility or security concept from zero?",
+  "round": 3,
+  "base_url": "https://article-group-concierge.vercel.app",
+  "started_at": "2026-11-25T17:20:22.645Z",
+  "http_status": 200,
+  "t_teasers_ms": 1142.241688000002,
+  "t_hero_first_ms": 2919.0924650000015,
+  "t_complete_ms": 16901.122631,
+  "perf": {
+    "rag_cache_hit": 0,
+    "orch_cached": false,
+    "instance_req": 6
+  },
+  "error": null,
+  "final": {
+    "layoutPlan": {
+      "layout": [
+        {
+          "component": "HeroBlock",
+          "props": {
+            "title": "Making a New Security Sub-Category Stand on Its Own",
+            "subtitle": "Naming and branding a concept that isn't just a platform feature",
+            "challengeSummary": "You're asking how to name and brand a net-new security or asset visibility category so it reads as its own idea, not a feature of an existing platform.",
+            "backgroundVariant": "dark"
+          }
+        },
+        {
+          "component": "VideoPlayer",
+          "props": {
+            "url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/chorus-alphabet-x-brand-narrative-for-asset-visibility-platform/Chorus_-_Anthem_Video.mp4",
+            "caption": "The anthem video we made for Chorus, an asset visibility platform",
+            "aspectRatio": "16:9"
+          }
+        },
+        {
+          "component": "StrategyCard",
+          "props": {
+            "title": "Story First, Then the Name",
+            "content": "A name reads as a feature when it borrows the parent platform's logic. We'd write the category's own narrative first, in the buyer's language, then build the name and nomenclature from that idea and test them with the people who have to say them out loud.",
+            "icon": "lightbulb"
+          }
+        },
+        {
+          "component": "CaseStudyTeaser",
+          "props": {
+            "title": "Chorus (Alphabet X): Creating an Eye-Opening Asset Visibility Brand",
+            "clientName": "Chorus (Alphabet X)",
+            "summary": "We developed Chorus's brand narrative, visual identity system, anthem video and product naming and nomenclature for its asset visibility platform.",
+            "thumbnailUrl": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/thumbnails/chorus-alphabet-x-creating-an-eye-opening-asset-visibility-brand.webp",
+            "slug": "chorus-alphabet-x-creating-an-eye-opening-asset-visibility-brand",
+            "capabilities": [
+              "Brand Strategy",
+              "Creative Direction",
+              "Naming"
+            ],
+            "industries": [
+              "Enterprise Software"
+            ]
+          }
+        },
+        {
+          "component": "CaseStudyTeaser",
+          "props": {
+            "title": "Salt Security: Defending Market Territory",
+            "clientName": "Salt Security",
+            "summary": "We tested positioning territories with Salt's audience, then built a messaging framework, visual identity, :90 explainer video and sales presentation, aimed at making API security less technical and more memorable.",
+            "thumbnailUrl": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/thumbnails/salt-security-defending-market-territory.webp",
+            "slug": "salt-security-defending-market-territory",
+            "capabilities": [
+              "Brand Strategy",
+              "Messaging & Positioning",
+              "Research & Insights"
+            ],
+            "industries": [
+              "Cybersecurity"
+            ]
+          }
+        }
+      ]
+    },
+    "explanation": "Chorus is our closest example: we built the brand and product naming for an asset visibility platform, but it tracks goods rather than security, and we haven't published a security sub-category naming case study. Salt Security is adjacent, since it's cybersecurity brand work for an established player defending its position rather than a new category. We'd start by auditing how your existing products are named so the new name doesn't inherit their logic, and our Strategy Lead can scope that with you.",
+    "contactCTA": false
+  }
+}

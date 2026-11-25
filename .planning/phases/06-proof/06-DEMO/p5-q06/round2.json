@@ -1,0 +1,42 @@
+{
+  "id": "p5-q06",
+  "query": "how much do u charge",
+  "round": 2,
+  "base_url": "https://article-group-concierge.vercel.app",
+  "started_at": "2026-11-25T16:15:26.349Z",
+  "http_status": 200,
+  "t_teasers_ms": null,
+  "t_hero_first_ms": 2537.182906999995,
+  "t_complete_ms": 9647.087986999992,
+  "perf": {
+    "rag_cache_hit": 0,
+    "orch_cached": false,
+    "instance_req": 4
+  },
+  "error": null,
+  "final": {
+    "layoutPlan": {
+      "layout": [
+        {
+          "component": "HeroBlock",
+          "props": {
+            "title": "Understanding What a Creative Engagement Costs",
+            "subtitle": "Pricing and scope",
+            "challengeSummary": "You're asking how much we charge and want a sense of what an engagement would involve.",
+            "backgroundVariant": "dark"
+          }
+        },
+        {
+          "component": "StrategyCard",
+          "props": {
+            "title": "Scope Before Price",
+            "content": "We'd start by defining the problem you need solved and what you want in hand at the end of it, so any conversation about investment is tied to a clear scope rather than a generic rate.",
+            "icon": "target"
+          }
+        }
+      ]
+    },
+    "explanation": "We don't publish rates, and cost depends on scope, so we can't give you a number here. Our first step would be to understand what you need made and who it's for. Our Strategy Lead can scope that with you and talk through investment.",
+    "contactCTA": false
+  }
+}

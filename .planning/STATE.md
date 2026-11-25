@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to execute
-stopped_at: Completed 06-07-PLAN.md
-last_updated: "2026-11-25T14:54:17.707Z"
+status: Phase complete (closed with gaps)
+stopped_at: Completed 06-12-PLAN.md (Phase 6 closed with gaps; PROOF-01 not met)
+last_updated: "2026-11-25T19:44:32.998Z"
 last_activity: 2026-11-25
 progress:
   total_phases: 6
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 57
-  completed_plans: 53
+  completed_plans: 57
 ---
 
 # Project State
@@ -20,12 +20,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-11-20)
 
 **Core value:** Never misrepresent AG's work. A wrong claim about a client engagement is worse than a weak answer.
-**Current focus:** Phase 06 — proof
+**Current focus:** Phase 06 closed with gaps; decide next steps with the user (PROOF-01 not met)
 
 ## Current Position
 
-Phase: 06 (proof) — EXECUTING
-Plan: 9 of 12 next (06-01, 06-02, 06-03, 06-04, 06-05 complete)
+Phase: 06 (proof) — CLOSED WITH GAPS (not fully met)
+Plan: 12 of 12 complete (06-10 not executed, budget). Milestone work is finished; verdict: much improved, not proven ready.
 
 ## Scope change (2026-11-25)
 
@@ -114,6 +114,9 @@ Same responses as the frozen run, graded under harness v2. Like-for-like referen
 | Phase 06 P06 | n/a | 2 tasks | 3 files |
 | Phase 06 P08 | n/a | 3 tasks | 5 files |
 | Phase 06 P07 | n/a | 3 tasks | 10 files |
+| Phase 06 P09 | n/a | 3 tasks | 3 files |
+| Phase 06 P11 | 2.5h | 3 tasks | 9 files |
+| Phase 06 P12 | n/a | 3 tasks | 5 files |
 
 ### Decisions
 
@@ -169,6 +172,10 @@ Same responses as the frozen run, graded under harness v2. Like-for-like referen
 - [Phase 06]: 06-06: recall 47/52 -> 48/52 via bank/insurer finance keywords; 49/52 criterion missed, user chose option-a (proceed)
 - [Phase 06]: 06-08: static checks site_work_missing 0, mismatched_videos 0; checkpoint skipped, nothing ingested
 - [Phase 06]: 06-07: fix-pass prompt rules (voiceRule, countClaimRule, adjacentWorkRule, deliverables tightening) regressed voice and claims; prompt restored to 7600919^ by the user; confirm full-50 voice 4.48, 7/50 unsupported responses, recall 48/52; p1-q07 count claim open and accepted; spend 13.89, credit 17.70, no top-ups
+- [Phase 06]: 06-09: user chose squash+push (option-a); Phase 6 pushed as b50bb0c, deploy dpl_8ngJFmZTiiz6aYrcAfARAjFJWXKM Ready, smoke ok; timing skipped (budget); PERF_TIMING being switched off by user
+- [Phase 06]: 06-11: demo verification on production: 1 of 5 picks VERIFIED (p2-q04); p1-q03, p3-q10, p3-q09 unstable teaser sets, p5-q06 unsupported pricing wording; reserves not swapped, awaiting user; demo spend 0.93, credit 16.39
+- [Phase 06]: 06-11: demo_rule claims (user): final demo set p2-q06, p1-q06, p3-q02, p2-q04, p3-q09 verified on production (PROOF-03 met under relaxed rule, 4 of 5 under strict); p3-q10 failed on a retrieval leak; demo spend 1.55 (0.05 over the 1.50 line), credit 15.77
+- [Phase 06]: 06-12: Phase 6 closed with gaps, user approved page and push (2026-11-25). Verdict: much improved, not proven ready; PROOF-01 NOT met (three counted runs never executed, budget). After run 2026-11-25T14-30-56 at 844ae18 (same prompt deployed as b50bb0c), original 50 only: recall 48/52 (92%), voice 4.48 (bar 4.5), unsupported-claim responses 7/50 = 14% (bar < 10%), goal_as_result 1 (bar 0): three bar misses; site work missing 0, invention-bait 0, capabilities not shown 0, mismatched videos 0. Held-out 25 never run; timing batches skipped (speed only indicative, from Cameroon). Spend $15.44 logged (+~$0.07 closing smoke), credit left $15.77 before the smoke. Demo ids p2-q06, p1-q06, p3-q02, p2-q04, p3-q09 (PROOF-03 partial: verified under the claims rule; 4 of 5 pass the original stability rule; no multi-part or pricing query). Page: https://claude.ai/artifact/DbPCsryF6zFurYCXzUJQWE. PERF_TIMING: user turning it off in Vercel themselves (still present in production at close); EVAL_DEBUG absent. Production Ready; live smoke SMOKE OK ("insurance experience?", 18.0 s to final)
 
 ### Key Constraints
 
@@ -203,9 +210,9 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-11-25T14:54:17.702Z
+Last session: 2026-11-25T20:30:00.000Z
 Last activity: 2026-11-25
-Stopped at: Completed 06-07-PLAN.md
+Stopped at: Completed 06-12-PLAN.md (Phase 6 closed with gaps; PROOF-01 not met)
 Resume file: None
 
 - 2026-11-22 (03-08 follow-up): User chose to keep the Cohere reranker OFF (rerank.enabled=false). Net +1 recall (44/52) did not justify ~0.9 s p50 latency and a new data processor. Code and RRF fallback stay; re-enable via config or RERANK_ENABLED=true. Phase-end eval (03-09) approved by user despite gate FAIL; expected recall ≈ 43/52.

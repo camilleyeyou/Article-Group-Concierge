@@ -1,0 +1,99 @@
+{
+  "id": "p1-q06",
+  "query": "messaging house + marketecture?",
+  "round": 3,
+  "base_url": "https://article-group-concierge.vercel.app",
+  "started_at": "2026-11-25T19:41:32.405Z",
+  "http_status": 200,
+  "t_teasers_ms": 2309.8897500000003,
+  "t_hero_first_ms": 3502.246846,
+  "t_complete_ms": 18897.968173,
+  "perf": {
+    "rag_cache_hit": 0,
+    "orch_cached": false,
+    "instance_req": 4
+  },
+  "error": null,
+  "final": {
+    "layoutPlan": {
+      "layout": [
+        {
+          "component": "HeroBlock",
+          "props": {
+            "title": "Turning a Messaging House and Marketecture into One Clear Story",
+            "subtitle": "Messaging house and marketecture",
+            "challengeSummary": "You're asking about a messaging house and a marketecture: how a high-level position connects to individual products, and how a portfolio gets organized so it's easy to explain.",
+            "backgroundVariant": "dark"
+          }
+        },
+        {
+          "component": "VideoPlayer",
+          "props": {
+            "url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/meta-b2b-messaging-platform-story/Meta_-_Business_Messenger_Explainer_Video.mp4",
+            "caption": "The explainer video we made for Meta's business messaging products",
+            "aspectRatio": "16:9"
+          }
+        },
+        {
+          "component": "StrategyCard",
+          "props": {
+            "title": "Structure From the Customer's Side",
+            "content": "A marketecture shows how the portfolio fits together. A messaging hierarchy carries the top-level position down to each product and use case. We build the first from how customers group what you sell, so the second has something solid to hang on.",
+            "icon": "target"
+          }
+        },
+        {
+          "component": "CaseStudyTeaser",
+          "props": {
+            "title": "CrowdStrike: Applying the Power of a Great Marketecture",
+            "clientName": "CrowdStrike",
+            "summary": "We built a new marketecture for CrowdStrike's products that put customers first, and integrated it with the product story into a keynote presentation highlighting the newest releases.",
+            "thumbnailUrl": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/thumbnails/crowdstrike-applying-the-power-of-a-great-marketecture.webp",
+            "slug": "crowdstrike-applying-the-power-of-a-great-marketecture",
+            "capabilities": [
+              "Events & Keynotes",
+              "Messaging & Positioning"
+            ]
+          }
+        },
+        {
+          "component": "CaseStudyTeaser",
+          "props": {
+            "title": "Omnicell: Making Marketing and Sales Talk",
+            "clientName": "Omnicell",
+            "summary": "We started with messaging hierarchies linking Omnicell's high-level positioning to individual products, then made first call sales decks with illustrative metaphors and a two-page battle card.",
+            "thumbnailUrl": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/thumbnails/omnicell-making-marketing-and-sales-talk.webp",
+            "slug": "omnicell-making-marketing-and-sales-talk",
+            "capabilities": [
+              "Messaging & Positioning",
+              "Sales Enablement"
+            ],
+            "industries": [
+              "Healthcare"
+            ]
+          }
+        },
+        {
+          "component": "CaseStudyTeaser",
+          "props": {
+            "title": "Meta: Informed Messaging and a Unified Story",
+            "clientName": "Meta",
+            "summary": "We delivered an audience insight research report, narrative and messaging frameworks, an explainer video and industry-specific sales decks for Meta's B2B messaging products.",
+            "thumbnailUrl": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/thumbnails/meta-informed-messaging-and-a-unified-story.webp",
+            "slug": "meta-informed-messaging-and-a-unified-story",
+            "capabilities": [
+              "Messaging & Positioning",
+              "Research & Insights",
+              "Video Production"
+            ],
+            "industries": [
+              "Consumer Tech"
+            ]
+          }
+        }
+      ]
+    },
+    "explanation": "CrowdStrike is our clearest marketecture work. Omnicell and Meta show how we turn a position into messaging frameworks that sales teams and campaigns can use. We haven't published a case study that uses the label \"messaging house,\" so those two are the nearest work. We'd start with your current product list and how your sales team describes it today, then build the structure from there.",
+    "contactCTA": false
+  }
+}

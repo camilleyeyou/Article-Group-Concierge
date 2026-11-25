@@ -28,4 +28,15 @@ Pushing to main triggers a Vercel production deploy. The project rule is to squa
 - option-b: no push; `vercel deploy --prod` from a clean worktree of local HEAD. Production runs code not on main.
 - hold: nothing changes in production; Phase 6 code stays local.
 
-deploy_decision: pending
+deploy_decision: option-a
+
+## Deploy (Task 3, option-a)
+
+- Rollback point (pre-squash HEAD): 9e65282 (tree d5de4b8c identical to the squashed commit, verified with git write-tree).
+- Squash: `git reset --soft origin/main`, one commit b50bb0c `fix(06): proof fix pass and measurement tooling`; pre-existing uncommitted files stayed out.
+- Push: fast-forward 9baf304..b50bb0c on main.
+- proof_commit: b50bb0c
+- Vercel deployment: dpl_8ngJFmZTiiz6aYrcAfARAjFJWXKM, production, Ready (41 s build), aliased to https://article-group-concierge.vercel.app
+- PERF_TIMING: the user is switching it off in Vercel themselves; not changed by this plan. (At smoke time it was still on: 2 `: perf` lines seen.)
+- Live smoke (original well_formed query p1-q03, no debug): events teasers (first), 26 narrative, 24 hero, hero_done, 3 component, final; `: perf` lines 2; `event: debug` 0. Teasers returned the expected Chorus case study first.
+- Dry timing batch and counted batches: skipped by user decision (budget).

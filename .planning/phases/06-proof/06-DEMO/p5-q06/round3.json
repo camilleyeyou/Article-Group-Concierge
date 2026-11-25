@@ -1,0 +1,42 @@
+{
+  "id": "p5-q06",
+  "query": "how much do u charge",
+  "round": 3,
+  "base_url": "https://article-group-concierge.vercel.app",
+  "started_at": "2026-11-25T17:21:31.463Z",
+  "http_status": 200,
+  "t_teasers_ms": null,
+  "t_hero_first_ms": 2582.365288000001,
+  "t_complete_ms": 8107.392013999997,
+  "perf": {
+    "rag_cache_hit": 0,
+    "orch_cached": false,
+    "instance_req": 9
+  },
+  "error": null,
+  "final": {
+    "layoutPlan": {
+      "layout": [
+        {
+          "component": "HeroBlock",
+          "props": {
+            "title": "Understanding What a Project Will Cost",
+            "subtitle": "Pricing and fees",
+            "challengeSummary": "You're asking what we charge and want to know what working together might involve.",
+            "backgroundVariant": "dark"
+          }
+        },
+        {
+          "component": "StrategyCard",
+          "props": {
+            "title": "Scope Before Price",
+            "content": "We'd start with the outcome you're after and the audience you need to reach, then shape the work around that rather than starting from a fixed package.",
+            "icon": "target"
+          }
+        }
+      ]
+    },
+    "explanation": "Price depends on scope, so we don't quote figures here. Nothing we retrieved speaks to pricing, so we haven't shown client work. The first step is a short conversation about what you're trying to achieve, and our Strategy Lead can scope that with you.",
+    "contactCTA": false
+  }
+}

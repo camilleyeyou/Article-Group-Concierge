@@ -1,0 +1,92 @@
+{
+  "id": "p3-q09",
+  "query": "I heard you ran the Microsoft Azure Marketplace partner program refresh. What pipeline lift did that drive?",
+  "round": 2,
+  "base_url": "https://article-group-concierge.vercel.app",
+  "started_at": "2026-11-25T16:15:08.204Z",
+  "http_status": 200,
+  "t_teasers_ms": null,
+  "t_hero_first_ms": 2007.9153080000106,
+  "t_complete_ms": 14140.02345400001,
+  "perf": {
+    "rag_cache_hit": 0,
+    "orch_cached": false,
+    "instance_req": 3
+  },
+  "error": null,
+  "final": {
+    "layoutPlan": {
+      "layout": [
+        {
+          "component": "HeroBlock",
+          "props": {
+            "title": "Measuring Pipeline Lift from a Partner Program Refresh",
+            "subtitle": "Partner marketplace programs",
+            "challengeSummary": "You're asking about the pipeline impact of a Microsoft Azure Marketplace partner program refresh and what it drove.",
+            "backgroundVariant": "dark"
+          }
+        },
+        {
+          "component": "StrategyCard",
+          "props": {
+            "title": "Start With How Partners Actually Use It",
+            "content": "For a partner program, we'd begin by finding out how partner marketers use what exists today, then prioritize the improvements and content that make it easier for them to market and sell.",
+            "icon": "users"
+          }
+        },
+        {
+          "component": "CaseStudyTeaser",
+          "props": {
+            "title": "Salesforce: Supporting the largest partner ecosystem in the tech industry",
+            "clientName": "Salesforce",
+            "summary": "We researched how partner marketers use Salesforce's PMC, built a roadmap for improving it, and continue to work with Salesforce on revamping it.",
+            "slug": "salesforce-supporting-the-largest-partner-ecosystem-in-the-tech-industry",
+            "capabilities": [
+              "Content Marketing",
+              "Sales Enablement"
+            ],
+            "industries": [
+              "Enterprise Software"
+            ]
+          }
+        },
+        {
+          "component": "CaseStudyTeaser",
+          "props": {
+            "title": "Salesforce/Slack: Strategic Sales Enablement",
+            "clientName": "Salesforce/Slack",
+            "summary": "We created a playbook, an email drip campaign, a call script and social copy to give Salesforce's global partners the tools and language to market their Slack implementation services.",
+            "thumbnailUrl": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/thumbnails/salesforce-slack-strategic-sales-enablement.webp",
+            "slug": "salesforce-slack-strategic-sales-enablement",
+            "capabilities": [
+              "Content Marketing",
+              "Sales Enablement"
+            ],
+            "industries": [
+              "Enterprise Software"
+            ]
+          }
+        },
+        {
+          "component": "CaseStudyTeaser",
+          "props": {
+            "title": "UpShow/ChromeOS: Purposeful Partner Marketing",
+            "clientName": "UpShow/ChromeOS",
+            "summary": "We made :10, :15 and :30 video ads, interactive media ads, and landing page copy and design for UpShow's awareness campaign, reinforcing ChromeOS messaging.",
+            "thumbnailUrl": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/thumbnails/upshow-chromeos-purposeful-partner-marketing.webp",
+            "slug": "upshow-chromeos-purposeful-partner-marketing",
+            "capabilities": [
+              "Growth Marketing",
+              "Video Production"
+            ],
+            "industries": [
+              "Healthcare"
+            ]
+          }
+        }
+      ]
+    },
+    "explanation": "We can't point to a Microsoft Azure Marketplace partner program refresh in our portfolio, so we have no pipeline lift to share for it. The Salesforce partner work is the closest real match, and it's adjacent rather than the same engagement. For your program, we'd first agree which pipeline measures matter, so any refresh is built to be judged against them. Our Strategy Lead can talk through that with you.",
+    "contactCTA": false
+  }
+}

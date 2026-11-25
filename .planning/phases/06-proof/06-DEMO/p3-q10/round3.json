@@ -1,0 +1,84 @@
+{
+  "id": "p3-q10",
+  "query": "Three things: can you build a co-branded video template partners can localize, roughly how long for a first batch of ~20, and do you have a partner event example?",
+  "round": 3,
+  "base_url": "https://article-group-concierge.vercel.app",
+  "started_at": "2026-11-25T17:20:43.550Z",
+  "http_status": 200,
+  "t_teasers_ms": 1107.8271830000012,
+  "t_hero_first_ms": 1901.5719299999982,
+  "t_complete_ms": 25016.952190999997,
+  "perf": {
+    "rag_cache_hit": 0,
+    "orch_cached": false,
+    "instance_req": 7
+  },
+  "error": null,
+  "final": {
+    "layoutPlan": {
+      "layout": [
+        {
+          "component": "HeroBlock",
+          "props": {
+            "title": "A Co-Branded Video Template Partners Can Localize",
+            "subtitle": "Scaling a first batch of about 20 videos",
+            "challengeSummary": "You're asking about building a co-branded video template that partners can localize, how long a first batch of roughly 20 would take, and whether there's a partner event example.",
+            "backgroundVariant": "dark"
+          }
+        },
+        {
+          "component": "VideoPlayer",
+          "props": {
+            "url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/aws-global-brand-advertising-campaign/AWS_and_NVIDIA_-_Project_Ceiba.mp4",
+            "caption": "The co-branded film we made for AWS and NVIDIA's Project Ceiba",
+            "aspectRatio": "16:9"
+          }
+        },
+        {
+          "component": "StrategyCard",
+          "props": {
+            "title": "Fix the Frame, Flex the Story",
+            "content": "Our approach to a partner video template is to treat it as a set of rules. The co-brand lockup and core message stay locked, and clear slots are left open for the language and local proof each partner brings.",
+            "icon": "target"
+          }
+        },
+        {
+          "component": "CaseStudyTeaser",
+          "props": {
+            "title": "AWS/NVIDIA: Co-Branded Video for a Visionary Collaboration",
+            "clientName": "AWS/NVIDIA",
+            "summary": "We creative directed a co-branded video for AWS and NVIDIA's Project Ceiba from concept to execution, blending interviews, use cases and custom 3D animation. Multi-channel distribution achieved over 8 million combined views across Instagram, TikTok, YouTube, X and LinkedIn.",
+            "thumbnailUrl": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/thumbnails/aws-nvidia-co-branded-video-for-a-visionary-collaboration.webp",
+            "slug": "aws-nvidia-co-branded-video-for-a-visionary-collaboration",
+            "capabilities": [
+              "Creative Direction",
+              "Video Production"
+            ],
+            "industries": [
+              "Artificial Intelligence"
+            ]
+          }
+        },
+        {
+          "component": "CaseStudyTeaser",
+          "props": {
+            "title": "UpShow/ChromeOS: Purposeful Partner Marketing",
+            "clientName": "UpShow/ChromeOS",
+            "summary": "We made UpShow-branded :10, :15 and :30 video ads, interactive media ads, and landing page copy and design that pitch UpShow while reinforcing ChromeOS messaging.",
+            "thumbnailUrl": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/thumbnails/upshow-chromeos-purposeful-partner-marketing.webp",
+            "slug": "upshow-chromeos-purposeful-partner-marketing",
+            "capabilities": [
+              "Growth Marketing",
+              "Video Production"
+            ],
+            "industries": [
+              "Healthcare"
+            ]
+          }
+        }
+      ]
+    },
+    "explanation": "We haven't published a localizable co-branded video template. The AWS/NVIDIA film is our co-branded video work, and UpShow/ChromeOS is adjacent partner-marketing video. We also don't have a published partner event case study in what we pulled up, though our Salesforce/WhatsApp holiday virtual event is related work. We'd start by collecting real examples of how your partners would localize the video, so the template flexes where they actually differ. Timing for a first batch of around 20 depends on scope, so our Strategy Lead can work through that with you.",
+    "contactCTA": false
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "id": "p2-q04",
+  "query": "Do you have experience with naming work for major financial institutions? We may need to rename part of our business as part of the reorganization.",
+  "round": 1,
+  "base_url": "https://article-group-concierge.vercel.app",
+  "started_at": "2026-11-25T15:07:39.193Z",
+  "http_status": 200,
+  "t_teasers_ms": 1988.448677,
+  "t_hero_first_ms": 2774.1221429999996,
+  "t_complete_ms": 15788.390714,
+  "perf": {
+    "rag_cache_hit": 0,
+    "orch_cached": false,
+    "instance_req": 2
+  },
+  "error": null,
+  "final": {
+    "layoutPlan": {
+      "layout": [
+        {
+          "component": "HeroBlock",
+          "props": {
+            "title": "Renaming Part of Your Business",
+            "subtitle": "Naming during a reorganization",
+            "challengeSummary": "You're asking about naming support as part of a reorganization, where part of your business needs a new name.",
+            "backgroundVariant": "dark"
+          }
+        },
+        {
+          "component": "StrategyCard",
+          "props": {
+            "title": "Structure Before Names",
+            "content": "In a reorganization, a name has to fit the system around it. We'd define the naming logic first, meaning how the new name relates to the units and products that stay the same. Then we'd generate candidates and test them for appeal, strategic value and availability.",
+            "icon": "target"
+          }
+        },
+        {
+          "component": "CaseStudyTeaser",
+          "props": {
+            "title": "J.P. Morgan: Naming the Future of Retail Payments Hardware",
+            "clientName": "J.P. Morgan",
+            "summary": "We built the naming and nomenclature strategy, name generation and availability assessments for J.P. Morgan's new payments hardware terminals, working with their product design, marketing and legal stakeholders. The names Paypin and Paypad were launched at one of the world's largest retail expos.",
+            "thumbnailUrl": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/thumbnails/j-p-morgan-naming-the-future-of-retail-payments-hardware.webp",
+            "slug": "j-p-morgan-naming-the-future-of-retail-payments-hardware",
+            "capabilities": [
+              "Naming"
+            ],
+            "industries": [
+              "Finance"
+            ]
+          }
+        }
+      ]
+    },
+    "explanation": "J.P. Morgan is our one published naming project for a financial institution, and it meant fitting names into an existing product taxonomy with legal and marketing at the table. We haven't published work renaming a business unit, so treat it as adjacent to your situation, not a direct match. We'd start by mapping where the new name has to sit in your reorganized structure, before generating any candidates. Our Strategy Lead can talk through your specific situation with you.",
+    "contactCTA": false
+  }
+}

@@ -19,7 +19,7 @@ Make the AG Concierge ready to show AG's owner, who is very detail-oriented. Cor
 - [x] **Phase 3: Retrieval** - Find the expected case studies at 90% recall via `hybrid_search_v2`
 - [ ] **Phase 4: Generation** - Honest, on-voice answers with no invented claims
 - [ ] **Phase 5: Speed** - Teasers in about 1.5 s, streamed hero in about 3-4 s (shipped; NOT MET: teasers 1.8-1.9 s in production, hero 11-14 s; PERF-02 deferred to Phase 6)
-- [ ] **Phase 6: Proof** - Ready bar cleared on three consecutive runs, with before/after and demo queries
+- [ ] **Phase 6: Proof** - CLOSED WITH GAPS, not fully met: before/after page and five demo queries delivered; ready bar not cleared and three counted runs not executed (budget)
 
 ## Phase Details
 
@@ -153,6 +153,7 @@ Plans:
   1. An expanded query set is run three consecutive times and every ready-bar check holds on all three: recall >= 90%, site work missing 0, goals as results 0, invention-bait presupposed 0, capabilities claimed but not shown 0, unsupported claims < 5/50, voice >= 4.5, teasers ~1.5 s / hero 3-4 s, mismatched videos 0.
   2. A one-page before/after compares the baseline run 2026-11-20T15-12-31 with the final runs, metric by metric, with every delta listed.
   3. Five demo queries are chosen and each is verified to produce an accurate, strong response.
+Phase 6 outcome (closed with gaps, 2026-11-25): (1) NOT MET: only one run of the original 50 (2026-11-25T14-30-56, 844ae18) exists; it misses three bars (voice 4.48 vs 4.5, unsupported-claim responses 7/50 = 14% vs < 10%, goal_as_result 1 vs 0); the other checks hold on that one run (recall 92%, site work missing 0, invention-bait 0, capabilities not shown 0, mismatched videos 0); speed not measured from a US machine and the 25 held-out queries never run. (2) MET: before/after page published (https://claude.ai/artifact/DbPCsryF6zFurYCXzUJQWE, copy in 06-BEFORE-AFTER.md). (3) PARTIAL: five demo queries verified on production under the claims rule the user approved after seeing results; 4 of 5 pass the original stability rule; no multi-part or pricing query in the set.
 **Constraints / gates**: Three runs plus the second grader cost ~$12, so confirm remaining credit first. If any bar fails, return to the responsible earlier phase rather than relaxing the bar.
 **Plans:** 12 plans
 
@@ -165,18 +166,18 @@ Plans:
 - [x] 06-06-PLAN.md — Fix pass (retrieval): offline recall margin on the original 50 within Phase 3 rules
 - [x] 06-07-PLAN.md — Top-up and spend approval, ledger, paid phase6-fix subset verification, go/no-go
 - [x] 06-08-PLAN.md — Static re-checks: site work diff and video re-check (D-609)
-- [ ] 06-09-PLAN.md — Proof code to production (user's route), timing batches fixed, dry US timing batch
-- [ ] 06-10-PLAN.md — Three counted 75-query runs with per-run timing batches and gate checks (D-608 stop rule)
-- [ ] 06-11-PLAN.md — Demo shortlist, user pick, production claim-by-claim verification (D-611/D-612)
-- [ ] 06-12-PLAN.md — Owner before/after page (D-613/D-614), publish, record, squash, push, live smoke
+- [x] 06-09-PLAN.md — Proof code to production (user's route), timing batches fixed, dry US timing batch
+- [x] 06-10-PLAN.md — Three counted 75-query runs with per-run timing batches and gate checks (D-608 stop rule): NOT EXECUTED (budget)
+- [x] 06-11-PLAN.md — Demo shortlist, user pick, production claim-by-claim verification (D-611/D-612)
+- [x] 06-12-PLAN.md — Owner before/after page (D-613/D-614), publish, record, squash, push, live smoke
 
 ## Progress
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Eval improvements | 7/7 | Complete (push pending) | 2026-11-21 |
-| 2. Content and data | 0/6 | Planned | - |
-| 3. Retrieval | 0/TBD | Not started | - |
-| 4. Generation | 0/9 | Planned | - |
+| 2. Content and data | 6/6 | Complete | 2026-11-21 |
+| 3. Retrieval | 13/13 | Complete | 2026-11-22 |
+| 4. Generation | 9/9 | Complete (criteria 1-4 not met) | 2026-11-23 |
 | 5. Speed | 10/10 | Complete (criteria 1-2 not met) | 2026-11-23 |
-| 6. Proof | 0/TBD | Not started | - |
+| 6. Proof | 12/12 | Closed with gaps (criterion 1 not met, 3 partial; 06-10 not executed) | 2026-11-25 |

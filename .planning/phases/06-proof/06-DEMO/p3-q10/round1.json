@@ -1,0 +1,102 @@
+{
+  "id": "p3-q10",
+  "query": "Three things: can you build a co-branded video template partners can localize, roughly how long for a first batch of ~20, and do you have a partner event example?",
+  "round": 1,
+  "base_url": "https://article-group-concierge.vercel.app",
+  "started_at": "2026-11-25T15:08:18.987Z",
+  "http_status": 200,
+  "t_teasers_ms": 1299.8784909999958,
+  "t_hero_first_ms": 2297.3020819999947,
+  "t_complete_ms": 21576.906007999998,
+  "perf": {
+    "rag_cache_hit": 0,
+    "orch_cached": false,
+    "instance_req": 4
+  },
+  "error": null,
+  "final": {
+    "layoutPlan": {
+      "layout": [
+        {
+          "component": "HeroBlock",
+          "props": {
+            "title": "A Co-Branded Video Template Partners Can Localize",
+            "subtitle": "Template video, partner events and a first batch of around 20",
+            "challengeSummary": "You're asking about a co-branded video template that partners can adapt for their own markets, how long a first batch of about 20 would take, and whether there is a partner event example to look at.",
+            "backgroundVariant": "dark"
+          }
+        },
+        {
+          "component": "VideoPlayer",
+          "props": {
+            "url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/aws-global-brand-advertising-campaign/AWS_and_NVIDIA_-_Project_Ceiba.mp4",
+            "caption": "The co-branded video we made for AWS and NVIDIA's Project Ceiba",
+            "aspectRatio": "16:9"
+          }
+        },
+        {
+          "component": "StrategyCard",
+          "props": {
+            "title": "Fix the Core, Flex the Edges",
+            "content": "For a localizable template, our approach would be to lock what makes the story recognizable, such as the narrative spine and the co-branding rules, and open up only what each partner genuinely needs to change. Every video in the batch then feels related without feeling identical.",
+            "icon": "target"
+          }
+        },
+        {
+          "component": "CaseStudyTeaser",
+          "props": {
+            "title": "AWS/NVIDIA: Co-Branded Video for a Visionary Collaboration",
+            "clientName": "AWS/NVIDIA",
+            "summary": "We creative directed a co-branded video for AWS and NVIDIA's Project Ceiba, from concept to execution, blending interviews, use cases and custom 3D animations. Multi-channel distribution achieved over 8 million combined views.",
+            "thumbnailUrl": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/thumbnails/aws-nvidia-co-branded-video-for-a-visionary-collaboration.webp",
+            "slug": "aws-nvidia-co-branded-video-for-a-visionary-collaboration",
+            "capabilities": [
+              "Creative Direction",
+              "Video Production"
+            ],
+            "industries": [
+              "Artificial Intelligence"
+            ]
+          }
+        },
+        {
+          "component": "CaseStudyTeaser",
+          "props": {
+            "title": "UpShow/ChromeOS: Purposeful Partner Marketing",
+            "clientName": "UpShow/ChromeOS",
+            "summary": "We made UpShow-branded :10, :15 and :30 video ads, interactive media ads, and landing page copy and design that pitch UpShow's value while reinforcing ChromeOS messaging.",
+            "thumbnailUrl": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/thumbnails/upshow-chromeos-purposeful-partner-marketing.webp",
+            "slug": "upshow-chromeos-purposeful-partner-marketing",
+            "capabilities": [
+              "Growth Marketing",
+              "Video Production"
+            ],
+            "industries": [
+              "Healthcare"
+            ]
+          }
+        },
+        {
+          "component": "CaseStudyTeaser",
+          "props": {
+            "title": "Android: Crafting a Brand New Virtual Event",
+            "clientName": "Android",
+            "summary": "We built the \"Art of Control\" virtual event for Android Enterprise, including content planning, name and look & feel, speaker scripts, custom motion graphics, post-production and promotional assets. It featured discussions between Google, industry thought leaders and customers like Walmart and the FBI.",
+            "thumbnailUrl": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/thumbnails/android-crafting-a-brand-new-virtual-event.webp",
+            "slug": "android-crafting-a-brand-new-virtual-event",
+            "capabilities": [
+              "Events & Keynotes",
+              "Messaging & Positioning",
+              "Research & Insights"
+            ],
+            "industries": [
+              "Enterprise Software"
+            ]
+          }
+        }
+      ]
+    },
+    "explanation": "We haven't published a localizable video template, so the AWS/NVIDIA film is our closest co-branded work and the UpShow ads are adjacent partner-marketing work. We'd start by asking a few partners what they actually need to change locally, and build the first video around those answers. We also haven't published a partner event, and the Android virtual event is the nearest event work, not a partner event. Timing for a first batch depends on scope, so our Strategy Lead can scope it with you.",
+    "contactCTA": false
+  }
+}

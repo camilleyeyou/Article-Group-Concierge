@@ -1,0 +1,42 @@
+{
+  "id": "p5-q06",
+  "query": "how much do u charge",
+  "round": 1,
+  "base_url": "https://article-group-concierge.vercel.app",
+  "started_at": "2026-11-25T15:09:01.071Z",
+  "http_status": 200,
+  "t_teasers_ms": null,
+  "t_hero_first_ms": 3660.8396619999985,
+  "t_complete_ms": 9933.250614999997,
+  "perf": {
+    "rag_cache_hit": 0,
+    "orch_cached": false,
+    "instance_req": 6
+  },
+  "error": null,
+  "final": {
+    "layoutPlan": {
+      "layout": [
+        {
+          "component": "HeroBlock",
+          "props": {
+            "title": "Understanding What a Project Would Cost",
+            "subtitle": "Pricing and scope",
+            "challengeSummary": "You're asking what we charge and want a sense of the investment involved.",
+            "backgroundVariant": "dark"
+          }
+        },
+        {
+          "component": "StrategyCard",
+          "props": {
+            "title": "Start With the Problem",
+            "content": "We'd begin by getting clear on what you need to change and who needs to believe it. Then we'd shape the work around that, so you're only paying for what moves you forward.",
+            "icon": "target"
+          }
+        }
+      ]
+    },
+    "explanation": "Cost depends on scope, so we can't give you a figure here. Tell us what you're trying to achieve and we can point you to the closest work in our portfolio. Our Strategy Lead can scope it with you.",
+    "contactCTA": false
+  }
+}

@@ -50,9 +50,9 @@
 
 ### Proof
 
-- [ ] **PROOF-01**: An expanded query set is run three consecutive times, and every ready-bar check holds on all three
-- [ ] **PROOF-02**: A one-page before/after compares the baseline with the final runs metric by metric
-- [ ] **PROOF-03**: Five demo queries are chosen and verified to produce accurate, strong responses for the owner demo
+- [ ] **PROOF-01** (Not met: counted runs not executed, budget; one original-50 run misses voice, unsupported claims, goal_as_result): An expanded query set is run three consecutive times, and every ready-bar check holds on all three
+- [x] **PROOF-02**: A one-page before/after compares the baseline with the final runs metric by metric
+- [ ] **PROOF-03** (Partial: five verified under the user-approved claims rule; 4 of 5 pass the original stability rule; no multi-part or pricing query): Five demo queries are chosen and verified to produce accurate, strong responses for the owner demo
 
 ## v2 Requirements
 
@@ -101,9 +101,9 @@
 | PERF-01 | Phase 5 | Partial (teasers 1.8-1.9 s in production vs 1.5 s) |
 | PERF-02 | Phase 5 | Partial (hero 11-14 s; deferred to Phase 6) |
 | PERF-03 | Phase 5 | Complete |
-| PROOF-01 | Phase 6 | Pending |
-| PROOF-02 | Phase 6 | Pending |
-| PROOF-03 | Phase 6 | Pending |
+| PROOF-01 | Phase 6 | Not met (counted runs not executed, budget) |
+| PROOF-02 | Phase 6 | Complete |
+| PROOF-03 | Phase 6 | Partial (5 verified under claims rule; 4 of 5 under original stability rule; no multi-part or pricing query) |
 
 **Coverage:**
 - v1 requirements: 31 total
@@ -112,4 +112,4 @@
 
 ---
 *Requirements defined: 2026-11-20*
-*Last updated: 2026-11-20 after initialization*
+*Last updated: 2026-11-25 after Phase 6 close*

@@ -1,0 +1,68 @@
+{
+  "id": "p1-q03",
+  "query": "How do you approach naming and branding a net-new security sub-category so it doesn't just read as a feature of the existing platform? Any examples where you built a brand for a new asset visibility or security concept from zero?",
+  "round": 1,
+  "base_url": "https://article-group-concierge.vercel.app",
+  "started_at": "2026-11-25T15:07:58.981Z",
+  "http_status": 200,
+  "t_teasers_ms": 1440.0443959999975,
+  "t_hero_first_ms": 2337.923381999997,
+  "t_complete_ms": 16004.455252999996,
+  "perf": {
+    "rag_cache_hit": 0,
+    "orch_cached": false,
+    "instance_req": 3
+  },
+  "error": null,
+  "final": {
+    "layoutPlan": {
+      "layout": [
+        {
+          "component": "HeroBlock",
+          "props": {
+            "title": "Making a New Security Sub-Category Stand on Its Own",
+            "subtitle": "Naming and branding from zero",
+            "challengeSummary": "You're asking how to name and brand a net-new security sub-category so it reads as its own category rather than a feature of an existing platform, and whether we've built a brand for a new asset visibility or security concept from scratch.",
+            "backgroundVariant": "dark"
+          }
+        },
+        {
+          "component": "VideoPlayer",
+          "props": {
+            "url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/chorus-alphabet-x-brand-narrative-for-asset-visibility-platform/Chorus_-_Anthem_Video.mp4",
+            "caption": "The anthem video we made for Chorus, an asset visibility platform",
+            "aspectRatio": "16:9"
+          }
+        },
+        {
+          "component": "StrategyCard",
+          "props": {
+            "title": "Story First, Then the Name",
+            "content": "Our approach would be to give the new category its own organizing idea before any naming or design begins. Names, nomenclature and visual identity then grow out of that idea, so each carries the category's story and none of them inherits the parent platform's vocabulary by default.",
+            "icon": "lightbulb"
+          }
+        },
+        {
+          "component": "CaseStudyTeaser",
+          "props": {
+            "title": "Chorus (Alphabet X): Creating an Eye-Opening Asset Visibility Brand",
+            "clientName": "Chorus (Alphabet X)",
+            "summary": "We built a brand narrative around the idea of \"orchestration\" for Chorus, an asset visibility platform from a startup within Alphabet's X. We also developed the brief for its visual identity and new logo, and later worked on product naming and nomenclature.",
+            "thumbnailUrl": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/thumbnails/chorus-alphabet-x-creating-an-eye-opening-asset-visibility-brand.webp",
+            "slug": "chorus-alphabet-x-creating-an-eye-opening-asset-visibility-brand",
+            "capabilities": [
+              "Brand Strategy",
+              "Creative Direction",
+              "Naming"
+            ],
+            "industries": [
+              "Enterprise Software"
+            ]
+          }
+        }
+      ]
+    },
+    "explanation": "Chorus is our closest example of building an asset visibility brand from zero, with the narrative first and product naming following. It was a standalone startup rather than a sub-category inside an existing platform, and we haven't published a security sub-category naming case, so treat it as adjacent on that point. For your platform, we'd start by mapping where its current language would swallow the new name, and what buyers call this problem today. Our Strategy Lead can talk through how that would apply to your situation.",
+    "contactCTA": false
+  }
+}

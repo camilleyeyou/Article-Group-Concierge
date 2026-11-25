@@ -1,0 +1,68 @@
+{
+  "id": "p1-q03",
+  "query": "How do you approach naming and branding a net-new security sub-category so it doesn't just read as a feature of the existing platform? Any examples where you built a brand for a new asset visibility or security concept from zero?",
+  "round": 2,
+  "base_url": "https://article-group-concierge.vercel.app",
+  "started_at": "2026-11-25T16:14:20.611Z",
+  "http_status": 200,
+  "t_teasers_ms": 1449.3991079999978,
+  "t_hero_first_ms": 2373.890715999998,
+  "t_complete_ms": 15862.288653999996,
+  "perf": {
+    "rag_cache_hit": 0,
+    "orch_cached": false,
+    "instance_req": 1
+  },
+  "error": null,
+  "final": {
+    "layoutPlan": {
+      "layout": [
+        {
+          "component": "HeroBlock",
+          "props": {
+            "title": "Making a New Security Sub-Category Stand on Its Own",
+            "subtitle": "Naming and branding from zero",
+            "challengeSummary": "You're asking how to name and brand a net-new security or asset visibility concept so it reads as its own category rather than a feature of an existing platform.",
+            "backgroundVariant": "dark"
+          }
+        },
+        {
+          "component": "VideoPlayer",
+          "props": {
+            "url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/chorus-alphabet-x-brand-narrative-for-asset-visibility-platform/Chorus_-_Anthem_Video.mp4",
+            "caption": "The anthem video we made for Chorus's asset visibility brand",
+            "aspectRatio": "16:9"
+          }
+        },
+        {
+          "component": "StrategyCard",
+          "props": {
+            "title": "Give the Category Its Own Idea",
+            "content": "Our approach is to build the sub-category around one idea it can own, then let the name and naming system follow from that idea. A name chosen from the parent platform's feature list will always read as a feature.",
+            "icon": "lightbulb"
+          }
+        },
+        {
+          "component": "CaseStudyTeaser",
+          "props": {
+            "title": "Chorus (Alphabet X): Creating an Eye-Opening Asset Visibility Brand",
+            "clientName": "Chorus (Alphabet X)",
+            "summary": "We developed Chorus's brand narrative around \"orchestration\", wrote the brief for its visual identity system including a new logo, and later worked on product naming and nomenclature for its asset visibility platform.",
+            "thumbnailUrl": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/thumbnails/chorus-alphabet-x-creating-an-eye-opening-asset-visibility-brand.webp",
+            "slug": "chorus-alphabet-x-creating-an-eye-opening-asset-visibility-brand",
+            "capabilities": [
+              "Brand Strategy",
+              "Creative Direction",
+              "Naming"
+            ],
+            "industries": [
+              "Enterprise Software"
+            ]
+          }
+        }
+      ]
+    },
+    "explanation": "Chorus is our closest example: an asset visibility platform from a startup within Alphabet's X, where the narrative came first and the product naming followed. It tracks goods rather than security, and we haven't published a case study on naming a security sub-category. For yours, we'd start by pinning down the one idea the category owns, before generating any names. Our Strategy Lead can scope that with you.",
+    "contactCTA": false
+  }
+}
