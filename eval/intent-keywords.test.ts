@@ -121,3 +121,9 @@ test('isAboutAG', () => {
   assert.equal(isAboutAG('cybersecurity clients?'), false);
   assert.equal(isAboutAG('Have you done keynote work?'), false);
 });
+
+test('insurer and bank map to finance (06-06 general synonyms), whole word', () => {
+  assert.ok(detectQueryIntent('comparable to a global insurer?').industries.includes('finance'));
+  assert.ok(detectQueryIntent('work for a regional bank').industries.includes('finance'));
+  assert.ok(!detectQueryIntent('a bankrupt startup riverbank').industries.includes('finance'));
+});

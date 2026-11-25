@@ -9,6 +9,7 @@ import * as path from 'path';
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
 delete process.env.RERANK_ENABLED;
 
+import { selectQueries, type EvalQuery } from './lib';
 import { retrieveContext } from '../src/lib/supabase';
 import { cache, CACHE_PREFIXES, CACHE_TTL } from '../src/lib/cache';
 import { CONCIERGE_CONFIG } from '../src/lib/concierge-config';
@@ -32,7 +33,8 @@ const pct = (a: number[], p: number) => {
 
 async function main() {
   const spec = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'queries.json'), 'utf8'));
-  const queries: Q[] = spec.queries;
+  const queries: Q[] = selectQueries(spec.queries as EvalQuery[]) as unknown as Q[];
+  console.log(`Held-out queries excluded (D-602): ${spec.queries.length - queries.length}`);
   const docs: Doc[] = spec.indexed_documents ?? [];
   const titleOf = (slug: string) => docs.find(d => d.slug === slug)?.title ?? slug;
 

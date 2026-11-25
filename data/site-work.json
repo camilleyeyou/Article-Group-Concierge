@@ -1,5 +1,5 @@
 {
-  "scraped_at": "2026-11-21T12:50:20.310Z",
+  "scraped_at": "2026-11-25T12:59:32.481Z",
   "source": "https://www.articlegroup.com/work",
   "items": [
     {
@@ -157,11 +157,11 @@
       "url": "https://articlegroup.com/work/gen-z-workplace-research-and-creative-strategy/",
       "site_title": "Gen Z workplace research and creative strategy",
       "client": "Android",
-      "status": "missing",
-      "match_slug": "android-crafting-a-brand-new-virtual-event",
-      "title_score": 0,
+      "status": "indexed",
+      "match_slug": "android-gen-z-workplace-research-and-creative-strategy",
+      "title_score": 1,
       "client_hit": true,
-      "content_overlap": 0.16,
+      "content_overlap": 1,
       "pdf_pages": [],
       "vimeo_urls": [
         "https://vimeo.com/1030871091"
@@ -215,11 +215,11 @@
       "url": "https://articlegroup.com/work/a-world-of-perspectives-on-the-future-of-learning/",
       "site_title": "A world of perspectives on the future of learning",
       "client": "Google for Education",
-      "status": "missing",
-      "match_slug": "google-crafting-a-cross-product-narrative",
-      "title_score": 0,
+      "status": "indexed",
+      "match_slug": "google-for-education-a-world-of-perspectives-on-the-future-of-learning",
+      "title_score": 1,
       "client_hit": true,
-      "content_overlap": 0.17,
+      "content_overlap": 1,
       "pdf_pages": [],
       "vimeo_urls": [
         "https://vimeo.com/877614456"
@@ -323,11 +323,11 @@
       "url": "https://articlegroup.com/work/building-a-flagship-thought-leadership-brand-for-amazon/",
       "site_title": "Building a flagship thought leadership brand for Amazon",
       "client": "Amazon re:MARS",
-      "status": "missing",
-      "match_slug": "aws-creating-a-new-kind-of-product-demo",
-      "title_score": 0,
-      "client_hit": true,
-      "content_overlap": 0.23,
+      "status": "indexed",
+      "match_slug": "amazon-building-a-flagship-thought-leadership-brand",
+      "title_score": 0.86,
+      "client_hit": false,
+      "content_overlap": 1,
       "pdf_pages": [
         34
       ],
@@ -348,8 +348,7 @@
       "recommended": "skip",
       "decision": "ingest",
       "decision_note": "User decision 2026-11-21 (02-02 checkpoint): optional extra chosen by user; ingested alongside existing amazon-re-mars study, not replacing it",
-      "use_vimeo": false,
-      "slug_override": "amazon-building-a-flagship-thought-leadership-brand"
+      "use_vimeo": false
     },
     {
       "url": "https://articlegroup.com/work/google/",
@@ -389,14 +388,14 @@
       "url": "https://articlegroup.com/work/salesforce/",
       "site_title": "Supporting the largest partner ecosystem in the tech industry",
       "client": "Salesforce",
-      "status": "near-match",
-      "match_slug": "salesforce-slack-strategic-sales-enablement",
-      "title_score": 0,
+      "status": "indexed",
+      "match_slug": "salesforce-supporting-the-largest-partner-ecosystem-in-the-tech-industry",
+      "title_score": 1,
       "client_hit": true,
-      "content_overlap": 0.25,
+      "content_overlap": 0.99,
       "pdf_pages": [],
       "vimeo_urls": [],
-      "text": "We work with Salesforce to create internal assets and partner resources that drive new business\nSalesforce depends on its massive web of partner relationships to sell, configure, and implement solutions for customers.\nSalesforce partners range from global Fortune 100 companies to specialized, local firms.\n“Partners are the lifeblood of what Salesforce is doing now,” said J.C. Collins, Salesforce’s senior vice president and COO of industries, innovation, and partners. (via\nCRN\nExpansion of the partner channel is key to Salesforce keeping pace with its growth goals. To drive additional business through the channel, Salesforce needs to educate employees about the value of partners, and also help partners tell their success stories to customers.\nThat’s where we came in.\nWe began working with Salesforce eight years ago to run a content production program that highlights the value of consulting partners internally and supports partners’ marketing efforts. Our work has been an integral part of helping Salesforce achieve its business goals by promoting the growth of the partner ecosystem.\nOur contribution\nPartner Value Program\nEducating internal stakeholders about how the partner program works, why it's critical to the company's success, and best practices for engaging with partners\nPart of what makes this work so hard—and so important—is that team members at Salesforce don't automatically understand the role partners play or the incredible value that they deliver. Luckily, there are plenty of success stories to share. Partners submit project summaries showcasing how they'd positively impacted a Salesforce customer's digital transformation. Article Group helps prioritize those submissions received by the Salesforce partner marketing team and then uses them to craft stories that evangelize successful teaming. The stories are published internally within Salesforce to engage and inform account, marketing, and sales teams.\nEnabling partner growth\nDriving partner business to support the company’s growth\nThe majority of Salesforce partners have small marketing teams with limited resources to promote their Salesforce practice. And even global partners with larger teams may not have the Salesforce marketing expertise to communicate successes effectively. Article Group works directly with Salesforce partners to create white papers, infographics, and other content that enables them to build awareness for their Salesforce practices and generate leads. This marketing and thought leadership content promotes a partner’s specific expertise and is distributed via the partners’ sales organizations.\nPartner Marketing Center\nCreating a signature resource to support partners\nSalesforce’s Partner Marketing Center (PMC) is a global marketing hub designed to provide partners with ready-made content, customizable campaigns, and integrated marketing solutions. While developing content and making UI improvements to the PMC, Article Group saw an opportunity to make the PMC a key differentiator in the Salesforce partner experience. There weren’t any recent insights-at-scale available on how partner marketers were using the PMC, so Article Group executed the necessary research and created a roadmap for significant improvements, to drive adoption and satisfaction. Execution of this plan is currently underway, with improvements that will both enhance the partner experience and the ability of the Salesforce partner marketing team to serve partners.\nToday, Article Group continues to work with Salesforce, revamping its PMC to make it durable and useful for the diverse group of partners who drive the majority of Salesforce’s revenue.",
+      "text": "We work with Salesforce to create internal assets and partner resources that drive new business\nSalesforce depends on its massive web of partner relationships to sell, configure, and implement solutions for customers.\nThe Salesforce ecosystem will create\nover $1 trillion in new business revenues & 4.2 Million Jobs between 2019-2024. And partners—ranging from global Fortune 100 companies to specialized, local firms—will touch a majority of that revenue.\n“Partners are the lifeblood of what Salesforce is doing now,” said J.C. Collins, Salesforce’s senior vice president and COO of industries, innovation, and partners. (via\nCRN\nExpansion of the partner channel is key to Salesforce keeping pace with its growth goals. To drive additional business through the channel, Salesforce needs to educate employees about the value of partners, and also help partners tell their success stories to customers.\nThat’s where we came in.\nWe began working with Salesforce eight years ago to run a content production program that highlights the value of consulting partners internally and supports partners’ marketing efforts. Our work has been an integral part of helping Salesforce achieve its business goals by promoting the growth of the partner ecosystem.\nOur contribution\nPartner Value Program\nEducating internal stakeholders about how the partner program works, why it's critical to the company's success, and best practices for engaging with partners\nPart of what makes this work so hard—and so important—is that team members at Salesforce don't automatically understand the role partners play or the incredible value that they deliver. Luckily, there are plenty of success stories to share. In 2019 alone, partners submitted more than 2,700 project summaries showcasing how they'd positively impacted a Salesforce customer's digital transformation. Article Group helps prioritize those submissions received by the Salesforce partner marketing team and then uses them to craft stories that evangelize successful teaming. The stories are published internally within Salesforce to engage and inform account, marketing, and sales teams.\nEnabling partner growth\nDriving partner business to support the company’s growth\nThe majority of Salesforce partners have small marketing teams with limited resources to promote their Salesforce practice. And even global partners with larger teams may not have the Salesforce marketing expertise to communicate successes effectively. Article Group works directly with Salesforce partners to create white papers, infographics, and other content that enables them to build awareness for their Salesforce practices and generate leads. This marketing and thought leadership content promotes a partner’s specific expertise and is distributed via the partners’ sales organizations.\nPartner Marketing Center\nCreating a signature resource to support partners\nSalesforce’s Partner Marketing Center (PMC) is a global marketing hub designed to provide partners with ready-made content, customizable campaigns, and integrated marketing solutions. While developing content and making UI improvements to the PMC, Article Group saw an opportunity to make the PMC a key differentiator in the Salesforce partner experience. There weren’t any recent insights-at-scale available on how partner marketers were using the PMC, so Article Group executed the necessary research and created a roadmap for significant improvements, to drive adoption and satisfaction. Execution of this plan is currently underway, with improvements that will both enhance the partner experience and the ability of the Salesforce partner marketing team to serve partners.\nToday, Article Group continues to work with Salesforce, revamping its PMC to make it durable and useful for the diverse group of partners who drive the majority of Salesforce’s revenue.",
       "preview": "We work with Salesforce to create internal assets and partner resources that drive new business Salesforce depends on its massive web of partner relationships to sell, configure, and implement solutions for customers. The Salesforce ecosystem will create over $1 trillion in new business revenues & 4",
       "risk_notes": "Near-match to salesforce-slack-strategic-sales-enablement (no PDF page overlaps this page text above 0.3). It is an 8-year partner content program (Partner Value Program). Quotes THIRD-PARTY figures ( $1 trillion in new business revenues, 4.2 Million Jobs 2019-2024; 2,700 partner project summaries in 2019) that are Salesforce ecosystem forecasts / partner numbers, NOT AG results. Never present as an AG outcome.",
       "proposed_capabilities": [
@@ -409,18 +408,17 @@
       "recommended": "ask",
       "decision": "ingest",
       "decision_note": "User decision 2026-11-21 (02-02 checkpoint): ingest with third-party Salesforce ecosystem forecasts and partner submission counts stripped from text (never AG outcomes)",
-      "use_vimeo": false,
-      "text_edited": true
+      "use_vimeo": false
     },
     {
       "url": "https://articlegroup.com/work/we-created-sexier-white-papers-for-box-and-published-compelling-stories-on-a-popular-platform-increasing-awareness-of-their-solutions-for-business/",
       "site_title": "Establishing thought leadership by publishing share-worthy content",
       "client": "Box",
-      "status": "missing",
-      "match_slug": "chrome-enterprise-timely-compelling-thought-leadership",
-      "title_score": 0.22,
-      "client_hit": false,
-      "content_overlap": 0.17,
+      "status": "indexed",
+      "match_slug": "box-establishing-thought-leadership-by-publishing-share-worthy-content",
+      "title_score": 1,
+      "client_hit": true,
+      "content_overlap": 1,
       "pdf_pages": [],
       "vimeo_urls": [],
       "text": "Create a whitepaper for people who don’t read whitepapers\nBox has a fascinating purpose—to create the tools that allow people across the globe to collaborate seamlessly. The truth of that vision is that most people run afoul of regulatory or compliance rules, corporate policies and the general insanity of modern existence. Box has built the solution into their software, so the tools fade into the background and you can work how you’d like.\nIt’s an incredible story, but under the surface, Box wanted to drive greater awareness and prime sales conversations by building deeper connections with prospects. So they enlisted Article Group to create ebooks, slideshares, and whitepapers.\nWe started by force ranking the most inspirational whitepapers we’d ever read. It was a very quick exercise. The simple fact is that most whitepapers aren’t interesting. It begged the question, what can we make that people will love to read? And how do we make it on a daily basis? Ready, go.\nWe all agreed there was a bigger opportunity to create long-term value through content.\nThink about parties\n(and how not to be boring at them)\nLike many companies and people, Box tended to talk about the thing it knew best: itself. And having a good story about yourself and your new features serves a purpose, but it misses on a basic rule of human interaction—to be interesting quit talking about yourself.\nWe worked together to find a range of topics and conversations that focused on the ideas they understood deeply and could invest in.\nLet’s own the future\n…of work\nOnce we had our conversations mapped, we could build our publishing and distribution strategy around an editorial calendar. We then constructed a workflow to output 6-10 new stories a week—utilized by the sales team, social team and cross-pollinated with media appearances.\nThe stories lived online as a magazine-style digital publication called Blueprint, with a range of authentic, shareable posts focused on the same meaty ideas the engineering team was tackling but as insightful, “why didn’t I think of that” stories.\nUsing a wide range of authors and micro-influencers, we were able to establish Box as a thought leader in how work gets done, and position its point of view as one worth paying attention to.\nA by-product of the effort was a sharpened internal process for creating content with more cohesion and structure. Box now had something specific to say, and a content engine by which to share it. And more than just a series of one-off pieces of content, the publication built a body of work that was an asset in its own right.\nA bonafide influencer, both internally and externally.\nAs content started rolling off the virtual presses it became clear—by views and shares—which topics were gaining more traction than others. As we measured what resonated, we further refined our research and writing. We were thrilled to see both Box and Blueprint named as top 50 influencers around the future of work just a few months after we started publishing.\nThe result was the most successful campaign Box had run to date, which managed to take one of the company’s driest focus areas—document governance—and spin it into a relevant, interesting and engaging content stream.",
@@ -442,11 +440,11 @@
       "url": "https://articlegroup.com/work/simons-foundation/",
       "site_title": "Launching a first-ever education division to unlock scientific thinking",
       "client": "Simons Foundation",
-      "status": "missing",
-      "match_slug": "simons-foundation-illuminating-a-new-brand-identity",
-      "title_score": 0,
+      "status": "indexed",
+      "match_slug": "simons-foundation-launching-a-first-ever-education-division-to-unlock-scientific",
+      "title_score": 1,
       "client_hit": true,
-      "content_overlap": 0.24,
+      "content_overlap": 1,
       "pdf_pages": [],
       "vimeo_urls": [
         "https://vimeo.com/190925687"
@@ -470,11 +468,11 @@
       "url": "https://articlegroup.com/work/houselogic-project-title-goes-here-for-now/",
       "site_title": "Leading the home buying conversation",
       "client": "HouseLogic (NAR)",
-      "status": "missing",
-      "match_slug": "chrome-enterprise-reclaiming-the-browser-conversation",
-      "title_score": 0.17,
-      "client_hit": false,
-      "content_overlap": 0.14,
+      "status": "indexed",
+      "match_slug": "nar-houselogic",
+      "title_score": 1,
+      "client_hit": true,
+      "content_overlap": 1,
       "pdf_pages": [],
       "vimeo_urls": [],
       "text": "The challenge: Guide people through the complicated home buying process.\nProven advice from real people.\nThe National Association of Realtors (NAR) originally created the HouseLogic website as a lifestyle play, to help homeowners enjoy and improve their homes. But they soon realized a bigger mission for the site: to guide a new generation along the sometimes mystifying—and often anxiety-producing—path to buying or selling a home.\nIt’s not about couching real estate terms in millennial-ready memes, or delivering endless data points. Together we found that new buyers and sellers simply want proven advice from real people, in relatable language, to reduce their stress and boost their confidence on the journey.\nWhat if we created a guide for buyers and sellers that delivered on this promise, with timely strategies and clever infographics? Real people might read it, use it, and share it. (It might strengthen NAR’s core realtor brand, too.)\nMillennials trust people more than websites.\nIt’s true.\nIn a shocking upset, humans outrank HTML. (When it comes to understanding the homebuying process, at least.)\nWe found that millennial home buyers and sellers crave information that does five things really well:\nIt personalizes the journey.\nIt tells them what to expect with each new step.\nIt reminds them what they need to do, now.\nIt’s transparent about the process, timelines and strategies.\nIt layers different perspectives to give a balanced view.\nThis insight helped us define the structure and the voice of a new content series.\nGive buyers and sellers an Everything Guide.\nOur Solution.\nWhether they’re searching for their first home or prepping their house to sell, our audience wants to know what to expect at every step. We heard it at every focus group: “Give me real answers any time, day or night.”\nWe answered the need with a clearly written, smartly illustrated series of chapters covering each step of the journey for buyers and sellers. The voice is refreshingly relatable and jargon-free—yet entirely practical at every step. It’s like having a real estate whisperer on your shoulder, even at those anxious midnight-after-making-an-offer moments. The guides include plenty of aggregated data, but it’s not the focus—it’s simply used to complement each strategy.\nChapters in the buyer’s journey include “How to Be a Savvy Open House Guest” and “Make an Offer Like a Boss”. Sellers get the lowdown on setting a price, hosting an open house, navigating the home inspection and every other key milestone.\nThe result? A real, resonant voice in real estate.\nIt’s turns out that when you give people the right information at the right time—and in the right format—they will read it, return to it, and share it.\nThe Everything Guides on HouseLogic.com delivered a 35% increase in average time per visit, and a 3.5% improvement in bounce rate. The Buy-a-Home Step by Step infographic alone had an almost 15% share rate.\nAnd NAR tripled their email signup with the program. Which led to this gracious email from Anne Feder, Managing Director, National Association of Realtors:\n“Our hats are off to you. Thank you for a job brilliantly done.”",
@@ -490,8 +488,7 @@
       "recommended": "ask",
       "decision": "ingest",
       "decision_note": "User decision 2026-11-21 (02-02 checkpoint): optional extra chosen by user; site slug is a placeholder so a clean slug is used",
-      "use_vimeo": false,
-      "slug_override": "nar-houselogic"
+      "use_vimeo": false
     }
   ]
 }

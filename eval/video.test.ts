@@ -4,6 +4,7 @@ import { posterUrlFor, isDirectVideoUrl } from '../src/lib/video-poster';
 import { isPlayableVideoUrl } from '../src/lib/concierge-config';
 import { dropUnplayableVideos, postProcessOutput } from '../src/lib/layout-postprocess';
 import { formatContext, orchestrateStream, type OrchestratorStreamEvent, type RawModelEvent } from '../src/lib/orchestrator';
+import { runAutomatedChecks, type RunRecord } from './lib';
 import type { LayoutPlan, OrchestratorOutput } from '../src/types';
 
 const base = 'https://x.supabase.co/storage/v1/object/public/case-study-videos/a/B_-_C';
@@ -94,4 +95,41 @@ test('formatContext hides unplayable Vimeo URL from the model', () => {
   assert.ok(!dead.includes('use a VideoPlayer'));
   const ok = mk(GOOD);
   assert.ok(ok.includes(`Vimeo URL: ${GOOD} (use a VideoPlayer if you present this study)`));
+});
+
+// Harness correction (06-05): the check counts only videos the app tells the model about.
+function videoRecord(vimeo: string | null, slug: string): RunRecord {
+  const layout = { layout: [{ component: 'HeroBlock', props: { title: 'Hi' } }, { component: 'CaseStudyTeaser', props: { title: 'T', summary: 's', slug } }] };
+  return {
+    id: 'fixture', persona_id: 'p', type: 'direct', query: 'show me a video case study',
+    expected: { components: ['HeroBlock'], fallback_expected: false, case_studies: [], site_only_work: [], notes: '' },
+    status: 'ok', http_status: 200, latency_ms: 1, error: null, response: null,
+    raw_response: 'x\n```json\n' + JSON.stringify(layout) + '\n```',
+    orchestrator_error: null,
+    retrieval: {
+      chunks: [{ slug, document_title: 'T', client_name: 'C', document_type: 'case_study', combined_score: 0.5, vimeo_url: vimeo, thumbnail_url: null, content: 'c' }],
+      visualAssets: [], relatedMetrics: [],
+    },
+  } as unknown as RunRecord;
+}
+
+test('eval video check ignores an unplayable Vimeo URL', () => {
+  const c = runAutomatedChecks(videoRecord(DEAD2, 'gfe'));
+  assert.equal(c.video_query, true);
+  assert.equal(c.video_query_missing_video, false);
+  assert.deepEqual(c.videos_available_not_used, []);
+});
+
+test('eval video check still flags a playable video that is not shown', () => {
+  const c = runAutomatedChecks(videoRecord(`${base}.mp4`, 'ok-slug'));
+  assert.equal(c.video_query_missing_video, true);
+  assert.deepEqual(c.videos_available_not_used, ['ok-slug']);
+});
+
+test('eval missing-video check counts only presented studies (option D)', () => {
+  // playable MP4 retrieved but the response presents a different slug
+  const rec = videoRecord(`${base}.mp4`, 'ok-slug');
+  const layout = { layout: [{ component: 'HeroBlock', props: { title: 'Hi' } }, { component: 'CaseStudyTeaser', props: { title: 'T', summary: 's', slug: 'other' } }] };
+  (rec as any).raw_response = 'x\n```json\n' + JSON.stringify(layout) + '\n```';
+  assert.equal(runAutomatedChecks(rec).video_query_missing_video, false);
 });

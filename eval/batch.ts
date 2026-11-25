@@ -8,16 +8,18 @@
  *   npm run eval:batch -- --runs 3 --second-grader            # also grade a 15-response sample with a non-Anthropic model
  *   npm run eval:batch -- --runs 1 --subset phase4-smoke   # Phase 4 smoke (~21 queries, ~$1.80)
  *
+ *   npm run eval:batch -- --runs 1 --proof [--second-grader]   # Phase 6 proof run on all 75 queries
+ *
  * N defaults to 1 (EVAL_RUNS env or --runs), max 5.
  */
 
 import * as path from 'path';
-import { RESULTS_DIR, argValue, hasFlag, timestamp, writeJson } from './lib';
+import { RESULTS_DIR, argValue, hasFlag, loadQueriesFile, readJson, selectQueries, timestamp, writeJson, type RunFile } from './lib';
 import * as fs from 'fs';
 import { aggregateRuns } from './aggregate';
 import { gradeDir } from './grade';
 import { gradeSecond } from './grade-second';
-import { FULL_EVAL_MIN_CREDIT_USD, PreflightError, runPreflight } from './preflight';
+import { PreflightError, estimateRunUsd, runPreflight } from './preflight';
 import { writeReport } from './report';
 import { runEval } from './run';
 import { resolveIds } from './subsets';
@@ -35,22 +37,22 @@ async function main() {
   const limitArg = argValue('--limit');
   const limit = limitArg ? Number(limitArg) : undefined;
   const ids = resolveIds({ ids: argValue('--ids'), subset: argValue('--subset') });
+  const proof = hasFlag('--proof');
+  const n = selectQueries(loadQueriesFile().queries, { ids, persona, limit, includeHeldOut: proof }).length;
 
   // Stops before spending if the credit can't cover the whole batch
   const pre = await runPreflight({
     supabase: true,
     openrouter: true,
     devServer: BASE_URL,
-    minCreditUsd: ids
-      ? runs * Math.max(0.5, 0.09 * ids.length) + 1 + (secondGrader ? 1 : 0)
-      : FULL_EVAL_MIN_CREDIT_USD + (runs - 1) * 3.5 + (secondGrader ? 1 : 0),
+    minCreditUsd: runs * estimateRunUsd(n) + 1 + (secondGrader ? 1 : 0),
   });
 
   const startedAt = new Date().toISOString();
   const batchDir = path.join(RESULTS_DIR, `batch-${timestamp()}`);
   const dirs: string[] = [];
   for (let i = 1; i <= runs; i++) {
-    const dir = await runEval({ persona, limit, ids });
+    const dir = await runEval({ persona, limit, ids, includeHeldOut: proof });
     await gradeDir(dir);
     // Second-grader agreement is computed on the first run only
     if (secondGrader && i === 1) await gradeSecond(dir);
@@ -66,6 +68,10 @@ async function main() {
     started_at: startedAt,
     finished_at: new Date().toISOString(),
     ids: ids ?? null,
+    proof,
+    query_count: n,
+    held_out_count: selectQueries(loadQueriesFile().queries, { ids, persona, limit, includeHeldOut: proof }).filter(q => q.held_out === true).length,
+    git_commit: dirs.length ? readJson<RunFile>(path.join(dirs[0], 'responses.json')).git_commit : null,
     runs: dirs.map(d => path.basename(d)),
     credit_before_usd: before,
     credit_after_usd: after,

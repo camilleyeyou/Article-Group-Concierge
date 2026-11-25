@@ -1,0 +1,42 @@
+name: prod-timing
+on:
+  workflow_dispatch:
+    inputs:
+      batch:
+        description: "1, 2, 3 or dry"
+        required: true
+        type: choice
+        options: ["dry", "1", "2", "3"]
+      expect_commit:
+        description: "Commit production should be serving (short sha)"
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: prod-timing
+  cancel-in-progress: false
+jobs:
+  time:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Time production
+        env:
+          EVAL_BASE_URL: https://article-group-concierge.vercel.app
+          BATCH: ${{ inputs.batch }}
+          EXPECT_COMMIT: ${{ inputs.expect_commit }}
+        run: |
+          if [ "$BATCH" = "dry" ]; then FLAG="--dry"; else FLAG="--batch $BATCH"; fi
+          npx tsx eval/prod-timing.ts $FLAG --expect-commit "$EXPECT_COMMIT" --out timing.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: prod-timing-${{ inputs.batch }}-${{ github.run_id }}
+          path: timing.json
+          retention-days: 30

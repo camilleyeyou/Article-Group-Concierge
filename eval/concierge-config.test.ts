@@ -19,6 +19,7 @@ import {
   STRATEGY_LEAD_TRIGGER_DESCRIPTIONS,
   generationParams,
   generationConfig,
+  heroPassInstruction,
 } from '../src/lib/concierge-config';
 import fs from 'node:fs';
 import { DISPUTED_LABELS, isDisputed } from './labels';
@@ -67,7 +68,8 @@ test('keywordTriggers', () => {
 
 test('keywordTriggers over eval/queries.json', () => {
   const raw = JSON.parse(fs.readFileSync('eval/queries.json', 'utf8'));
-  const qs: any[] = Array.isArray(raw) ? raw : raw.queries;
+  // Held-out queries are never used to tune (D-602): this snapshot covers the original 50 only.
+  const qs: any[] = (Array.isArray(raw) ? raw : raw.queries).filter((q: any) => q.held_out !== true);
   const ids = (k: string) => qs.filter(q => keywordTriggers(q.query ?? q.text).includes(k as any)).map(q => q.id);
   assert.deepEqual(ids('pricing'), ['p5-q06', 'p5-q07', 'p5-q10']);
   assert.deepEqual(ids('timeline'), ['p1-q10', 'p2-q10', 'p3-q07', 'p3-q10', 'p4-q10', 'p5-q10']);

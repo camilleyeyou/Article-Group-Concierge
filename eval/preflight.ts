@@ -29,6 +29,12 @@ export class PreflightError extends Error {}
 /** Minimum OpenRouter credit for one full eval run via batch preflight. */
 export const FULL_EVAL_MIN_CREDIT_USD = 4.5; // batch preflight minimum for one full run (3.5 per run + 1 margin)
 
+export const EVAL_COST_PER_QUERY_USD = 0.07; // ~$3.50 per 50-query run incl. grading
+
+export function estimateRunUsd(queries: number): number {
+  return queries * EVAL_COST_PER_QUERY_USD;
+}
+
 const TIMEOUT_MS = 10_000;
 
 async function timedFetch(url: string, init: RequestInit = {}): Promise<Response> {

@@ -17,6 +17,7 @@ import {
   COMPONENTS,
   EVAL_MODEL,
   hasFlag,
+  isHeldOut,
   PERSONAS_PATH,
   QUERIES_PATH,
   QUERY_MIX,
@@ -207,6 +208,14 @@ async function main() {
   if (fs.existsSync(QUERIES_PATH) && !hasFlag('--force')) {
     console.log('eval/queries.json exists - keeping it so runs stay comparable. Use --force to regenerate.');
     return;
+  }
+
+  if (fs.existsSync(QUERIES_PATH)) {
+    const existing = readJson<QueriesFile>(QUERIES_PATH);
+    if (existing.queries.some(isHeldOut)) {
+      console.error('eval/queries.json contains held-out queries (Phase 6, D-602). Refusing to regenerate; it would destroy frozen labels.');
+      process.exit(1);
+    }
   }
 
   const { personas } = readJson<{ personas: Persona[] }>(PERSONAS_PATH);

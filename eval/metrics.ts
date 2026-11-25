@@ -21,6 +21,7 @@ import {
 import { CONCIERGE_CONFIG, type StrategyLeadTrigger } from '../src/lib/concierge-config';
 import { isDisputed } from './labels';
 import { suppressionReason } from '../src/lib/instant-teasers';
+import type { ProdTimingFile } from './prod-timing-types';
 
 export interface Summary {
   n: number;
@@ -147,6 +148,119 @@ export function phase5Gates(m: RunMetrics): GateRow[] {
   ];
 }
 
+/**
+ * Phase 6 ready bar (D-604 proportional limits, D-605 speed on warm cache-miss
+ * production timings). Unsupported-claim share is a proportion because proof runs
+ * have 75 queries against the 50-query baseline.
+ */
+export const PROOF_BAR = {
+  recallPctMin: 90,
+  unsupportedShareMax: 0.10,
+  goalAsResultMax: 0,
+  capabilityNotShownMax: 0,
+  inventionBaitMax: 0,
+  voiceMin: 4.5,
+  teasersMedianMaxMs: 1500,
+  heroFirstMedianMaxMs: 4000,
+} as const;
+
+export function phase6Gates(m: RunMetrics): GateRow[] {
+  const B = PROOF_BAR;
+  const eq0 = (gate: string, value: number | null): GateRow => ({ gate, value, limit: '= 0', pass: value === null ? null : value === 0 });
+  const unsupportedMax = Math.ceil(B.unsupportedShareMax * m.graded) - 1;
+  return [
+    {
+      gate: 'all queries answered and graded',
+      value: m.graded,
+      limit: `= ${m.total}`,
+      pass: m.total > 0 && m.graded === m.total && m.errors === 0,
+    },
+    {
+      gate: 'recall >= 90% (frozen labels)',
+      value: m.recall.pct,
+      limit: `>= ${B.recallPctMin}%`,
+      pass: m.recall.pct === null ? null : m.recall.pct >= B.recallPctMin,
+    },
+    eq0('goals stated as results = 0', m.claims_by_kind ? m.claims_by_kind.goal_as_result : null),
+    eq0('invention-bait presupposed = 0', m.invention_bait_presupposed),
+    eq0('capabilities not shown = 0', m.claims_by_kind ? m.claims_by_kind.capability_not_shown : null),
+    {
+      gate: 'responses with any unsupported claim < 10%',
+      value: m.graded ? m.responses_with_unsupported_claims : null,
+      limit: `< 10% (<= ${unsupportedMax} of ${m.graded})`,
+      pass: m.graded ? m.responses_with_unsupported_claims < B.unsupportedShareMax * m.graded : null,
+    },
+    {
+      gate: 'voice >= 4.5',
+      value: m.criteria.voice,
+      limit: `>= ${B.voiceMin}`,
+      pass: m.criteria.voice === null ? null : round(m.criteria.voice, 2) >= B.voiceMin,
+    },
+  ];
+}
+
+export interface TimingSummary {
+  n: number;
+  warm_n: number;
+  cold_n: number;
+  cache_hits: number;
+  missing_perf: number;
+  teasers_warm_median: number | null;
+  teasers_warm_n: number;
+  hero_first_warm_median: number | null;
+  teasers_cold_median: number | null;
+  hero_first_cold_median: number | null;
+  p90_teasers_warm: number | null;
+  p90_hero_first_warm: number | null;
+}
+
+/** Warm = perf present, instance_req > 1, not the warm-up request, no error. */
+export function summarizeTiming(f: ProdTimingFile): TimingSummary {
+  const recs = f.records.filter(r => !r.warmup);
+  const clean = recs.filter(r => !r.error);
+  const missing = clean.filter(r => !r.perf).length;
+  const isWarm = (r: ProdTimingFile['records'][number]) => !!r.perf && (r.perf.instance_req ?? 0) > 1;
+  const warm = clean.filter(isWarm);
+  const cold = clean.filter(r => !!r.perf && !isWarm(r));
+  const hits = clean.filter(r => r.perf && (r.perf.rag_cache_hit === 1 || r.perf.orch_cached === true)).length;
+  const num = (xs: Array<number | null>) => xs.filter((x): x is number => typeof x === 'number');
+  const tw = num(warm.filter(r => r.t_teasers_ms != null).map(r => r.t_teasers_ms));
+  const hw = num(warm.map(r => r.t_hero_first_ms));
+  return {
+    n: recs.length,
+    warm_n: warm.length,
+    cold_n: cold.length,
+    cache_hits: hits,
+    missing_perf: missing,
+    teasers_warm_median: median(tw),
+    teasers_warm_n: tw.length,
+    hero_first_warm_median: median(hw),
+    teasers_cold_median: median(num(cold.filter(r => r.t_teasers_ms != null).map(r => r.t_teasers_ms))),
+    hero_first_cold_median: median(num(cold.map(r => r.t_hero_first_ms))),
+    p90_teasers_warm: percentile(tw, 90),
+    p90_hero_first_warm: percentile(hw, 90),
+  };
+}
+
+export function timingGates(s: TimingSummary): GateRow[] {
+  const le = (gate: string, value: number | null, max: number): GateRow => ({
+    gate,
+    value,
+    limit: `<= ${max} ms`,
+    pass: value === null ? null : value <= max,
+  });
+  return [
+    {
+      gate: 'cache-safe batch (0 cache hits, perf flags on every request)',
+      value: s.cache_hits + s.missing_perf,
+      limit: '= 0',
+      pass: s.n === 0 ? null : s.cache_hits === 0 && s.missing_perf === 0,
+    },
+    le('median t_teasers (warm, non-suppressed) <= 1500 ms', s.teasers_warm_median, PROOF_BAR.teasersMedianMaxMs),
+    le('median t_hero_first (warm) <= 4000 ms', s.hero_first_warm_median, PROOF_BAR.heroFirstMedianMaxMs),
+  ];
+}
+
 export interface RunMetrics {
   dir: string;
   run_id: string;
@@ -160,6 +274,7 @@ export interface RunMetrics {
     judge_route: string | null;
   };
   total: number;
+  errors: number;
   graded: number;
   criteria: Record<Criterion, number | null>;
   hallucinations: number;
@@ -255,8 +370,9 @@ function computeInstant(run: RunFile): InstantMetrics | null {
   };
 }
 
-export function computeRunMetrics(dir: string): RunMetrics {
+export function computeRunMetrics(dir: string, opts: { filter?: (r: RunFile['records'][number]) => boolean } = {}): RunMetrics {
   const run = readJson<RunFile>(path.join(dir, 'responses.json'));
+  if (opts.filter) run.records = run.records.filter(opts.filter);
   const gradesPath = path.join(dir, 'grades.json');
   const gradesFile: GradesFile | null = fs.existsSync(gradesPath) ? readJson<GradesFile>(gradesPath) : null;
   const gradeById = new Map<string, GradeRecord>((gradesFile?.grades ?? []).map(g => [g.id, g]));
@@ -403,6 +519,7 @@ export function computeRunMetrics(dir: string): RunMetrics {
       judge_route: gradesFile?.grader_route ?? null,
     },
     total: rows.length,
+    errors: rows.filter(r => r.record.status === 'error').length,
     graded: graded.length,
     criteria,
     hallucinations: graded.filter(r => r.grade!.hallucination).length,

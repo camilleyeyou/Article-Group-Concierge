@@ -13,6 +13,7 @@ const cases: Array<[string, string, number]> = [
   ['question', 'Is it right? Yes.', 2],
   ['markdown', "**Short answer:** no. We can't.", 2],
   ['decimal', 'One sentence with 3.5x growth', 1],
+  ['J.P. initials', 'Our J.P. Morgan work named the terminals. We would start with your buyers.', 2],
   ['empty', '', 0],
   ['whitespace', '   ', 0],
 ];

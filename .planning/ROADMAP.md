@@ -154,7 +154,21 @@ Plans:
   2. A one-page before/after compares the baseline run 2026-11-20T15-12-31 with the final runs, metric by metric, with every delta listed.
   3. Five demo queries are chosen and each is verified to produce an accurate, strong response.
 **Constraints / gates**: Three runs plus the second grader cost ~$12, so confirm remaining credit first. If any bar fails, return to the responsible earlier phase rather than relaxing the bar.
-**Plans**: TBD
+**Plans:** 12 plans
+
+Plans:
+- [x] 06-01-PLAN.md — Held-out guard in the eval harness (selectQueries, --proof opt-in, tuning tools exclude held-out)
+- [x] 06-02-PLAN.md — 25 held-out queries, evidence-backed labels, user approval, hash freeze (D-601..D-603)
+- [x] 06-03-PLAN.md — Proof measurement: D-604/D-605 gates, held-out split, eval:batch --proof, eval:proof-report
+- [x] 06-04-PLAN.md — US-vantage speed: PERF_TIMING SSE cache flags, prod-timing client, fixed batches, GitHub Actions workflow
+- [x] 06-05-PLAN.md — Fix pass (generation): voice and count-claim rules, video check correction, video data decision
+- [x] 06-06-PLAN.md — Fix pass (retrieval): offline recall margin on the original 50 within Phase 3 rules
+- [x] 06-07-PLAN.md — Top-up and spend approval, ledger, paid phase6-fix subset verification, go/no-go
+- [x] 06-08-PLAN.md — Static re-checks: site work diff and video re-check (D-609)
+- [ ] 06-09-PLAN.md — Proof code to production (user's route), timing batches fixed, dry US timing batch
+- [ ] 06-10-PLAN.md — Three counted 75-query runs with per-run timing batches and gate checks (D-608 stop rule)
+- [ ] 06-11-PLAN.md — Demo shortlist, user pick, production claim-by-claim verification (D-611/D-612)
+- [ ] 06-12-PLAN.md — Owner before/after page (D-613/D-614), publish, record, squash, push, live smoke
 
 ## Progress
 

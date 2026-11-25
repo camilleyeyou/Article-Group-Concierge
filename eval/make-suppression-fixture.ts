@@ -5,16 +5,16 @@
 import './lib';
 import * as fs from 'fs';
 import * as path from 'path';
-import { EVAL_DIR, RESULTS_DIR, QUERIES_PATH } from './lib';
+import { EVAL_DIR, RESULTS_DIR, QUERIES_PATH, isHeldOut } from './lib';
 
 const argIdx = process.argv.indexOf('--run');
 const run = argIdx > -1 ? process.argv[argIdx + 1] : '2026-11-22T22-48-20';
 
 const responses = JSON.parse(fs.readFileSync(path.join(RESULTS_DIR, run, 'responses.json'), 'utf8'));
 const queries = JSON.parse(fs.readFileSync(QUERIES_PATH, 'utf8')) as {
-  queries: { id: string; type: string; text: string; expected: { fallback_expected: boolean } }[];
+  queries: { id: string; type: string; text: string; held_out?: boolean; expected: { fallback_expected: boolean } }[];
 };
-const byId = new Map(queries.queries.map(q => [q.id, q]));
+const byId = new Map(queries.queries.filter(q => !isHeldOut(q)).map(q => [q.id, q]));
 
 const records = (responses.records as any[]).map(r => {
   const q = byId.get(r.id);

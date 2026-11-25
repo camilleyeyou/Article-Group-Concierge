@@ -1,4 +1,5 @@
 import './lib';
+import { isHeldOut } from './lib';
 /**
  * Read-only latency probes for PERF-01 (embeddings only are paid, fractions of a cent).
  *   a) trivial Supabase REST call RTT vs hybrid_search_v2 RPC time
@@ -9,8 +10,8 @@ import * as fs from 'fs';
 import { supabase, generateEmbedding, hybridSearchV2, searchVisualAssets } from '../src/lib/supabase';
 import { embeddingConfig } from '../src/lib/llm-config';
 
-const qs: { queries: { id: string; text: string }[] } = JSON.parse(fs.readFileSync('eval/queries.json', 'utf8'));
-const texts = qs.queries.slice(10, 20).map(q => q.text);
+const qs: { queries: { id: string; text: string; held_out?: boolean }[] } = JSON.parse(fs.readFileSync('eval/queries.json', 'utf8'));
+const texts = qs.queries.filter(q => !isHeldOut(q)).slice(10, 20).map(q => q.text);
 const med = (a: number[]) => { const s = [...a].sort((x, y) => x - y); return s[Math.floor(s.length / 2)]; };
 const ms = async <T,>(f: () => Promise<T>) => { const t = performance.now(); const r = await f(); return [performance.now() - t, r] as const; };
 

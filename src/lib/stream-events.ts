@@ -62,6 +62,14 @@ export function encodeSse(e: StreamEvent): Uint8Array {
   return encoder.encode(`event: ${e.type}\ndata: ${JSON.stringify(e)}\n\n`);
 }
 
+/**
+ * SSE comment line carrying diagnostic flags (PERF_TIMING only). Comments never become events:
+ * parseFrame skips lines starting with ':'. Contains no query text or secrets.
+ */
+export function encodeSseComment(tag: 'perf' | 'perf-final', data: Record<string, unknown>): Uint8Array {
+  return encoder.encode(`: ${tag} ${JSON.stringify(data)}\n\n`);
+}
+
 export const SSE_KEEPALIVE: Uint8Array = encoder.encode(': ping\n\n');
 
 function parseFrame(frame: string): StreamEvent | null {

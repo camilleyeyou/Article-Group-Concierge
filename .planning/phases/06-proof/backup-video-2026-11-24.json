@@ -1,0 +1,38 @@
+{
+  "taken_at": "2026-11-25T05:51:07.402Z",
+  "slug": "google-for-education-a-world-of-perspectives-on-the-future-of-learning",
+  "documents": [
+    {
+      "id": "a23ac8d4-0d67-48e1-bf83-c955589df31c",
+      "title": "Google for Education: A world of perspectives on the future of learning",
+      "slug": "google-for-education-a-world-of-perspectives-on-the-future-of-learning",
+      "doc_type": "case_study",
+      "summary": "Turning future-of-education research into a global video series for Google for Education Google for Education commissioned a Future of Education research study and wanted to bring its findings to life. The goal was to create content that shared meaningful perspectives from educators while building a stronger thought leadership platform. Journey Article Group created an ongoing video series that positioned Google for Education as a pioneer at the intersection of technology and education.",
+      "source_file_path": null,
+      "client_name": "Google for Education",
+      "vimeo_url": "https://vimeo.com/877614456",
+      "author": null,
+      "published_date": null,
+      "external_url": "https://articlegroup.com/work/a-world-of-perspectives-on-the-future-of-learning/",
+      "created_at": "2026-11-21T12:56:16.302219+00:00",
+      "updated_at": "2026-11-21T12:56:16.302219+00:00",
+      "thumbnail_url": null,
+      "hero_image_url": null,
+      "pdf_url": null,
+      "hero_video_url": null
+    }
+  ],
+  "support_videos": [
+    {
+      "id": "b7fa2b2e-27c3-4d59-b522-c460274713d1",
+      "document_id": "a23ac8d4-0d67-48e1-bf83-c955589df31c",
+      "video_url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/google-for-education-a-world-of-perspectives-on-the-future-of-learning/Telling_stories_about_AI_that_are_actually_stories_about_people_Teaching-For-Tomorrow-Trailer_refresh-v02.mp4",
+      "storage_path": null,
+      "title": "Telling stories about AI that are actually stories about people_Teaching-For-Tomorrow-Trailer_refresh-v02",
+      "description": null,
+      "duration_seconds": null,
+      "display_order": 1,
+      "created_at": "2026-11-21T16:59:46.208134+00:00"
+    }
+  ]
+}

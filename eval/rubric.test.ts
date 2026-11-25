@@ -227,7 +227,7 @@ test('teaser tags not from the catalogue are reported', () => {
 test('video query without a VideoPlayer is flagged', () => {
   const q = 'we need instagram and tiktok videos';
   const ch = chunk({ slug: 'a', vimeo_url: 'https://vimeo.com/1' });
-  const base = { ...withChunks([ch], [{ component: 'HeroBlock', props: { title: 'x' } }]), query: q } as RunRecord;
+  const base = { ...withChunks([ch], [{ component: 'HeroBlock', props: { title: 'x' } }, { component: 'CaseStudyTeaser', props: { slug: 'a', title: 'a', summary: 's' } }]), query: q } as RunRecord;
   const c = runAutomatedChecks(base);
   assert.equal(c.video_query, true);
   assert.equal(c.video_query_missing_video, true);

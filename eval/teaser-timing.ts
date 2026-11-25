@@ -10,7 +10,7 @@ import './lib';
 import * as fs from 'fs';
 import * as path from 'path';
 import { spawn, type ChildProcess } from 'child_process';
-import { argValue, hasFlag } from './lib';
+import { argValue, hasFlag, isHeldOut } from './lib';
 import { SseDecoder, type StreamEvent } from '../src/lib/stream-events';
 
 const SET = ['p1-q01', 'p1-q03', 'p1-q10', 'p2-q01', 'p2-q04', 'p3-q02', 'p4-q01', 'p4-q05', 'p1-q09', 'p2-q08'];
@@ -120,8 +120,8 @@ async function main() {
     argValue('--out') ?? path.join('eval/results', `teaser-timing-${label}-${new Date().toISOString().replace(/[:.]/g, '-')}`);
   fs.mkdirSync(outDir, { recursive: true });
   const base = restart ? `http://localhost:${port}` : (process.env.EVAL_BASE_URL || 'http://localhost:3000').replace(/\/$/, '');
-  const qs: { queries: { id: string; text: string }[] } = JSON.parse(fs.readFileSync('eval/queries.json', 'utf8'));
-  const text = new Map(qs.queries.map(q => [q.id, q.text]));
+  const qs: { queries: { id: string; text: string; held_out?: boolean }[] } = JSON.parse(fs.readFileSync('eval/queries.json', 'utf8'));
+  const text = new Map(qs.queries.filter(q => !isHeldOut(q)).map(q => [q.id, q.text]));
   const samples: Sample[] = [];
 
   for (let run = 0; run < runs; run++) {

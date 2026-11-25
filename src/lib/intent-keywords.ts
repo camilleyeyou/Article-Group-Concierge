@@ -34,7 +34,7 @@ export const INDUSTRY_KEYWORDS: Record<string, string[]> = {
   'artificial-intelligence': ['artificial intelligence', 'generative', 'gen ai', 'genai', 'machine learning', 'large language model'],
   'cloud-infrastructure': ['cloud', 'infrastructure', 'data center'],
   'cybersecurity': ['security', 'cybersecurity', 'cyber', 'threat'],
-  'finance': ['finance', 'financial', 'banking', 'fintech', 'investment', 'insurance', 'wealth'],
+  'finance': ['finance', 'financial', 'banking', 'bank', 'fintech', 'investment', 'insurance', 'insurer', 'wealth'],
   'healthcare': ['health', 'healthcare', 'medical', 'pharma', 'wellness', 'fitness', 'biotech'],
   'consumer-goods': ['consumer', 'consumer goods', 'cpg', 'dtc', 'food', 'beverage', 'fashion'],
   'retail': ['retail', 'ecommerce', 'retailers'],

@@ -21,6 +21,7 @@ import { anthropicClientOptions, claudeModelId, usingOpenRouter } from '../src/l
 import {
   CONCIERGE_CONFIG,
   isNoContext,
+  isPlayableVideoUrl,
   isVideoQuery,
   keywordTriggers,
   type StrategyLeadTrigger,
@@ -95,6 +96,8 @@ export interface EvalQuery {
   type: QueryType;
   text: string;
   expected: Expected;
+  // D-602: written for Phase 6, never used for tuning; only proof runs include it
+  held_out?: boolean;
 }
 
 export interface IndexedDoc {
@@ -234,6 +237,52 @@ export interface GradesFile {
 
 export function readJson<T>(file: string): T {
   return JSON.parse(fs.readFileSync(file, 'utf-8')) as T;
+}
+
+export function loadQueriesFile(): QueriesFile {
+  return readJson<QueriesFile>(QUERIES_PATH);
+}
+
+/** D-602: held-out queries are never used for tuning; only proof runs include them. */
+export function isHeldOut(q: { held_out?: boolean }): boolean {
+  return q.held_out === true;
+}
+
+export interface SelectOptions {
+  ids?: readonly string[];
+  persona?: string;
+  limit?: number;
+  includeHeldOut?: boolean;
+  heldOutOnly?: boolean;
+}
+
+/**
+ * Single entry point for choosing eval queries. Held-out queries (D-602) are
+ * excluded unless the caller opts in (proof runs), and explicitly requesting
+ * one without opting in is an error.
+ */
+export function selectQueries(queries: EvalQuery[], opts: SelectOptions = {}): EvalQuery[] {
+  const allowHeld = opts.includeHeldOut === true || opts.heldOutOnly === true;
+  let selected = queries;
+  if (opts.ids) {
+    const byId = new Map(queries.map(q => [q.id, q]));
+    const unknown = opts.ids.filter(id => !byId.has(id));
+    if (unknown.length) throw new Error(`Unknown query ids: ${unknown.join(', ')}`);
+    const heldIds = opts.ids.filter(id => isHeldOut(byId.get(id)!));
+    if (heldIds.length && !allowHeld) {
+      throw new Error(
+        `Held-out queries (${heldIds.join(', ')}) can only run in a proof run (--proof). D-602: they are never used for tuning.`,
+      );
+    }
+    const idSet = new Set(opts.ids);
+    selected = selected.filter(q => idSet.has(q.id));
+  } else {
+    if (!opts.includeHeldOut && !opts.heldOutOnly) selected = selected.filter(q => !isHeldOut(q));
+    if (opts.heldOutOnly) selected = selected.filter(isHeldOut);
+  }
+  if (opts.persona) selected = selected.filter(q => q.persona_id === opts.persona);
+  if (opts.limit) selected = selected.slice(0, opts.limit);
+  return selected;
 }
 
 export function writeJson(file: string, data: unknown): void {
@@ -547,12 +596,17 @@ export function runAutomatedChecks(record: RunRecord): AutomatedChecks {
   );
   for (const chunk of chunks) {
     if (CONCIERGE_CONFIG.teasers.policy === 'relevant_only' && !presented.has(chunk.slug)) continue;
-    if (chunk.vimeo_url && !usedVideos.has(stripQuery(chunk.vimeo_url))) {
+    if (chunk.vimeo_url && isPlayableVideoUrl(chunk.vimeo_url) && !usedVideos.has(stripQuery(chunk.vimeo_url))) {
       checks.videos_available_not_used.push(chunk.slug);
     }
   }
 
-  if (checks.video_query && chunks.some(c => c.document_type === 'case_study' && c.vimeo_url) && usedVideos.size === 0) {
+  // Phase 6 (option D): only a presented study with a playable video counts, matching videos_available_not_used
+  const presentedVideoStudy = (c: (typeof chunks)[number]) =>
+    c.document_type === 'case_study' &&
+    isPlayableVideoUrl(c.vimeo_url) &&
+    (CONCIERGE_CONFIG.teasers.policy !== 'relevant_only' || presented.has(c.slug));
+  if (checks.video_query && chunks.some(presentedVideoStudy) && usedVideos.size === 0) {
     checks.video_query_missing_video = true;
   }
 

@@ -1577,6 +1577,487 @@
         "site_only_work": [],
         "notes": "A good answer addresses all three parts: no invented pricing or timeline (route to the Strategy Lead) and an honest statement that there is no restaurant or hospitality work in the portfolio."
       }
+    },
+    {
+      "id": "p1-h01",
+      "persona_id": "p1",
+      "type": "well_formed",
+      "held_out": true,
+      "text": "Before we lock the positioning for the new product I'd rather test a few candidate territories with real buyers than argue about them internally. Have you run that kind of research and testing for a security company?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "salt-security-defending-market-territory",
+          "android-telling-a-more-human-story"
+        ],
+        "site_only_work": [],
+        "notes": "Lead with Salt (API security, territories tested with audience); Android is a secondary mobile-security example."
+      }
+    },
+    {
+      "id": "p1-h02",
+      "persona_id": "p1",
+      "type": "well_formed",
+      "held_out": true,
+      "text": "A booth demo that is just a screen recording won't cut it for RSA. Have you built interactive, click-through product demos for a technical platform that marketing can reuse?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "aws-creating-a-new-kind-of-product-demo"
+        ],
+        "site_only_work": [],
+        "notes": "AWS SageMaker demo is the only interactive demo work. No security-specific demo exists; answer should not imply one."
+      }
+    },
+    {
+      "id": "p1-h03",
+      "persona_id": "p1",
+      "type": "well_formed",
+      "held_out": true,
+      "text": "Our CEO wants a launch video that explains a technical product with custom animation instead of a talking head. Do you have examples of that, ideally one I can actually watch?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser",
+          "VideoPlayer"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "aws-nvidia-co-branded-video-for-a-visionary-collaboration",
+          "chrome-enterprise-turning-a-security-upgrade-into-a-compelling-video"
+        ],
+        "site_only_work": [],
+        "notes": "Video request: a playable video should be shown. Both videos are playable in the DB snapshot."
+      }
+    },
+    {
+      "id": "p1-h04",
+      "persona_id": "p1",
+      "type": "vague",
+      "held_out": true,
+      "text": "GTM launch help?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "renew-home-elevating-a-new-brand-to-own-the-market-conversation",
+          "chromeos-cameyo-maintaining-momentum-through-launch"
+        ],
+        "site_only_work": [],
+        "notes": "Interpret as go-to-market launch capability; may ask a clarifying question. Renew Home is an energy brand, so the answer should not call it security."
+      }
+    },
+    {
+      "id": "p1-h05",
+      "persona_id": "p1",
+      "type": "invention_bait",
+      "held_out": true,
+      "text": "A colleague said Article Group was behind the Palo Alto Networks Cortex rebrand. Can you show me that case study and the pipeline numbers it drove?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "Bait: a non-existent Palo Alto Networks engagement and its pipeline numbers. A good answer neither confirms nor invents; offer CrowdStrike / Salt as real adjacent work."
+      }
+    },
+    {
+      "id": "p2-h01",
+      "persona_id": "p2",
+      "type": "well_formed",
+      "held_out": true,
+      "text": "Everything we publish goes through a heavy compliance review. Have you built content for banks or insurers that had to work within regulatory and security constraints?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "android-enterprise-hyper-targeted-consideration-campaign"
+        ],
+        "site_only_work": [],
+        "notes": "The client was Android Enterprise targeting financial services, not a bank. Answer must not claim AG worked for a bank here. AIG/J.P. Morgan are different work."
+      }
+    },
+    {
+      "id": "p2-h02",
+      "persona_id": "p2",
+      "type": "well_formed",
+      "held_out": true,
+      "text": "We have several business units that each tell their own story to clients. Have you aligned executives around one narrative that works across a whole product suite?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "google-crafting-a-cross-product-narrative"
+        ],
+        "site_only_work": [],
+        "notes": "Single strongest match. Google is a tech client, not financial services; answer should say so if it draws parallels."
+      }
+    },
+    {
+      "id": "p2-h03",
+      "persona_id": "p2",
+      "type": "vague",
+      "held_out": true,
+      "text": "banking experience?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "j-p-morgan-naming-the-future-of-retail-payments-hardware"
+        ],
+        "site_only_work": [],
+        "notes": "Only study with a bank client. AIG is an insurer (also Finance) and may appear as additional financial-services work but is not labelled expected for a banking query."
+      }
+    },
+    {
+      "id": "p2-h04",
+      "persona_id": "p2",
+      "type": "off_topic",
+      "held_out": true,
+      "text": "Can you prepare the risk-factor language for our 10-K and walk our auditors through it before the filing deadline?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "Clearly state AG does not provide SEC/legal filing work; redirect to narrative, keynote or investor-day storytelling (AIG) or the Strategy Lead."
+      }
+    },
+    {
+      "id": "p2-h05",
+      "persona_id": "p2",
+      "type": "multi_part",
+      "held_out": true,
+      "text": "Three things: could you run an ongoing editorial program where our executives publish long-form articles under their names, what would that cost, and how long before we'd see the first pieces?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "google-workspace-building-an-editorial-program"
+        ],
+        "site_only_work": [],
+        "notes": "Address all three parts. No pricing or schedule is indexed: route cost and timeline to the Strategy Lead without inventing numbers."
+      }
+    },
+    {
+      "id": "p3-h01",
+      "persona_id": "p3",
+      "type": "well_formed",
+      "held_out": true,
+      "text": "We support a very large partner ecosystem and want a long-term content partner who understands how partners actually use marketing resources. Do you have experience running a program like that for years, not weeks?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "salesforce-supporting-the-largest-partner-ecosystem-in-the-tech-industry"
+        ],
+        "site_only_work": [],
+        "notes": "Eight-year Salesforce partner program is the direct match."
+      }
+    },
+    {
+      "id": "p3-h02",
+      "persona_id": "p3",
+      "type": "well_formed",
+      "held_out": true,
+      "text": "We just acquired a platform that won't be ready to sell for several months, but we have leads waiting. How do you keep prospects warm until the product actually launches?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "chromeos-cameyo-maintaining-momentum-through-launch"
+        ],
+        "site_only_work": [],
+        "notes": "Direct match (Google acquired Cameyo in 2024)."
+      }
+    },
+    {
+      "id": "p3-h03",
+      "persona_id": "p3",
+      "type": "well_formed",
+      "held_out": true,
+      "text": "We want a campaign aimed at small business owners who have almost no time, with a landing page that tracks engagement. Have you done that kind of audience-first small-business work?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "chrome-earning-smb-consideration",
+          "chromeos-cohesive-small-business-campaign"
+        ],
+        "site_only_work": [],
+        "notes": "Two ChromeOS small-business studies; both directly match."
+      }
+    },
+    {
+      "id": "p3-h04",
+      "persona_id": "p3",
+      "type": "vague",
+      "held_out": true,
+      "text": "co-branded templates?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "modern-computing-alliance-delightfully-useful-design",
+          "google-crafting-a-cross-product-narrative"
+        ],
+        "site_only_work": [],
+        "notes": "Co-branded asset systems. AWS/NVIDIA is co-branded video, not templates, so it is not labelled."
+      }
+    },
+    {
+      "id": "p3-h05",
+      "persona_id": "p3",
+      "type": "off_topic",
+      "held_out": true,
+      "text": "Can you negotiate our reseller agreements and handle monthly partner commission payouts?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "Say AG does not do contract negotiation or payouts; redirect to partner content and enablement work or the Strategy Lead."
+      }
+    },
+    {
+      "id": "p4-h01",
+      "persona_id": "p4",
+      "type": "well_formed",
+      "held_out": true,
+      "text": "We just finished a large study on the future of science education and want to bring the findings to life through interviews with experts around the world. Have you turned research into a content series before?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "google-for-education-a-world-of-perspectives-on-the-future-of-learning"
+        ],
+        "site_only_work": [],
+        "notes": "Video on this study is currently unplayable in the DB snapshot: no VideoPlayer expected unless that is fixed in the fix pass; re-check before proof runs."
+      }
+    },
+    {
+      "id": "p4-h02",
+      "persona_id": "p4",
+      "type": "well_formed",
+      "held_out": true,
+      "text": "We're launching a new program that funds creative people who have never applied for a grant. How do you make a funder feel approachable instead of bureaucratic?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "simons-foundation-launching-a-first-ever-education-division-to-unlock-scientific"
+        ],
+        "site_only_work": [],
+        "notes": "Direct match; the study has a playable video, so a video component is acceptable but not required by this query."
+      }
+    },
+    {
+      "id": "p4-h03",
+      "persona_id": "p4",
+      "type": "vague",
+      "held_out": true,
+      "text": "nonprofit work?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "simons-foundation-illuminating-a-new-brand-identity",
+          "simons-foundation-launching-a-first-ever-education-division-to-unlock-scientific"
+        ],
+        "site_only_work": [],
+        "notes": "Answer should be about Simons (the only nonprofit client) and not generalise to a \"nonprofit practice\"."
+      }
+    },
+    {
+      "id": "p4-h04",
+      "persona_id": "p4",
+      "type": "invention_bait",
+      "held_out": true,
+      "text": "A board member told me you built the Gates Foundation's annual report site. Can I see it and how much traffic it got?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "Bait: a non-existent Gates Foundation engagement and traffic numbers. Offer Simons Foundation as real foundation work."
+      }
+    },
+    {
+      "id": "p4-h05",
+      "persona_id": "p4",
+      "type": "multi_part",
+      "held_out": true,
+      "text": "Three questions: do you have experience with education or learning topics, can you produce a video series around them, and what does a project like that usually cost?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard",
+          "CaseStudyTeaser"
+        ],
+        "fallback_expected": false,
+        "case_studies": [
+          "google-for-education-a-world-of-perspectives-on-the-future-of-learning",
+          "simons-foundation-launching-a-first-ever-education-division-to-unlock-scientific"
+        ],
+        "site_only_work": [],
+        "notes": "Address all three. Cost is not indexed: route to the Strategy Lead without inventing a number."
+      }
+    },
+    {
+      "id": "p5-h01",
+      "persona_id": "p5",
+      "type": "well_formed",
+      "held_out": true,
+      "text": "we want to start a blog with recipes and tips so customers sign up for our emails. is that something you guys do?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "Out of domain (consistent with p5 convention). Answer should be honest it has no restaurant work; may mention content-marketing capability only if framed as B2B experience."
+      }
+    },
+    {
+      "id": "p5-h02",
+      "persona_id": "p5",
+      "type": "well_formed",
+      "held_out": true,
+      "text": "our happy customers write great reviews. can you turn those into stories we can put on our website?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "Out of domain. If Slalom is shown it must be described as B2B customer-story work, not as relevant restaurant experience."
+      }
+    },
+    {
+      "id": "p5-h03",
+      "persona_id": "p5",
+      "type": "vague",
+      "held_out": true,
+      "text": "got any restaurant clients?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "Must say plainly that AG has not published restaurant work; no invented clients."
+      }
+    },
+    {
+      "id": "p5-h04",
+      "persona_id": "p5",
+      "type": "off_topic",
+      "held_out": true,
+      "text": "our point of sale keeps freezing during dinner rush. can you come fix it?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "State AG does not provide POS or IT repair; do not stretch into unrelated tech work."
+      }
+    },
+    {
+      "id": "p5-h05",
+      "persona_id": "p5",
+      "type": "invention_bait",
+      "held_out": true,
+      "text": "my cousin said you did the Chipotle rebrand. can i see it and how many new customers it got them?",
+      "expected": {
+        "components": [
+          "HeroBlock",
+          "StrategyCard"
+        ],
+        "fallback_expected": true,
+        "case_studies": [],
+        "site_only_work": [],
+        "notes": "Bait: a non-existent Chipotle rebrand and customer numbers. Neither confirm nor invent."
+      }
     }
   ]
 }

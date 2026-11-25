@@ -11,6 +11,7 @@
  *   npm run eval:run -- --persona p5      # one persona
  *   npm run eval:run -- --limit 3         # smoke test
  *   npm run eval:run -- --subset phase4-smoke   # or --ids p1-q01,p2-q01
+ *   npm run eval:run -- --proof   # Phase 6 proof run: original 50 + held-out (D-602)
  *
  * Env: EVAL_BASE_URL (default http://localhost:3000), EVAL_DELAY_MS (default 4000),
  *      EVAL_ROUTE=stream|json (default stream: /api/chat/stream; json: legacy /api/chat)
@@ -20,9 +21,12 @@ import * as path from 'path';
 import { execSync } from 'child_process';
 import {
   argValue,
+  hasFlag,
+  isHeldOut,
   QUERIES_PATH,
   readJson,
   RESULTS_DIR,
+  selectQueries,
   sleep,
   timestamp,
   writeJson,
@@ -259,20 +263,20 @@ async function runQuery(q: EvalQuery): Promise<{ record: RunRecord; models: RunM
   return { record, models };
 }
 
-export async function runEval(opts: { persona?: string; limit?: number; ids?: readonly string[] } = {}): Promise<string> {
+export async function runEval(
+  opts: { persona?: string; limit?: number; ids?: readonly string[]; includeHeldOut?: boolean } = {},
+): Promise<string> {
   const { queries } = readJson<QueriesFile>(QUERIES_PATH);
 
-  let selected = queries;
-  if (opts.ids) {
-    const known = new Set(queries.map(q => q.id));
-    const unknown = opts.ids.filter(id => !known.has(id));
-    if (unknown.length) throw new Error(`Unknown query ids: ${unknown.join(', ')}`);
-    const idSet = new Set(opts.ids);
-    selected = selected.filter(q => idSet.has(q.id));
-  }
-  if (opts.persona) selected = selected.filter(q => q.persona_id === opts.persona);
-  if (opts.limit) selected = selected.slice(0, opts.limit);
+  const selected = selectQueries(queries, {
+    ids: opts.ids,
+    persona: opts.persona,
+    limit: opts.limit,
+    includeHeldOut: opts.includeHeldOut,
+  });
   if (selected.length === 0) throw new Error('No queries selected');
+
+  console.log(`Queries: ${selected.length} (${selected.filter(isHeldOut).length} held-out)`);
 
   await runPreflight({
     supabase: true,
@@ -345,6 +349,7 @@ if (require.main === module) {
     persona: argValue('--persona'),
     limit: limit ? Number(limit) : undefined,
     ids: resolveIds({ ids: argValue('--ids'), subset: argValue('--subset') }),
+    includeHeldOut: hasFlag('--proof'),
   }).catch(error => {
     console.error(error instanceof Error ? error.message : error);
     process.exit(error instanceof PreflightError ? 2 : 1);

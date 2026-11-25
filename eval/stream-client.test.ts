@@ -94,3 +94,69 @@ test('stream with neither final nor error is stream_incomplete', async () => {
   const cap = await consumeChatStream(resFrom([{ type: 'teasers', items: [] }]), 0, clock());
   assert.equal(cap.error?.errorCode, 'stream_incomplete');
 });
+
+import { encodeSseComment, SseDecoder } from '../src/lib/stream-events';
+
+test('encodeSseComment produces a perf comment line', () => {
+  assert.equal(new TextDecoder().decode(encodeSseComment('perf', { rag_cache_hit: 0 })), ': perf {"rag_cache_hit":0}\n\n');
+});
+
+test('SseDecoder ignores perf comments between events', () => {
+  const d = new SseDecoder();
+  const td = new TextDecoder();
+  const text =
+    td.decode(encodeSseComment('perf', { rag_cache_hit: 0 })) +
+    td.decode(encodeSse({ type: 'suppressed', reason: 'about_ag' })) +
+    td.decode(encodeSseComment('perf-final', { orch_cached: false }));
+  const evs = d.push(text);
+  assert.equal(evs.length, 1);
+  assert.equal(evs[0].type, 'suppressed');
+});
+
+function resFromParts(parts: Uint8Array[]): Response {
+  return new Response(new ReadableStream({ start(c) { for (const p of parts) c.enqueue(p); c.close(); } }));
+}
+
+test('consumeChatStream parses perf and perf-final comments into cap.perf', async () => {
+  const bytes = Buffer.concat([
+    Buffer.from(encodeSseComment('perf', { rag_cache_hit: 0, embed_cache_hit: 1, instance_req: 3, instance_age_s: 40 })),
+    Buffer.from(encodeSse({ type: 'final', output })),
+    Buffer.from(encodeSseComment('perf-final', { orch_cached: false })),
+  ]);
+  const cap = await consumeChatStream(resFromParts([bytes]), 0, clock());
+  assert.deepEqual(cap.perf, { rag_cache_hit: 0, embed_cache_hit: 1, orch_cached: false, instance_req: 3, instance_age_s: 40 });
+});
+
+test('a perf comment split across chunks is still parsed', async () => {
+  const bytes = Buffer.concat([
+    Buffer.from(encodeSseComment('perf', { rag_cache_hit: 1, embed_cache_hit: 0, instance_req: 1, instance_age_s: 2 })),
+    Buffer.from(encodeSse({ type: 'final', output })),
+  ]);
+  const parts: Uint8Array[] = [];
+  for (let i = 0; i < bytes.length; i += 5) parts.push(bytes.subarray(i, i + 5));
+  const cap = await consumeChatStream(resFromParts(parts), 0, clock());
+  assert.equal(cap.perf?.rag_cache_hit, 1);
+  assert.equal(cap.perf?.instance_req, 1);
+});
+
+test('no perf comment gives cap.perf === null; malformed comment ignored', async () => {
+  const a = await consumeChatStream(resFrom([{ type: 'final', output }]), 0, clock());
+  assert.equal(a.perf, null);
+  const bytes = Buffer.concat([Buffer.from(': perf {bad json\n\n'), Buffer.from(encodeSse({ type: 'final', output }))]);
+  const b = await consumeChatStream(resFromParts([bytes]), 0, clock());
+  assert.equal(b.perf, null);
+});
+
+import fs from 'node:fs';
+import path from 'node:path';
+
+test('route emits perf comments only under the perfTiming guard (production shape unchanged)', () => {
+  const src = fs.readFileSync(path.join(__dirname, '../src/app/api/chat/stream/route.ts'), 'utf-8');
+  const calls = [...src.matchAll(/sendComment\('(perf|perf-final)'/g)];
+  assert.equal(calls.length, 2);
+  for (const m of calls) {
+    const before = src.slice(Math.max(0, m.index! - 200), m.index!);
+    assert.ok(/if \(perfTiming\)/.test(before), `sendComment('${m[1]}') must sit inside if (perfTiming)`);
+  }
+  assert.equal((src.match(/encodeSseComment\(/g) ?? []).length, 1);
+});

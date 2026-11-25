@@ -15,8 +15,22 @@ export const PHASE4_SMOKE_IDS = [
   'p1-q05', 'p4-q05',
 ] as const;
 
+/** Phase 6 fix-pass verification subset (original 50 only, D-607). */
+export const PHASE6_FIX_IDS = [
+  // targeted: count claim, recall, video, remaining "other" claims
+  'p1-q07', 'p2-q03', 'p2-q05', 'p4-q05', 'p3-q01', 'p4-q04', 'p5-q05',
+  // voice (scored 4 last run)
+  'p1-q02', 'p2-q02', 'p3-q02', 'p3-q09', 'p4-q03', 'p5-q01', 'p5-q07', 'p5-q09',
+  // guards: invention bait, pricing/timeline, video
+  'p1-q09', 'p2-q09', 'p4-q09', 'p5-q06', 'p5-q10', 'p1-q05',
+] as const;
+
+/** Held-out query ids are p1-h01..p5-h05 (D-602). */
+export const HELD_OUT_ID_PATTERN = /^p[1-5]-h\d{2}$/;
+
 export const SUBSETS: Record<string, readonly string[]> = {
   'phase4-smoke': PHASE4_SMOKE_IDS,
+  'phase6-fix': PHASE6_FIX_IDS,
 };
 
 /** `ids` (comma list) wins over `subset`; returns undefined when neither is given. */

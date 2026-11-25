@@ -2,14 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Phase 5 complete
-stopped_at: Completed 05-10-PLAN.md
-last_updated: "2026-11-23T19:19:02.227Z"
+status: Ready to execute
+stopped_at: Completed 06-07-PLAN.md
+last_updated: "2026-11-25T14:54:17.707Z"
+last_activity: 2026-11-25
 progress:
   total_phases: 6
   completed_phases: 5
-  total_plans: 45
-  completed_plans: 45
+  total_plans: 57
+  completed_plans: 53
 ---
 
 # Project State
@@ -23,8 +24,16 @@ See: .planning/PROJECT.md (updated 2026-11-20)
 
 ## Current Position
 
-Phase: 06 (proof) — NOT STARTED (Phase 05 pushed as d9d5ccf)
-Plan: -
+Phase: 06 (proof) — EXECUTING
+Plan: 9 of 12 next (06-01, 06-02, 06-03, 06-04, 06-05 complete)
+
+## Scope change (2026-11-25)
+
+User decision: $17.70 OpenRouter credit left, no top-ups, no more paid eval or timing runs. Only remaining paid spend is the ~$0.70 demo verification in 06-11.
+
+- 06-10 (three counted runs) not run (budget). PROOF-01 not met.
+- Timing batches skipped (06-09 dry batch and counted batches). The speed bar is reported from existing production PERF measurements (quick 261124-80m).
+- Latest full original-50 run 2026-11-25T14-30-56 at code 844ae18: voice 4.48, unsupported 14%, goal_as_result 1, recall 92%, 0 hallucinations. Ready-bar misses: voice < 4.5, unsupported >= 10%, goal_as_result > 0.
 
 ## Baseline Metrics (frozen)
 
@@ -97,6 +106,14 @@ Same responses as the frozen run, graded under harness v2. Like-for-like referen
 | Phase 05-speed P07 | 35min | 3 tasks | 11 files |
 | Phase 05 P08 | 20min | 2 tasks | 2 files |
 | Phase 05 P09 | 20min | 3 tasks | 2 files |
+| Phase 06 P01 | 1min | 2 tasks | 11 files |
+| Phase 06 P02 | n/a | 3 tasks | 7 files |
+| Phase 06 P03 | n/a | 2 tasks | 8 files |
+| Phase 06 P05 | n/a | 3 tasks | 10 files |
+| Phase 06 P04 | n/a | 3 tasks | 8 files |
+| Phase 06 P06 | n/a | 2 tasks | 3 files |
+| Phase 06 P08 | n/a | 3 tasks | 5 files |
+| Phase 06 P07 | n/a | 3 tasks | 10 files |
 
 ### Decisions
 
@@ -144,6 +161,14 @@ Same responses as the frozen run, graded under harness v2. Like-for-like referen
 - [Phase 05]: generation mode default (timing run 05-08 chose adaptive_effort:low; reverted: yes, D-513 regression 16 unsupported / voice 4.02)
 - [Phase 05]: provider health check (PERF-03) in /api/health (admin), startup log, eval preflight; credit fetch uses cache: 'no-store'. Production /api/health returns 503 "Admin endpoint not configured" because ADMIN_API_TOKEN is not set in Vercel (by design, not changed)
 - [Phase 05]: spend ~$58 incl. top-up evals (credit ~$17 of $75 limit); production: pushed (user option "push", Squash and push); deploy: live (d9d5ccf, stream route serving 2026-11-23); live smoke: stream OK on 4 uncached queries (incremental, not buffered), Wiz bait query suppressed teasers and declined to confirm, JSON route 200 in 15.1 s, debug flag ignored
+- [Phase 06]: 06-01: held-out queries excluded in code via selectQueries; only eval:run --proof includes them; generate --force refuses once held-out exist
+- [Phase 06]: Held-out labels (25) approved without edits and frozen by sha256 (D-603)
+- [Phase 06]: 06-03: proof-report verdict precedence INCOMPLETE > FAIL; D-608 compares code via git diff, not HEAD
+- [Phase 06]: 06-05: video option B + harness D confirmed by user (user applied DB update and poster); voice/count-claim rules in shared config; video_query_missing_video narrowed, disclose in 06-12
+- [Phase 06]: 06-04: timing batches draw from all 75 queries, 3 x 20 (10/4/2/2/2) plus 2 dry ids, per plan; PERF_TIMING SSE comments guarded and tested; workflow runs only once on main (06-09)
+- [Phase 06]: 06-06: recall 47/52 -> 48/52 via bank/insurer finance keywords; 49/52 criterion missed, user chose option-a (proceed)
+- [Phase 06]: 06-08: static checks site_work_missing 0, mismatched_videos 0; checkpoint skipped, nothing ingested
+- [Phase 06]: 06-07: fix-pass prompt rules (voiceRule, countClaimRule, adjacentWorkRule, deliverables tightening) regressed voice and claims; prompt restored to 7600919^ by the user; confirm full-50 voice 4.48, 7/50 unsupported responses, recall 48/52; p1-q07 count claim open and accepted; spend 13.89, credit 17.70, no top-ups
 
 ### Key Constraints
 
@@ -178,9 +203,9 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-11-24
-Last activity: 2026-11-24 - Completed quick task 261124-80m: PERF-01 teaser latency (search response trimmed, migration 006)
-Stopped at: Completed 05-10-PLAN.md (Phase 5 pushed as d9d5ccf; next: Phase 6 discuss/plan)
+Last session: 2026-11-25T14:54:17.702Z
+Last activity: 2026-11-25
+Stopped at: Completed 06-07-PLAN.md
 Resume file: None
 
 - 2026-11-22 (03-08 follow-up): User chose to keep the Cohere reranker OFF (rerank.enabled=false). Net +1 recall (44/52) did not justify ~0.9 s p50 latency and a new data processor. Code and RRF fallback stay; re-enable via config or RERANK_ENABLED=true. Phase-end eval (03-09) approved by user despite gate FAIL; expected recall ≈ 43/52.

@@ -11,7 +11,7 @@ import { FROZEN_BASELINE_ID, RESULTS_DIR, argValue } from './lib';
 import { METRIC_DEFS, computeRunMetrics, findRegradeDir, formatDelta, formatValue, summarize } from './metrics';
 
 export function aggregateRuns(dirs: string[], opts: { baselineDir?: string; regradeDir?: string | null } = {}): string {
-  const ms = dirs.map(computeRunMetrics);
+  const ms = dirs.map(d => computeRunMetrics(d));
   const baselineDir =
     opts.baselineDir ??
     (process.env.EVAL_BASELINE_DIR ? path.resolve(process.env.EVAL_BASELINE_DIR) : path.join(RESULTS_DIR, FROZEN_BASELINE_ID));

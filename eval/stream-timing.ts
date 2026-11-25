@@ -14,7 +14,7 @@ import './lib';
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { argValue, hasFlag, QUERIES_PATH, readJson, RESULTS_DIR, sleep, timestamp, writeJson, type QueriesFile } from './lib';
+import { argValue, hasFlag, QUERIES_PATH, readJson, RESULTS_DIR, selectQueries, sleep, timestamp, writeJson, type QueriesFile } from './lib';
 import { FULL_EVAL_MIN_CREDIT_USD } from './preflight';
 import { median } from './metrics';
 import { checkProviderHealth } from '../src/lib/provider-health';
@@ -76,8 +76,7 @@ async function main() {
 
   const { queries } = readJson<QueriesFile>(QUERIES_PATH);
   const ids = idsArg.split(',').map(s => s.trim()).filter(Boolean);
-  const unknown = ids.filter(id => !queries.some(q => q.id === id));
-  if (unknown.length) throw new Error(`Unknown query ids: ${unknown.join(', ')}`);
+  selectQueries(queries, { ids }); // throws on unknown or held-out ids (D-602)
   const modes = modesArg.split(',').map(s => parseMode(s.trim()));
 
   const totalCalls = ids.length * modes.length;

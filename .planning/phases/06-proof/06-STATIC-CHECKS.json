@@ -1,0 +1,344 @@
+{
+  "checked_at": "2026-11-25T12:58:39.678Z",
+  "mismatched_videos": 0,
+  "video_rows": [
+    {
+      "slug": "task-mate-google-driving-growth-with-inclusive-messaging",
+      "role": "hero",
+      "url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/task-mate-inclusive-data-ebook-for-google-i-o/Google_-_Task_Mate_-_Field_Tasks.mp4",
+      "playable_in_app": true,
+      "reachable": "yes (200 video/mp4)",
+      "poster": "no (400)",
+      "approved_match": true,
+      "verdict": "ok (poster missing)"
+    },
+    {
+      "slug": "amazon-building-a-flagship-thought-leadership-brand",
+      "role": "hero",
+      "url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/amazon-building-a-flagship-thought-leadership-brand/Building_a_flagship_thought_leadership_brand_for_Amazon_reMars_Cut01_small.mp4",
+      "playable_in_app": true,
+      "reachable": "yes (200 video/mp4)",
+      "poster": "no (400)",
+      "approved_match": true,
+      "verdict": "ok (poster missing)"
+    },
+    {
+      "slug": "google-for-education-a-world-of-perspectives-on-the-future-of-learning",
+      "role": "vimeo_url",
+      "url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/google-for-education-a-world-of-perspectives-on-the-future-of-learning/Telling_stories_about_AI_that_are_actually_stories_about_people_Teaching-For-Tomorrow-Trailer_refresh-v02.mp4",
+      "playable_in_app": true,
+      "reachable": "yes (200 video/mp4)",
+      "poster": "yes",
+      "approved_match": true,
+      "verdict": "ok"
+    },
+    {
+      "slug": "adp-customer-story-videos",
+      "role": "hero",
+      "url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/adp-meeting-of-the-minds-product-videos/ADP_-_Waste_Pro_-_Voice_of_the_Employee_Testimonial.mp4",
+      "playable_in_app": true,
+      "reachable": "yes (200 video/mp4)",
+      "poster": "yes",
+      "approved_match": true,
+      "verdict": "ok"
+    },
+    {
+      "slug": "android-gen-z-workplace-research-and-creative-strategy",
+      "role": "vimeo_url",
+      "url": "https://vimeo.com/1030871091",
+      "playable_in_app": false,
+      "reachable": "skipped (hidden)",
+      "poster": "n/a",
+      "approved_match": true,
+      "verdict": "hidden"
+    },
+    {
+      "slug": "chrome-enterprise-turning-a-security-upgrade-into-a-compelling-video",
+      "role": "hero",
+      "url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/chrome-enterprise-chrome-enterprise-premium-security-video/Chrome_Enterprise_-_Chrome_Enterprise_Premium_Explainer_Video.mp4",
+      "playable_in_app": true,
+      "reachable": "yes (200 video/mp4)",
+      "poster": "yes",
+      "approved_match": true,
+      "verdict": "ok"
+    },
+    {
+      "slug": "simons-foundation-launching-a-first-ever-education-division-to-unlock-scientific",
+      "role": "vimeo_url",
+      "url": "https://vimeo.com/190925687",
+      "playable_in_app": true,
+      "reachable": "yes (oembed 200)",
+      "poster": "n/a",
+      "approved_match": true,
+      "verdict": "ok"
+    },
+    {
+      "slug": "aws-nvidia-co-branded-video-for-a-visionary-collaboration",
+      "role": "hero",
+      "url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/aws-global-brand-advertising-campaign/AWS_and_NVIDIA_-_Project_Ceiba.mp4",
+      "playable_in_app": true,
+      "reachable": "yes (200 video/mp4)",
+      "poster": "yes",
+      "approved_match": true,
+      "verdict": "ok"
+    },
+    {
+      "slug": "chorus-alphabet-x-creating-an-eye-opening-asset-visibility-brand",
+      "role": "hero",
+      "url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/chorus-alphabet-x-brand-narrative-for-asset-visibility-platform/Chorus_-_Anthem_Video.mp4",
+      "playable_in_app": true,
+      "reachable": "yes (200 video/mp4)",
+      "poster": "yes",
+      "approved_match": true,
+      "verdict": "ok"
+    },
+    {
+      "slug": "google-messages-human-centered-product-ads",
+      "role": "hero",
+      "url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/google-messages-product-awareness-campaign/Google_Messages_-_We_re_All_Connected.mp4",
+      "playable_in_app": true,
+      "reachable": "yes (200 video/mp4)",
+      "poster": "yes",
+      "approved_match": true,
+      "verdict": "ok"
+    },
+    {
+      "slug": "android-telling-a-more-human-story",
+      "role": "hero",
+      "url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/android-mobile-security-messaging/Android_-_Theft_Detection_Demo.mp4",
+      "playable_in_app": true,
+      "reachable": "yes (200 video/mp4)",
+      "poster": "yes",
+      "approved_match": true,
+      "verdict": "ok"
+    },
+    {
+      "slug": "aws-bringing-powerful-gen-ai-models-to-life",
+      "role": "hero",
+      "url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/aws-amazon-nova-ai-models-video-campaign/Amazon_Nova_-_Amazon_Nova_2_Explainer_Video.mp4",
+      "playable_in_app": true,
+      "reachable": "yes (200 video/mp4)",
+      "poster": "yes",
+      "approved_match": true,
+      "verdict": "ok"
+    },
+    {
+      "slug": "meta-informed-messaging-and-a-unified-story",
+      "role": "hero",
+      "url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/meta-b2b-messaging-platform-story/Meta_-_Business_Messenger_Explainer_Video.mp4",
+      "playable_in_app": true,
+      "reachable": "yes (200 video/mp4)",
+      "poster": "yes",
+      "approved_match": true,
+      "verdict": "ok"
+    },
+    {
+      "slug": "aws-bringing-powerful-gen-ai-models-to-life",
+      "role": "support",
+      "url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/aws-amazon-nova-ai-models-video-campaign/Amazon_Nova_-_Amazon_Nova_Reel_1.1_Demo.mp4",
+      "playable_in_app": true,
+      "reachable": "yes (200 video/mp4)",
+      "poster": "no (400)",
+      "approved_match": true,
+      "verdict": "ok (poster missing)"
+    },
+    {
+      "slug": "aws-bringing-powerful-gen-ai-models-to-life",
+      "role": "support",
+      "url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/aws-amazon-nova-ai-models-video-campaign/Amazon_Nova_-_Creative_Content_Models.mp4",
+      "playable_in_app": true,
+      "reachable": "yes (200 video/mp4)",
+      "poster": "no (400)",
+      "approved_match": true,
+      "verdict": "ok (poster missing)"
+    },
+    {
+      "slug": "meta-informed-messaging-and-a-unified-story",
+      "role": "support",
+      "url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/meta-b2b-messaging-platform-story/Facebook_-_Chat_Plugin_-_ROYBI.mp4",
+      "playable_in_app": true,
+      "reachable": "yes (200 video/mp4)",
+      "poster": "no (400)",
+      "approved_match": true,
+      "verdict": "ok (poster missing)"
+    },
+    {
+      "slug": "android-gen-z-workplace-research-and-creative-strategy",
+      "role": "support",
+      "url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/android-mobile-security-messaging/Android_Talks_Productivity_-_Intro.mp4",
+      "playable_in_app": true,
+      "reachable": "yes (200 video/mp4)",
+      "poster": "no (400)",
+      "approved_match": true,
+      "verdict": "ok (poster missing)"
+    },
+    {
+      "slug": "aws-keynotes-that-reshape-perspectives",
+      "role": "support",
+      "url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/aws-amazon-sagemaker-product-demo/AWS_reInvent_-_Amazon_Connect_Demo.mp4",
+      "playable_in_app": true,
+      "reachable": "yes (200 video/mp4)",
+      "poster": "no (400)",
+      "approved_match": true,
+      "verdict": "ok (poster missing)"
+    },
+    {
+      "slug": "google-for-education-a-world-of-perspectives-on-the-future-of-learning",
+      "role": "support",
+      "url": "https://lhsjgdkxciglhxharmrp.supabase.co/storage/v1/object/public/case-study-videos/google-for-education-a-world-of-perspectives-on-the-future-of-learning/Telling_stories_about_AI_that_are_actually_stories_about_people_Teaching-For-Tomorrow-Trailer_refresh-v02.mp4",
+      "playable_in_app": true,
+      "reachable": "yes (200 video/mp4)",
+      "poster": "yes",
+      "approved_match": true,
+      "verdict": "ok"
+    }
+  ],
+  "site_work_missing": 0,
+  "site_items": [
+    {
+      "title": "Expanding a vibrant visual universe",
+      "url": "https://articlegroup.com/work/expanding-a-vibrant-visual-universe/",
+      "script_status": "indexed",
+      "match_slug": "twitch-expanding-a-vibrant-visual-universe",
+      "phase2_decision": "skip",
+      "verdict": "indexed"
+    },
+    {
+      "title": "Informed messaging and a unified story",
+      "url": "https://articlegroup.com/work/informed-messaging-and-a-unified-story/",
+      "script_status": "indexed",
+      "match_slug": "meta-informed-messaging-and-a-unified-story",
+      "phase2_decision": "skip",
+      "verdict": "indexed"
+    },
+    {
+      "title": "Naming the future of retail payments hardware",
+      "url": "https://articlegroup.com/work/naming-the-future-of-retail-payments-hardware/",
+      "script_status": "indexed",
+      "match_slug": "j-p-morgan-naming-the-future-of-retail-payments-hardware",
+      "phase2_decision": "skip",
+      "verdict": "indexed"
+    },
+    {
+      "title": "Creating an eye-opening asset visibility brand",
+      "url": "https://articlegroup.com/work/creating-an-eye-opening-asset-visibility-brand/",
+      "script_status": "indexed",
+      "match_slug": "chorus-alphabet-x-creating-an-eye-opening-asset-visibility-brand",
+      "phase2_decision": "skip",
+      "verdict": "indexed"
+    },
+    {
+      "title": "When stakes are high: Reintroducing AIG to the market",
+      "url": "https://articlegroup.com/work/when-stakes-are-high-reintroducing-aig-to-the-market/",
+      "script_status": "indexed",
+      "match_slug": "aig-when-stakes-are-high-reintroducing-aig-to-the-market",
+      "phase2_decision": "skip",
+      "verdict": "indexed"
+    },
+    {
+      "title": "Turning executive keynotes into moments of connection",
+      "url": "https://articlegroup.com/work/turning-executive-keynotes-into-moments-of-connection/",
+      "script_status": "near-match",
+      "match_slug": "adp-creating-keynotes-that-connect",
+      "phase2_decision": "skip",
+      "verdict": "handled-skip"
+    },
+    {
+      "title": "Gen Z workplace research and creative strategy",
+      "url": "https://articlegroup.com/work/gen-z-workplace-research-and-creative-strategy/",
+      "script_status": "indexed",
+      "match_slug": "android-gen-z-workplace-research-and-creative-strategy",
+      "phase2_decision": "ingest",
+      "verdict": "indexed"
+    },
+    {
+      "title": "Making enterprise security easier to understand",
+      "url": "https://articlegroup.com/work/making-enterprise-security-easier-to-understand/",
+      "script_status": "near-match",
+      "match_slug": "chrome-enterprise-turning-a-security-upgrade-into-a-compelling-video",
+      "phase2_decision": "skip",
+      "verdict": "handled-skip"
+    },
+    {
+      "title": "A world of perspectives on the future of learning",
+      "url": "https://articlegroup.com/work/a-world-of-perspectives-on-the-future-of-learning/",
+      "script_status": "indexed",
+      "match_slug": "google-for-education-a-world-of-perspectives-on-the-future-of-learning",
+      "phase2_decision": "ingest",
+      "verdict": "indexed"
+    },
+    {
+      "title": "Elevating a new brand to own the market conversation",
+      "url": "https://articlegroup.com/work/elevating-a-new-brand-to-own-the-market-conversation/",
+      "script_status": "indexed",
+      "match_slug": "renew-home-elevating-a-new-brand-to-own-the-market-conversation",
+      "phase2_decision": "skip",
+      "verdict": "indexed"
+    },
+    {
+      "title": "Applying the transformative power of marketecture",
+      "url": "https://articlegroup.com/work/crowdstrike/",
+      "script_status": "indexed",
+      "match_slug": "crowdstrike-applying-the-power-of-a-great-marketecture",
+      "phase2_decision": "skip",
+      "verdict": "indexed"
+    },
+    {
+      "title": "Rebranding basic science to engage a global audience",
+      "url": "https://articlegroup.com/work/rebranding-basic-science-to-engage-a-global-audience/",
+      "script_status": "near-match",
+      "match_slug": "simons-foundation-illuminating-a-new-brand-identity",
+      "phase2_decision": "skip",
+      "verdict": "handled-skip"
+    },
+    {
+      "title": "Building a flagship thought leadership brand for Amazon",
+      "url": "https://articlegroup.com/work/building-a-flagship-thought-leadership-brand-for-amazon/",
+      "script_status": "indexed",
+      "match_slug": "amazon-building-a-flagship-thought-leadership-brand",
+      "phase2_decision": "ingest",
+      "verdict": "indexed"
+    },
+    {
+      "title": "Telling stories about AI that are actually stories about people",
+      "url": "https://articlegroup.com/work/google/",
+      "script_status": "near-match",
+      "match_slug": "android-telling-a-more-human-story",
+      "phase2_decision": "skip",
+      "verdict": "handled-skip"
+    },
+    {
+      "title": "Supporting the largest partner ecosystem in the tech industry",
+      "url": "https://articlegroup.com/work/salesforce/",
+      "script_status": "indexed",
+      "match_slug": "salesforce-supporting-the-largest-partner-ecosystem-in-the-tech-industry",
+      "phase2_decision": "ingest",
+      "verdict": "indexed"
+    },
+    {
+      "title": "Establishing thought leadership by publishing share-worthy content",
+      "url": "https://articlegroup.com/work/we-created-sexier-white-papers-for-box-and-published-compelling-stories-on-a-popular-platform-increasing-awareness-of-their-solutions-for-business/",
+      "script_status": "indexed",
+      "match_slug": "box-establishing-thought-leadership-by-publishing-share-worthy-content",
+      "phase2_decision": "ingest",
+      "verdict": "indexed"
+    },
+    {
+      "title": "Launching a first-ever education division to unlock scientific thinking",
+      "url": "https://articlegroup.com/work/simons-foundation/",
+      "script_status": "indexed",
+      "match_slug": "simons-foundation-launching-a-first-ever-education-division-to-unlock-scientific",
+      "phase2_decision": "ingest",
+      "verdict": "indexed"
+    },
+    {
+      "title": "Leading the home buying conversation",
+      "url": "https://articlegroup.com/work/houselogic-project-title-goes-here-for-now/",
+      "script_status": "indexed",
+      "match_slug": "nar-houselogic",
+      "phase2_decision": "ingest",
+      "verdict": "indexed"
+    }
+  ],
+  "site_scraped_at": "2026-11-25T12:59:32.481Z"
+}

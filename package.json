@@ -30,6 +30,8 @@
     "eval:verify-saved": "tsx eval/verify-saved.ts",
     "eval:batch": "tsx eval/batch.ts",
     "eval:aggregate": "tsx eval/aggregate.ts",
+    "eval:proof-report": "tsx eval/proof-report.ts",
+    "eval:prod-timing": "tsx eval/prod-timing.ts",
     "eval:run": "tsx eval/run.ts",
     "eval:grade": "tsx eval/grade.ts",
     "eval:grade2": "tsx eval/grade-second.ts",

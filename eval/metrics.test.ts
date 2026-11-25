@@ -207,6 +207,8 @@ test('Phase 4 metrics: triggers, narrative, video, figures, presupposition', () 
     rec('n3', 'well_formed', 'how long does it take?', 'About 6 weeks. Our Strategy Lead can scope it.'),
     {
       ...rec('n4', 'well_formed', 'we need videos', 'Fine. Good.'),
+      // option D: the study with a video is presented (teaser) but no VideoPlayer is shown
+      response: { explanation: 'Fine. Good.', layoutPlan: { layout: [{ component: 'CaseStudyTeaser', props: { slug: 'a', title: 'a' } }] } },
       retrieval: { chunks: [{ slug: 'a', document_title: 'a', document_type: 'case_study', vimeo_url: 'https://vimeo.com/1', content: 'x' }], visualAssets: [], relatedMetrics: [] },
     },
   ];

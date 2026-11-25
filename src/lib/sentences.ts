@@ -4,7 +4,7 @@
  */
 
 const ABBREVIATIONS = [
-  'e.g.', 'i.e.', 'vs.', 'etc.', 'Inc.', 'Co.', 'Corp.', 'Ltd.', 'U.S.', 'U.K.', 'Dr.', 'Mr.', 'Ms.', 'Mrs.', 'St.', 'No.',
+  'e.g.', 'i.e.', 'vs.', 'etc.', 'Inc.', 'Co.', 'Corp.', 'Ltd.', 'U.S.', 'U.K.', 'J.P.', 'Dr.', 'Mr.', 'Ms.', 'Mrs.', 'St.', 'No.',
 ];
 const DOT = '\u0000';
 

@@ -17,7 +17,7 @@ import { orchestrateStream } from '@/lib/orchestrator';
 import { decideInstantTeasers } from '@/lib/instant-teasers';
 import { classifyError } from '@/lib/chat-errors';
 import { validateChatBody, debugEnabled, teasersOnlyEnabled, toPublicOutput, buildDebugPayload } from '@/lib/chat-request';
-import { encodeSse, SSE_KEEPALIVE, type StreamEvent } from '@/lib/stream-events';
+import { encodeSse, encodeSseComment, SSE_KEEPALIVE, type StreamEvent } from '@/lib/stream-events';
 import { APILogger } from '@/lib/logger';
 import { rateLimiter, RATE_LIMITS } from '@/lib/rate-limit';
 import { analytics } from '@/lib/analytics';
@@ -67,6 +67,15 @@ export async function POST(request: NextRequest): Promise<Response> {
       const send = (e: StreamEvent) => {
         try {
           controller.enqueue(encodeSse(e));
+        } catch {
+          // client gone
+        }
+      };
+      // Diagnostic only (PERF_TIMING, independent of EVAL_DEBUG): cache and instance flags as SSE comments.
+      // Contains no query text or secrets. Only called inside `if (perfTiming)`.
+      const sendComment = (tag: 'perf' | 'perf-final', data: Record<string, unknown>) => {
+        try {
+          controller.enqueue(encodeSseComment(tag, data));
         } catch {
           // client gone
         }
@@ -140,7 +149,16 @@ export async function POST(request: NextRequest): Promise<Response> {
         }
         // PERF_TIMING=true (off by default, independent of EVAL_DEBUG): one JSON line per request in the
         // Vercel logs. console.info directly, because APILogger drops info in production.
-        if (perfTiming) console.info(JSON.stringify({ tag: 'perf_teaser', ...marks.snapshot() }));
+        if (perfTiming) {
+          console.info(JSON.stringify({ tag: 'perf_teaser', ...marks.snapshot() }));
+          const snap = marks.snapshot();
+          sendComment('perf', {
+            rag_cache_hit: snap.rag_cache_hit ?? null,
+            embed_cache_hit: snap.embed_cache_hit ?? null,
+            instance_req: snap.instance_req ?? null,
+            instance_age_s: snap.instance_age_s ?? null,
+          });
+        }
 
         for await (const ev of orchestrateStream(
           {
@@ -153,6 +171,7 @@ export async function POST(request: NextRequest): Promise<Response> {
         )) {
           if (ev.type === 'final') {
             const count = ev.output.layoutPlan.layout.length;
+            if (perfTiming) sendComment('perf-final', { orch_cached: ev.cached });
             send({ type: 'final', output: toPublicOutput(ev.output) });
             requestTimer({ success: true, components: count });
             analytics.trackQuery({
