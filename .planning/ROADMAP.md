@@ -181,7 +181,7 @@ Plans:
 | 4. Generation | 9/9 | Complete (criteria 1-4 not met) | 2026-11-23 |
 | 5. Speed | 10/10 | Complete (criteria 1-2 not met) | 2026-11-23 |
 | 6. Proof | 12/12 | Closed with gaps (criterion 1 not met, 3 partial; 06-10 not executed) | 2026-11-25 |
-| 06.1 Output guard and claim tracing | 6/6 | Closed with gaps (3 of 7 ready bars missed; push pending) | 2026-11-25 |
+| 06.1 Output guard and claim tracing | 6/6 | Complete    | 2026-11-26 |
 
 ### Phase 06.1: Output guard and claim tracing (INSERTED)
 
@@ -192,7 +192,7 @@ Plans:
 - Budget: ~$15.70 credit, no top-ups.
 **Requirements**: GUARD-01, GUARD-02, TRACE-01, TRACE-02, CONFIRM-01
 **Depends on:** Phase 6
-**Plans:** 6 plans
+**Plans:** 6/6 plans complete
 
 Plans:
 - [x] 06.1-01-PLAN.md — Requirement IDs + deterministic output guard module, test-first (leak drop, count-claim and first-person rewrites)

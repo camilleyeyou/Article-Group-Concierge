@@ -27,6 +27,7 @@ by indexed content.
 - ✓ Eval harness (`npm run eval`: generate → run → grade → report) with Opus 5.5 judge — Phase 0 (`a5b2722`)
 - ✓ All model calls (Sonnet 5.5 generation, text-embedding-3-small) routed through OpenRouter in local, eval and production — Phase 0
 - ✓ All AG work on articlegroup.com indexed (50 case studies, 7 new), 44 articles embedded (6 company-info/LinkedIn docs held for Phase 3), evidence-backed taxonomy, videos audited (0 mismatched); exact vector search via `hybrid_search_exact` (migration 004) — Phase 2
+- ✓ Deterministic output guard after generation on both chat routes (retrieval-wording leaks, count claims, off-voice "I", teaser order-of-work), kill switch `OUTPUT_GUARD_ENABLED=false`. The grader now reads the hero users see. Validated in Phase 06.1: output-guard-and-claim-tracing (`411453c`). The ready bar is still not met: voice 4.06, unsupported claims in 7/50 answers, goal_as_result 2. Next fix: the fast hero restates the query in 49/50 answers.
 
 ### Active
 
@@ -106,6 +107,8 @@ voice ≥ 4.5 · first content < 2 s (teasers < 1.5 s, hero 3–4 s) · mismatch
 | Offer a Strategy Lead conversation on fallback, pricing and timeline queries (config flag) | Clear next step for prospects | — Pending (assumed yes) |
 | Remove the persona from the grader | The app never sees the persona, so the grader shouldn't either | — Pending |
 | Run through GSD: research off, test-coverage checker off, plan check + verifier on, sequential, balanced models, no auto-advance | Findings are already verified; the user wants a report per phase | ✓ Adopted 2026-11-20 |
+| Output guard is deterministic code, not more prompt rules (06.1) | No prompt-rule stacking; replay over 970 saved answers before any spend | ✓ Shipped (`411453c`); only small effect on unsupported claims |
+| Accept unguarded streamed deltas until `final` | Guarding before streaming would delay first hero (PERF-02) | ✓ Accepted by user 2026-11-25 |
 
 ## Evolution
 
@@ -125,4 +128,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-11-20 after initialization (seeded from eval/PLAN.md)*
+*Last updated: 2026-11-26 after Phase 06.1 (output guard and claim tracing)*

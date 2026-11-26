@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Phase 06.1 closed with gaps (pushed 411453c, live smoke OK)
-stopped_at: Completed 06.1-06-PLAN.md (pushed 411453c, deploy Ready, smoke OK)
-last_updated: "2026-11-26T05:47:25.571Z"
+status: Milestone complete
+stopped_at: Completed 06.1-06-PLAN.md up to push checkpoint
+last_updated: "2026-11-26T07:58:49.756Z"
 last_activity: 2026-11-26
 progress:
   total_phases: 7
@@ -24,8 +24,8 @@ See: .planning/PROJECT.md (updated 2026-11-20)
 
 ## Current Position
 
-Phase: 06.1 (output-guard-and-claim-tracing) — CLOSED WITH GAPS (pushed as 411453c; production Ready, EVAL_DEBUG absent, live smoke SMOKE OK ~$0.07)
-Plan: 6 of 6
+Phase: 06.1
+Plan: Not started
 
 ## Phase 06.1 outcome (closed with gaps, 2026-11-25)
 
