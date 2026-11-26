@@ -1,0 +1,1282 @@
+[
+  {
+    "run": "2026-11-22T22-17-35",
+    "harness_version": 4,
+    "graded": 21,
+    "claims": [
+      {
+        "run": "2026-11-22T22-17-35",
+        "id": "p3-q03",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "All three events, including Salesforce/WhatsApp, were 'designed and produced' by us. The Salesforce/WhatsApp content shows a campaign culminating in a virtual event, with event theme and pre/post-event assets, but not production of the event itself.",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-22T22-17-35",
+        "id": "p4-q10",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "For the website we wrote copy for the landing and 'About' pages rather than building the site (the context does not say we did not build the site).",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      },
+      {
+        "run": "2026-11-22T22-17-35",
+        "id": "p5-q05",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "The events shown 'show how we build an event and its promotion around one clear idea' (an inferred principle not stated in either case study)",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "quote"
+      }
+    ],
+    "hero_gap": {
+      "records": 21,
+      "user_hero_differs_from_graded_hero": 0
+    }
+  },
+  {
+    "run": "2026-11-22T22-28-23",
+    "harness_version": 4,
+    "graded": 21,
+    "claims": [
+      {
+        "run": "2026-11-22T22-28-23",
+        "id": "p1-q02",
+        "claim_index": 0,
+        "kind": "goal_as_result",
+        "claim": "Salt defended its position in API security against newer competitors",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      },
+      {
+        "run": "2026-11-22T22-28-23",
+        "id": "p3-q02",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "It's the only co-branded video we've published",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      },
+      {
+        "run": "2026-11-22T22-28-23",
+        "id": "p3-q09",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Expands 'PMC' to 'Partner Marketing Center', which the retrieved context never spells out",
+        "sources": [
+          "teaser_summary"
+        ],
+        "fields": [
+          "CaseStudyTeaser[2].summary"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-22T22-28-23",
+        "id": "p4-q10",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "the website piece was copy for the landing and 'About' pages, not a full site build",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      }
+    ],
+    "hero_gap": {
+      "records": 21,
+      "user_hero_differs_from_graded_hero": 0
+    }
+  },
+  {
+    "run": "2026-11-22T22-48-20",
+    "harness_version": 4,
+    "graded": 50,
+    "claims": [
+      {
+        "run": "2026-11-22T22-48-20",
+        "id": "p2-q01",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "we shaped the narrative of its turnaround",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      },
+      {
+        "run": "2026-11-22T22-48-20",
+        "id": "p2-q03",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Google teaser implies an order of work: synthesized executive priorities 'then built' the deck and design system. The context does not state a sequence.",
+        "sources": [
+          "teaser_summary"
+        ],
+        "fields": [
+          "CaseStudyTeaser[2].summary"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-22T22-48-20",
+        "id": "p3-q01",
+        "claim_index": 0,
+        "kind": "goal_as_result",
+        "claim": "Salesforce teaser says our content 'builds awareness of their Salesforce practices and generates leads'; the context says the content 'enables them to build awareness... and generate leads', which is an intended effect, not a stated result.",
+        "sources": [
+          "teaser_summary"
+        ],
+        "fields": [
+          "CaseStudyTeaser[3].summary"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-22T22-48-20",
+        "id": "p4-q02",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Both Simons Foundation projects are about championing basic science, where there's no product to point to and the brand has to carry the idea (the education-division study is about science education, and 'no product to point to' is inferred)",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-22T22-48-20",
+        "id": "p4-q06",
+        "claim_index": 0,
+        "kind": "goal_as_result",
+        "claim": "The brand brings its mission to life and brings its sub-brands under one umbrella (the context frames 'brought the mission to life' and 'unified sub-brands' as what Simons wanted)",
+        "sources": [
+          "teaser_summary"
+        ],
+        "fields": [
+          "CaseStudyTeaser[4].summary"
+        ],
+        "method": "overlap"
+      },
+      {
+        "run": "2026-11-22T22-48-20",
+        "id": "p4-q10",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Simons website work was 'not a full site build' (infers website scope the content does not state)",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "quote"
+      }
+    ],
+    "hero_gap": {
+      "records": 50,
+      "user_hero_differs_from_graded_hero": 0
+    }
+  },
+  {
+    "run": "2026-11-23T01-37-58-verified",
+    "harness_version": 4,
+    "graded": 50,
+    "claims": [
+      {
+        "run": "2026-11-23T01-37-58-verified",
+        "id": "p2-q09",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Salt and Omnicell are repositioning projects built on audience research (the Omnicell content states no audience research)",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      },
+      {
+        "run": "2026-11-23T01-37-58-verified",
+        "id": "p3-q02",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "It's the only co-branded video study in our portfolio",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      },
+      {
+        "run": "2026-11-23T01-37-58-verified",
+        "id": "p4-q02",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Both Simons Foundation projects are about championing basic science (the education-division study is about science education and scientific thinking; it does not mention basic science)",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      },
+      {
+        "run": "2026-11-23T01-37-58-verified",
+        "id": "p4-q05",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "StrategyCard says letting the person carry the story and bringing the technical work in as context is what 'we did with Luminaries'. The context does not describe that approach for Luminaries.",
+        "sources": [
+          "strategy_card"
+        ],
+        "fields": [
+          "StrategyCard[2].content"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-23T01-37-58-verified",
+        "id": "p4-q10",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Simons website work was 'not a full site build' (inferred scope; context only lists landing page and About page copywriting)",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "quote"
+      }
+    ],
+    "hero_gap": {
+      "records": 50,
+      "user_hero_differs_from_graded_hero": 0
+    }
+  },
+  {
+    "run": "2026-11-23T19-00-37",
+    "harness_version": 4,
+    "graded": 50,
+    "claims": [
+      {
+        "run": "2026-11-23T19-00-37",
+        "id": "p1-q02",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Salt Security framed as 'a challenger-style fight to hold ground', though the context says Salt was regarded as the market innovator facing new competitors, not a challenger against a bigger incumbent.",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-23T19-00-37",
+        "id": "p1-q03",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Chorus teaser lists the anthem video among 'later work'; the content names only product naming, sales enablement and investor communications as subsequent engagements.",
+        "sources": [
+          "teaser_summary"
+        ],
+        "fields": [
+          "CaseStudyTeaser[3].summary"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-23T19-00-37",
+        "id": "p1-q04",
+        "claim_index": 0,
+        "kind": "goal_as_result",
+        "claim": "Omnicell had the gap between brand positioning and sales, and \"we closed it\". The context says only that Omnicell needed help closing the gap; no closure is stated as a result.",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-23T19-00-37",
+        "id": "p2-q01",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Opening 'Yes' to 'Have you led a corporate repositioning' slightly overstates AG's role; the AIG study shows keynote visual design and event work for an Investor Day, not a led repositioning.",
+        "sources": [
+          "unmatched"
+        ],
+        "fields": [],
+        "method": "none"
+      },
+      {
+        "run": "2026-11-23T19-00-37",
+        "id": "p2-q05",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "HeroBlock subtitle 'Fortune 100 experience in regulated industries' presents Fortune 100 status as fact, but the context never states AIG or any AG client is Fortune 100.",
+        "sources": [
+          "hero"
+        ],
+        "fields": [
+          "HeroBlock[0].subtitle"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-23T19-00-37",
+        "id": "p2-q09",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Simons Foundation was a project where we 'researched the story with the audience first' (context gives a research discovery report but no audience research or order of work)",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-23T19-00-37",
+        "id": "p3-q03",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Including Salesforce/WhatsApp among virtual events we 'designed and produced': the context shows only a campaign culminating in an event, with pre- and post-event assets, not production of the event itself.",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-23T19-00-37",
+        "id": "p3-q10",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "The UpShow/ChromeOS ads are described as 'co-branded'. The context says they were UpShow-branded ads that reinforced ChromeOS messaging.",
+        "sources": [
+          "hero",
+          "video_caption",
+          "metric",
+          "other_field",
+          "teaser_summary",
+          "narrative"
+        ],
+        "fields": [
+          "HeroBlock[0].title",
+          "HeroBlock[0].challengeSummary",
+          "VideoPlayer[1].caption",
+          "MetricGrid[3].stats[0].context",
+          "CaseStudyTeaser[4].title",
+          "CaseStudyTeaser[4].summary",
+          "CaseStudyTeaser[4].thumbnailUrl",
+          "CaseStudyTeaser[4].slug",
+          "explanation"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-23T19-00-37",
+        "id": "p4-q04",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Simons Foundation brand work was 'starting with a research discovery report' (an order of work the content lists but does not sequence)",
+        "sources": [
+          "teaser_summary"
+        ],
+        "fields": [
+          "CaseStudyTeaser[3].summary"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-23T19-00-37",
+        "id": "p4-q06",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Both Simons studies show how we shape a brand around that answer (i.e., around a defined audience choice)",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      },
+      {
+        "run": "2026-11-23T19-00-37",
+        "id": "p4-q09",
+        "claim_index": 0,
+        "kind": "capability_not_shown",
+        "claim": "HeroBlock subtitle 'Campaign work for mission-driven organizations' implies a body of mission-driven campaign work, but the studies shown (Google for Education, ChromeOS) are corporate clients.",
+        "sources": [
+          "hero"
+        ],
+        "fields": [
+          "HeroBlock[0].subtitle"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-23T19-00-37",
+        "id": "p4-q10",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "we did not build the website itself",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      },
+      {
+        "run": "2026-11-23T19-00-37",
+        "id": "p5-q04",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Both studies started from research into what small, time-pressed audiences care about (MyLink's content does not describe its audience as time-pressed)",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      },
+      {
+        "run": "2026-11-23T19-00-37",
+        "id": "p5-q06",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "We don't publish prices",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      },
+      {
+        "run": "2026-11-23T19-00-37",
+        "id": "p5-q07",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Yes, budget size is something we can work with (an unqualified assurance not supported by any retrieved content)",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      },
+      {
+        "run": "2026-11-23T19-00-37",
+        "id": "p5-q10",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "The adjacent work 'shows how we position and launch a new brand against a deadline' (no retrieved study states a deadline).",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "quote"
+      }
+    ],
+    "hero_gap": {
+      "records": 50,
+      "user_hero_differs_from_graded_hero": 0
+    }
+  },
+  {
+    "run": "2026-11-23T19-25-08",
+    "harness_version": 4,
+    "graded": 50,
+    "claims": [
+      {
+        "run": "2026-11-23T19-25-08",
+        "id": "p1-q03",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "later named the product from it (implies the product naming was derived from the brand narrative; context says only that subsequent engagements included product naming)",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      },
+      {
+        "run": "2026-11-23T19-25-08",
+        "id": "p1-q07",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Our cybersecurity work covers two projects. The retrieved context also includes CrowdStrike, a security company, so the portfolio is misstated as limited to two.",
+        "sources": [
+          "unmatched"
+        ],
+        "fields": [],
+        "method": "none"
+      },
+      {
+        "run": "2026-11-23T19-25-08",
+        "id": "p2-q02",
+        "claim_index": 0,
+        "kind": "goal_as_result",
+        "claim": "We made AWS's re:Invent keynotes easier to follow without diluting the innovations behind them (the context states the need to simplify; it does not report the outcome)",
+        "sources": [
+          "teaser_summary"
+        ],
+        "fields": [
+          "CaseStudyTeaser[3].summary"
+        ],
+        "method": "overlap"
+      },
+      {
+        "run": "2026-11-23T19-25-08",
+        "id": "p2-q07",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "At ADP we worked directly with senior executives (the content says we designed a session for ADP's highest-level executives, not that we worked directly with them)",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      },
+      {
+        "run": "2026-11-23T19-25-08",
+        "id": "p3-q07",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Both engagements began with ... little internal capacity to meet it (Renew Home's internal capacity is not stated)",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      },
+      {
+        "run": "2026-11-23T19-25-08",
+        "id": "p3-q09",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Expands 'PMC' to 'Partner Marketing Center', a name the retrieved context never spells out.",
+        "sources": [
+          "teaser_summary"
+        ],
+        "fields": [
+          "CaseStudyTeaser[2].summary"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-23T19-25-08",
+        "id": "p4-q04",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Simons Foundation brand work was 'beginning with' / 'began with' a research discovery report. The context lists the report as a deliverable but does not state the order of work.",
+        "sources": [
+          "teaser_summary",
+          "narrative"
+        ],
+        "fields": [
+          "CaseStudyTeaser[3].summary",
+          "explanation"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-23T19-25-08",
+        "id": "p4-q10",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "our website work was copywriting for the landing and About pages, not a site build",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      },
+      {
+        "run": "2026-11-23T19-25-08",
+        "id": "p5-q04",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Both [MyLink and ChromeOS] involved ... a message built to earn limited attention (limited attention is stated only for ChromeOS)",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      }
+    ],
+    "hero_gap": {
+      "records": 50,
+      "user_hero_differs_from_graded_hero": 0
+    }
+  },
+  {
+    "run": "2026-11-23T19-49-22",
+    "harness_version": 4,
+    "graded": 50,
+    "claims": [
+      {
+        "run": "2026-11-23T19-49-22",
+        "id": "p1-q07",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "\"These two studies are our cybersecurity work in the portfolio\": the retrieved CrowdStrike marketecture case study is also cybersecurity client work.",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-23T19-49-22",
+        "id": "p1-q07",
+        "claim_index": 1,
+        "kind": "goal_as_result",
+        "claim": "HeroBlock says we 'helped two cybersecurity clients explain themselves and stand out'. Standing out is Salt's aim, not a stated result.",
+        "sources": [
+          "hero"
+        ],
+        "fields": [
+          "HeroBlock[0].challengeSummary"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-23T19-49-22",
+        "id": "p2-q10",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "CrowdStrike teaser says we built the marketecture 'then integrated' it into the keynote, implying a sequence the content does not state.",
+        "sources": [
+          "teaser_summary"
+        ],
+        "fields": [
+          "CaseStudyTeaser[3].summary"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-23T19-49-22",
+        "id": "p3-q03",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Narrative says we 'designed and produced' virtual events for Salesforce/WhatsApp, but the context only shows a campaign and pre- and post-event assets culminating in a virtual event, not that we produced the event itself",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-23T19-49-22",
+        "id": "p3-q06",
+        "claim_index": 0,
+        "kind": "goal_as_result",
+        "claim": "Salesforce's global partners use them to market their Slack implementation services (context says only that the content was designed to give partners the tools to do so)",
+        "sources": [
+          "teaser_summary"
+        ],
+        "fields": [
+          "CaseStudyTeaser[4].summary"
+        ],
+        "method": "overlap"
+      },
+      {
+        "run": "2026-11-23T19-49-22",
+        "id": "p3-q07",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Slalom came to us with an immediate need and little room to wait (context says Slalom had a backlog and lacked internal resources, not an immediate deadline)",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      },
+      {
+        "run": "2026-11-23T19-49-22",
+        "id": "p4-q04",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Salt shows our habit of testing ideas with a demanding audience",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      }
+    ],
+    "hero_gap": {
+      "records": 50,
+      "user_hero_differs_from_graded_hero": 0
+    }
+  },
+  {
+    "run": "2026-11-24T10-06-42",
+    "harness_version": 4,
+    "graded": 6,
+    "claims": [
+      {
+        "run": "2026-11-24T10-06-42",
+        "id": "p4-q10",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Our Simons scope was copywriting for the landing and About pages, not a site build (context does not state whether a site was built)",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      }
+    ],
+    "hero_gap": {
+      "records": 6,
+      "user_hero_differs_from_graded_hero": 6
+    }
+  },
+  {
+    "run": "2026-11-24T10-42-25",
+    "harness_version": 4,
+    "graded": 50,
+    "claims": [
+      {
+        "run": "2026-11-24T10-42-25",
+        "id": "p1-q07",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "\"These are the two cybersecurity studies in our portfolio\": the retrieved CrowdStrike marketecture study is also work for a cybersecurity client, so this understates the portfolio and is inaccurate.",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-24T10-42-25",
+        "id": "p3-q01",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Both Salesforce studies start from partners with small marketing teams and limited resources (only the Salesforce partner-ecosystem study states this; the Slack study does not)",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      },
+      {
+        "run": "2026-11-24T10-42-25",
+        "id": "p4-q04",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "We started with a research discovery report before building the story and design (also 'starting from a research discovery report' in the teaser): the context lists the report among deliverables but does not state the order of work",
+        "sources": [
+          "teaser_summary"
+        ],
+        "fields": [
+          "CaseStudyTeaser[3].summary"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-24T10-42-25",
+        "id": "p5-q05",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "The narrative calls all three shown studies 'launch events' 'for tech brands', but Renew Home is a sustainable energy company, and its study shows keynotes and content for a launch rather than an event we produced.",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "quote"
+      }
+    ],
+    "hero_gap": {
+      "records": 50,
+      "user_hero_differs_from_graded_hero": 50
+    }
+  },
+  {
+    "run": "2026-11-25T13-31-49",
+    "harness_version": 4,
+    "graded": 21,
+    "claims": [
+      {
+        "run": "2026-11-25T13-31-49",
+        "id": "p2-q03",
+        "claim_index": 0,
+        "kind": "goal_as_result",
+        "claim": "ADP shows us staying with a client through every step of creation (context states ADP needed a partner to ride along at every step; the delivered fact is AG became a teammate)",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      },
+      {
+        "run": "2026-11-25T13-31-49",
+        "id": "p4-q04",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Teaser and narrative present an order of work for the Simons Foundation rebrand ('We began with a research discovery report, then built...'; 'it began with a research discovery report'). The context only lists the report among the solution items.",
+        "sources": [
+          "teaser_summary",
+          "narrative"
+        ],
+        "fields": [
+          "CaseStudyTeaser[3].summary",
+          "explanation"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-25T13-31-49",
+        "id": "p5-q05",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Our event work is virtual launch events and keynotes (the retrieved AIG Investor Day and re:MARS studies include in-person, on-site event work, and the line implies a complete view of our event portfolio)",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      },
+      {
+        "run": "2026-11-25T13-31-49",
+        "id": "p5-q05",
+        "claim_index": 1,
+        "kind": "other",
+        "claim": "Both show how we ... keep it going after (the Chrome Enterprise content shows no post-event follow-up, only post-production)",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      }
+    ],
+    "hero_gap": {
+      "records": 21,
+      "user_hero_differs_from_graded_hero": 21
+    }
+  },
+  {
+    "run": "2026-11-25T13-45-56",
+    "harness_version": 4,
+    "graded": 21,
+    "claims": [
+      {
+        "run": "2026-11-25T13-45-56",
+        "id": "p1-q02",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Chrome Enterprise work characterized as reclaiming territory 'in a crowded security conversation' (content frames it as an enterprise browser refresh emphasizing AI, security and manageability)",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-25T13-45-56",
+        "id": "p1-q05",
+        "claim_index": 0,
+        "kind": "goal_as_result",
+        "claim": "Chrome Enterprise video 'explains capabilities like data loss prevention and deep malware scanning' (context frames this as what the video needed to do; the solution line only states clear messaging for security decision makers)",
+        "sources": [
+          "teaser_summary"
+        ],
+        "fields": [
+          "CaseStudyTeaser[3].summary"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-25T13-45-56",
+        "id": "p2-q09",
+        "claim_index": 0,
+        "kind": "goal_as_result",
+        "claim": "Simons Foundation's rebrand 'brings a variety of sub-brands under one umbrella' (the context states unifying sub-brands as what Simons wanted)",
+        "sources": [
+          "teaser_summary"
+        ],
+        "fields": [
+          "CaseStudyTeaser[3].summary"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-25T13-45-56",
+        "id": "p3-q01",
+        "claim_index": 0,
+        "kind": "goal_as_result",
+        "claim": "Salesforce partner content 'builds awareness of their Salesforce practices and generates leads' (context says the content 'enables them to build awareness... and generate leads')",
+        "sources": [
+          "teaser_summary"
+        ],
+        "fields": [
+          "CaseStudyTeaser[2].summary"
+        ],
+        "method": "quote"
+      }
+    ],
+    "hero_gap": {
+      "records": 21,
+      "user_hero_differs_from_graded_hero": 21
+    }
+  },
+  {
+    "run": "2026-11-25T13-58-24",
+    "harness_version": 4,
+    "graded": 50,
+    "claims": [
+      {
+        "run": "2026-11-25T13-58-24",
+        "id": "p1-q05",
+        "claim_index": 0,
+        "kind": "goal_as_result",
+        "claim": "The Chrome Enterprise video above explained technical security features to security decision makers (the context states this as what the video needed to do; the stated deliverable is clear messaging tailored to ITDMs and security decision makers)",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      },
+      {
+        "run": "2026-11-25T13-58-24",
+        "id": "p3-q03",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "The narrative says we 'designed and produced virtual events' for Salesforce/WhatsApp, but the context only shows a campaign culminating in a virtual event (pre-event presentation, email assets, post-event toolkit). It does not show AG designed or produced the event itself.",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-25T13-58-24",
+        "id": "p3-q04",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Salesforce shows stories made for partners (context says the stories were crafted from partner submissions and published internally for Salesforce teams)",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      },
+      {
+        "run": "2026-11-25T13-58-24",
+        "id": "p3-q06",
+        "claim_index": 0,
+        "kind": "goal_as_result",
+        "claim": "Salesforce/Slack teaser says the content was 'giving global partners the language to market their Slack implementation services', presenting the design aim ('designed to... give partners the tools, insights, and language') as an achieved effect",
+        "sources": [
+          "teaser_summary"
+        ],
+        "fields": [
+          "CaseStudyTeaser[4].summary"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-25T13-58-24",
+        "id": "p3-q07",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Slalom 'came to us with the clock running' (the context describes a growing practice with a backlog and no internal resources, not a deadline)",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-25T13-58-24",
+        "id": "p4-q01",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "The teaser says the work was 'starting from a research discovery report', and the narrative calls it a 'research-first process'. The content lists the report among the deliverables but never states an order of work.",
+        "sources": [
+          "teaser_summary",
+          "narrative"
+        ],
+        "fields": [
+          "CaseStudyTeaser[2].summary",
+          "explanation"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-25T13-58-24",
+        "id": "p4-q04",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Our work with Simons Foundation began with a research discovery report before the story and design were built (the content lists the report among deliverables but does not state the order of work)",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      },
+      {
+        "run": "2026-11-25T13-58-24",
+        "id": "p4-q09",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Narrative describes the Google for Education series as turning research into a 'public-facing' video series; the context frames it as educator perspectives and a thought leadership platform, not general public engagement.",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-25T13-58-24",
+        "id": "p5-q08",
+        "claim_index": 0,
+        "kind": "capability_not_shown",
+        "claim": "Offering help with the opening night's 'invitations' implies an invitation/print-collateral capability that no retrieved case study shows.",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-25T13-58-24",
+        "id": "p5-q09",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Describes the Salesforce/WhatsApp work as 'a launch campaign', while the context calls it a consideration and conversion campaign for a new integration",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "quote"
+      }
+    ],
+    "hero_gap": {
+      "records": 50,
+      "user_hero_differs_from_graded_hero": 50
+    }
+  },
+  {
+    "run": "2026-11-25T14-30-56",
+    "harness_version": 4,
+    "graded": 50,
+    "claims": [
+      {
+        "run": "2026-11-25T14-30-56",
+        "id": "p1-q05",
+        "claim_index": 0,
+        "kind": "goal_as_result",
+        "claim": "Chrome Enterprise video 'explained technical security capabilities to security decision makers' / 'It explains capabilities like data loss prevention...' (context states the need to explain them and messaging tailored to security decision makers, a slight firming of the aim)",
+        "sources": [
+          "teaser_summary",
+          "narrative"
+        ],
+        "fields": [
+          "CaseStudyTeaser[3].summary",
+          "explanation"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-25T14-30-56",
+        "id": "p1-q07",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Salt Security and Chrome Enterprise are 'our two security examples', which ignores the retrieved CrowdStrike cybersecurity case study",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-25T14-30-56",
+        "id": "p2-q09",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Simons Foundation work 'began with a research discovery report' (an inferred order of work; the content lists the report among the deliverables without stating sequence)",
+        "sources": [
+          "teaser_summary"
+        ],
+        "fields": [
+          "CaseStudyTeaser[3].summary"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-25T14-30-56",
+        "id": "p3-q03",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "We don't publish attendance or engagement figures for these events (a statement about AG's publishing policy that the context does not state)",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "overlap"
+      },
+      {
+        "run": "2026-11-25T14-30-56",
+        "id": "p4-q04",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "Simons Foundation brand work was 'starting with a research discovery report' (order of work not stated in context)",
+        "sources": [
+          "teaser_summary"
+        ],
+        "fields": [
+          "CaseStudyTeaser[3].summary"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-25T14-30-56",
+        "id": "p4-q05",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "The Google for Education series 'shows how we handle people-first long-form video' (the context calls it an ongoing interview-led video series and never says it is long-form)",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "quote"
+      },
+      {
+        "run": "2026-11-25T14-30-56",
+        "id": "p5-q02",
+        "claim_index": 0,
+        "kind": "other",
+        "claim": "The AWS/NVIDIA film 'shows what we can do with video made for Instagram and TikTok'. The context says only that it was distributed across those channels, not that it was made for them.",
+        "sources": [
+          "narrative"
+        ],
+        "fields": [
+          "explanation"
+        ],
+        "method": "quote"
+      }
+    ],
+    "hero_gap": {
+      "records": 50,
+      "user_hero_differs_from_graded_hero": 50
+    }
+  }
+]

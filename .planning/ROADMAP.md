@@ -181,3 +181,25 @@ Plans:
 | 4. Generation | 9/9 | Complete (criteria 1-4 not met) | 2026-11-23 |
 | 5. Speed | 10/10 | Complete (criteria 1-2 not met) | 2026-11-23 |
 | 6. Proof | 12/12 | Closed with gaps (criterion 1 not met, 3 partial; 06-10 not executed) | 2026-11-25 |
+| 06.1 Output guard and claim tracing | 6/6 | Closed with gaps (3 of 7 ready bars missed; push pending) | 2026-11-25 |
+
+### Phase 06.1: Output guard and claim tracing (INSERTED)
+
+**Goal:** Close the Phase 6 claim and voice gaps without prompt-rule stacking:
+- A deterministic post-generation check that catches retrieval-wording leaks ("in what we pulled up", "Nothing we retrieved…") and count claims ("our two security examples").
+- Trace the remaining unsupported claims in the saved runs to their source: hero pass, teaser summaries or narrative.
+- Test everything free against all saved answers before any paid run. One ~$5 full-50 confirm run happens only after the user approves.
+- Budget: ~$15.70 credit, no top-ups.
+**Requirements**: GUARD-01, GUARD-02, TRACE-01, TRACE-02, CONFIRM-01
+**Depends on:** Phase 6
+**Plans:** 6 plans
+
+Plans:
+- [x] 06.1-01-PLAN.md — Requirement IDs + deterministic output guard module, test-first (leak drop, count-claim and first-person rewrites)
+- [x] 06.1-02-PLAN.md — Free claim trace over all harness-v4 saved runs; hero grader-view gap measured
+- [x] 06.1-03-PLAN.md — Free replay of the guard over every saved answer, false-positive review, trace-driven deterministic rules
+- [x] 06.1-04-PLAN.md — Guard wired into both chat routes; fast hero re-rendered into rawResponse so the grader reads what the user saw (wave 3, after 06.1-03)
+- [x] 06.1-05-PLAN.md — Readiness check, user approval, the one ~$5 full-50 confirm run, deltas vs 2026-11-25T14-30-56 (ran; 3 of 7 ready bars missed)
+- [x] 06.1-06-PLAN.md — Record outcome, squash, push on approval, deploy check and live smoke (squashed locally; push awaiting user approval)
+
+**Outcome (closed with gaps, 2026-11-25):** Run 2026-11-26T05-24-15 ($4.77, credit $10.67) missed 3 of 7 ready bars: voice 4.06 (bar 4.5), unsupported-claim responses 7/50 (bar <= 4), goal_as_result 2 (bar 0); passed hallucinations 0, capability_not_shown 0, invention-bait 0, recall 92%. The guard replays with 0 false positives over 970 answers but changed only 3 of 50 answers in the run. The voice drop is a measurement change: the grader now reads the hero users saw, whose challengeSummary restates the query in 49/50 answers (12/50 were graded before). Main follow-up: fast-hero-pass prompt. Residual risk: streamed narrative deltas and fast-hero deltas are shown unguarded for a few seconds until `final` replaces them with guarded text (not fixed: buffering would delay the hero, PERF-02).

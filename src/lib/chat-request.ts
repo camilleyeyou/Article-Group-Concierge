@@ -49,7 +49,7 @@ export function teasersOnlyEnabled(body: Pick<ChatRequest, 'teasersOnly'> | null
 }
 
 export function toPublicOutput(o: OrchestratorOutput): PublicOrchestratorOutput {
-  const { rawResponse, modelRawResponse, orchestratorError, usage, catalogueVersion, verifier, ...pub } = o;
+  const { rawResponse, modelRawResponse, orchestratorError, usage, catalogueVersion, verifier, guard, ...pub } = o;
   return pub;
 }
 
@@ -73,6 +73,7 @@ export async function buildDebugPayload(
     orchestratorError: result.orchestratorError ?? null,
     usage: result.usage ?? null,
     verifier: result.verifier ?? null,
+    guard: result.guard ?? null,
     catalogue: await catalogueForDebug(result.catalogueVersion),
     models: { route: providerRoute(), generation: GENERATION_MODEL, embedding: embeddingConfig().model },
     retrieval: {

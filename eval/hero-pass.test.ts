@@ -108,3 +108,50 @@ test('main error propagates and aborts the hero pass', async () => {
     /boom/
   );
 });
+
+const finalOf = (out: OrchestratorStreamEvent[]) =>
+  (out.find(e => e.type === 'final') as Extract<OrchestratorStreamEvent, { type: 'final' }>).output;
+
+test('fast hero is the hero in rawResponse (grader view)', async () => {
+  const out = await run({
+    heroPass: true,
+    createEvents: source(textEvents(layoutText(MAIN_HERO)), 60),
+    createHeroEvents: source(textEvents(layoutText(FAST_HERO)), 5),
+  });
+  const f = finalOf(out);
+  assert.ok(f.rawResponse!.includes('"challengeSummary": "Fast summary"'));
+  assert.ok(!f.rawResponse!.includes('Main summary'));
+});
+
+test('a leak sentence in the fast hero is guarded in layout and rawResponse', async () => {
+  const leaky = { ...FAST_HERO, challengeSummary: 'Nothing we retrieved fits your question. Here is our closest work.' };
+  const out = await run({
+    heroPass: true,
+    createEvents: source(textEvents(layoutText(MAIN_HERO)), 60),
+    createHeroEvents: source(textEvents(layoutText(leaky)), 5),
+  });
+  const f = finalOf(out);
+  assert.equal((f.layoutPlan.layout[0].props as any).challengeSummary, 'Here is our closest work.');
+  assert.ok(f.rawResponse!.includes('"challengeSummary": "Here is our closest work."'));
+  assert.ok(f.guard!.changes.some(c => c.field === 'layout[0].HeroBlock.challengeSummary'));
+});
+
+test('guarded narrative stays guarded in rawResponse after the fast hero swap', async () => {
+  const text =
+    '```json\n' +
+    JSON.stringify({ layout: [{ component: 'HeroBlock', props: MAIN_HERO }, { component: 'StrategyCard', props: { title: 'S', content: 'c', icon: 'target' } }] }) +
+    "\n```\n\nNothing we retrieved speaks to pricing, so we haven't shown client work. Price depends on scope. Our Strategy Lead can scope it with you.\n\n**Want to explore further?**\n- Is this a question one?\n- Is this a question two?";
+  const out = await run({
+    heroPass: true,
+    createEvents: source(textEvents(text), 60),
+    createHeroEvents: source(textEvents(layoutText(FAST_HERO)), 5),
+  });
+  const f = finalOf(out);
+  assert.ok(!f.rawResponse!.includes('retrieved'));
+  assert.ok(f.rawResponse!.includes('Price depends on scope.'));
+  assert.ok(f.rawResponse!.includes('Fast summary'));
+  assert.ok(!f.rawResponse!.includes('Main summary'));
+  assert.ok(!f.explanation!.includes('retrieved'));
+  assert.ok(f.explanation!.includes('Price depends on scope.'));
+  assert.ok(f.modelRawResponse!.includes('retrieved'));
+});

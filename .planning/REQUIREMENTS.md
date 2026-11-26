@@ -54,6 +54,14 @@
 - [x] **PROOF-02**: A one-page before/after compares the baseline with the final runs metric by metric
 - [ ] **PROOF-03** (Partial: five verified under the user-approved claims rule; 4 of 5 pass the original stability rule; no multi-part or pricing query): Five demo queries are chosen and verified to produce accurate, strong responses for the owner demo
 
+### Output guard and claim tracing (Phase 06.1)
+
+- [x] **GUARD-01**: A deterministic post-generation guard (no model call) removes retrieval-wording leaks, rewrites count/exhaustiveness claims to non-exhaustive forms and rewrites first-person "I" to "we" in every user-visible text field, on both the JSON and the streaming route
+- [x] **GUARD-02**: The guard is replayed free ($0) over every saved answer (eval/results and the 06-DEMO rounds); every leak and count change and a sample of first-person changes are reviewed, with 0 false positives left
+- [x] **TRACE-01**: Every unsupported claim in the saved harness-v4 runs is traced to the text that produced it (hero, StrategyCard, teaser summary or narrative), and the grader-view vs user-view hero gap is measured
+- [x] **TRACE-02** (Partial: order_of_work fixed deterministically; goal_as_result, designed-and-produced, channel inference documented as not fixable deterministically): Source fixes found by the trace are implemented as deterministic code (no new prompt rules) or documented as not fixable deterministically
+- [x] **CONFIRM-01**: One user-approved full original-50 run (Sonnet 5.5 generation, Opus 5.5 judge) reports deltas against 2026-11-25T14-30-56 and the ready bars; spend is logged
+
 ## v2 Requirements
 
 - **V2-01**: Automated nightly eval with regression alerts
@@ -104,12 +112,17 @@
 | PROOF-01 | Phase 6 | Not met (counted runs not executed, budget) |
 | PROOF-02 | Phase 6 | Complete |
 | PROOF-03 | Phase 6 | Partial (5 verified under claims rule; 4 of 5 under original stability rule; no multi-part or pricing query) |
+| GUARD-01 | Phase 06.1 | Complete |
+| GUARD-02 | Phase 06.1 | Complete |
+| TRACE-01 | Phase 06.1 | Complete |
+| TRACE-02 | Phase 06.1 | Complete |
+| CONFIRM-01 | Phase 06.1 | Complete |
 
 **Coverage:**
-- v1 requirements: 31 total
-- Mapped to phases: 31
+- v1 requirements: 36 total
+- Mapped to phases: 36
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-11-20*
-*Last updated: 2026-11-25 after Phase 6 close*
+*Last updated: 2026-11-25 after Phase 06.1 close*

@@ -34,6 +34,7 @@ test('toPublicOutput strips exactly the internal keys', () => {
   const o = {
     layoutPlan: { layout: [] }, explanation: 'e', contactCTA: true,
     rawResponse: 'a', modelRawResponse: 'b', orchestratorError: 'c', usage: null, catalogueVersion: 'v', verifier: null,
+    guard: { version: 1, changes: [] },
   };
   assert.deepEqual(Object.keys(toPublicOutput(o as never)).sort(), ['contactCTA', 'explanation', 'layoutPlan']);
 });

@@ -155,6 +155,7 @@ export interface RunRecord {
   usage?: GenerationUsage | null;
   search_function?: string | null;
   verifier?: import('../src/types').VerifierReport | null;
+  guard?: import('../src/lib/output-guard').GuardReport | null;
   // Phase 5 (D-510): arrival times in ms since the request started; absent on JSON-route and older runs
   t_teasers_ms?: number | null;
   t_suppressed_ms?: number | null;

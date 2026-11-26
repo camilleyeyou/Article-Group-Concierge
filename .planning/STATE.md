@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Phase complete (closed with gaps)
-stopped_at: Completed 06-12-PLAN.md (Phase 6 closed with gaps; PROOF-01 not met)
-last_updated: "2026-11-25T19:44:32.998Z"
-last_activity: 2026-11-25
+status: Phase 06.1 closed with gaps (push pending user approval)
+stopped_at: Completed 06.1-06-PLAN.md up to push checkpoint
+last_updated: "2026-11-26T05:47:25.571Z"
+last_activity: 2026-11-26
 progress:
-  total_phases: 6
-  completed_phases: 6
-  total_plans: 57
-  completed_plans: 57
+  total_phases: 7
+  completed_phases: 7
+  total_plans: 63
+  completed_plans: 63
 ---
 
 # Project State
@@ -20,12 +20,24 @@ progress:
 See: .planning/PROJECT.md (updated 2026-11-20)
 
 **Core value:** Never misrepresent AG's work. A wrong claim about a client engagement is worse than a weak answer.
-**Current focus:** Phase 06 closed with gaps; decide next steps with the user (PROOF-01 not met)
+**Current focus:** Phase 06.1 — output-guard-and-claim-tracing
 
 ## Current Position
 
-Phase: 06 (proof) — CLOSED WITH GAPS (not fully met)
-Plan: 12 of 12 complete (06-10 not executed, budget). Milestone work is finished; verdict: much improved, not proven ready.
+Phase: 06.1 (output-guard-and-claim-tracing) — CLOSED WITH GAPS (squashed locally, not pushed; awaiting user push approval)
+Plan: 6 of 6
+
+## Phase 06.1 outcome (closed with gaps, 2026-11-25)
+
+- Confirm run `2026-11-26T05-24-15` (code 18e09fa, original 50, N=1, held-out not run, second grader off): $4.77, credit $15.43 -> $10.67, 50/50 ok. Reference `2026-11-25T14-30-56`.
+- Deltas vs reference: voice 4.48 -> 4.06 (-0.42); grounded 4.76 -> 4.82; unsupported-claim responses 7 -> 7 (bar <= 4); goal_as_result 1 -> 2 (bar 0); recall 92% -> 92%; hallucinations 0; capability_not_shown 0; invention-bait 0.
+- Ready bars: 3 of 7 missed (voice < 4.5, unsupported responses 7/50, goal_as_result 2); passed: hallucinations, capability_not_shown, invention-bait, recall.
+- Guard: replay over 970 saved answers changed 181, 0 false positives. In the confirm run it changed 3 of 50 answers (count_claim, order_of_work, first_person). It did not move the unsupported-claim count; the 8 remaining claims are narrative 5, teaser summary 3, hero 0, none in guard-target classes.
+- Trace shares (pooled full-50): narrative 70%, teaser summaries 27%, hero 6%.
+- Hero grader-view fix: rawResponse now rendered after fast-hero substitution; the grader reads the hero the user saw (gap 0/50, was 50/50). Hero-related scores are not comparable with earlier runs.
+- Voice drop is a measurement change, not a regression (checked free): hero challengeSummary restating the query ("you're asking / you want / you need / you're looking") appeared in 46/50 user-seen fast heroes but only 12/50 graded raw_response heroes in 2026-11-25T14-30-56; in the new run 49/50 user-seen and 49/50 graded. The grader now scores what users always saw. Main follow-up: the fast-hero-pass prompt restates the user's query (predates 06.1).
+- Residual risk: streamed narrative deltas and fast-hero deltas are shown unguarded for a few seconds until `final` replaces them with guarded text (not fixed: buffering would delay the hero, PERF-02).
+- Spend: $4.77 of ~$15.70 budget; credit left $10.67. Push: not pushed, awaiting user approval.
 
 ## Scope change (2026-11-25)
 
@@ -117,6 +129,18 @@ Same responses as the frozen run, graded under harness v2. Like-for-like referen
 | Phase 06 P09 | n/a | 3 tasks | 3 files |
 | Phase 06 P11 | 2.5h | 3 tasks | 9 files |
 | Phase 06 P12 | n/a | 3 tasks | 5 files |
+| Phase 06.1 P01 | 25min | 3 tasks | 5 files |
+| Phase 06.1 P02 | 30min | 2 tasks | 5 files |
+| Phase 06.1 P03 | 50min | 3 tasks | 8 files |
+| Phase 06.1 P04 | 35min | 3 tasks | 9 files |
+| Phase 06.1 P05 | 60min | 3 tasks | 2 files |
+
+### Roadmap Evolution
+
+- Phase 06.1 inserted after Phase 6 (2026-11-25): Output guard and claim tracing.
+  - Scope: a deterministic leak/count-claim check, and tracing the remaining unsupported claims.
+  - Testing: free on saved answers first; a ~$5 confirm run only with the user's approval.
+  - Budget: ~$15.70, no top-ups.
 
 ### Decisions
 
@@ -176,6 +200,14 @@ Same responses as the frozen run, graded under harness v2. Like-for-like referen
 - [Phase 06]: 06-11: demo verification on production: 1 of 5 picks VERIFIED (p2-q04); p1-q03, p3-q10, p3-q09 unstable teaser sets, p5-q06 unsupported pricing wording; reserves not swapped, awaiting user; demo spend 0.93, credit 16.39
 - [Phase 06]: 06-11: demo_rule claims (user): final demo set p2-q06, p1-q06, p3-q02, p2-q04, p3-q09 verified on production (PROOF-03 met under relaxed rule, 4 of 5 under strict); p3-q10 failed on a retrieval leak; demo spend 1.55 (0.05 over the 1.50 line), credit 15.77
 - [Phase 06]: 06-12: Phase 6 closed with gaps, user approved page and push (2026-11-25). Verdict: much improved, not proven ready; PROOF-01 NOT met (three counted runs never executed, budget). After run 2026-11-25T14-30-56 at 844ae18 (same prompt deployed as b50bb0c), original 50 only: recall 48/52 (92%), voice 4.48 (bar 4.5), unsupported-claim responses 7/50 = 14% (bar < 10%), goal_as_result 1 (bar 0): three bar misses; site work missing 0, invention-bait 0, capabilities not shown 0, mismatched videos 0. Held-out 25 never run; timing batches skipped (speed only indicative, from Cameroon). Spend $15.44 logged (+~$0.07 closing smoke), credit left $15.77 before the smoke. Demo ids p2-q06, p1-q06, p3-q02, p2-q04, p3-q09 (PROOF-03 partial: verified under the claims rule; 4 of 5 pass the original stability rule; no multi-part or pricing query). Page: https://claude.ai/artifact/DbPCsryF6zFurYCXzUJQWE. PERF_TIMING: user turning it off in Vercel themselves (still present in production at close); EVAL_DEBUG absent. Production Ready; live smoke SMOKE OK ("insurance experience?", 18.0 s to final)
+- [Phase 06.1]: 06.1-01: output guard is pure; leak sentences dropped, count claims and first-person rewritten; sole-sentence leaks kept as kept_unresolved
+- [Phase 06.1]: 06.1-02: claim trace over 80 claims: narrative 70%, teaser summaries 27%, hero 6% (pooled full-50); hero gap 50/50 in latest three full runs, fix is plan 04 Task 2
+- [Phase 06.1]: 06.1-03: guard replay over 970 saved answers changes 181, 0 false positives, 8/8 must-catch; order_of_work rule added for teaser summaries; first_person ignores quoted I; designed-and-produced, goal_as_result, channel inference not fixed
+- [Phase 06.1]: 06.1-04: guard runs inside postProcessOutput on both routes (OUTPUT_GUARD_ENABLED switch, version in cache key); fast hero guarded and rendered into rawResponse; guard report internal, saved as record.guard from EVAL_DEBUG; streamed deltas stay unguarded until final (residual risk)
+
+- [Phase 06.1]: deterministic output guard (OUTPUT_GUARD_ENABLED switch), no prompt rules added
+- [Phase 06.1]: rawResponse re-rendered after fast-hero substitution; grader now reads the hero the user saw
+- [Phase 06.1]: 06.1-05/06: closed with gaps; confirm run 2026-11-26T05-24-15 missed 3 of 7 bars (voice 4.06, unsupported 7/50, goal_as_result 2); voice drop is the grader now seeing the query-restating hero; follow-up is the fast-hero-pass prompt; spend $4.77, credit $10.67
 
 ### Key Constraints
 
@@ -210,9 +242,9 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-11-25T20:30:00.000Z
-Last activity: 2026-11-25
-Stopped at: Completed 06-12-PLAN.md (Phase 6 closed with gaps; PROOF-01 not met)
+Last session: 2026-11-26T05:47:25.565Z
+Last activity: 2026-11-26
+Stopped at: Completed 06.1-06-PLAN.md up to push checkpoint
 Resume file: None
 
 - 2026-11-22 (03-08 follow-up): User chose to keep the Cohere reranker OFF (rerank.enabled=false). Net +1 recall (44/52) did not justify ~0.9 s p50 latency and a new data processor. Code and RRF fallback stay; re-enable via config or RERANK_ENABLED=true. Phase-end eval (03-09) approved by user despite gate FAIL; expected recall ≈ 43/52.

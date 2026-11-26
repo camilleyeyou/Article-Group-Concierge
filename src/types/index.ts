@@ -1,3 +1,4 @@
+import type { GuardReport } from '../lib/output-guard';
 // Article Group AI Concierge - Type Definitions
 
 // ============================================
@@ -290,6 +291,7 @@ export interface OrchestratorOutput {
   usage?: GenerationUsage | null;
   catalogueVersion?: string | null;
   verifier?: VerifierReport | null; // Internal only (debug)
+  guard?: GuardReport | null; // Internal only (debug), Phase 06.1
 }
 
 // ============================================

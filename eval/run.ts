@@ -59,6 +59,7 @@ type DebugResponse = OrchestratorOutput & {
     retrieval: RetrievalSnapshot;
     models?: RunModels;
     usage?: GenerationUsage | null;
+    guard?: import('../src/lib/output-guard').GuardReport | null;
     catalogue?: { version: string; text: string } | null;
   };
 };
@@ -140,6 +141,7 @@ function applyDebug(record: RunRecord, debug: NonNullable<DebugResponse['debug']
   record.catalogue = debug.catalogue?.text ?? null;
   record.catalogue_version = debug.catalogue?.version ?? null;
   record.usage = debug.usage ?? null;
+  record.guard = debug.guard ?? null;
   record.search_function = debug.retrieval?.searchFunction ?? null;
   return debug.models ?? null;
 }

@@ -1,0 +1,3241 @@
+{
+  "generated_at": "2026-11-26T05:12:15.766Z",
+  "guard_version": 1,
+  "answers_total": 970,
+  "answers_changed": 181,
+  "changes_by_rule": {
+    "first_person": 256,
+    "retrieval_leak": 48,
+    "order_of_work": 5,
+    "count_claim": 12
+  },
+  "changes_by_action": {
+    "rewrite": 273,
+    "drop_sentence": 48
+  },
+  "per_run": [
+    {
+      "run": "2026-10-27T13-38-48",
+      "answers": 50,
+      "answers_changed": 0,
+      "retrieval_leak": 0,
+      "count_claim": 0,
+      "first_person": 0,
+      "order_of_work": 0,
+      "kept_unresolved": 0,
+      "below_min": 0
+    },
+    {
+      "run": "2026-11-20T15-12-31",
+      "answers": 50,
+      "answers_changed": 16,
+      "retrieval_leak": 4,
+      "count_claim": 0,
+      "first_person": 28,
+      "order_of_work": 1,
+      "kept_unresolved": 0,
+      "below_min": 0
+    },
+    {
+      "run": "2026-11-21T07-32-49-regrade",
+      "answers": 50,
+      "answers_changed": 16,
+      "retrieval_leak": 4,
+      "count_claim": 0,
+      "first_person": 28,
+      "order_of_work": 1,
+      "kept_unresolved": 0,
+      "below_min": 0
+    },
+    {
+      "run": "2026-11-21T07-38-07",
+      "answers": 50,
+      "answers_changed": 14,
+      "retrieval_leak": 5,
+      "count_claim": 0,
+      "first_person": 26,
+      "order_of_work": 0,
+      "kept_unresolved": 0,
+      "below_min": 0
+    },
+    {
+      "run": "2026-11-21T08-04-22",
+      "answers": 50,
+      "answers_changed": 14,
+      "retrieval_leak": 4,
+      "count_claim": 0,
+      "first_person": 21,
+      "order_of_work": 0,
+      "kept_unresolved": 0,
+      "below_min": 0
+    },
+    {
+      "run": "2026-11-21T17-02-54",
+      "answers": 50,
+      "answers_changed": 26,
+      "retrieval_leak": 7,
+      "count_claim": 0,
+      "first_person": 42,
+      "order_of_work": 0,
+      "kept_unresolved": 0,
+      "below_min": 0
+    },
+    {
+      "run": "2026-11-21T21-15-13",
+      "answers": 50,
+      "answers_changed": 13,
+      "retrieval_leak": 1,
+      "count_claim": 1,
+      "first_person": 28,
+      "order_of_work": 0,
+      "kept_unresolved": 0,
+      "below_min": 0
+    },
+    {
+      "run": "2026-11-22T11-54-42",
+      "answers": 3,
+      "answers_changed": 1,
+      "retrieval_leak": 0,
+      "count_claim": 0,
+      "first_person": 1,
+      "order_of_work": 0,
+      "kept_unresolved": 0,
+      "below_min": 0
+    },
+    {
+      "run": "2026-11-22T11-56-17",
+      "answers": 50,
+      "answers_changed": 22,
+      "retrieval_leak": 7,
+      "count_claim": 1,
+      "first_person": 34,
+      "order_of_work": 0,
+      "kept_unresolved": 0,
+      "below_min": 0
+    },
+    {
+      "run": "2026-11-22T13-40-39",
+      "answers": 3,
+      "answers_changed": 2,
+      "retrieval_leak": 1,
+      "count_claim": 0,
+      "first_person": 2,
+      "order_of_work": 0,
+      "kept_unresolved": 0,
+      "below_min": 0
+    },
+    {
+      "run": "2026-11-22T13-42-12",
+      "answers": 50,
+      "answers_changed": 19,
+      "retrieval_leak": 7,
+      "count_claim": 0,
+      "first_person": 27,
+      "order_of_work": 0,
+      "kept_unresolved": 0,
+      "below_min": 0
+    },
+    {
+      "run": "2026-11-22T22-17-35",
+      "answers": 21,
+      "answers_changed": 2,
+      "retrieval_leak": 0,
+      "count_claim": 1,
+      "first_person": 1,
+      "order_of_work": 0,
+      "kept_unresolved": 0,
+      "below_min": 0
+    },
+    {
+      "run": "2026-11-22T22-28-23",
+      "answers": 21,
+      "answers_changed": 2,
+      "retrieval_leak": 1,
+      "count_claim": 1,
+      "first_person": 0,
+      "order_of_work": 0,
+      "kept_unresolved": 0,
+      "below_min": 0
+    },
+    {
+      "run": "2026-11-22T22-48-20",
+      "answers": 50,
+      "answers_changed": 3,
+      "retrieval_leak": 0,
+      "count_claim": 1,
+      "first_person": 2,
+      "order_of_work": 0,
+      "kept_unresolved": 0,
+      "below_min": 0
+    },
+    {
+      "run": "2026-11-23T01-37-58-verified",
+      "answers": 50,
+      "answers_changed": 3,
+      "retrieval_leak": 0,
+      "count_claim": 1,
+      "first_person": 2,
+      "order_of_work": 0,
+      "kept_unresolved": 0,
+      "below_min": 0
+    },
+    {
+      "run": "2026-11-23T19-00-37",
+      "answers": 50,
+      "answers_changed": 5,
+      "retrieval_leak": 0,
+      "count_claim": 1,
+      "first_person": 3,
+      "order_of_work": 1,
+      "kept_unresolved": 0,
+      "below_min": 0
+    },
+    {
+      "run": "2026-11-23T19-25-08",
+      "answers": 50,
+      "answers_changed": 4,
+      "retrieval_leak": 1,
+      "count_claim": 1,
+      "first_person": 2,
+      "order_of_work": 1,
+      "kept_unresolved": 0,
+      "below_min": 0
+    },
+    {
+      "run": "2026-11-23T19-49-22",
+      "answers": 50,
+      "answers_changed": 1,
+      "retrieval_leak": 0,
+      "count_claim": 0,
+      "first_person": 1,
+      "order_of_work": 0,
+      "kept_unresolved": 0,
+      "below_min": 0
+    },
+    {
+      "run": "2026-11-24T10-06-42",
+      "answers": 6,
+      "answers_changed": 2,
+      "retrieval_leak": 0,
+      "count_claim": 0,
+      "first_person": 2,
+      "order_of_work": 0,
+      "kept_unresolved": 0,
+      "below_min": 0
+    },
+    {
+      "run": "2026-11-24T10-42-25",
+      "answers": 50,
+      "answers_changed": 5,
+      "retrieval_leak": 2,
+      "count_claim": 2,
+      "first_person": 1,
+      "order_of_work": 0,
+      "kept_unresolved": 0,
+      "below_min": 0
+    },
+    {
+      "run": "2026-11-25T13-31-49",
+      "answers": 21,
+      "answers_changed": 0,
+      "retrieval_leak": 0,
+      "count_claim": 0,
+      "first_person": 0,
+      "order_of_work": 0,
+      "kept_unresolved": 0,
+      "below_min": 0
+    },
+    {
+      "run": "2026-11-25T13-45-56",
+      "answers": 21,
+      "answers_changed": 2,
+      "retrieval_leak": 1,
+      "count_claim": 0,
+      "first_person": 1,
+      "order_of_work": 0,
+      "kept_unresolved": 0,
+      "below_min": 0
+    },
+    {
+      "run": "2026-11-25T13-58-24",
+      "answers": 50,
+      "answers_changed": 3,
+      "retrieval_leak": 1,
+      "count_claim": 0,
+      "first_person": 3,
+      "order_of_work": 0,
+      "kept_unresolved": 0,
+      "below_min": 0
+    },
+    {
+      "run": "2026-11-25T14-30-56",
+      "answers": 50,
+      "answers_changed": 4,
+      "retrieval_leak": 0,
+      "count_claim": 2,
+      "first_person": 1,
+      "order_of_work": 1,
+      "kept_unresolved": 0,
+      "below_min": 0
+    },
+    {
+      "run": "06-DEMO",
+      "answers": 24,
+      "answers_changed": 2,
+      "retrieval_leak": 2,
+      "count_claim": 0,
+      "first_person": 0,
+      "order_of_work": 0,
+      "kept_unresolved": 0,
+      "below_min": 0
+    }
+  ],
+  "changes": [
+    {
+      "answer_id": "2026-11-20T15-12-31:p1-q01",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I don't",
+      "after": "We don't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p1-q09",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "I don't have Wiz or CNAPP materials in front of me, so I can't confirm details of that engagement or speak to any pipeline lift.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p1-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "We won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p1-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p1-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p1-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "We can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p2-q04",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p2-q09",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "I can't confirm MetLife details or how analysts and brokers responded, because nothing in the materials I have covers that engagement.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p2-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I don't",
+      "after": "We don't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p2-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p2-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p3-q05",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p3-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "We can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p3-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p3-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p3-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p3-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "We'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p4-q08",
+      "field": "layout[3].CaseStudyTeaser.summary",
+      "rule": "order_of_work",
+      "action": "rewrite",
+      "before": ", starting with a ",
+      "after": ", including a ",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p4-q09",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "I don't have project details or performance results for a Howard Hughes Medical Institute engagement in the materials in front of me.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "We won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I've",
+      "after": "we've",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p5-q06",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "We can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p5-q07",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "I don't have specific pricing or engagement tiers in front of me, so the best next step is a scoping conversation with the team.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p5-q08",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p5-q08",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p5-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "We can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p5-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p5-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p5-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p5-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-20T15-12-31:p5-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p1-q01",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I don't",
+      "after": "We don't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p1-q09",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "I don't have Wiz or CNAPP materials in front of me, so I can't confirm details of that engagement or speak to any pipeline lift.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p1-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "We won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p1-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p1-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p1-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "We can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p2-q04",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p2-q09",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "I can't confirm MetLife details or how analysts and brokers responded, because nothing in the materials I have covers that engagement.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p2-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I don't",
+      "after": "We don't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p2-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p2-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p3-q05",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p3-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "We can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p3-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p3-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p3-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p3-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "We'd",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p4-q08",
+      "field": "layout[3].CaseStudyTeaser.summary",
+      "rule": "order_of_work",
+      "action": "rewrite",
+      "before": ", starting with a ",
+      "after": ", including a ",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p4-q09",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "I don't have project details or performance results for a Howard Hughes Medical Institute engagement in the materials in front of me.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "We won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I've",
+      "after": "we've",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p5-q06",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "We can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p5-q07",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "I don't have specific pricing or engagement tiers in front of me, so the best next step is a scoping conversation with the team.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p5-q08",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p5-q08",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p5-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "We can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p5-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p5-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p5-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p5-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-32-49-regrade:p5-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p1-q09",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "I can't confirm the Wiz CNAPP work or any post-launch pipeline figures from the materials I have, so I haven't presented either.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p1-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "We'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p1-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p1-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p1-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p1-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p2-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I don't",
+      "after": "We don't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p2-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p2-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p2-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p2-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p2-q10",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "On timing, the work we have on record doesn't pin down a duration for that engagement, so I won't claim a precise fit for five months.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p3-q05",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "We can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p3-q09",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "I can't confirm a Microsoft Azure Marketplace partner program engagement from the work I have in front of me, so I won't attach a pipeline number to it.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p3-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p4-q09",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "I don't have an HHMI engagement in the material in front of me, so I can't confirm the scope of that work or speak to how it performed, and I'd rather not guess at either.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p4-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p5-q03",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p5-q06",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I don't",
+      "after": "We don't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p5-q06",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I don't",
+      "after": "we don't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p5-q07",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p5-q07",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p5-q08",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I don't",
+      "after": "we don't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p5-q09",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "I can't confirm a Shake Shack engagement from the work I have in front of me, so I won't attribute it to us or quote customer numbers for it.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p5-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p5-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p5-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I don't",
+      "after": "we don't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p5-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p5-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I don't",
+      "after": "we don't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T07-38-07:p5-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T08-04-22:p1-q01",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T08-04-22:p1-q09",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "I can't confirm a Wiz engagement or any post-launch pipeline figures from the materials I have, and I won't guess at numbers.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T08-04-22:p1-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T08-04-22:p2-q08",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T08-04-22:p2-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I don't",
+      "after": "We don't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T08-04-22:p2-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T08-04-22:p2-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T08-04-22:p2-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T08-04-22:p3-q05",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I've",
+      "after": "we've",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T08-04-22:p3-q09",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "I can't confirm the Microsoft Azure Marketplace program or any pipeline figures from the work I have in front of me, so I won't put a number on it.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T08-04-22:p3-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T08-04-22:p3-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I don't",
+      "after": "we don't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T08-04-22:p4-q09",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "I can't confirm the details of a Howard Hughes Medical Institute engagement, or how it performed, from the materials in front of me.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T08-04-22:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "We'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T08-04-22:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I've",
+      "after": "we've",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T08-04-22:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T08-04-22:p4-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T08-04-22:p5-q06",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "We can't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T08-04-22:p5-q08",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T08-04-22:p5-q09",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "I can't confirm a Shake Shack engagement from the portfolio in front of me, so I can't speak to that work or to customer numbers.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T08-04-22:p5-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T08-04-22:p5-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T08-04-22:p5-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T08-04-22:p5-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T08-04-22:p5-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p1-q01",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p1-q07",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p1-q08",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p1-q08",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I don't",
+      "after": "We don't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p1-q09",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "I can't confirm the Wiz CNAPP engagement or speak to pipeline results from the materials I have, and I won't put numbers behind work I can't verify.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p1-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p1-q10",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "The selection I retrieved doesn't include a security-specific case study, and I'd rather not stretch an unrelated project to fill the gap.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p2-q03",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "We'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p2-q06",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I don't",
+      "after": "We don't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p2-q08",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "We can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p2-q09",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "I can't speak to MetLife or to how analysts and brokers reacted to it, because nothing in the materials I have covers that engagement or its reception, and I don't want to guess.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p2-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p2-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p2-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "We can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p2-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I have",
+      "after": "we have",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p2-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p3-q02",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I haven't",
+      "after": "We haven't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p3-q03",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "We can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p3-q03",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p3-q05",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "We'd",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p3-q05",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I haven't",
+      "after": "we haven't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p3-q05",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p3-q09",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "I can't confirm a Microsoft Azure Marketplace partner program engagement from the materials I have, and none of the work below reports pipeline figures, so I won't put a number on lift.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p3-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p4-q07",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'm",
+      "after": "We're",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p4-q08",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "I don't have relevant case studies in front of me for this specific type of work, so a conversation with our team would be the best way to judge fit.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p4-q09",
+      "field": "layout[0].HeroBlock.challengeSummary",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p4-q09",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "I can't confirm the Howard Hughes Medical Institute engagement from the materials I have, so I don't want to describe that work or its results and risk getting them wrong.",
+      "after": "",
+      "verdict": "awkward"
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "We'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p4-q10",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "I don't have the Simons Foundation project details in front of me, so I won't guess at what was delivered across identity, voice, and web.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p4-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I have",
+      "after": "we have",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p4-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p5-q02",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "We can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p5-q02",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I've",
+      "after": "we've",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p5-q03",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "We can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p5-q03",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'm",
+      "after": "we're",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p5-q04",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I haven't",
+      "after": "We haven't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p5-q06",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I don't",
+      "after": "We don't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p5-q06",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p5-q06",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p5-q07",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p5-q08",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I don't",
+      "after": "we don't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p5-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I don't",
+      "after": "We don't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p5-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p5-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "We'd",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p5-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p5-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I don't",
+      "after": "We don't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T17-02-54:p5-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p1-q01",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p1-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I don't",
+      "after": "We don't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p1-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p1-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "We'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p1-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'm",
+      "after": "we're",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p1-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "We can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p2-q09",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "I don't have MetLife project details or any analyst or broker feedback in the materials in front of me, so I won't characterize how those audiences responded.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p2-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "We'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p2-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p3-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "We can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p3-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p3-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p3-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I don't",
+      "after": "We don't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p4-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p5-q06",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "We can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p5-q06",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p5-q06",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p5-q07",
+      "field": "explanation",
+      "rule": "count_claim",
+      "action": "rewrite",
+      "before": "Our two Chrome SMB engagements",
+      "after": "Two of our Chrome SMB engagements",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p5-q07",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p5-q08",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p5-q08",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p5-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "We can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p5-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p5-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p5-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p5-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-21T21-15-13:p5-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-54-42:p5-q01",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p1-q01",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p1-q07",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p1-q09",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "We haven't published a Wiz case study, and none of the work I retrieved includes pipeline figures, so I can't speak to pipeline lift for that engagement.",
+      "after": "",
+      "verdict": "awkward"
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p1-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p1-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p2-q01",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p2-q05",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p2-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p2-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I don't",
+      "after": "we don't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p2-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p3-q01",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "The material I retrieved doesn't include partner adoption or usage figures, so I can't point to numbers showing how widely partners picked these assets up.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p3-q01",
+      "field": "explanation",
+      "rule": "count_claim",
+      "action": "rewrite",
+      "before": "Our two Salesforce engagements",
+      "after": "Two of our Salesforce engagements",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p3-q02",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I've",
+      "after": "we've",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p3-q02",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'd",
+      "after": "we'd",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p3-q03",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p3-q07",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I don't",
+      "after": "We don't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p3-q07",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p3-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p3-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I have",
+      "after": "we have",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p3-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p3-q10",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "**On timing:** none of the work retrieved here includes timelines, so I won't guess at a number for ~20 videos.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p3-q10",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "**On partner events:** Chrome Enterprise's Demo Day is the closest retrieved example, but it was a launch event for Chrome's own features, so treat it as adjacent rather than a true partner event.",
+      "after": "",
+      "verdict": "awkward"
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p3-q10",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "It wasn't retrieved here, so I can't detail its results.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p4-q09",
+      "field": "layout[0].HeroBlock.challengeSummary",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I haven't",
+      "after": "We haven't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p4-q10",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "**Timeline:** The materials I have don't state how long the Simons engagement took, and I won't guess.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p5-q02",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'm",
+      "after": "we're",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p5-q06",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "None of the retrieved case studies speak to cost, so I haven't put client work in this deck just to fill it.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p5-q06",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I don't",
+      "after": "We don't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p5-q06",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p5-q06",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p5-q07",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p5-q08",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p5-q08",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I haven't",
+      "after": "We haven't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p5-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p5-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T11-56-17:p5-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T13-40-39:p5-q01",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "I held back from adding case study cards because none of the retrieved work addresses foot traffic for local, consumer-facing businesses, and I'd rather show you where we can help than pad the deck.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-22T13-40-39:p5-q01",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T13-40-39:p5-q03",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p1-q01",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p1-q09",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "None of the work I retrieved reports pipeline figures, so I won't offer any.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p1-q09",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "We also have related cybersecurity positioning work with Salt Security, though it wasn't retrieved here, so I can't detail it.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p1-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p1-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p2-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p2-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p2-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p3-q01",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "The materials I have don't include adoption data, so I can't tell you how many partners used these assets or how often.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p3-q03",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p3-q05",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p3-q07",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p3-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p3-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p3-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p4-q08",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p4-q09",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "The closest adjacent work in the retrieved material is our Google for Education video series.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p4-q09",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "In our wider portfolio, our work with the Simons Foundation is also related, though I haven't retrieved its details here.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I don't",
+      "after": "We don't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p4-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p5-q06",
+      "field": "layout[0].HeroBlock.challengeSummary",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p5-q06",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I don't",
+      "after": "We don't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p5-q06",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p5-q06",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I haven't",
+      "after": "we haven't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p5-q06",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p5-q07",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "Because no retrieved case study addresses budget, I've left out client work rather than imply a fit.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p5-q07",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p5-q08",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p5-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p5-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I'm",
+      "after": "we're",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p5-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I don't",
+      "after": "we don't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p5-q10",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "I also don't have pricing or delivery timelines in front of me, and I'd rather not guess at either.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-22T13-42-12:p5-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T22-17-35:p3-q02",
+      "field": "explanation",
+      "rule": "count_claim",
+      "action": "rewrite",
+      "before": "the only co-branded video",
+      "after": "a co-branded video",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-22T22-17-35:p5-q06",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "We can't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T22-28-23:p3-q02",
+      "field": "explanation",
+      "rule": "count_claim",
+      "action": "rewrite",
+      "before": "the only co-branded video",
+      "after": "a co-branded video",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-22T22-28-23:p5-q06",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "None of the work we pulled up speaks to pricing, so we've left out examples rather than stretch them.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-22T22-48-20:p2-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-22T22-48-20:p3-q02",
+      "field": "explanation",
+      "rule": "count_claim",
+      "action": "rewrite",
+      "before": "the only co-branded video study",
+      "after": "a co-branded video study",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-22T22-48-20:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": null
+    },
+    {
+      "answer_id": "2026-11-23T01-37-58-verified:p2-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-23T01-37-58-verified:p3-q02",
+      "field": "explanation",
+      "rule": "count_claim",
+      "action": "rewrite",
+      "before": "the only co-branded video study",
+      "after": "a co-branded video study",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-23T01-37-58-verified:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-23T19-00-37:p1-q07",
+      "field": "explanation",
+      "rule": "count_claim",
+      "action": "rewrite",
+      "before": "Our cybersecurity work covers three",
+      "after": "Our cybersecurity work includes these three",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-23T19-00-37:p1-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-23T19-00-37:p4-q04",
+      "field": "layout[3].CaseStudyTeaser.summary",
+      "rule": "order_of_work",
+      "action": "rewrite",
+      "before": ", starting with a ",
+      "after": ", including a ",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-23T19-00-37:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-23T19-00-37:p5-q01",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I haven't",
+      "after": "we haven't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-23T19-25-08:p1-q07",
+      "field": "explanation",
+      "rule": "count_claim",
+      "action": "rewrite",
+      "before": "Our cybersecurity work covers two",
+      "after": "Our cybersecurity work includes these two",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-23T19-25-08:p3-q02",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-23T19-25-08:p4-q04",
+      "field": "layout[3].CaseStudyTeaser.summary",
+      "rule": "order_of_work",
+      "action": "rewrite",
+      "before": ", beginning with a ",
+      "after": ", including a ",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-23T19-25-08:p5-q07",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "None of the work retrieved for this question speaks to budget size, so I haven't shown case studies as examples.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-23T19-25-08:p5-q07",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-23T19-49-22:p5-q03",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-24T10-06-42:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-24T10-06-42:p5-q07",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I haven't",
+      "after": "we haven't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-24T10-42-25:p1-q07",
+      "field": "explanation",
+      "rule": "count_claim",
+      "action": "rewrite",
+      "before": "the two cybersecurity studies",
+      "after": "two of the cybersecurity studies",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-24T10-42-25:p3-q02",
+      "field": "explanation",
+      "rule": "count_claim",
+      "action": "rewrite",
+      "before": "the only co-branded video case study",
+      "after": "a co-branded video case study",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-24T10-42-25:p5-q01",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-24T10-42-25:p5-q06",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "None of the work retrieved here speaks to pricing, so we haven't attached case studies to this answer.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-24T10-42-25:p5-q07",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "None of the work we retrieved was framed around budget size, so we've left out case studies rather than stretch one to fit.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-25T13-45-56:p2-q09",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "We can't point to MetLife work in our portfolio, and nothing we hold describes how analysts or brokers responded to a repositioning.",
+      "after": "",
+      "verdict": "awkward"
+    },
+    {
+      "answer_id": "2026-11-25T13-45-56:p5-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-25T13-58-24:p3-q01",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "The material we have doesn't show how many partners picked those pieces up, so we can't speak to adoption.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-25T13-58-24:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can",
+      "after": "we can",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-25T13-58-24:p4-q09",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-25T13-58-24:p5-q01",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I won't",
+      "after": "we won't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-25T14-30-56:p1-q07",
+      "field": "explanation",
+      "rule": "count_claim",
+      "action": "rewrite",
+      "before": "our two security examples",
+      "after": "two of our security examples",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-25T14-30-56:p3-q02",
+      "field": "explanation",
+      "rule": "count_claim",
+      "action": "rewrite",
+      "before": "the only co-branded video",
+      "after": "a co-branded video",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-25T14-30-56:p4-q04",
+      "field": "layout[3].CaseStudyTeaser.summary",
+      "rule": "order_of_work",
+      "action": "rewrite",
+      "before": ", starting with a ",
+      "after": ", including a ",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "2026-11-25T14-30-56:p5-q10",
+      "field": "explanation",
+      "rule": "first_person",
+      "action": "rewrite",
+      "before": "I can't",
+      "after": "we can't",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "06-DEMO/p3-q10/round3",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "We also don't have a published partner event case study in what we pulled up, though our Salesforce/WhatsApp holiday virtual event is related work.",
+      "after": "",
+      "verdict": "ok"
+    },
+    {
+      "answer_id": "06-DEMO/p5-q06/round3",
+      "field": "explanation",
+      "rule": "retrieval_leak",
+      "action": "drop_sentence",
+      "before": "Nothing we retrieved speaks to pricing, so we haven't shown client work.",
+      "after": "",
+      "verdict": "ok"
+    }
+  ],
+  "graded_claims_removed": [
+    {
+      "answer_id": "2026-11-23T19-25-08:p4-q04",
+      "claim_index": 0,
+      "kind": "other",
+      "claim": "Simons Foundation brand work was 'beginning with' / 'began with' a research discovery report. The context lists the report as a deliverable but does not state the order of work."
+    },
+    {
+      "answer_id": "2026-11-25T14-30-56:p1-q07",
+      "claim_index": 0,
+      "kind": "other",
+      "claim": "Salt Security and Chrome Enterprise are 'our two security examples', which ignores the retrieved CrowdStrike cybersecurity case study"
+    }
+  ],
+  "below_min": [],
+  "must_catch": [
+    {
+      "n": 1,
+      "answer_id": "06-DEMO/p3-q10/round3",
+      "pass": true
+    },
+    {
+      "n": 2,
+      "answer_id": "06-DEMO/p5-q06/round3",
+      "pass": true
+    },
+    {
+      "n": 3,
+      "answer_id": "2026-11-25T14-30-56:p1-q07",
+      "pass": true
+    },
+    {
+      "n": 4,
+      "answer_id": "2026-11-24T10-42-25:p1-q07",
+      "pass": true
+    },
+    {
+      "n": 5,
+      "answer_id": "2026-11-25T14-30-56:p5-q10",
+      "pass": true
+    },
+    {
+      "n": 6,
+      "answer_id": "2026-11-24T10-42-25:p5-q06",
+      "pass": true
+    },
+    {
+      "n": 7,
+      "answer_id": "2026-11-25T14-30-56:p2-q09",
+      "pass": true
+    },
+    {
+      "n": 8,
+      "answer_id": "2026-11-25T14-30-56:p5-q10",
+      "pass": true
+    }
+  ]
+}

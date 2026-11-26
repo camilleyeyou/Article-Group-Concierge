@@ -3,7 +3,7 @@
  * the count runs on OrchestratorOutput.explanation (text before the follow-ups).
  */
 
-const ABBREVIATIONS = [
+export const ABBREVIATIONS = [
   'e.g.', 'i.e.', 'vs.', 'etc.', 'Inc.', 'Co.', 'Corp.', 'Ltd.', 'U.S.', 'U.K.', 'J.P.', 'Dr.', 'Mr.', 'Ms.', 'Mrs.', 'St.', 'No.',
 ];
 const DOT = '\u0000';

@@ -13,8 +13,9 @@
  * pre-built components like Lego blocks.
  */
 
-import { postProcessOutput, applyServerTeaserTags } from './layout-postprocess';
+import { postProcessOutput, applyServerTeaserTags, renderRawResponse } from './layout-postprocess';
 import { verifyOutput } from './verifier';
+import { outputGuardEnabled, OUTPUT_GUARD_VERSION, guardOutputText } from './output-guard';
 import Anthropic from '@anthropic-ai/sdk';
 import type {
   RetrievedContext,
@@ -442,6 +443,7 @@ export function orchestratorCacheKey(input: OrchestratorInput, catalogueVersion:
     catalogueVersion,
     generation: generationConfigKey(),
     heroPass: heroPassEnabled(),
+    outputGuard: outputGuardEnabled() ? OUTPUT_GUARD_VERSION : 0,
   };
 }
 
@@ -788,10 +790,27 @@ export async function* orchestrateStream(
   let result = postProcessOutput(parseOrchestratorResponse(text), text, tags);
   result.usage = extractUsage({ usage });
   result.catalogueVersion = catalogue?.version ?? null;
-  // The user saw the fast hero, so the authoritative layout carries it too (no swap, no mismatch).
+  // The user saw the fast hero, so the authoritative layout AND rawResponse carry it (Phase 06.1: the grader reads rawResponse).
   const shownHero = heroSource === 'fast' ? fastHeroProps : null;
+  let heroSubstituted = false;
   if (shownHero && result.layoutPlan.layout[0]?.component === 'HeroBlock') {
     result.layoutPlan.layout[0] = { component: 'HeroBlock', props: shownHero } as (typeof result.layoutPlan.layout)[number];
+    heroSubstituted = true;
+  }
+  let guardChangedLayout = false;
+  if (heroSubstituted && outputGuardEnabled()) {
+    // Guard the substituted hero (guard is idempotent on the already-guarded rest).
+    const g = guardOutputText(result.layoutPlan, result.explanation ?? '');
+    guardChangedLayout = JSON.stringify(g.layout) !== JSON.stringify(result.layoutPlan);
+    result.layoutPlan = g.layout;
+    const guard = result.guard ?? { version: OUTPUT_GUARD_VERSION, changes: [] };
+    const seen = new Set(guard.changes.map(c => `${c.field}|${c.rule}|${c.before}`));
+    for (const c of g.report.changes) if (!seen.has(`${c.field}|${c.rule}|${c.before}`)) guard.changes.push(c);
+    result.guard = guard;
+  }
+  if (heroSubstituted || guardChangedLayout) {
+    // Re-render from the already-guarded rawResponse (never modelRawResponse, which is the unguarded model text).
+    result.rawResponse = renderRawResponse(result.rawResponse ?? text, result.layoutPlan);
   }
 
   // D-508: verifier (default off) runs only after all preview events
