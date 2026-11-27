@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { orchestrateStream, type OrchestratorStreamEvent, type RawModelEvent } from '../src/lib/orchestrator';
-import { heroPassInstruction } from '../src/lib/concierge-config';
+import { orchestrateStream, orchestratorCacheKey, type OrchestratorStreamEvent, type RawModelEvent } from '../src/lib/orchestrator';
+import { heroPassInstruction, HERO_PASS_INSTRUCTION_V1, HERO_PASS_INSTRUCTION_V2 } from '../src/lib/concierge-config';
 import type { OrchestratorInput } from '../src/types';
 
 const MAIN_HERO = { title: 'Main hero', subtitle: 'Main sub', challengeSummary: 'Main summary', backgroundVariant: 'dark' };
@@ -154,4 +154,46 @@ test('guarded narrative stays guarded in rawResponse after the fast hero swap', 
   assert.ok(!f.explanation!.includes('retrieved'));
   assert.ok(f.explanation!.includes('Price depends on scope.'));
   assert.ok(f.modelRawResponse!.includes('retrieved'));
+});
+
+test('hero pass sends the instruction for HERO_PASS_PROMPT_VERSION (v1 when 1, v2 when unset)', async () => {
+  const saved = process.env.HERO_PASS_PROMPT_VERSION;
+  const lastUser = async () => {
+    const heroBodies: Record<string, unknown>[] = [];
+    await run({
+      heroPass: true,
+      createEvents: source(textEvents(layoutText(MAIN_HERO)), 30),
+      createHeroEvents: source(textEvents(layoutText(FAST_HERO)), 5, heroBodies),
+    });
+    const msgs = heroBodies[0].messages as { content: string }[];
+    return msgs[msgs.length - 1].content;
+  };
+  try {
+    process.env.HERO_PASS_PROMPT_VERSION = '1';
+    assert.ok((await lastUser()).endsWith(HERO_PASS_INSTRUCTION_V1));
+    delete process.env.HERO_PASS_PROMPT_VERSION;
+    const v2 = await lastUser();
+    assert.ok(v2.endsWith(HERO_PASS_INSTRUCTION_V2));
+    assert.ok(!v2.includes(HERO_PASS_INSTRUCTION_V1));
+  } finally {
+    if (saved === undefined) delete process.env.HERO_PASS_PROMPT_VERSION;
+    else process.env.HERO_PASS_PROMPT_VERSION = saved;
+  }
+});
+
+test('orchestrator cache key changes with the hero prompt version', () => {
+  const saved = process.env.HERO_PASS_PROMPT_VERSION;
+  const inp = input();
+  try {
+    process.env.HERO_PASS_PROMPT_VERSION = '1';
+    const k1 = orchestratorCacheKey(inp, null);
+    delete process.env.HERO_PASS_PROMPT_VERSION;
+    const k2 = orchestratorCacheKey(inp, null);
+    assert.equal(k1.heroPrompt, 1);
+    assert.equal(k2.heroPrompt, 2);
+    assert.notEqual(JSON.stringify(k1), JSON.stringify(k2));
+  } finally {
+    if (saved === undefined) delete process.env.HERO_PASS_PROMPT_VERSION;
+    else process.env.HERO_PASS_PROMPT_VERSION = saved;
+  }
 });

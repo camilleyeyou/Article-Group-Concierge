@@ -182,6 +182,7 @@ Plans:
 | 5. Speed | 10/10 | Complete (criteria 1-2 not met) | 2026-11-23 |
 | 6. Proof | 12/12 | Closed with gaps (criterion 1 not met, 3 partial; 06-10 not executed) | 2026-11-25 |
 | 06.1 Output guard and claim tracing | 6/6 | Complete    | 2026-11-26 |
+| 7. Fast hero stops restating the query | 6/6 | Closed with gaps (unsupported-claim responses 9/50; ready bars 5/7) | 2026-11-27 |
 
 ### Phase 06.1: Output guard and claim tracing (INSERTED)
 
@@ -203,3 +204,27 @@ Plans:
 - [x] 06.1-06-PLAN.md — Record outcome, squash, push on approval, deploy check and live smoke (squashed locally; push awaiting user approval)
 
 **Outcome (closed with gaps, 2026-11-25):** Run 2026-11-26T05-24-15 ($4.77, credit $10.67) missed 3 of 7 ready bars: voice 4.06 (bar 4.5), unsupported-claim responses 7/50 (bar <= 4), goal_as_result 2 (bar 0); passed hallucinations 0, capability_not_shown 0, invention-bait 0, recall 92%. The guard replays with 0 false positives over 970 answers but changed only 3 of 50 answers in the run. The voice drop is a measurement change: the grader now reads the hero users saw, whose challengeSummary restates the query in 49/50 answers (12/50 were graded before). Main follow-up: fast-hero-pass prompt. Residual risk: streamed narrative deltas and fast-hero deltas are shown unguarded for a few seconds until `final` replaces them with guarded text (not fixed: buffering would delay the hero, PERF-02).
+
+### Phase 7: Fast hero stops restating the query
+
+**Goal:** The hero a prospect sees first no longer repeats their question back to them. The fast-hero-pass HeroBlock frames the problem behind the question in AG's voice and still makes no claim about AG's work, so voice improves without new unsupported claims or a slower hero. Measured first with a free deterministic restatement detector over every saved answer, backed by a deterministic guard fallback, then confirmed with a user-approved 10-query trial and a full original-50 run.
+**Requirements**: HERO-01, HERO-02, HERO-03, HERO-04
+**Depends on:** Phase 06.1
+**Success Criteria** (what must be TRUE):
+  1. A deterministic detector (no model call) replayed free over every saved run flags >= 45/50 user-seen heroes in 2026-11-26T05-24-15 (06.1 found 49/50), does not flag the system prompt's own fictional hero example, and every eval report shows `hero_restates`.
+  2. The fast-hero-pass instruction v2 replaces the v1 lines that asked for restatement ("in their own terms", "You're asking about..."); v1 stays selectable with HERO_PASS_PROMPT_VERSION=1. The main system prompt and the grader rubric are unchanged.
+  3. A guard fallback drops restating sentences from the HeroBlock challengeSummary on both routes (switches HERO_RESTATEMENT_GUARD_ENABLED and OUTPUT_GUARD_ENABLED); its free replay over saved answers has every reviewed change verdicted, with 0 false positives left.
+  4. Full original-50 run (user-approved, after a user-approved 10-query trial): PRIMARY `hero_restates_pre_guard` <= 5/50 (user-seen restates + heroes the guard changed, so the prompt fix itself is measured); `hero_restates` <= 5/50 user-seen after the guard, with the number of summaries the guard removed reported; hero-sourced unsupported claims 0; hero gap 0/50; no regression in unsupported-claim responses (<= 7/50) or goal_as_result (<= 2); hallucinations, capability_not_shown and invention-bait 0; recall >= 90%; median t_hero_first <= 3.8 s and t_hero_done <= 4.5 s (2026-11-26T05-24-15: 3.5 s / 4.2 s). Voice >= 4.5 is the ready-bar target and is reported PASS/FAIL (other voice deductions, e.g. narrative repeating the StrategyCard, are out of scope).
+  5. Deltas reported against baseline 2026-11-20T15-12-31 and against 2026-11-26T05-24-15; spend logged; phase squashed into one commit and pushed only on user approval, followed by a deploy check and live smoke.
+**Constraints / gates**: Sonnet 5.5 generation and Opus 5.5 judge unchanged. Each paid run (10-query trial ~$1, full-50 ~$5) is its own checkpoint with a written spend proposal and explicit user approval; credit is ~$10.60, no top-ups. The full-50 decides; subset results alone never close the phase. No DB changes (ask first if any arise). EVAL_DEBUG never in production. Supabase free tier may be paused: preflight before each run.
+**Plans:** 6/6 plans complete
+
+Plans:
+- [x] 07-01-PLAN.md — Restatement detector (test-first), free replay over every saved run (before rate), `hero_restates` metric in reports (HERO-01)
+- [x] 07-02-PLAN.md — Fast-hero-pass instruction v2 with HERO_PASS_PROMPT_VERSION switch (v1 byte-identical), cache key (HERO-02)
+- [x] 07-03-PLAN.md — Guard fallback `hero_restatement` on both routes, free replay over saved answers with review (HERO-03)
+- [x] 07-04-PLAN.md — Readiness, spend proposal, user approval, 10-query trial (~$1), go/no-go for the full run (HERO-04)
+- [x] 07-05-PLAN.md — Spend proposal, user approval, full original-50 run (~$5), deltas vs 2026-11-20T15-12-31 and 2026-11-26T05-24-15 (HERO-04)
+- [x] 07-06-PLAN.md — Record outcome, squash, push on approval, deploy check and live smoke (user chose push + live smoke)
+
+**Outcome (closed with gaps, 2026-11-27):** PRIMARY pre-guard restatement 0/50 PASS (was 50/50 in 2026-11-26T05-24-15, 16/50 at baseline); post-guard hero_restates 0/50, guard removed 0 summaries. Run 2026-11-27T15-32-13-merged (38 + 12 re-run ids after a network outage, same commit; $6.08 phase spend, credit $3.83): 11 of 12 phase bars pass (miss: unsupported-claim responses 9/50, bar <= 7, none hero-sourced); 5 of 7 ready bars pass, voice 4.06 -> 4.58 now PASS; misses: unsupported-claim responses 9/50 (bar <= 4), goal_as_result 1 (bar 0). Hallucinations, capability_not_shown, invention-bait 0; recall 92%; median t_hero_first 3.7 s, t_hero_done 4.4 s. Guard replay 450 changes, 0 false positives; live hero guard fired 0 times (the v2 prompt alone fixed the hero). Residual risk: on the stream route a hero summary removed by the guard is visible for a few seconds until `final` arrives (no buffering, PERF-02).

@@ -178,6 +178,16 @@ export interface RunFile {
   regrade_of?: string;
   regraded_at?: string;
   verified_of?: string;
+  // Set by eval/merge-runs.ts: the source runs whose records make up this one
+  merged_from?: MergeSource[];
+}
+
+export interface MergeSource {
+  dir: string;
+  git_commit: string | null;
+  started_at: string;
+  finished_at: string | null;
+  ids: string[];
 }
 
 export interface CriterionScore {

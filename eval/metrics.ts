@@ -10,6 +10,7 @@ import {
   CLAIM_KINDS,
   CRITERIA,
   RESULTS_DIR,
+  parseLayout,
   readJson,
   runAutomatedChecks,
   type ClaimKind,
@@ -22,6 +23,7 @@ import { CONCIERGE_CONFIG, type StrategyLeadTrigger } from '../src/lib/concierge
 import { isDisputed } from './labels';
 import { suppressionReason } from '../src/lib/instant-teasers';
 import type { ProdTimingFile } from './prod-timing-types';
+import { detectHeroRestatement } from '../src/lib/hero-restatement';
 
 export interface Summary {
   n: number;
@@ -299,6 +301,33 @@ export interface RunMetrics {
   video: { queries: number; with_video_available: number; missing: number };
   pricing_timeline_figures: number;
   invention_bait_presupposed: number | null;
+  hero: HeroMetrics;
+}
+
+export interface HeroMetrics {
+  with_hero: number;
+  restates: number;
+  summary_missing: number;
+  restatement_guard_changes: number;
+}
+
+/** Phase 07 HERO-01: restatement in the user-visible hero challengeSummary (free, deterministic). */
+export function computeHero(records: RunFile['records']): HeroMetrics {
+  const out: HeroMetrics = { with_hero: 0, restates: 0, summary_missing: 0, restatement_guard_changes: 0 };
+  for (const r of records) {
+    if (r.status !== 'ok') continue;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const seen = (r.response as any)?.layoutPlan?.layout?.[0];
+    const first = seen?.component === 'HeroBlock' ? seen : parseLayout(r.raw_response)?.[0];
+    if (first?.component === 'HeroBlock') {
+      out.with_hero += 1;
+      const summary = first.props?.challengeSummary;
+      if (typeof summary !== 'string' || summary.trim() === '') out.summary_missing += 1;
+      else if (detectHeroRestatement(r.query, summary).restates) out.restates += 1;
+    }
+    if ((r.guard?.changes ?? []).some(c => String(c.rule) === 'hero_restatement')) out.restatement_guard_changes += 1;
+  }
+  return out;
 }
 
 const TRIGGERS: StrategyLeadTrigger[] = ['no_context', 'fallback', 'pricing', 'timeline', 'invention_bait'];
@@ -557,6 +586,7 @@ export function computeRunMetrics(dir: string, opts: { filter?: (r: RunFile['rec
     video,
     pricing_timeline_figures: figures,
     invention_bait_presupposed: baitPresupposed,
+    hero: computeHero(run.records),
   };
 }
 
@@ -665,6 +695,21 @@ export const METRIC_DEFS: MetricDef[] = [
     better: 'higher',
     unit: 'count',
     get: m => (m.narrative.of ? m.narrative.in_range : null),
+  },
+  {
+    key: 'hero_restates',
+    label: 'hero_restates (user-seen challengeSummary)',
+    better: 'lower',
+    unit: 'count',
+    get: m => m.hero.restates,
+  },
+  { key: 'hero_summary_missing', label: 'hero_summary_missing', better: 'none', unit: 'count', get: m => m.hero.summary_missing },
+  {
+    key: 'hero_restatement_guard_changes',
+    label: 'hero_restatement_guard_changes',
+    better: 'none',
+    unit: 'count',
+    get: m => m.hero.restatement_guard_changes,
   },
   { key: 'narrative_sentences_median', label: 'narrative_sentences_median', better: 'none', unit: 'score', get: m => m.narrative.median },
   { key: 'teaser_tags_not_from_db', label: 'teaser_tags_not_from_db', better: 'lower', unit: 'count', get: m => m.teaser_tags_not_from_db },

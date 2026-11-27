@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { guardText, guardOutputText, outputGuardEnabled, OUTPUT_GUARD_VERSION } from '../src/lib/output-guard';
+import { guardText, guardOutputText, guardHeroRestatement, outputGuardEnabled, OUTPUT_GUARD_VERSION } from '../src/lib/output-guard';
 
 // Real sentences from saved answers (06-DEMO rounds and eval/results runs).
 const LEAKS: string[] = [
@@ -259,4 +259,71 @@ test('order_of_work: not applied to explanations, strategy cards or by default; 
   const start = "We'd start with a short conversation, starting with your goals.";
   assert.equal(guardText("We'd start with a short conversation about your goals.", { orderOfWork: true }).text, "We'd start with a short conversation about your goals.");
   assert.equal(guardText(start).text, start);
+});
+
+// --- Phase 7 HERO-03: hero_restatement ---------------------------------------
+
+const heroLayout = (props: Record<string, unknown>, extra: unknown[] = []): any => ({
+  layout: [{ component: 'HeroBlock', props: { title: 'Rebrand your fintech', subtitle: 'How to rebrand a fintech startup', ...props } }, ...extra],
+});
+
+test('OUTPUT_GUARD_VERSION is 2', () => {
+  assert.equal(OUTPUT_GUARD_VERSION, 2);
+});
+
+test('hero_restatement: all sentences restate -> challengeSummary removed, one drop_field', () => {
+  const before = "You're launching a fintech rebrand. You're asking how to make it credible.";
+  const input = heroLayout({ challengeSummary: before });
+  const r = guardHeroRestatement(input, 'How do we rebrand a fintech startup?');
+  const props = r.layout.layout[0].props as any;
+  assert.ok(!('challengeSummary' in props));
+  assert.deepEqual(r.changes, [
+    { field: 'layout[0].HeroBlock.challengeSummary', rule: 'hero_restatement', action: 'drop_field', before, after: '' },
+  ]);
+});
+
+test('hero_restatement: partial restatement -> restating sentence dropped', () => {
+  const input = heroLayout({ challengeSummary: "Credibility has to come before novelty. You're asking how to rebrand." });
+  const r = guardHeroRestatement(input, 'How do we rebrand a fintech startup?');
+  assert.equal((r.layout.layout[0].props as any).challengeSummary, 'Credibility has to come before novelty.');
+  assert.deepEqual(r.changes, [
+    { field: 'layout[0].HeroBlock.challengeSummary', rule: 'hero_restatement', action: 'drop_sentence', before: "You're asking how to rebrand.", after: '' },
+  ]);
+});
+
+test('hero_restatement: non-restating summary unchanged', () => {
+  const input = heroLayout({ challengeSummary: "Looking credible enough to hold people's money while still feeling new." });
+  const r = guardHeroRestatement(input, "We're a fintech startup looking to rebrand");
+  assert.deepEqual(r.layout, input);
+  assert.deepEqual(r.changes, []);
+});
+
+test('hero_restatement: no hero at 0, no summary, non-string summary -> unchanged', () => {
+  const q = 'How do we rebrand?';
+  const notFirst: any = { layout: [{ component: 'StrategyCard', props: { title: 't', content: "You're asking how to rebrand." } }, heroLayout({ challengeSummary: "You're asking how to rebrand." }).layout[0]] };
+  for (const input of [notFirst, heroLayout({}), heroLayout({ challengeSummary: 42 }), heroLayout({ challengeSummary: '' }), { layout: [] } as any]) {
+    const r = guardHeroRestatement(input, q);
+    assert.deepEqual(r.layout, input);
+    assert.deepEqual(r.changes, []);
+  }
+});
+
+test('hero_restatement: title and subtitle never changed', () => {
+  const input = heroLayout({ title: "You're asking how to rebrand a fintech startup", subtitle: 'How do we rebrand a fintech startup today', challengeSummary: "You're asking how to rebrand." });
+  const r = guardHeroRestatement(input, 'How do we rebrand a fintech startup today?');
+  const props = r.layout.layout[0].props as any;
+  assert.equal(props.title, "You're asking how to rebrand a fintech startup");
+  assert.equal(props.subtitle, 'How do we rebrand a fintech startup today');
+  assert.ok(r.changes.every(c => c.field === 'layout[0].HeroBlock.challengeSummary'));
+});
+
+test('hero_restatement: input layout not mutated', () => {
+  const input = heroLayout({ challengeSummary: "Credibility first. You're asking how to rebrand." });
+  const snapshot = structuredClone(input);
+  guardHeroRestatement(input, 'How do we rebrand?');
+  assert.deepEqual(input, snapshot);
+  const all = heroLayout({ challengeSummary: "You're asking how to rebrand." });
+  const snap2 = structuredClone(all);
+  guardHeroRestatement(all, 'How do we rebrand?');
+  assert.deepEqual(all, snap2);
 });

@@ -359,3 +359,40 @@ test('phase5Gates passes at Phase 4 values and fails on each regression', () => 
   m.speed = null;
   assert.equal(phase5Gates(m)[0].pass, null);
 });
+
+// Phase 07 HERO-01: hero_restates over the user-visible hero
+function withHero(rec: ReturnType<typeof record>, heroProps: Record<string, unknown>, extra: Record<string, unknown> = {}) {
+  return {
+    ...rec,
+    response: { layoutPlan: { layout: [{ component: 'HeroBlock', props: heroProps }] } },
+    ...extra,
+  };
+}
+
+test('hero metrics count user-seen restatements and missing summaries', () => {
+  const dir = phase3Fixture([
+    withHero(record('h1', [], []), { headline: 'H', challengeSummary: "You're asking about X and how it lands." }),
+    withHero(record('h2', [], []), { headline: 'H', challengeSummary: 'Looking credible enough to hold money.' }),
+    withHero(record('h3', [], []), { headline: 'H' }),
+    { ...withHero(record('h4', [], []), { challengeSummary: "You're asking about Y." }), status: 'error' },
+  ]);
+  const m = computeRunMetrics(dir);
+  assert.deepEqual(m.hero, { with_hero: 3, restates: 1, summary_missing: 1, restatement_guard_changes: 0 });
+  assert.equal(METRIC_DEFS.find(d => d.key === 'hero_restates')!.get(m), 1);
+  assert.equal(METRIC_DEFS.find(d => d.key === 'hero_summary_missing')!.get(m), 1);
+  assert.equal(METRIC_DEFS.find(d => d.key === 'hero_restatement_guard_changes')!.get(m), 0);
+});
+
+test('hero metrics fall back to raw_response and count hero_restatement guard changes', () => {
+  const raw = '```json\n' + JSON.stringify({ layout: [{ component: 'HeroBlock', props: { challengeSummary: 'You want proof.' } }] }) + '\n```';
+  const dir = phase3Fixture([
+    { ...record('r1', [], []), raw_response: raw },
+    withHero(record('g1', [], []), { challengeSummary: 'Proof that travels.' }, {
+      guard: { version: 1, changes: [{ field: 'layout[0].challengeSummary', rule: 'hero_restatement', action: 'rewrite', before: 'a', after: 'b' }] },
+    }),
+  ]);
+  const m = computeRunMetrics(dir);
+  assert.equal(m.hero.with_hero, 2);
+  assert.equal(m.hero.restates, 1);
+  assert.equal(m.hero.restatement_guard_changes, 1);
+});

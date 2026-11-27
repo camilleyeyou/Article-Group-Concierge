@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Milestone complete
-stopped_at: Completed 06.1-06-PLAN.md up to push checkpoint
-last_updated: "2026-11-26T07:58:49.756Z"
-last_activity: 2026-11-26
+status: Phase complete (closed with gaps)
+stopped_at: Completed 07-06-PLAN.md
+last_updated: "2026-11-27T16:40:57.534Z"
+last_activity: 2026-11-27
 progress:
-  total_phases: 7
-  completed_phases: 7
-  total_plans: 63
-  completed_plans: 63
+  total_phases: 8
+  completed_phases: 8
+  total_plans: 69
+  completed_plans: 69
 ---
 
 # Project State
@@ -20,12 +20,28 @@ progress:
 See: .planning/PROJECT.md (updated 2026-11-20)
 
 **Core value:** Never misrepresent AG's work. A wrong claim about a client engagement is worse than a weak answer.
-**Current focus:** Phase 06.1 — output-guard-and-claim-tracing
+**Current focus:** Phase 07 closed with gaps; no further phase planned
 
 ## Current Position
 
-Phase: 06.1
-Plan: Not started
+Phase: 07 (fast-hero-stops-restating-the-query) — closed with gaps (1 of 12 phase bars and 2 of 7 ready bars missed)
+Plan: 6 of 6 complete
+
+## Phase 7 outcome (closed with gaps, 2026-11-27)
+
+- Full-50 run `2026-11-27T15-32-13-merged` (code 3397c63, original 50, N=1, no held-out, no second grader): merged from `2026-11-27T15-32-13` (38 ok; 12 network errors) and the user-approved re-run of the 12 ids `2026-11-27T16-30-42`. 50/50 ok.
+- Trial `2026-11-27T15-22-37` (phase7-hero, 10 ids): GO, hero_restates 0/10 (was 10/10 on the same ids), all 9 GO criteria passed, $0.47.
+- Pre-guard restatement (PRIMARY): 0/50 PASS; post-guard hero_restates 0/50; guard removed 0 summaries, trimmed 0
+- Deltas vs 2026-11-26T05-24-15 / vs baseline 2026-11-20T15-12-31: hero_restates 50 -> 0 (-50) / 16 -> 0 (-16); voice 4.06 -> 4.58 (+0.52) / 3.92 -> 4.58 (+0.66); unsupported-claim responses 7 -> 9 (+2) / 22 -> 9 (-13); goal_as_result 2 -> 1 (-1) / n/a; grounded 4.82 -> 4.78 (-0.04) / 4.44 -> 4.78 (+0.34); recall 92% -> 92% (0 pp) / 75% -> 92% (+17 pp); median t_hero_first 3.5 s -> 3.7 s (+0.2 s) / n/a; median t_hero_done 4.2 s -> 4.4 s (+0.2 s) / n/a.
+- Phase bars 11 of 12 pass; miss: unsupported-claim responses 9/50 (bar <= 7), none hero-sourced (narrative 8, teaser summary 2, hero 0). Ready bars 5 of 7 (voice 4.58 now PASS); misses: unsupported-claim responses 9/50 (bar <= 4), goal_as_result 1 (bar 0). Hallucinations, capability_not_shown, invention-bait 0; hero gap 0/50.
+- Detector before rates (07-HERO-REPLAY.md, detector v2): user-seen heroes restate 50/50 in 2026-11-26T05-24-15, 16/50 at baseline.
+- Guard replay (07-HERO-GUARD-REPLAY.md): 946 heroes, 448 answers changed, 450 changes (341 drop_field, 109 drop_sentence); 176 reviewed, 0 false positives.
+- Live guard activity: hero_restatement changes 0/50 in the full run (the v2 prompt alone fixed the hero); the guard changed 3 answers for other rules (retrieval_leak, count_claim, order_of_work).
+- Caveats: N=1; merged sessions; timing passes are narrow (re-run ids ran ~2x slower); voice first-session 38 alone 4.50 (at the bar).
+- Residual risk: on the stream route a hero summary removed by the guard is visible for a few seconds until `final` arrives (no buffering, PERF-02).
+- Spend: $6.08 (trial $0.47 + full-50 $4.66 + re-run $0.95); credit left $3.83.
+- Kill switches (Vercel env, then redeploy): HERO_PASS_PROMPT_VERSION=1 (v1 hero instruction), HERO_RESTATEMENT_GUARD_ENABLED=false (hero fallback off), OUTPUT_GUARD_ENABLED=false (whole guard off), HERO_PASS_ENABLED=false (fast hero pass off).
+- Push: user chose squash, push, deploy check and live smoke (2026-11-27).
 
 ## Phase 06.1 outcome (closed with gaps, 2026-11-25)
 
@@ -134,6 +150,12 @@ Same responses as the frozen run, graded under harness v2. Like-for-like referen
 | Phase 06.1 P03 | 50min | 3 tasks | 8 files |
 | Phase 06.1 P04 | 35min | 3 tasks | 9 files |
 | Phase 06.1 P05 | 60min | 3 tasks | 2 files |
+| Phase 07 P01 | 4min | 3 tasks | 7 files |
+| Phase 07 P02 | 10min | 2 tasks | 4 files |
+| Phase 07 P03 | 40min | 3 tasks | 12 files |
+| Phase 07 P04 | 25min | 3 tasks | 4 files |
+| Phase 07 P05 | 45min | 3 tasks | 9 files |
+| Phase 07 P06 | 30min | 3 tasks | 5 files |
 
 ### Roadmap Evolution
 
@@ -141,6 +163,8 @@ Same responses as the frozen run, graded under harness v2. Like-for-like referen
   - Scope: a deterministic leak/count-claim check, and tracing the remaining unsupported claims.
   - Testing: free on saved answers first; a ~$5 confirm run only with the user's approval.
   - Budget: ~$15.70, no top-ups.
+- Phase 7 added (2026-11-26): Fast hero stops restating the query.
+  - Why: the fast-hero challengeSummary restates the query in 49/50 answers (run 2026-11-26T05-24-15), which pulls voice down to 4.06 against a 4.5 bar.
 
 ### Decisions
 
@@ -208,6 +232,15 @@ Same responses as the frozen run, graded under harness v2. Like-for-like referen
 - [Phase 06.1]: deterministic output guard (OUTPUT_GUARD_ENABLED switch), no prompt rules added
 - [Phase 06.1]: rawResponse re-rendered after fast-hero substitution; grader now reads the hero the user saw
 - [Phase 06.1]: 06.1-05/06: closed with gaps; confirm run 2026-11-26T05-24-15 missed 3 of 7 bars (voice 4.06, unsupported 7/50, goal_as_result 2); voice drop is the grader now seeing the query-restating hero; follow-up is the fast-hero-pass prompt; spend $4.77, credit $10.67
+- [Phase 07]: Hero restatement = you_opener OR asking_frame OR >=6-word verbatim run; overlap informational only. Before: 2026-11-26T05-24-15 user-seen 50/50, baseline 16/50
+- [Phase 07]: Fast hero pass defaults to instruction v2 (frame the problem, no restatement, <= 25 words, no 'you'); HERO_PASS_PROMPT_VERSION=1 restores v1 byte-for-byte; cache key carries heroPrompt
+- [Phase 07]: Hero restatement fallback only removes text (drops restating challengeSummary sentences or the field), on both routes, behind HERO_RESTATEMENT_GUARD_ENABLED and OUTPUT_GUARD_ENABLED; OUTPUT_GUARD_VERSION 2
+- [Phase 07]: Detector v2 after 07-03 replay review: 'You can' not a you-opener; embedded 'what you want/need' and 'behind your question' not asking frames; replay 450 changes, 176 reviewed, 0 false positives
+- [Phase 07]: 07-04 trial GO: v2 hero restates 0/10 on phase7-hero (was 10/10), guard fired on no hero, $0.47 spent; full-50 needs separate approval
+- [Phase 7]: fast-hero instruction v2 (HERO_PASS_PROMPT_VERSION switch, v1 byte-identical); hero stays claim-free about AG
+- [Phase 7]: removal-only hero_restatement guard rule, OUTPUT_GUARD_VERSION 2 (HERO_RESTATEMENT_GUARD_ENABLED switch)
+- [Phase 7]: hero_restates metric in every report
+- [Phase 07]: 07-05: full-50 merged from 2 same-commit sessions (38+12 rerun after network outage); hero_restates 0/50 pre-guard; phase bars 11/12 (unsupported 9>7, none hero-sourced); ready bars 5/7 (voice 4.58 PASS)
 
 ### Key Constraints
 
@@ -242,9 +275,9 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-11-26T05:47:25.565Z
-Last activity: 2026-11-26
-Stopped at: Completed 06.1-06-PLAN.md up to push checkpoint
+Last session: 2026-11-27T16:40:57.528Z
+Last activity: 2026-11-27
+Stopped at: Completed 07-06-PLAN.md
 Resume file: None
 
 - 2026-11-22 (03-08 follow-up): User chose to keep the Cohere reranker OFF (rerank.enabled=false). Net +1 recall (44/52) did not justify ~0.9 s p50 latency and a new data processor. Code and RRF fallback stay; re-enable via config or RERANK_ENABLED=true. Phase-end eval (03-09) approved by user despite gate FAIL; expected recall ≈ 43/52.

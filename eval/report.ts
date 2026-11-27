@@ -224,6 +224,13 @@ export function writeReport(dir: string): void {
         ? [`- **Second grader:** \`${agreement.second_model}\` via openrouter on ${agreement.n} responses`]
         : []),
       ...(m.regrade_of ? [`- **Re-grade of:** \`${m.regrade_of}\` (same responses, current harness)`] : []),
+      ...(run.merged_from?.length
+        ? [
+            `- **Merged from:** ${run.merged_from
+              .map(src => `\`${src.dir}\` (commit \`${src.git_commit ?? 'unknown'}\`, ${src.ids.length} records)`)
+              .join(' + ')}`,
+          ]
+        : []),
       `- **Hallucination rule:** grounded score ≤ 2`,
     ].join('\n'),
   );

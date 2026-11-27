@@ -59,6 +59,7 @@ export interface HeroPassConfig {
   enabled: boolean;
   effort: GenerationEffort;
   maxTokens: number;
+  promptVersion: 1 | 2;
 }
 
 export interface HealthConfig {
@@ -150,7 +151,8 @@ export const CONCIERGE_CONFIG: ConciergeConfig = {
   // while the default-thinking call writes the rest. The fast hero is what the user sees and what `final` carries, so no flash and no mismatch.
   // Sonnet 5 has adaptive-only thinking (budget_tokens and reasoning.max_tokens ignored, OpenRouter docs), so a capped budget does not exist;
   // low effort emits no thinking (05-TIMING.md). HERO_PASS_ENABLED=false turns it off.
-  heroPass: { enabled: true, effort: 'low', maxTokens: 700 },
+  // Phase 7 (HERO-02): v2 instruction stops restating the query; HERO_PASS_PROMPT_VERSION=1 restores v1.
+  heroPass: { enabled: true, effort: 'low', maxTokens: 700, promptVersion: 2 },
   // D-517: warn below $5 (about one eval run); fail at <= $0, bad/missing key or non-OpenRouter route. eval/preflight's EVAL_MIN_CREDIT_USD is a per-run minimum and stays separate.
   health: { warnBelowUsd: 5, startupTimeoutMs: 3000, requestTimeoutMs: 5000 },
 };
@@ -333,15 +335,36 @@ export function heroPassEnabled(): boolean {
     : CONCIERGE_CONFIG.heroPass.enabled;
 }
 
-/** Appended to the user turn of the hero pass only. The honesty clauses mirror the HONESTY RULES for the one block this pass writes. */
-export function heroPassInstruction(): string {
-  return `
+/** Phase 4-6 hero pass instruction, kept byte-for-byte (HERO_PASS_PROMPT_VERSION=1). It asked for restatement ("in their own terms", "You're asking about..."). */
+export const HERO_PASS_INSTRUCTION_V1 = `
 
 FAST OPENING PASS: output ONLY the opening \`\`\`json block with a layout array that holds just the HeroBlock, then stop. Do not write any other component, the narrative or the follow-up questions; another pass writes them.
 The HeroBlock states the user's challenge or opportunity in their own terms, as a headline about THEM. It must hold under the HONESTY RULES, and it is written before the rest of the answer, so it makes no claim about us at all:
 - Title and subtitle name the topic or the user's situation. They never describe our experience, clients, industries, seniority, scale or results (no "X work", "X experience", "our work with", "senior-level partnership", "Fortune 100"). Bad: "Senior-level work for global retailers". Good: "Choosing comparable work for a global retailer".
 - Anything the user says or assumes about us ("X experience", "the campaign you did") is their question, not a fact. Keep it out of the title and subtitle, and never put a client, brand or project name the user attributes to us there. In the challengeSummary it may appear only as what they are asking about ("You're asking about...").
 - Do not add facts the user did not give (company size or status, deadlines, audience traits, budget).`;
+
+/** Phase 7 (HERO-02): frames the problem behind the question instead of restating it. Same honesty clauses as v1, no new honesty rule. */
+export const HERO_PASS_INSTRUCTION_V2 = `
+
+FAST OPENING PASS: output ONLY the opening \`\`\`json block with a layout array that holds just the HeroBlock, then stop. Do not write any other component, the narrative or the follow-up questions; another pass writes them.
+The user has just written their question, so the HeroBlock must not repeat it back. It names the problem behind the question the way a senior strategist would frame it, as a headline about THEM. It is written before the rest of the answer, so it makes no claim about us at all, and it must hold under the HONESTY RULES:
+- challengeSummary: one sentence of at most 25 words that names the tension, stakes or decision underneath the question. Do not restate or paraphrase the question, and do not address the user as "you" ("You're asking...", "You want...", "You need..."). Example for "We're a fintech startup looking to rebrand": "Looking credible enough to hold people's money while still feeling new."
+- Title and subtitle name the topic or the user's situation. They never describe our experience, clients, industries, seniority, scale or results (no "X work", "X experience", "our work with", "senior-level partnership", "Fortune 100"). Bad: "Senior-level work for global retailers". Good: "Choosing comparable work for a global retailer".
+- Anything the user says or assumes about us ("X experience", "the campaign you did") is their question, not a fact. Keep it out of the HeroBlock entirely: no client, brand or project name the user attributes to us, in any field.
+- Do not add facts the user did not give (company size or status, deadlines, audience traits, budget).`;
+
+/** HERO_PASS_PROMPT_VERSION env ('1' or '2') overrides the config default; anything else is ignored. */
+export function heroPassPromptVersion(): 1 | 2 {
+  const v = process.env.HERO_PASS_PROMPT_VERSION;
+  if (v === '1') return 1;
+  if (v === '2') return 2;
+  return CONCIERGE_CONFIG.heroPass.promptVersion;
+}
+
+/** Appended to the user turn of the hero pass only. The honesty clauses mirror the HONESTY RULES for the one block this pass writes. Defaults to heroPassPromptVersion(). */
+export function heroPassInstruction(version: 1 | 2 = heroPassPromptVersion()): string {
+  return version === 1 ? HERO_PASS_INSTRUCTION_V1 : HERO_PASS_INSTRUCTION_V2;
 }
 
 export function generationConfigKey(g: GenerationConfig = generationConfig()): string {

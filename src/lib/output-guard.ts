@@ -1,16 +1,20 @@
 /**
  * Phase 06.1 GUARD-01: deterministic post-generation guard. No model calls.
- * Rules: retrieval_leak (drop sentence), count_claim (rewrite), first_person (rewrite).
+ * Rules: retrieval_leak (drop sentence), count_claim (rewrite), first_person (rewrite),
+ * order_of_work (rewrite, teaser summaries), and Phase 7 hero_restatement (drop sentence /
+ * drop field; HeroBlock challengeSummary only, applied by the orchestrator via
+ * guardHeroRestatement because it needs the query).
  *
  * Pure module: no I/O. The only env read is in outputGuardEnabled().
  */
 import type { LayoutPlan } from '../types';
 import { ABBREVIATIONS } from './sentences';
+import { detectHeroRestatement } from './hero-restatement';
 
-export const OUTPUT_GUARD_VERSION = 1;
+export const OUTPUT_GUARD_VERSION = 2;
 
-export type GuardRule = 'retrieval_leak' | 'count_claim' | 'first_person' | 'order_of_work';
-export type GuardAction = 'drop_sentence' | 'rewrite' | 'kept_unresolved';
+export type GuardRule = 'retrieval_leak' | 'count_claim' | 'first_person' | 'order_of_work' | 'hero_restatement';
+export type GuardAction = 'drop_sentence' | 'rewrite' | 'kept_unresolved' | 'drop_field';
 export interface GuardChange {
   field: string;
   rule: GuardRule;
@@ -224,4 +228,38 @@ export function guardOutputText(
 
   const guardedExplanation = run(explanation, 'explanation') ?? explanation;
   return { layout: out, explanation: guardedExplanation, report: { version: OUTPUT_GUARD_VERSION, changes: all } };
+}
+
+// --- rule: hero_restatement (Phase 7 HERO-03) --------------------------------
+
+const HERO_SUMMARY_FIELD = 'layout[0].HeroBlock.challengeSummary';
+
+/** Phase 7 HERO-03: drop sentences of the HeroBlock challengeSummary that restate the query; remove the field if none with letters remain. Removal only. Pure: callers check the kill switches. */
+export function guardHeroRestatement(layout: LayoutPlan, query: string): { layout: LayoutPlan; changes: GuardChange[] } {
+  const out: LayoutPlan = structuredClone(layout);
+  const hero = out.layout?.[0];
+  if (!hero || hero.component !== 'HeroBlock') return { layout: out, changes: [] };
+  const props = hero.props as unknown as Record<string, unknown>;
+  const summary = props.challengeSummary;
+  if (typeof summary !== 'string' || summary.trim() === '') return { layout: out, changes: [] };
+
+  const spans = splitSpans(summary);
+  const restating = spans.map(s => detectHeroRestatement(query, s.sentence).restates);
+  if (!restating.some(Boolean)) return { layout: out, changes: [] };
+
+  const kept = spans.filter((_, i) => !restating[i]);
+  if (!kept.some(s => /[A-Za-z]/.test(s.sentence))) {
+    delete props.challengeSummary;
+    return {
+      layout: out,
+      changes: [{ field: HERO_SUMMARY_FIELD, rule: 'hero_restatement', action: 'drop_field', before: summary, after: '' }],
+    };
+  }
+  const changes: GuardChange[] = spans
+    .filter((_, i) => restating[i])
+    .map(s => ({ field: HERO_SUMMARY_FIELD, rule: 'hero_restatement' as const, action: 'drop_sentence' as const, before: s.sentence, after: '' }));
+  // A dropped final sentence leaves a dangling separator on the last kept span.
+  if (restating[restating.length - 1]) kept[kept.length - 1] = { ...kept[kept.length - 1], sep: '' };
+  props.challengeSummary = kept.map(s => s.sentence + s.sep).join('');
+  return { layout: out, changes };
 }

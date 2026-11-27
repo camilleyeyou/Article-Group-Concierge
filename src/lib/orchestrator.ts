@@ -15,7 +15,8 @@
 
 import { postProcessOutput, applyServerTeaserTags, renderRawResponse } from './layout-postprocess';
 import { verifyOutput } from './verifier';
-import { outputGuardEnabled, OUTPUT_GUARD_VERSION, guardOutputText } from './output-guard';
+import { outputGuardEnabled, OUTPUT_GUARD_VERSION, guardOutputText, guardHeroRestatement } from './output-guard';
+import { heroRestatementGuardEnabled } from './hero-restatement';
 import Anthropic from '@anthropic-ai/sdk';
 import type {
   RetrievedContext,
@@ -48,6 +49,7 @@ import {
   generationConfigKey,
   heroPassEnabled,
   heroPassInstruction,
+  heroPassPromptVersion,
   isPlayableVideoUrl,
   type GenerationConfig,
 } from './concierge-config';
@@ -443,6 +445,7 @@ export function orchestratorCacheKey(input: OrchestratorInput, catalogueVersion:
     catalogueVersion,
     generation: generationConfigKey(),
     heroPass: heroPassEnabled(),
+    heroPrompt: heroPassPromptVersion(),
     outputGuard: outputGuardEnabled() ? OUTPUT_GUARD_VERSION : 0,
   };
 }
@@ -468,6 +471,19 @@ function extractUsage(response: unknown) {
     cache_read_input_tokens: u.cache_read_input_tokens ?? null,
     cost: u.cost ?? null,
   };
+}
+
+/** Phase 7 HERO-03: removal-only hero restatement fallback; returns true if the layout changed. */
+function applyHeroRestatementGuard(result: OrchestratorOutput, userQuery: string): boolean {
+  if (!outputGuardEnabled() || !heroRestatementGuardEnabled()) return false;
+  const g = guardHeroRestatement(result.layoutPlan, userQuery);
+  if (g.changes.length === 0) return false;
+  result.layoutPlan = g.layout;
+  const guard = result.guard ?? { version: OUTPUT_GUARD_VERSION, changes: [] };
+  guard.version = OUTPUT_GUARD_VERSION;
+  guard.changes.push(...g.changes);
+  result.guard = guard;
+  return true;
 }
 
 /**
@@ -525,6 +541,9 @@ export async function orchestrate(input: OrchestratorInput): Promise<Orchestrato
     );
     result.usage = extractUsage(response);
     result.catalogueVersion = catalogue?.version ?? null;
+    if (applyHeroRestatementGuard(result, userQuery)) {
+      result.rawResponse = renderRawResponse(result.rawResponse ?? textContent.text, result.layoutPlan);
+    }
 
     // GEN-07 (D-417..D-420): default off; Phase 5 must keep it off the first-content path (D-419).
     if (verifierEnabled()) {
@@ -808,7 +827,9 @@ export async function* orchestrateStream(
     for (const c of g.report.changes) if (!seen.has(`${c.field}|${c.rule}|${c.before}`)) guard.changes.push(c);
     result.guard = guard;
   }
-  if (heroSubstituted || guardChangedLayout) {
+  // Phase 7 HERO-03: removal-only fallback after substitution, so it sees the hero the user saw.
+  const heroRestated = applyHeroRestatementGuard(result, userQuery);
+  if (heroSubstituted || guardChangedLayout || heroRestated) {
     // Re-render from the already-guarded rawResponse (never modelRawResponse, which is the unguarded model text).
     result.rawResponse = renderRawResponse(result.rawResponse ?? text, result.layoutPlan);
   }

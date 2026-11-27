@@ -20,7 +20,11 @@ import {
   generationParams,
   generationConfig,
   heroPassInstruction,
+  heroPassPromptVersion,
+  HERO_PASS_INSTRUCTION_V1,
+  HERO_PASS_INSTRUCTION_V2,
 } from '../src/lib/concierge-config';
+import { detectHeroRestatement } from '../src/lib/hero-restatement';
 import fs from 'node:fs';
 import { DISPUTED_LABELS, isDisputed } from './labels';
 import { SYSTEM_PROMPT } from '../src/lib/orchestrator';
@@ -218,4 +222,69 @@ test('instantTeasers claim pattern and knobs', () => {
   for (const q of ['What cybersecurity clients have you worked with?', 'Have you built a brand for a fintech?'])
     assert.ok(!claimPattern.test(q), q);
   assert.equal(CONCIERGE_CONFIG.health.warnBelowUsd, 5);
+});
+
+// Phase 7 HERO-02: v1 text copied verbatim from be92924 heroPassInstruction().
+const HERO_V1_AT_BE92924 = `
+
+FAST OPENING PASS: output ONLY the opening \`\`\`json block with a layout array that holds just the HeroBlock, then stop. Do not write any other component, the narrative or the follow-up questions; another pass writes them.
+The HeroBlock states the user's challenge or opportunity in their own terms, as a headline about THEM. It must hold under the HONESTY RULES, and it is written before the rest of the answer, so it makes no claim about us at all:
+- Title and subtitle name the topic or the user's situation. They never describe our experience, clients, industries, seniority, scale or results (no "X work", "X experience", "our work with", "senior-level partnership", "Fortune 100"). Bad: "Senior-level work for global retailers". Good: "Choosing comparable work for a global retailer".
+- Anything the user says or assumes about us ("X experience", "the campaign you did") is their question, not a fact. Keep it out of the title and subtitle, and never put a client, brand or project name the user attributes to us there. In the challengeSummary it may appear only as what they are asking about ("You're asking about...").
+- Do not add facts the user did not give (company size or status, deadlines, audience traits, budget).`;
+
+function withHeroVersion(value: string | undefined, fn: () => void): void {
+  const saved = process.env.HERO_PASS_PROMPT_VERSION;
+  try {
+    if (value === undefined) delete process.env.HERO_PASS_PROMPT_VERSION;
+    else process.env.HERO_PASS_PROMPT_VERSION = value;
+    fn();
+  } finally {
+    if (saved === undefined) delete process.env.HERO_PASS_PROMPT_VERSION;
+    else process.env.HERO_PASS_PROMPT_VERSION = saved;
+  }
+}
+
+test('heroPassInstruction(1) is byte-identical to the be92924 instruction', () => {
+  assert.equal(heroPassInstruction(1), HERO_V1_AT_BE92924);
+  assert.equal(HERO_PASS_INSTRUCTION_V1, HERO_V1_AT_BE92924);
+});
+
+test('heroPassInstruction(2) frames the problem and drops the restatement asks', () => {
+  const v2 = heroPassInstruction(2);
+  assert.equal(v2, HERO_PASS_INSTRUCTION_V2);
+  assert.ok(v2.startsWith('\n\nFAST OPENING PASS'));
+  for (const s of [
+    'must not repeat it back',
+    'at most 25 words',
+    'Do not restate or paraphrase the question',
+    'Keep it out of the HeroBlock entirely',
+    'Do not add facts the user did not give',
+    'makes no claim about us at all',
+    'They never describe our experience, clients, industries, seniority, scale or results',
+  ]) assert.ok(v2.includes(s), s);
+  for (const s of ['in their own terms', 'may appear only as what they are asking about'])
+    assert.ok(!v2.includes(s), s);
+});
+
+test('heroPassPromptVersion reads HERO_PASS_PROMPT_VERSION and ignores invalid values', () => {
+  assert.equal(CONCIERGE_CONFIG.heroPass.promptVersion, 2);
+  withHeroVersion(undefined, () => assert.equal(heroPassPromptVersion(), 2));
+  withHeroVersion('1', () => assert.equal(heroPassPromptVersion(), 1));
+  withHeroVersion('2', () => assert.equal(heroPassPromptVersion(), 2));
+  withHeroVersion('3', () => assert.equal(heroPassPromptVersion(), 2));
+  withHeroVersion('abc', () => assert.equal(heroPassPromptVersion(), 2));
+});
+
+test('heroPassInstruction() with no argument follows the env version', () => {
+  withHeroVersion('1', () => assert.equal(heroPassInstruction(), HERO_PASS_INSTRUCTION_V1));
+  withHeroVersion(undefined, () => assert.equal(heroPassInstruction(), HERO_PASS_INSTRUCTION_V2));
+});
+
+test('the v2 example challengeSummary is not flagged as a restatement', () => {
+  const r = detectHeroRestatement(
+    "We're a fintech startup looking to rebrand",
+    'Looking credible enough to hold people\'s money while still feeling new.',
+  );
+  assert.equal(r.restates, false, JSON.stringify(r));
 });

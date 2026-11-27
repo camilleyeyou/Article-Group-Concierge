@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { PHASE4_SMOKE_IDS, PHASE6_FIX_IDS, HELD_OUT_ID_PATTERN, resolveIds } from './subsets';
+import { PHASE4_SMOKE_IDS, PHASE6_FIX_IDS, PHASE7_HERO_IDS, HELD_OUT_ID_PATTERN, resolveIds } from './subsets';
 import { QUERIES_PATH, readJson, type QueriesFile } from './lib';
 
 test('smoke subset has 21 unique ids that exist in queries.json', () => {
@@ -25,4 +25,15 @@ test('phase6-fix ids are unique, exist in queries.json and none is held-out', ()
     assert.ok(known.has(id), `${id} missing from queries.json`);
     assert.ok(!HELD_OUT_ID_PATTERN.test(id), `${id} is held-out`);
   }
+});
+
+test('phase7-hero has 10 unique ids that exist in queries.json and none is held-out', () => {
+  assert.equal(PHASE7_HERO_IDS.length, 10);
+  assert.equal(new Set(PHASE7_HERO_IDS).size, 10);
+  const known = new Set(readJson<QueriesFile>(QUERIES_PATH).queries.map(q => q.id));
+  for (const id of PHASE7_HERO_IDS) {
+    assert.ok(known.has(id), `${id} missing from queries.json`);
+    assert.ok(!HELD_OUT_ID_PATTERN.test(id), `${id} is held-out`);
+  }
+  assert.deepEqual(resolveIds({ subset: 'phase7-hero' }), [...PHASE7_HERO_IDS]);
 });

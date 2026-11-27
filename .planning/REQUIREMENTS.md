@@ -62,6 +62,13 @@
 - [x] **TRACE-02** (Partial: order_of_work fixed deterministically; goal_as_result, designed-and-produced, channel inference documented as not fixable deterministically): Source fixes found by the trace are implemented as deterministic code (no new prompt rules) or documented as not fixable deterministically
 - [x] **CONFIRM-01**: One user-approved full original-50 run (Sonnet 5.5 generation, Opus 5.5 judge) reports deltas against 2026-11-25T14-30-56 and the ready bars; spend is logged
 
+### Fast hero restatement (Phase 7)
+
+- [x] **HERO-01**: A deterministic restatement detector (no model call) flags a HeroBlock challengeSummary that restates the user's query; replayed free over every saved run it gives the before rate (>= 45/50 user-seen heroes flagged in 2026-11-26T05-24-15) and every eval report shows `hero_restates`
+- [x] **HERO-02**: The fast-hero-pass instruction v2 no longer asks the hero to restate the query: the challengeSummary names the problem behind the question in one sentence of at most 25 words, makes no claim about our work and keeps user-attributed work out of the hero; v1 stays selectable with HERO_PASS_PROMPT_VERSION=1; main system prompt and rubric unchanged
+- [x] **HERO-03**: A deterministic guard fallback drops restating sentences from the HeroBlock challengeSummary (removing the field when nothing is left) on both chat routes, behind HERO_RESTATEMENT_GUARD_ENABLED and OUTPUT_GUARD_ENABLED; a free replay over saved answers is reviewed with 0 false positives left
+- [x] **HERO-04**: A user-approved 10-query trial and then a user-approved full original-50 run (Sonnet 5.5 generation, Opus 5.5 judge) report hero_restates, voice, unsupported-claim responses, goal_as_result, hero-sourced claims, hero gap and hero latency against 2026-11-20T15-12-31 and 2026-11-26T05-24-15; spend is logged
+
 ## v2 Requirements
 
 - **V2-01**: Automated nightly eval with regression alerts
@@ -117,12 +124,16 @@
 | TRACE-01 | Phase 06.1 | Complete |
 | TRACE-02 | Phase 06.1 | Complete |
 | CONFIRM-01 | Phase 06.1 | Complete |
+| HERO-01 | Phase 7 | Complete |
+| HERO-02 | Phase 7 | Complete |
+| HERO-03 | Phase 7 | Complete |
+| HERO-04 | Phase 7 | Complete |
 
 **Coverage:**
-- v1 requirements: 36 total
-- Mapped to phases: 36
+- v1 requirements: 40 total
+- Mapped to phases: 40
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-11-20*
-*Last updated: 2026-11-25 after Phase 06.1 close*
+*Last updated: 2026-11-27 after Phase 7 close*
